@@ -37,8 +37,10 @@ export const defaultLocalization = {
     login_description: "Enter your email below to login to your account",
     signup_description: "Enter your information to create an account",
     email_label: "Email Address",
+    username_label: "Username",
     password_label: "Password",
     email_placeholder: "m@example.com",
+    username_placeholder: "Username",
     password_placeholder: "Password",
     login_button: "Login",
     signup_button: "Sign Up",
@@ -66,6 +68,7 @@ export interface AuthCardProps {
     magicLink?: boolean
     startWithMagicLink?: boolean
     localization?: Partial<typeof defaultLocalization>
+    disableRouting?: boolean
     LinkComponent?: React.ComponentType<{ href: string, className?: string, children: ReactNode }>
 }
 
@@ -78,6 +81,7 @@ export function AuthCard({
     magicLink,
     startWithMagicLink,
     localization,
+    disableRouting,
     LinkComponent = DefaultLink
 }: AuthCardProps) {
     localization = { ...defaultLocalization, ...localization }
@@ -160,8 +164,8 @@ export function AuthCard({
                     </div>
 
                     <div
-                        className={cn(isMagicLink ? "h-0 opacity-0" : "mb-4 h-[62px]",
-                            "grid gap-2 transition-all overflow-hidden"
+                        className={cn(isMagicLink ? "h-0 opacity-0 overflow-hidden" : "mb-4 h-[62px]",
+                            "grid gap-2 transition-all"
                         )}
                     >
                         <div className="flex items-center relative">
@@ -171,8 +175,8 @@ export function AuthCard({
 
                             <a
                                 href="/forgot-password"
-                                className={cn(view === "login" && !isMagicLink && !isPending ? "h-6" : "h-0 opacity-0",
-                                    "absolute right-0 text-sm hover:underline transition-all overflow-hidden"
+                                className={cn(view === "login" && !isMagicLink && !isPending ? "h-6" : "h-0 opacity-0 overflow-hidden",
+                                    "absolute right-0 text-sm hover:underline transition-all z-10"
                                 )}
                             >
                                 {localization.forgot_password}
@@ -204,6 +208,7 @@ export function AuthCard({
                                 size="sm"
                                 variant="outline"
                                 className="absolute top-5 right-4 text-foreground"
+                                disabled
                             >
                                 Resend
                             </Button>
@@ -268,15 +273,23 @@ export function AuthCard({
             <CardFooter>
                 <div className="flex justify-center w-full border-t pt-4">
                     <p className="text-center text-xs text-muted-foreground">
-                        Don't have an account?
+                        {view == "signup" ? (
+                            localization.signup_footer
+                        ) : (
+                            localization.login_footer
+                        )}
+
                         {" "}
 
                         <LinkComponent
-                            href="/auth/signup"
+                            href={view == "signup" ?
+                                "/auth/login"
+                                : "/auth/signup"
+                            }
                             className="underline"
                         >
                             <span className="dark:!text-warning text-foreground">
-                                Sign Up
+                                {view == "signup" ? localization.login : localization.signup}
                             </span>
                         </LinkComponent>
                     </p>
