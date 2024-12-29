@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { FormEvent, ReactNode, useEffect, useState } from "react"
-import { AlertCircle, Loader2, MailIcon } from "lucide-react"
+import { AlertCircle, Loader2, LockIcon, MailIcon } from "lucide-react"
 import {
     createAuthClient
 } from "better-auth/react"
@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils"
 
 type AuthClient = ReturnType<typeof createAuthClient>
 
-type AuthView = "login" | "signup" | "forgot-password" | "reset-password" | "logout"
+export type AuthView = "login" | "signup" | "forgot-password" | "reset-password" | "logout"
 
 const DefaultLink = (
     { href, className, children }: { href: string, className?: string, children: ReactNode }
@@ -29,7 +29,35 @@ const DefaultLink = (
     </a>
 )
 
-interface AuthCardProps {
+export const defaultLocalization = {
+    login_title: "Login",
+    signup_title: "Sign Up",
+    forgot_password_title: "Forgot Password",
+    reset_password_title: "Reset Password",
+    login_description: "Enter your email below to login to your account",
+    signup_description: "Enter your information to create an account",
+    email_label: "Email Address",
+    password_label: "Password",
+    email_placeholder: "m@example.com",
+    password_placeholder: "Password",
+    login_button: "Login",
+    signup_button: "Sign Up",
+    forgot_password_button: "Send Reset Password Link",
+    reset_password_button: "Reset Password",
+    provider_prefix: "Continue with",
+    magic_link_provider: "Magic Link",
+    password_provider: "Password",
+    login_footer: "Don't have an account?",
+    signup_footer: "Already have an account?",
+    forgot_password: "Forgot your password?",
+    login: "Login",
+    signup: "Sign Up",
+    email_confirmation_text: "Check your email for the confirmation link",
+    email_reset_password_text: "Check your email for the password reset link",
+    email_magic_link_text: "Check your email for the magic link",
+}
+
+export interface AuthCardProps {
     authClient: AuthClient,
     navigate?: (url: string) => void
     pathname?: string
@@ -37,6 +65,7 @@ interface AuthCardProps {
     emailPassword?: boolean
     magicLink?: boolean
     startWithMagicLink?: boolean
+    localization?: Partial<typeof defaultLocalization>
     LinkComponent?: React.ComponentType<{ href: string, className?: string, children: ReactNode }>
 }
 
@@ -44,13 +73,15 @@ export function AuthCard({
     authClient,
     navigate = (url) => window.location.href = url,
     pathname,
-    initialView,
+    initialView = "login",
     emailPassword = true,
     magicLink,
     startWithMagicLink,
+    localization,
     LinkComponent = DefaultLink
 }: AuthCardProps) {
-    const { data: sessionData } = authClient.useSession()
+    localization = { ...defaultLocalization, ...localization }
+    const { data: sessionData, isPending } = authClient.useSession()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [loading, setLoading] = useState(false)
@@ -73,25 +104,39 @@ export function AuthCard({
     }
 
     useEffect(() => {
-        console.log("sessionData", sessionData)
         if (sessionData && !(sessionData.user as any)?.isAnonymous) {
             navigate("/")
         }
     }, [sessionData])
 
     useEffect(() => {
+        if (!pathname) return
+        const path = pathname.split("/").pop()
 
+        if (["login", "signup", "forgot-password", "reset-password", "logout"].includes(path as AuthView)) {
+            setView(path as AuthView)
+        }
     }, [pathname])
 
+    useEffect(() => {
+        if (view != "login") {
+            setIsMagicLink(false)
+        }
+    }, [view])
+
     return (
-        <Card className="max-w-md w-full">
+        <Card
+            className={cn(isPending ? "opacity-0" : null,
+                "max-w-md w-full transition-all"
+            )}
+        >
             <CardHeader>
                 <CardTitle className="text-lg md:text-xl">
-                    Login
+                    {localization[`${view.replace("-", "_")}_title` as keyof typeof localization]}
                 </CardTitle>
 
                 <CardDescription className="text-xs md:text-sm">
-                    Enter your email below to login to your account
+                    {localization[`${view.replace("-", "_")}_description` as keyof typeof localization]}
                 </CardDescription>
             </CardHeader>
 
@@ -99,13 +144,13 @@ export function AuthCard({
                 <form className="grid" onSubmit={onSubmit}>
                     <div className="grid gap-2 mb-4">
                         <Label htmlFor="email">
-                            Email
+                            {localization.email_label}
                         </Label>
 
                         <Input
                             id="email"
                             type="email"
-                            placeholder="m@example.com"
+                            placeholder={localization.email_placeholder}
                             required
                             onChange={(e) => {
                                 setEmail(e.target.value)
@@ -114,17 +159,23 @@ export function AuthCard({
                         />
                     </div>
 
-                    <div className="grid gap-2 mb-4">
-                        <div className="flex items-center">
+                    <div
+                        className={cn(isMagicLink ? "h-0 opacity-0" : "mb-4 h-[62px]",
+                            "grid gap-2 transition-all overflow-hidden"
+                        )}
+                    >
+                        <div className="flex items-center relative">
                             <Label htmlFor="password">
-                                Password
+                                {localization.password_label}
                             </Label>
 
                             <a
                                 href="/forgot-password"
-                                className="ml-auto inline-block text-sm hover:underline"
+                                className={cn(view === "login" && !isMagicLink && !isPending ? "h-6" : "h-0 opacity-0",
+                                    "absolute right-0 text-sm hover:underline transition-all overflow-hidden"
+                                )}
                             >
-                                Forgot your password?
+                                {localization.forgot_password}
                             </a>
                         </div>
 
@@ -135,6 +186,7 @@ export function AuthCard({
                             autoComplete="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            disabled={isMagicLink}
                         />
                     </div>
 
@@ -178,21 +230,36 @@ export function AuthCard({
                             {loading ? (
                                 <Loader2 size={16} className="animate-spin" />
                             ) : (
-                                "Login"
+                                localization[`${view.replace("-", "_")}_button` as keyof typeof localization]
                             )}
                         </Button>
 
-                        {magicLink && (
-                            <LinkComponent href="/magic-link">
-                                <Button
-                                    type="button"
-                                    variant="secondary"
-                                    className="gap-2 w-full"
-                                >
-                                    <MailIcon className="w-4 h-4" />
-                                    Continue with Magic Link
-                                </Button>
-                            </LinkComponent>
+                        {magicLink && !isMagicLink && (
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                className="gap-2 w-full"
+                                onClick={() => setIsMagicLink(true)}
+                            >
+                                <MailIcon className="w-4 h-4" />
+                                {localization.provider_prefix}
+                                {" "}
+                                {localization.magic_link_provider}
+                            </Button>
+                        )}
+
+                        {emailPassword && isMagicLink && (
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                className="gap-2 w-full"
+                                onClick={() => setIsMagicLink(false)}
+                            >
+                                <LockIcon className="w-4 h-4" />
+                                {localization.provider_prefix}
+                                {" "}
+                                {localization.password_provider}
+                            </Button>
                         )}
                     </div>
                 </form>
