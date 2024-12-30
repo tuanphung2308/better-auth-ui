@@ -191,6 +191,7 @@ export function AuthCard({
             case "signup": {
                 const { error } = await authClient.signUp.email({ email, password, name })
                 apiError = error
+
                 break
             }
             case "forgot-password": {
@@ -232,7 +233,7 @@ export function AuthCard({
 
     useEffect(() => {
         if (sessionData && !(sessionData.user as Record<string, unknown>)?.isAnonymous) {
-            navigate("/")
+            navigate(callbackURL)
         }
     }, [sessionData])
 
