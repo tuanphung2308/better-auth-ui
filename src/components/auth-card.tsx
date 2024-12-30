@@ -17,7 +17,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-import { AlertCircle, Loader2, LockIcon, MailIcon } from "lucide-react"
+import { AlertCircle, Key, Loader2, LockIcon, MailIcon } from "lucide-react"
+import { SocialProvider, socialProviders } from "../social-providers"
+import { Icon } from "@iconify/react"
 
 type AuthClient = ReturnType<typeof createAuthClient>
 
@@ -41,6 +43,7 @@ export const defaultLocalization = {
     reset_password_title: "Reset Password",
     login_description: "Enter your email below to login to your account",
     signup_description: "Enter your information to create an account",
+    forgot_password_description: "Enter your email to reset your password",
     email_label: "Email Address",
     username_label: "Username",
     name_label: "Name",
@@ -51,10 +54,11 @@ export const defaultLocalization = {
     password_placeholder: "Password",
     login_button: "Login",
     signup_button: "Sign Up",
-    forgot_password_button: "Send Reset Password Link",
+    forgot_password_button: "Send Reset Link",
     reset_password_button: "Reset Password",
     provider_prefix: "Continue with",
     magic_link_provider: "Magic Link",
+    passkey_provider: "Passkey",
     password_provider: "Password",
     login_footer: "Don't have an account?",
     signup_footer: "Already have an account?",
@@ -86,6 +90,9 @@ export interface AuthCardProps {
     emailPassword?: boolean
     magicLink?: boolean
     startWithMagicLink?: boolean
+    passkey?: boolean
+    providers?: SocialProvider[]
+    socialLayout?: "horizontal" | "vertical"
     localization?: Partial<typeof defaultLocalization>
     disableRouting?: boolean
     disableAnimation?: boolean
@@ -106,6 +113,9 @@ export function AuthCard({
     emailPassword = true,
     magicLink,
     startWithMagicLink,
+    passkey,
+    providers,
+    socialLayout,
     localization,
     disableRouting,
     disableAnimation,
@@ -116,6 +126,8 @@ export function AuthCard({
     localization = { ...defaultLocalization, ...localization }
     navigate = navigate || nextRouter?.push || defaultNavigate
     pathname = pathname || nextRouter?.asPath
+    socialLayout = socialLayout || ((providers && providers.length > 3) ? "horizontal" : "vertical")
+
     const { data: sessionData, isPending } = authClient.useSession()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -137,6 +149,7 @@ export function AuthCard({
             status: number
             statusText: string
         } | null = null
+
         switch (view) {
             case "login": {
                 if (isMagicLink) {
@@ -209,7 +222,7 @@ export function AuthCard({
         <Card
             className={cn(((nextRouter && !nextRouter.isReady) || isPending) && "opacity-0",
                 !disableAnimation && transitionClass,
-                "max-w-md w-full"
+                "max-w-sm w-full"
             )}
         >
             <CardHeader>
@@ -226,7 +239,7 @@ export function AuthCard({
                 <form className="grid" onSubmit={onSubmit}>
                     <div
                         className={cn(!signUpWithName || view != "signup" ? hideElementClass : "mb-4",
-                            "grid gap-2 mb-4"
+                            "grid gap-2"
                         )}
                     >
                         <Label htmlFor="name">
@@ -236,7 +249,7 @@ export function AuthCard({
                         <Input
                             id="name"
                             required
-                            placeholder={localization.email_placeholder}
+                            placeholder={localization.name_placeholder}
                             onChange={(e) => setName(e.target.value)}
                             value={name}
                             disabled={!signUpWithName || view != "signup"}
@@ -261,7 +274,7 @@ export function AuthCard({
                     </div>
 
                     <div
-                        className={cn((isMagicLink && view == "login") ? hideElementClass : "mb-4 h-[62px]",
+                        className={cn(((isMagicLink && view == "login") || view == "forgot-password") ? hideElementClass : "mb-4 h-[62px]",
                             !disableAnimation && transitionClass,
                             "grid gap-2"
                         )}
@@ -392,14 +405,88 @@ export function AuthCard({
                                 {localization.password_provider}
                             </Button>
                         </div>
+
+                        {passkey && (
+                            <div
+                                className={cn(view != "login" ? hideElementClass : "mt-4",
+                                    !disableAnimation && transitionClass,
+                                )}
+                            >
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    className="gap-2 w-full"
+                                    onClick={async () => {
+                                        const { error } = await (authClient.signIn as any).passkey()
+
+                                        if (error) {
+                                            setAuthToast({
+                                                description: error.message!,
+                                                variant: "destructive"
+                                            })
+                                        }
+                                    }}
+                                    disabled={view != "login"}
+                                >
+                                    <Key className="w-4 h-4" />
+                                    {localization.provider_prefix}
+                                    {" "}
+                                    {localization.passkey_provider}
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </form>
+
+                <div
+                    className={cn(
+                        (!providers?.length || !["login", "signup"].includes(view)) ? hideElementClass : "mt-4",
+                        "w-full gap-2 flex items-center",
+                        "justify-between flex-wrap transition-all",
+                    )}
+                >
+                    {providers?.map((provider) => {
+                        const socialProvider = socialProviders.find((p) => p.provider == provider)
+                        if (!socialProvider) return null
+                        return (
+                            <Button
+                                key={provider}
+                                variant="outline"
+                                className="grow"
+                                disabled={loading || !["login", "signup"].includes(view)}
+                                onClick={async () => {
+                                    const { error } = await authClient.signIn.social({
+                                        provider,
+                                        callbackURL: "/"
+                                    })
+
+                                    if (error) {
+                                        setAuthToast({
+                                            description: error.message!,
+                                            variant: "destructive"
+                                        })
+                                    }
+                                }}
+                            >
+                                <Icon icon={socialProvider.icon} className="w-4 h-4" />
+
+                                {socialLayout == "vertical" && (
+                                    <>
+                                        {localization.provider_prefix}
+                                        {" "}
+                                        {socialProvider.name}
+                                    </>
+                                )}
+                            </Button>
+                        )
+                    })}
+                </div>
             </CardContent>
 
             <CardFooter>
                 <div className="flex justify-center w-full border-t pt-4">
                     <p className="text-center text-xs text-muted-foreground">
-                        {view == "signup" ? (
+                        {(view == "signup" || view == "forgot-password") ? (
                             localization.signup_footer
                         ) : (
                             localization.login_footer
@@ -410,18 +497,18 @@ export function AuthCard({
                             variant="link"
                             size="sm"
                             className="text-xs px-1 h-fit underline"
-                            onClick={() => setView(view == "signup" ? "login" : "signup")}
+                            onClick={() => setView((view == "signup" || view == "forgot-password") ? "login" : "signup")}
                         >
                             {disableRouting ? (
-                                view == "signup" ? localization.login : localization.signup
+                                (view == "signup" || view == "forgot-password") ? localization.login : localization.signup
                             ) : (
                                 <LinkComponent
-                                    href={view == "signup" ?
+                                    href={(view == "signup" || view == "forgot-password") ?
                                         "/auth/login"
                                         : "/auth/signup"
                                     }
                                 >
-                                    {view == "signup" ? localization.login : localization.signup}
+                                    {(view == "signup" || view == "forgot-password") ? localization.login : localization.signup}
                                 </LinkComponent>
                             )}
                         </Button>
