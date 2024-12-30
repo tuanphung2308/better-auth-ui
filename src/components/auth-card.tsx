@@ -39,14 +39,15 @@ const defaultNavigate = (href: string) => window.location.href = href
 
 export const defaultLocalization = {
     login_title: "Login",
-    signup_title: "Sign Up",
-    magic_link_title: "Magic Link",
-    forgot_password_title: "Forgot Password",
-    reset_password_title: "Reset Password",
+    signup_title: "Sign up",
+    magic_link_title: "Magic link",
+    forgot_password_title: "Forgot password",
+    reset_password_title: "Reset password",
     login_description: "Enter your email to login to your account",
-    signup_description: "Enter your information to create an account",
+    signup_description: "Enter your information to create your account",
     magic_link_description: "Enter your email to receive a magic link",
     forgot_password_description: "Enter your email to reset your password",
+    provider_description: "Choose a provider to continue",
     email_label: "Email",
     username_label: "Username",
     name_label: "Name",
@@ -56,11 +57,11 @@ export const defaultLocalization = {
     name_placeholder: "Name",
     password_placeholder: "Password",
     login_button: "Login",
-    signup_button: "Create an account",
+    signup_button: "Create account",
     magic_link_button: "Send magic link",
     forgot_password_button: "Send reset link",
     reset_password_button: "Save new password",
-    provider_prefix: "Login with",
+    provider_prefix: "Continue with",
     magic_link_provider: "Magic Link",
     passkey_provider: "Passkey",
     password_provider: "Password",
@@ -93,9 +94,9 @@ export interface AuthCardProps {
     nextRouter?: NextRouter
     initialView?: AuthView
     emailPassword?: boolean
+    username?: boolean
     forgotPassword?: boolean
     magicLink?: boolean
-    startWithMagicLink?: boolean
     passkey?: boolean
     providers?: SocialProvider[]
     socialLayout?: "horizontal" | "vertical"
@@ -120,7 +121,6 @@ export function AuthCard({
     emailPassword = true,
     forgotPassword = true,
     magicLink,
-    startWithMagicLink,
     passkey,
     providers,
     socialLayout,
@@ -136,7 +136,7 @@ export function AuthCard({
     localization = { ...defaultLocalization, ...localization }
     navigate = navigate || nextRouter?.push || defaultNavigate
     pathname = pathname || nextRouter?.asPath
-    socialLayout = socialLayout || ((providers && providers.length > 2) ? "horizontal" : "vertical")
+    socialLayout = socialLayout || ((providers && providers.length > 2 && (emailPassword || magicLink)) ? "horizontal" : "vertical")
 
     const getCurrentView = () => {
         const currentPathname = isHydrated ? window.location.pathname : pathname
@@ -261,16 +261,19 @@ export function AuthCard({
     }, [authToast])
 
     useEffect(() => {
-        if (!magicLink && view == "magic-link") setView("login")
-        if (!emailPassword && view == "login") setView("magic-link")
-    }, [magicLink, emailPassword])
-
-    useEffect(() => {
         if (!view) return
+
+        if (!magicLink && view == "magic-link") setView("login")
+        if (magicLink && !emailPassword && view == "login") setView("magic-link")
+        if (["signup", "forgot-password", "reset-password"].includes(view) && !emailPassword) setView(magicLink ? "magic-link" : "login")
+
         if (!disableRouting) {
-            navigate(getPathname(view))
+            console.log("navigate to", getPathname(view))
+            setTimeout(() => {
+                navigate(getPathname(view))
+            })
         }
-    }, [view])
+    }, [magicLink, emailPassword, view])
 
     return (
         <Card
@@ -285,100 +288,107 @@ export function AuthCard({
                 </CardTitle>
 
                 <CardDescription>
-                    {view && localization[`${view.replace("-", "_")}_description` as keyof typeof localization]}
+                    {(emailPassword || magicLink) ? (view && localization[`${view.replace("-", "_")}_description` as keyof typeof localization])
+                        : localization.provider_description}
                 </CardDescription>
             </CardHeader>
 
             <CardContent>
                 <form className="grid" onSubmit={onSubmit}>
-                    <div
-                        className={cn(!signUpWithName || view != "signup" ? hideElementClass : "mb-6",
-                            "grid gap-2"
-                        )}
-                    >
-                        <Label htmlFor="name">
-                            {localization.name_label}
-                        </Label>
-
-                        <Input
-                            id="name"
-                            required
-                            placeholder={localization.name_placeholder}
-                            onChange={(e) => setName(e.target.value)}
-                            value={name}
-                            disabled={!signUpWithName || view != "signup"}
-                        />
-                    </div>
-
-                    <div className="grid gap-2 mb-6">
-                        <Label htmlFor="email">
-                            {localization.email_label}
-                        </Label>
-
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder={localization.email_placeholder}
-                            required
-                            onChange={(e) => {
-                                setEmail(e.target.value)
-                            }}
-                            value={email}
-                        />
-                    </div>
-
-                    <div
-                        className={cn(
-                            (view == "magic-link" || view == "forgot-password") ? hideElementClass : "mb-6 h-[62px]",
-                            !disableAnimation && transitionClass,
-                            "grid gap-2"
-                        )}
-                    >
-                        <div className="flex items-center relative">
-                            <Label htmlFor="password">
-                                {localization.password_label}
+                    {signUpWithName && (
+                        <div
+                            className={cn(view != "signup" ? hideElementClass : "mb-6",
+                                "grid gap-2"
+                            )}
+                        >
+                            <Label htmlFor="name">
+                                {localization.name_label}
                             </Label>
 
-                            {forgotPassword && (
-                                <div
-                                    className={cn(
-                                        view == "login" ? "h-6" : hideElementClass,
-                                        !disableAnimation && transitionClass,
-                                        "absolute right-0"
-                                    )}
-                                >
-                                    <Button
-                                        asChild={!disableRouting}
-                                        variant="link"
-                                        size="sm"
-                                        className="text-sm px-1 h-fit hover-underline"
-                                        onClick={() => setView("forgot-password")}
-                                        disabled={view != "login"}
-                                        tabIndex={view != "login" ? -1 : undefined}
-                                    >
-                                        {disableRouting ? (
-                                            localization.forgot_password
-                                        ) : (
-                                            <LinkComponent href={getPathname("forgot-password")}>
-                                                {localization.forgot_password}
-                                            </LinkComponent>
-                                        )}
-                                    </Button>
-                                </div>
-                            )}
+                            <Input
+                                id="name"
+                                required
+                                placeholder={localization.name_placeholder}
+                                onChange={(e) => setName(e.target.value)}
+                                value={name}
+                                disabled={view != "signup"}
+                            />
                         </div>
+                    )}
 
-                        <Input
-                            id="password"
-                            required
-                            type="password"
-                            placeholder="Password"
-                            autoComplete="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            disabled={view == "magic-link" || view == "forgot-password"}
-                        />
-                    </div>
+                    {(emailPassword || magicLink) && (
+                        <div className="grid gap-2 mb-6">
+                            <Label htmlFor="email">
+                                {localization.email_label}
+                            </Label>
+
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder={localization.email_placeholder}
+                                required
+                                onChange={(e) => {
+                                    setEmail(e.target.value)
+                                }}
+                                value={email}
+                            />
+                        </div>
+                    )}
+
+                    {emailPassword && (
+                        <div
+                            className={cn(
+                                (view == "magic-link" || view == "forgot-password") ? hideElementClass : "mb-6 h-[62px]",
+                                !disableAnimation && transitionClass,
+                                "grid gap-2"
+                            )}
+                        >
+                            <div className="flex items-center relative">
+                                <Label htmlFor="password">
+                                    {localization.password_label}
+                                </Label>
+
+                                {forgotPassword && (
+                                    <div
+                                        className={cn(
+                                            view == "login" ? "h-6" : hideElementClass,
+                                            !disableAnimation && transitionClass,
+                                            "absolute right-0"
+                                        )}
+                                    >
+                                        <Button
+                                            asChild={!disableRouting}
+                                            variant="link"
+                                            size="sm"
+                                            className="text-sm px-1 h-fit text-foreground hover-underline"
+                                            onClick={() => setView("forgot-password")}
+                                            disabled={view != "login"}
+                                            tabIndex={view != "login" ? -1 : undefined}
+                                        >
+                                            {disableRouting ? (
+                                                localization.forgot_password
+                                            ) : (
+                                                <LinkComponent href={getPathname("forgot-password")}>
+                                                    {localization.forgot_password}
+                                                </LinkComponent>
+                                            )}
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+
+                            <Input
+                                id="password"
+                                required
+                                type="password"
+                                placeholder="Password"
+                                autoComplete="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                disabled={view == "magic-link" || view == "forgot-password"}
+                            />
+                        </div>
+                    )}
 
                     {!toast && (
                         <div
@@ -416,17 +426,19 @@ export function AuthCard({
                     )}
 
                     <div className="flex flex-col">
-                        <Button
-                            type="submit"
-                            className="w-full"
-                            disabled={loading}
-                        >
-                            {loading ? (
-                                <Loader2 size={16} className="animate-spin" />
-                            ) : (
-                                view && localization[`${view.replace("-", "_")}_button` as keyof typeof localization]
-                            )}
-                        </Button>
+                        {(emailPassword || magicLink) && (
+                            <Button
+                                type="submit"
+                                className="w-full"
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                    <Loader2 size={16} className="animate-spin" />
+                                ) : (
+                                    view && localization[`${view.replace("-", "_")}_button` as keyof typeof localization]
+                                )}
+                            </Button>
+                        )}
 
                         <div
                             className={cn((!view || !["signup", "login"].includes(view) || !magicLink) ? hideElementClass : "mt-4",
@@ -470,7 +482,7 @@ export function AuthCard({
 
                         {passkey && (
                             <div
-                                className={cn(view != "login" ? hideElementClass : "mt-4",
+                                className={cn(!view || !["login", "magic-link"].includes(view) ? hideElementClass : "mt-4",
                                     !disableAnimation && transitionClass,
                                 )}
                             >
@@ -488,7 +500,7 @@ export function AuthCard({
                                             })
                                         }
                                     }}
-                                    disabled={view != "login"}
+                                    disabled={!view || !["login", "magic-link"].includes(view)}
                                 >
                                     <Key className="w-4 h-4" />
                                     {localization.provider_prefix}
@@ -501,16 +513,18 @@ export function AuthCard({
                 </form>
 
                 <div
-                    className={cn((!view || !providers?.length || !["login", "signup", "magic-link"].includes(view)) ? hideElementClass : "mt-6",
+                    className={cn((!view || !providers?.length || !["login", "signup", "magic-link"].includes(view)) ? hideElementClass : "",
                         !disableAnimation && transitionClass,
                         "flex flex-col gap-6"
                     )}
                 >
-                    <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                        <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                            {localization.or_continue_with}
-                        </span>
-                    </div>
+                    {(emailPassword || magicLink || passkey) && (
+                        <div className="mt-6 relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+                            <span className="relative z-10 bg-background px-2 text-muted-foreground">
+                                {localization.or_continue_with}
+                            </span>
+                        </div>
+                    )}
 
                     <div
                         className={cn(
@@ -557,34 +571,36 @@ export function AuthCard({
                 </div>
             </CardContent>
 
-            <CardFooter className="justify-center text-sm text-muted-foreground">
-                {view && (["signup", "forgot-password"].includes(view) ? (
-                    localization.signup_footer
-                ) : (
-                    localization.login_footer
-                ))}
-
-                <Button
-                    asChild={!disableRouting}
-                    variant="link"
-                    size="sm"
-                    className="text-sm px-1 h-fit underline"
-                    onClick={() => setView((view == "signup" || view == "forgot-password") ? "login" : "signup")}
-                >
-                    {view && (disableRouting ? (
-                        ["signup", "forgot-password"].includes(view) ? localization.login : localization.signup
+            {emailPassword && (
+                <CardFooter className="justify-center text-sm text-muted-foreground">
+                    {view && (["signup", "forgot-password"].includes(view) ? (
+                        localization.signup_footer
                     ) : (
-                        <LinkComponent
-                            href={(view == "signup" || view == "forgot-password") ?
-                                getPathname("login")
-                                : getPathname("signup")
-                            }
-                        >
-                            {["signup", "forgot-password"].includes(view) ? localization.login : localization.signup}
-                        </LinkComponent>
+                        localization.login_footer
                     ))}
-                </Button>
-            </CardFooter>
+
+                    <Button
+                        asChild={!disableRouting}
+                        variant="link"
+                        size="sm"
+                        className="text-sm px-1 h-fit underline text-foreground"
+                        onClick={() => setView((view == "signup" || view == "forgot-password") ? "login" : "signup")}
+                    >
+                        {view && (disableRouting ? (
+                            ["signup", "forgot-password"].includes(view) ? localization.login : localization.signup
+                        ) : (
+                            <LinkComponent
+                                href={(view == "signup" || view == "forgot-password") ?
+                                    getPathname("login")
+                                    : getPathname("signup")
+                                }
+                            >
+                                {["signup", "forgot-password"].includes(view) ? localization.login : localization.signup}
+                            </LinkComponent>
+                        ))}
+                    </Button>
+                </CardFooter>
+            )}
         </Card>
     )
 }
