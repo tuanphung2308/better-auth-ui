@@ -44,7 +44,7 @@ export const defaultLocalization = {
     login_description: "Enter your email below to login to your account",
     signup_description: "Enter your information to create an account",
     forgot_password_description: "Enter your email to reset your password",
-    email_label: "Email Address",
+    email_label: "Email",
     username_label: "Username",
     name_label: "Name",
     password_label: "Password",
@@ -53,9 +53,9 @@ export const defaultLocalization = {
     name_placeholder: "Name",
     password_placeholder: "Password",
     login_button: "Login",
-    signup_button: "Sign Up",
-    forgot_password_button: "Send Reset Link",
-    reset_password_button: "Reset Password",
+    signup_button: "Create an account",
+    forgot_password_button: "Send reset link",
+    reset_password_button: "Save new password",
     provider_prefix: "Continue with",
     magic_link_provider: "Magic Link",
     passkey_provider: "Passkey",
@@ -64,10 +64,10 @@ export const defaultLocalization = {
     signup_footer: "Already have an account?",
     forgot_password: "Forgot your password?",
     login: "Login",
-    signup: "Sign Up",
-    email_confirmation_text: "Check your email for the confirmation link",
-    email_reset_password_text: "Check your email for the password reset link",
-    magic_link_email: "Check your email for the Magic Link",
+    signup: "Sign up",
+    verification_link_email: "Check your email for the verification link",
+    reset_password_email: "Check your email for the password reset link",
+    magic_link_email: "Check your email for the magic link",
     error: "Error",
     alert: "Alert"
 }
@@ -88,6 +88,7 @@ export interface AuthCardProps {
     nextRouter?: NextRouter
     initialView?: AuthView
     emailPassword?: boolean
+    forgotPassword?: boolean
     magicLink?: boolean
     startWithMagicLink?: boolean
     passkey?: boolean
@@ -97,6 +98,7 @@ export interface AuthCardProps {
     disableRouting?: boolean
     disableAnimation?: boolean
     signUpWithName?: boolean
+    callbackURL?: string
     toast?: (options: AuthToastOptions) => void
     LinkComponent?: React.ComponentType<{ href: string, className?: string, children: ReactNode }>
 }
@@ -109,8 +111,9 @@ export function AuthCard({
     navigate,
     pathname,
     nextRouter,
-    initialView = "login",
+    initialView,
     emailPassword = true,
+    forgotPassword = true,
     magicLink,
     startWithMagicLink,
     passkey,
@@ -120,6 +123,7 @@ export function AuthCard({
     disableRouting,
     disableAnimation,
     signUpWithName,
+    callbackURL,
     toast,
     LinkComponent = DefaultLink
 }: AuthCardProps) {
@@ -127,6 +131,15 @@ export function AuthCard({
     navigate = navigate || nextRouter?.push || defaultNavigate
     pathname = pathname || nextRouter?.asPath
     socialLayout = socialLayout || ((providers && providers.length > 3) ? "horizontal" : "vertical")
+
+    const path = pathname?.split("/").pop()
+    if (authViews.includes(path as AuthView)) {
+        initialView = path as AuthView
+    } else {
+        initialView = "login"
+    }
+
+    callbackURL = callbackURL || (nextRouter?.query?.callbackURL as string) || "/"
 
     const { data: sessionData, isPending } = authClient.useSession()
     const [email, setEmail] = useState("")
@@ -139,6 +152,8 @@ export function AuthCard({
 
     const onSubmit = async (e: FormEvent) => {
         e?.preventDefault()
+
+        console.log("onSubmit")
 
         setAuthToast(null)
         setLoading(true)
@@ -153,7 +168,10 @@ export function AuthCard({
         switch (view) {
             case "login": {
                 if (isMagicLink) {
-                    const { error } = await (authClient.signIn as any).magicLink({ email })
+                    const { error } = await (authClient.signIn as any).magicLink({
+                        email,
+                        callbackURL
+                    })
                     apiError = error
 
                     if (!error) {
@@ -176,6 +194,20 @@ export function AuthCard({
                 break
             }
             case "forgot-password": {
+                const { error } = await authClient.forgetPassword({
+                    email: email,
+                    redirectTo: "/auth/reset-password"
+                })
+                apiError = error
+
+                if (!error) {
+                    setEmail("")
+                    setAuthToast({
+                        description: localization.reset_password_email!,
+                        variant: "default"
+                    })
+                }
+
                 break
             }
             case "reset-password": {
@@ -220,7 +252,7 @@ export function AuthCard({
 
     return (
         <Card
-            className={cn(((nextRouter && !nextRouter.isReady) || isPending) && "opacity-0",
+            className={cn(((nextRouter && !nextRouter.isReady)) && "opacity-0",
                 !disableAnimation && transitionClass,
                 "max-w-sm w-full"
             )}
@@ -274,7 +306,8 @@ export function AuthCard({
                     </div>
 
                     <div
-                        className={cn(((isMagicLink && view == "login") || view == "forgot-password") ? hideElementClass : "mb-4 h-[62px]",
+                        className={cn(
+                            ((isMagicLink && view == "login") || view == "forgot-password") ? hideElementClass : "mb-4 h-[62px]",
                             !disableAnimation && transitionClass,
                             "grid gap-2"
                         )}
@@ -284,39 +317,43 @@ export function AuthCard({
                                 {localization.password_label}
                             </Label>
 
-                            <div
-                                className={cn(
-                                    view == "login" && !isMagicLink ? "h-6" : hideElementClass,
-                                    !disableAnimation && transitionClass,
-                                    "absolute right-0"
-                                )}
-                            >
-                                <Button
-                                    asChild={!disableRouting}
-                                    variant="link"
-                                    size="sm"
-                                    className="text-sm px-1 h-fit hover-underline"
-                                    onClick={() => setView("forgot-password")}
-                                >
-                                    {disableRouting ? (
-                                        localization.forgot_password
-                                    ) : (
-                                        <LinkComponent href="/auth/forgot-password">
-                                            {localization.forgot_password}
-                                        </LinkComponent>
+                            {forgotPassword && (
+                                <div
+                                    className={cn(
+                                        view == "login" && !isMagicLink ? "h-6" : hideElementClass,
+                                        "absolute right-0"
                                     )}
-                                </Button>
-                            </div>
+                                >
+                                    <Button
+                                        asChild={!disableRouting}
+                                        variant="link"
+                                        size="sm"
+                                        className="text-sm px-1 h-fit hover-underline"
+                                        onClick={() => setView("forgot-password")}
+                                        disabled={view != "login" || isMagicLink}
+                                        tabIndex={view != "login" || isMagicLink ? -1 : undefined}
+                                    >
+                                        {disableRouting ? (
+                                            localization.forgot_password
+                                        ) : (
+                                            <LinkComponent href="/auth/forgot-password">
+                                                {localization.forgot_password}
+                                            </LinkComponent>
+                                        )}
+                                    </Button>
+                                </div>
+                            )}
                         </div>
 
                         <Input
                             id="password"
+                            required
                             type="password"
                             placeholder="Password"
                             autoComplete="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            disabled={isMagicLink && view == "login"}
+                            disabled={(isMagicLink && view == "login") || view == "forgot-password"}
                         />
                     </div>
 
@@ -351,7 +388,7 @@ export function AuthCard({
                                             className="absolute top-5 right-4 text-foreground"
                                             onClick={authToast?.action.onClick}
                                         >
-                                            authToast?.action.label
+                                            {authToast?.action.label}
                                         </Button>
                                     )}
 
@@ -457,7 +494,7 @@ export function AuthCard({
                                 onClick={async () => {
                                     const { error } = await authClient.signIn.social({
                                         provider,
-                                        callbackURL: "/"
+                                        callbackURL
                                     })
 
                                     if (error) {
@@ -468,7 +505,7 @@ export function AuthCard({
                                     }
                                 }}
                             >
-                                <Icon icon={socialProvider.icon} className="w-4 h-4" />
+                                <Icon icon={socialProvider.icon} />
 
                                 {socialLayout == "vertical" && (
                                     <>
@@ -485,7 +522,7 @@ export function AuthCard({
 
             <CardFooter>
                 <div className="flex justify-center w-full border-t pt-4">
-                    <p className="text-center text-xs text-muted-foreground">
+                    <p className="text-center text-sm text-muted-foreground">
                         {(view == "signup" || view == "forgot-password") ? (
                             localization.signup_footer
                         ) : (
@@ -496,7 +533,7 @@ export function AuthCard({
                             asChild={!disableRouting}
                             variant="link"
                             size="sm"
-                            className="text-xs px-1 h-fit underline"
+                            className="text-sm px-1 h-fit underline"
                             onClick={() => setView((view == "signup" || view == "forgot-password") ? "login" : "signup")}
                         >
                             {disableRouting ? (

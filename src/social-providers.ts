@@ -2,62 +2,62 @@ export const socialProviders = [
     {
         "provider": "apple",
         "name": "Apple",
-        "icon": "fa-brands:apple"
+        "icon": "mdi:apple"
     },
     {
         "provider": "discord",
         "name": "Discord",
-        "icon": "fa-brands:discord"
+        "icon": "ic:baseline-discord"
     },
     {
         "provider": "facebook",
         "name": "Facebook",
-        "icon": "fa-brands:facebook"
+        "icon": "mdi:facebook"
     },
     {
         "provider": "github",
         "name": "GitHub",
-        "icon": "fa-brands:github"
+        "icon": "mdi:github"
     },
     {
         "provider": "google",
         "name": "Google",
-        "icon": "fa-brands:google"
+        "icon": "mdi:google"
     },
     {
         "provider": "microsoft",
         "name": "Microsoft",
-        "icon": "fa-brands:microsoft"
+        "icon": "mdi:microsoft"
     },
     {
         "provider": "twitch",
         "name": "Twitch",
-        "icon": "fa-brands:twitch"
+        "icon": "mdi:twitch"
     },
     {
         "provider": "twitter",
         "name": "Twitter (X)",
-        "icon": "fa-brands:twitter"
+        "icon": "mdi:twitter"
     },
     {
         "provider": "dropbox",
         "name": "Dropbox",
-        "icon": "fa-brands:dropbox"
+        "icon": "mdi:dropbox"
     },
     {
         "provider": "linkedin",
         "name": "LinkedIn",
-        "icon": "fa-brands:linkedin"
+        "icon": "mdi:linkedin"
     },
     {
         "provider": "gitlab",
         "name": "GitLab",
-        "icon": "fa-brands:gitlab"
+        "icon": "mdi:gitlab"
     },
     {
         "provider": "reddit",
         "name": "Reddit",
-        "icon": "fa-brands:reddit"
+        "icon": "mdi:reddit"
     }
 ] as const
 
