@@ -132,7 +132,7 @@ export function AuthCard({
     pathname = pathname || nextRouter?.asPath
     socialLayout = socialLayout || ((providers && providers.length > 3) ? "horizontal" : "vertical")
 
-    const path = pathname?.split("/").pop()
+    const path = pathname?.split("/").pop()?.split("?")[0]
     if (authViews.includes(path as AuthView)) {
         initialView = path as AuthView
     } else {
@@ -201,7 +201,12 @@ export function AuthCard({
                 apiError = error
 
                 if (!error) {
-                    setEmail("")
+                    if (disableRouting) {
+                        setView("login")
+                    } else {
+                        navigate("/auth/login")
+                    }
+
                     setAuthToast({
                         description: localization.reset_password_email!,
                         variant: "default"
@@ -233,7 +238,7 @@ export function AuthCard({
 
     useEffect(() => {
         if (!pathname) return
-        const path = pathname.split("/").pop()
+        const path = pathname.split("/").pop()?.split("?")[0]
 
         if (authViews.includes(path as AuthView)) {
             setView(path as AuthView)
