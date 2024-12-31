@@ -199,13 +199,13 @@ export function AuthCard({
 
         switch (view) {
             case "login": {
-                const { error } = await authClient.signIn.email({ email, password, callbackURL })
+                const { error } = await authClient.signIn.email({ email, password })
                 apiError = error
 
                 break
             }
             case "signup": {
-                const { error } = await authClient.signUp.email({ email, password, name, callbackURL })
+                const { error } = await authClient.signUp.email({ email, password, name })
                 apiError = error
 
                 break
@@ -286,16 +286,12 @@ export function AuthCard({
         }
 
         setAuthToast(null)
+    }, [magicLink, emailPassword, view, navigate, disableRouting, getPathname, getCurrentView])
 
+    useEffect(() => {
         if (view == "logout") {
             if (sessionData && !(sessionData.user as Record<string, unknown>).isAnonymous) {
-                authClient.signOut({
-                    fetchOptions: {
-                        onSuccess: () => {
-                            setView("login")
-                        }
-                    }
-                })
+                authClient.signOut()
             } else if (!sessionPending) {
                 setView("login")
             }
@@ -304,7 +300,7 @@ export function AuthCard({
                 navigate(callbackURL)
             }
         }
-    }, [magicLink, emailPassword, view, sessionData, sessionPending, navigate, authClient, callbackURL, disableRouting, getPathname, getCurrentView])
+    }, [authClient, callbackURL, navigate, sessionData, sessionPending, view])
 
     if (view == "logout") {
         return <Loader2 className="animate-spin" />
