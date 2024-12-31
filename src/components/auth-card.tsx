@@ -434,7 +434,7 @@ export function AuthCard({
                             disabled={loading}
                         >
                             {loading ? (
-                                <Loader2 size={16} className="animate-spin" />
+                                <Loader2 className="animate-spin" />
                             ) : (
                                 view && localization[`${view.replace("-", "_")}_button` as keyof typeof localization]
                             )}
@@ -455,7 +455,7 @@ export function AuthCard({
                             }}
                             disabled={!view || !["signup", "login"].includes(view) || !magicLink}
                         >
-                            <MailIcon className="w-4 h-4" />
+                            <MailIcon />
                             {localization.provider_prefix}
                             {" "}
                             {localization.magic_link_provider}
@@ -474,7 +474,7 @@ export function AuthCard({
                             onClick={() => setView("login")}
                             disabled={view != "magic-link" || !emailPassword}
                         >
-                            <LockIcon className="w-4 h-4" />
+                            <LockIcon />
                             {localization.provider_prefix}
                             {" "}
                             {localization.password_provider}
@@ -503,7 +503,7 @@ export function AuthCard({
                                 }}
                                 disabled={!view || !["login", "magic-link"].includes(view)}
                             >
-                                <Key className="w-4 h-4" />
+                                <Key />
                                 {localization.provider_prefix}
                                 {" "}
                                 {localization.passkey_provider}
