@@ -2,31 +2,35 @@ import globals from "globals"
 import pluginJs from "@eslint/js"
 import tseslint from "typescript-eslint"
 import pluginReact from "eslint-plugin-react"
+import pluginReactHooks from "eslint-plugin-react-hooks"
+import reactHooksAddons from "eslint-plugin-react-hooks-addons"
 import stylistic from "@stylistic/eslint-plugin"
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   {
     files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
+    settings: {
+      react: {
+        version: "detect"
+      }
+    },
   },
   {
     ignores: ["node_modules/*", "dist/*", "src/components/ui/*",],
   },
   { languageOptions: { globals: { ...globals.browser, ...globals.node } }, },
   pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
+  reactHooksAddons.configs.recommended,
+  ...tseslint.configs.recommended,
   {
-    settings: {
-      "react": {
-        "version": "19"
-      }
-    },
     plugins: {
-      "@stylistic": stylistic
+      "react-hooks": pluginReactHooks,
+      "@stylistic": stylistic,
     },
     rules: {
-
+      ...pluginReactHooks.configs.recommended.rules,
       "@typescript-eslint/no-explicit-any": "off",
       "react/react-in-jsx-scope": "off",
       "@typescript-eslint/no-unused-vars": "off",

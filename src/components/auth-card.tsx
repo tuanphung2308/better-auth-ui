@@ -1,4 +1,4 @@
-import { FormEvent, ReactNode, useEffect, useState } from "react"
+import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { NextRouter } from "next/router"
 import { createAuthClient } from "better-auth/react"
 
@@ -24,7 +24,7 @@ import { useIsHydrated } from "@/hooks/use-is-hydrated"
 
 type AuthClient = ReturnType<typeof createAuthClient>
 
-export const authViews = ["login", "signup", "magic-link", "forgot-password", "reset-password", "logout"] as const
+export const authViews = ["login", "signup", "logout", "magic-link", "forgot-password", "reset-password", "logout"] as const
 export type AuthView = typeof authViews[number]
 
 const DefaultLink = (
@@ -78,7 +78,7 @@ export const defaultLocalization = {
     or_continue_with: "Or continue with",
 }
 
-type AuthToastOptions = {
+export type AuthToastOptions = {
     description: string
     variant: "default" | "destructive"
     action?: {
@@ -134,11 +134,14 @@ export function AuthCard({
 }: AuthCardProps) {
     const isHydrated = useIsHydrated()
     localization = { ...defaultLocalization, ...localization }
-    navigate = navigate || nextRouter?.push || defaultNavigate
+    navigate = useMemo(() => {
+        return navigate || nextRouter?.push || defaultNavigate
+    }, [navigate, nextRouter?.push])
+
     pathname = pathname || nextRouter?.asPath
     socialLayout = socialLayout || ((providers && providers.length > 2 && (emailPassword || magicLink)) ? "horizontal" : "vertical")
 
-    const getCurrentView = () => {
+    const getCurrentView = useCallback(() => {
         const currentPathname = isHydrated ? window.location.pathname : pathname
         const path = currentPathname?.split("/").pop()?.split("?")[0]
         if (authViews.includes(path as AuthView)) {
@@ -146,13 +149,13 @@ export function AuthCard({
         }
 
         return null
-    }
+    }, [isHydrated, pathname])
 
-    const getPathname = (view: AuthView) => {
+    const getPathname = useCallback((view: AuthView) => {
         const currentPathname = isHydrated ? window.location.pathname : pathname
         const path = currentPathname?.split("/").slice(0, -1).join("/")
-        return `${path}/${view}`
-    }
+        return `${path}/${view}` + (callbackURL != "/" ? `?callbackURL=${encodeURIComponent(callbackURL!)}` : "")
+    }, [callbackURL, isHydrated, pathname])
 
     const getCallbackURL = () => {
         if (callbackURL) return callbackURL
@@ -173,7 +176,7 @@ export function AuthCard({
 
     callbackURL = getCallbackURL()
 
-    const { data: sessionData } = authClient.useSession()
+    const { data: sessionData, isPending: sessionPending } = authClient.useSession()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [name, setName] = useState("")
@@ -258,22 +261,16 @@ export function AuthCard({
     }
 
     useEffect(() => {
-        if (sessionData && !(sessionData.user as Record<string, unknown>)?.isAnonymous) {
-            navigate(callbackURL)
-        }
-    }, [sessionData])
-
-    useEffect(() => {
         if (!pathname) return
         const currentView = getCurrentView()
         if (currentView) setView(currentView)
-    }, [pathname])
+    }, [pathname, getCurrentView])
 
     useEffect(() => {
         if (!authToast || !toast) return
 
         toast(authToast)
-    }, [authToast])
+    }, [toast, authToast])
 
     useEffect(() => {
         if (!view) return
@@ -282,14 +279,36 @@ export function AuthCard({
         if (magicLink && !emailPassword && view == "login") setView("magic-link")
         if (["signup", "forgot-password", "reset-password"].includes(view) && !emailPassword) setView(magicLink ? "magic-link" : "login")
 
-        if (!disableRouting) {
+        if (!disableRouting && view != getCurrentView()) {
             setTimeout(() => {
                 navigate(getPathname(view))
             })
         }
 
         setAuthToast(null)
-    }, [magicLink, emailPassword, view])
+
+        if (view == "logout") {
+            if (sessionData && !(sessionData.user as Record<string, unknown>).isAnonymous) {
+                authClient.signOut({
+                    fetchOptions: {
+                        onSuccess: () => {
+                            setView("login")
+                        }
+                    }
+                })
+            } else if (!sessionPending) {
+                setView("login")
+            }
+        } else {
+            if (sessionData && !(sessionData.user as Record<string, unknown>).isAnonymous) {
+                navigate(callbackURL)
+            }
+        }
+    }, [magicLink, emailPassword, view, sessionData, sessionPending, navigate, authClient, callbackURL, disableRouting, getPathname, getCurrentView])
+
+    if (view == "logout") {
+        return <Loader2 className="animate-spin" />
+    }
 
     return (
         <Card
@@ -576,7 +595,7 @@ export function AuthCard({
                                 variant="link"
                                 size="sm"
                                 className="text-sm px-1 h-fit underline text-foreground"
-                                onClick={() => setView((view == "signup" || view == "forgot-password") ? "login" : "signup")}
+                                onClick={() => setView(["signup", "forgot-password"].includes(view!) ? "login" : "signup")}
                             >
                                 {disableRouting ? (
                                     ["signup", "forgot-password"].includes(view!) ? localization.login : localization.signup
