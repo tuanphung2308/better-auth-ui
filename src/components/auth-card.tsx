@@ -429,7 +429,7 @@ export function AuthCard({
                         {(emailPassword || magicLink) && (
                             <Button
                                 type="submit"
-                                className="w-full"
+                                className="w-full mb-4"
                                 disabled={loading}
                             >
                                 {loading ? (
@@ -441,7 +441,7 @@ export function AuthCard({
                         )}
 
                         <div
-                            className={cn((!view || !["signup", "login"].includes(view) || !magicLink) ? hideElementClass : "mt-4",
+                            className={cn((!view || !["signup", "login"].includes(view) || !magicLink) ? hideElementClass : "mb-4",
                                 !disableAnimation && transitionClass,
                             )}
                         >
@@ -462,7 +462,7 @@ export function AuthCard({
                         </div>
 
                         <div
-                            className={cn((view != "magic-link" || !emailPassword) ? hideElementClass : "mt-4",
+                            className={cn((view != "magic-link" || !emailPassword) ? hideElementClass : "mb-4",
                                 !disableAnimation && transitionClass,
                             )}
                         >
@@ -483,7 +483,7 @@ export function AuthCard({
 
                     {passkey && (
                         <div
-                            className={cn(!view || !["login", "magic-link"].includes(view) ? hideElementClass : "mt-4",
+                            className={cn(!view || !["login", "magic-link"].includes(view) ? hideElementClass : "mb-4",
                                 !disableAnimation && transitionClass,
                             )}
                         >
@@ -513,7 +513,7 @@ export function AuthCard({
                 </form>
 
                 <div
-                    className={cn((!view || !providers?.length || !["login", "signup", "magic-link"].includes(view)) ? hideElementClass : "mt-4",
+                    className={cn((!view || !providers?.length || !["login", "signup", "magic-link"].includes(view)) && hideElementClass,
                         !disableAnimation && transitionClass,
                         "flex flex-col gap-4"
                     )}
