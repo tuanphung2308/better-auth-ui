@@ -2,7 +2,7 @@
   "name": "@daveyplate/better-auth-ui",
   "homepage": "https://github.com/daveyplate/better-auth-ui",
   "version": "1.0.0",
-  "description": "My TSX Package",
+  "description": "Plug & play shadcn/ui components for better-auth",
   "module": "dist/index",
   "types": "dist/index",
   "files": [
@@ -10,12 +10,16 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc-watch --onSuccess \"npx eslint\"",
+    "build": "tsc && tsc-alias",
+    "dev": "tsc-watch --onSuccess \"tsc-alias && npx eslint\"",
     "prepublishOnly": "rm -rf dist && npm run build"
   },
   "keywords": [
-    "typescript"
+    "typescript",
+    "react",
+    "better-auth",
+    "shadcn",
+    "nextjs"
   ],
   "author": "daveycodez",
   "license": "MIT",
@@ -38,6 +42,7 @@
     "react-dom": "file:../new-tech/node_modules/react-dom",
     "tailwind-merge": ">=2.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "tsc-alias": "^1.8.10",
     "tsc-watch": "^6.2.1",
     "tsx": "^4.19.2",
     "typescript": "^5.6.2",

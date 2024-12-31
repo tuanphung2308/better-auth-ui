@@ -18,9 +18,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 import { AlertCircle, Key, Loader2, LockIcon, MailIcon } from "lucide-react"
-import { SocialProvider, socialProviders } from "../social-providers"
+import { SocialProvider, socialProviders } from "@/social-providers"
 import { Icon } from "@iconify/react"
-import { useIsHydrated } from "../hooks/use-is-hydrated"
+import { useIsHydrated } from "@/hooks/use-is-hydrated"
 
 type AuthClient = ReturnType<typeof createAuthClient>
 
@@ -454,43 +454,26 @@ export function AuthCard({
                         </Button>
                     )}
 
-                    <div
-                        className={cn((!["signup", "login"].includes(view!) || !magicLink) ? hideElementClass : "h-10",
-                            !disableAnimation && transitionClass,
-                        )}
-                    >
-                        <Button
-                            type="button"
-                            variant="secondary"
-                            className="gap-2 w-full"
-                            onClick={() => setView("magic-link")}
-                            disabled={!["signup", "login"].includes(view!) || !magicLink}
+                    {magicLink && emailPassword && (
+                        <div
+                            className={cn((!["signup", "login", "magic-link"].includes(view!)) ? hideElementClass : "h-10",
+                                !disableAnimation && transitionClass,
+                            )}
                         >
-                            <MailIcon />
-                            {localization.provider_prefix}
-                            {" "}
-                            {localization.magic_link_provider}
-                        </Button>
-                    </div>
-
-                    <div
-                        className={cn((view != "magic-link" || !emailPassword) ? hideElementClass : "h-10",
-                            !disableAnimation && transitionClass,
-                        )}
-                    >
-                        <Button
-                            type="button"
-                            variant="secondary"
-                            className="gap-2 w-full"
-                            onClick={() => setView("login")}
-                            disabled={view != "magic-link" || !emailPassword}
-                        >
-                            <LockIcon />
-                            {localization.provider_prefix}
-                            {" "}
-                            {localization.password_provider}
-                        </Button>
-                    </div>
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                className="gap-2 w-full"
+                                onClick={() => setView(view == "magic-link" ? "login" : "magic-link")}
+                                disabled={!["signup", "login", "magic-link"].includes(view!)}
+                            >
+                                {view == "magic-link" ? <LockIcon /> : <MailIcon />}
+                                {localization.provider_prefix}
+                                {" "}
+                                {view == "magic-link" ? localization.password_provider : localization.magic_link_provider}
+                            </Button>
+                        </div>
+                    )}
 
                     {passkey && (
                         <div
