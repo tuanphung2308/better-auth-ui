@@ -109,7 +109,7 @@ export interface AuthCardProps {
     LinkComponent?: React.ComponentType<{ href: string, className?: string, children: ReactNode }>
 }
 
-const hideElementClass = "opacity-0 scale-y-0 h-0 overflow-hidden"
+const hideElementClass = "opacity-0 scale-y-0 h-0 overflow-hidden -my-2"
 const transitionClass = "transition-all"
 
 export function AuthCard({
@@ -294,10 +294,10 @@ export function AuthCard({
             </CardHeader>
 
             <CardContent>
-                <form className="grid" onSubmit={onSubmit}>
+                <form className="flex flex-col gap-4" onSubmit={onSubmit}>
                     {signUpWithName && (
                         <div
-                            className={cn(view != "signup" ? hideElementClass : "mb-4",
+                            className={cn(view != "signup" ? hideElementClass : "h-[62px]",
                                 "grid gap-2"
                             )}
                         >
@@ -317,7 +317,7 @@ export function AuthCard({
                     )}
 
                     {(emailPassword || magicLink) && (
-                        <div className="grid gap-2 mb-4">
+                        <div className="grid gap-2">
                             <Label htmlFor="email">
                                 {localization.email_label}
                             </Label>
@@ -338,7 +338,7 @@ export function AuthCard({
                     {emailPassword && (
                         <div
                             className={cn(
-                                (view == "magic-link" || view == "forgot-password") ? hideElementClass : "mb-4 h-[62px]",
+                                (view == "magic-link" || view == "forgot-password") ? hideElementClass : "h-[62px]",
                                 !disableAnimation && transitionClass,
                                 "grid gap-2"
                             )}
@@ -392,7 +392,7 @@ export function AuthCard({
 
                     {!toast && (
                         <div
-                            className={cn(!authToast ? hideElementClass : "mb-4",
+                            className={cn(!authToast && hideElementClass,
                                 !disableAnimation && transitionClass,
                             )}
                         >
@@ -425,65 +425,63 @@ export function AuthCard({
                         </div>
                     )}
 
-                    <div className="flex flex-col">
-                        {(emailPassword || magicLink) && (
-                            <Button
-                                type="submit"
-                                className="w-full mb-4"
-                                disabled={loading}
-                            >
-                                {loading ? (
-                                    <Loader2 size={16} className="animate-spin" />
-                                ) : (
-                                    view && localization[`${view.replace("-", "_")}_button` as keyof typeof localization]
-                                )}
-                            </Button>
+                    {(emailPassword || magicLink) && (
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <Loader2 size={16} className="animate-spin" />
+                            ) : (
+                                view && localization[`${view.replace("-", "_")}_button` as keyof typeof localization]
+                            )}
+                        </Button>
+                    )}
+
+                    <div
+                        className={cn((!view || !["signup", "login"].includes(view) || !magicLink) ? hideElementClass : "h-10",
+                            !disableAnimation && transitionClass,
                         )}
-
-                        <div
-                            className={cn((!view || !["signup", "login"].includes(view) || !magicLink) ? hideElementClass : "mb-4",
-                                !disableAnimation && transitionClass,
-                            )}
+                    >
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            className="gap-2 w-full"
+                            onClick={() => {
+                                setView("magic-link")
+                            }}
+                            disabled={!view || !["signup", "login"].includes(view) || !magicLink}
                         >
-                            <Button
-                                type="button"
-                                variant="secondary"
-                                className="gap-2 w-full"
-                                onClick={() => {
-                                    setView("magic-link")
-                                }}
-                                disabled={!view || !["signup", "login"].includes(view) || !magicLink}
-                            >
-                                <MailIcon className="w-4 h-4" />
-                                {localization.provider_prefix}
-                                {" "}
-                                {localization.magic_link_provider}
-                            </Button>
-                        </div>
+                            <MailIcon className="w-4 h-4" />
+                            {localization.provider_prefix}
+                            {" "}
+                            {localization.magic_link_provider}
+                        </Button>
+                    </div>
 
-                        <div
-                            className={cn((view != "magic-link" || !emailPassword) ? hideElementClass : "mb-4",
-                                !disableAnimation && transitionClass,
-                            )}
+                    <div
+                        className={cn((view != "magic-link" || !emailPassword) ? hideElementClass : "h-10",
+                            !disableAnimation && transitionClass,
+                        )}
+                    >
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            className="gap-2 w-full"
+                            onClick={() => setView("login")}
+                            disabled={view != "magic-link" || !emailPassword}
                         >
-                            <Button
-                                type="button"
-                                variant="secondary"
-                                className="gap-2 w-full"
-                                onClick={() => setView("login")}
-                                disabled={view != "magic-link" || !emailPassword}
-                            >
-                                <LockIcon className="w-4 h-4" />
-                                {localization.provider_prefix}
-                                {" "}
-                                {localization.password_provider}
-                            </Button>
-                        </div>
+                            <LockIcon className="w-4 h-4" />
+                            {localization.provider_prefix}
+                            {" "}
+                            {localization.password_provider}
+                        </Button>
                     </div>
 
                     {passkey && (
                         <div
-                            className={cn(!view || !["login", "magic-link"].includes(view) ? hideElementClass : "mb-4",
+                            className={cn(!view || !["login", "magic-link"].includes(view) ? hideElementClass : "h-10",
                                 !disableAnimation && transitionClass,
                             )}
                         >
@@ -510,57 +508,58 @@ export function AuthCard({
                             </Button>
                         </div>
                     )}
-                </form>
 
-                <div
-                    className={cn((!view || !providers?.length || !["login", "signup", "magic-link"].includes(view)) && hideElementClass,
-                        !disableAnimation && transitionClass,
-                        "flex flex-col gap-4"
-                    )}
-                >
                     <div
-                        className={cn(
-                            "w-full gap-2 flex items-center",
-                            "justify-between flex-wrap transition-all",
+                        className={cn((!view || !providers?.length || !["login", "signup", "magic-link"].includes(view)) && hideElementClass,
+                            !disableAnimation && transitionClass,
+                            "flex flex-col gap-4"
                         )}
                     >
-                        {providers?.map((provider) => {
-                            const socialProvider = socialProviders.find((p) => p.provider == provider)
-                            if (!socialProvider) return null
-                            return (
-                                <Button
-                                    key={provider}
-                                    variant="outline"
-                                    className="grow"
-                                    disabled={loading || !view || !["login", "signup", "magic-link"].includes(view)}
-                                    onClick={async () => {
-                                        const { error } = await authClient.signIn.social({
-                                            provider,
-                                            callbackURL
-                                        })
-
-                                        if (error) {
-                                            setAuthToast({
-                                                description: error.message!,
-                                                variant: "destructive"
+                        <div
+                            className={cn(
+                                "w-full gap-2 flex items-center",
+                                "justify-between flex-wrap transition-all",
+                            )}
+                        >
+                            {providers?.map((provider) => {
+                                const socialProvider = socialProviders.find((p) => p.provider == provider)
+                                if (!socialProvider) return null
+                                return (
+                                    <Button
+                                        key={provider}
+                                        variant="outline"
+                                        className="grow"
+                                        disabled={loading || !view || !["login", "signup", "magic-link"].includes(view)}
+                                        onClick={async () => {
+                                            const { error } = await authClient.signIn.social({
+                                                provider,
+                                                callbackURL
                                             })
-                                        }
-                                    }}
-                                >
-                                    <Icon icon={socialProvider.icon} />
 
-                                    {socialLayout == "vertical" && (
-                                        <>
-                                            {localization.provider_prefix}
-                                            {" "}
-                                            {socialProvider.name}
-                                        </>
-                                    )}
-                                </Button>
-                            )
-                        })}
+                                            if (error) {
+                                                setAuthToast({
+                                                    description: error.message!,
+                                                    variant: "destructive"
+                                                })
+                                            }
+                                        }}
+                                    >
+                                        <Icon icon={socialProvider.icon} />
+
+                                        {socialLayout == "vertical" && (
+                                            <>
+                                                {localization.provider_prefix}
+                                                {" "}
+                                                {socialProvider.name}
+                                            </>
+                                        )}
+                                    </Button>
+                                )
+                            })}
+                        </div>
                     </div>
-                </div>
+                </form>
+
             </CardContent>
 
             {emailPassword && (
