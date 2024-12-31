@@ -283,7 +283,7 @@ export function AuthCard({
             )}
         >
             <CardHeader>
-                <CardTitle className="text-2xl">
+                <CardTitle className="text-xl">
                     {view && localization[`${view.replace("-", "_")}_title` as keyof typeof localization]}
                 </CardTitle>
 
@@ -297,7 +297,7 @@ export function AuthCard({
                 <form className="grid" onSubmit={onSubmit}>
                     {signUpWithName && (
                         <div
-                            className={cn(view != "signup" ? hideElementClass : "mb-6",
+                            className={cn(view != "signup" ? hideElementClass : "mb-4",
                                 "grid gap-2"
                             )}
                         >
@@ -317,7 +317,7 @@ export function AuthCard({
                     )}
 
                     {(emailPassword || magicLink) && (
-                        <div className="grid gap-2 mb-6">
+                        <div className="grid gap-2 mb-4">
                             <Label htmlFor="email">
                                 {localization.email_label}
                             </Label>
@@ -338,7 +338,7 @@ export function AuthCard({
                     {emailPassword && (
                         <div
                             className={cn(
-                                (view == "magic-link" || view == "forgot-password") ? hideElementClass : "mb-6 h-[62px]",
+                                (view == "magic-link" || view == "forgot-password") ? hideElementClass : "mb-4 h-[62px]",
                                 !disableAnimation && transitionClass,
                                 "grid gap-2"
                             )}
@@ -392,7 +392,7 @@ export function AuthCard({
 
                     {!toast && (
                         <div
-                            className={cn(!authToast ? hideElementClass : "mb-6",
+                            className={cn(!authToast ? hideElementClass : "mb-4",
                                 !disableAnimation && transitionClass,
                             )}
                         >
@@ -479,56 +479,48 @@ export function AuthCard({
                                 {localization.password_provider}
                             </Button>
                         </div>
-
-                        {passkey && (
-                            <div
-                                className={cn(!view || !["login", "magic-link"].includes(view) ? hideElementClass : "mt-4",
-                                    !disableAnimation && transitionClass,
-                                )}
-                            >
-                                <Button
-                                    type="button"
-                                    variant="secondary"
-                                    className="gap-2 w-full"
-                                    onClick={async () => {
-                                        const { error } = await (authClient.signIn as any).passkey()
-
-                                        if (error) {
-                                            setAuthToast({
-                                                description: error.message!,
-                                                variant: "destructive"
-                                            })
-                                        }
-                                    }}
-                                    disabled={!view || !["login", "magic-link"].includes(view)}
-                                >
-                                    <Key className="w-4 h-4" />
-                                    {localization.provider_prefix}
-                                    {" "}
-                                    {localization.passkey_provider}
-                                </Button>
-                            </div>
-                        )}
                     </div>
+
+                    {passkey && (
+                        <div
+                            className={cn(!view || !["login", "magic-link"].includes(view) ? hideElementClass : "mt-4",
+                                !disableAnimation && transitionClass,
+                            )}
+                        >
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                className="gap-2 w-full"
+                                onClick={async () => {
+                                    const { error } = await (authClient.signIn as any).passkey()
+
+                                    if (error) {
+                                        setAuthToast({
+                                            description: error.message!,
+                                            variant: "destructive"
+                                        })
+                                    }
+                                }}
+                                disabled={!view || !["login", "magic-link"].includes(view)}
+                            >
+                                <Key className="w-4 h-4" />
+                                {localization.provider_prefix}
+                                {" "}
+                                {localization.passkey_provider}
+                            </Button>
+                        </div>
+                    )}
                 </form>
 
                 <div
-                    className={cn((!view || !providers?.length || !["login", "signup", "magic-link"].includes(view)) ? hideElementClass : "",
+                    className={cn((!view || !providers?.length || !["login", "signup", "magic-link"].includes(view)) ? hideElementClass : "mt-4",
                         !disableAnimation && transitionClass,
-                        "flex flex-col gap-6"
+                        "flex flex-col gap-4"
                     )}
                 >
-                    {(emailPassword || magicLink || passkey) && (
-                        <div className="mt-6 relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                            <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                                {localization.or_continue_with}
-                            </span>
-                        </div>
-                    )}
-
                     <div
                         className={cn(
-                            "w-full gap-4 flex items-center",
+                            "w-full gap-2 flex items-center",
                             "justify-between flex-wrap transition-all",
                         )}
                     >
@@ -572,33 +564,37 @@ export function AuthCard({
             </CardContent>
 
             {emailPassword && (
-                <CardFooter className="justify-center text-sm text-muted-foreground">
-                    {view && (["signup", "forgot-password"].includes(view) ? (
-                        localization.signup_footer
-                    ) : (
-                        localization.login_footer
-                    ))}
+                <CardFooter>
+                    <div className="flex justify-center w-full border-t pt-4">
+                        <p className="text-center text-xs text-neutral-500">
+                            {view && (["signup", "forgot-password"].includes(view) ? (
+                                localization.signup_footer
+                            ) : (
+                                localization.login_footer
+                            ))}
 
-                    <Button
-                        asChild={!disableRouting}
-                        variant="link"
-                        size="sm"
-                        className="text-sm px-1 h-fit underline text-foreground"
-                        onClick={() => setView((view == "signup" || view == "forgot-password") ? "login" : "signup")}
-                    >
-                        {view && (disableRouting ? (
-                            ["signup", "forgot-password"].includes(view) ? localization.login : localization.signup
-                        ) : (
-                            <LinkComponent
-                                href={(view == "signup" || view == "forgot-password") ?
-                                    getPathname("login")
-                                    : getPathname("signup")
-                                }
+                            <Button
+                                asChild={!disableRouting}
+                                variant="link"
+                                size="sm"
+                                className="text-xs px-1 h-fit underline text-foreground"
+                                onClick={() => setView((view == "signup" || view == "forgot-password") ? "login" : "signup")}
                             >
-                                {["signup", "forgot-password"].includes(view) ? localization.login : localization.signup}
-                            </LinkComponent>
-                        ))}
-                    </Button>
+                                {view && (disableRouting ? (
+                                    ["signup", "forgot-password"].includes(view) ? localization.login : localization.signup
+                                ) : (
+                                    <LinkComponent
+                                        href={(view == "signup" || view == "forgot-password") ?
+                                            getPathname("login")
+                                            : getPathname("signup")
+                                        }
+                                    >
+                                        {["signup", "forgot-password"].includes(view) ? localization.login : localization.signup}
+                                    </LinkComponent>
+                                ))}
+                            </Button>
+                        </p>
+                    </div>
                 </CardFooter>
             )}
         </Card>
