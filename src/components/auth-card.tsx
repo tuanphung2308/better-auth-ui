@@ -154,7 +154,24 @@ export function AuthCard({
         return `${path}/${view}`
     }
 
-    callbackURL = callbackURL || (nextRouter?.query?.callbackURL as string) || "/"
+    const getCallbackURL = () => {
+        if (callbackURL) return callbackURL
+
+        if (nextRouter?.query?.callbackURL) {
+            return nextRouter.query.callbackURL as string
+        }
+
+        if (isHydrated) {
+            const queryString = window.location.search
+            const urlParams = new URLSearchParams(queryString)
+            const callbackURLParam = urlParams.get("callbackURL")
+            if (callbackURLParam) return callbackURLParam
+        }
+
+        return "/"
+    }
+
+    callbackURL = getCallbackURL()
 
     const { data: sessionData } = authClient.useSession()
     const [email, setEmail] = useState("")
@@ -179,13 +196,13 @@ export function AuthCard({
 
         switch (view) {
             case "login": {
-                const { error } = await authClient.signIn.email({ email, password })
+                const { error } = await authClient.signIn.email({ email, password, callbackURL })
                 apiError = error
 
                 break
             }
             case "signup": {
-                const { error } = await authClient.signUp.email({ email, password, name })
+                const { error } = await authClient.signUp.email({ email, password, name, callbackURL })
                 apiError = error
 
                 break
@@ -232,9 +249,9 @@ export function AuthCard({
 
         setLoading(false)
 
-        if (apiError?.message) {
+        if (apiError) {
             setAuthToast({
-                description: apiError.message,
+                description: apiError.message || apiError.statusText,
                 variant: "destructive"
             })
         }
@@ -249,14 +266,12 @@ export function AuthCard({
     useEffect(() => {
         if (!pathname) return
         const currentView = getCurrentView()
-
-        if (currentView) {
-            setView(currentView)
-        }
+        if (currentView) setView(currentView)
     }, [pathname])
 
     useEffect(() => {
         if (!authToast || !toast) return
+
         toast(authToast)
     }, [authToast])
 
@@ -328,9 +343,7 @@ export function AuthCard({
                                 type="email"
                                 placeholder={localization.email_placeholder}
                                 required
-                                onChange={(e) => {
-                                    setEmail(e.target.value)
-                                }}
+                                onChange={(e) => setEmail(e.target.value)}
                                 value={email}
                             />
                         </div>
@@ -387,7 +400,7 @@ export function AuthCard({
                                 autoComplete="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                disabled={view == "magic-link" || view == "forgot-password"}
+                                disabled={["magic-link", "forgot-password"].includes(view!)}
                             />
                         </div>
                     )}
@@ -442,7 +455,7 @@ export function AuthCard({
                     )}
 
                     <div
-                        className={cn((!view || !["signup", "login"].includes(view) || !magicLink) ? hideElementClass : "h-10",
+                        className={cn((!["signup", "login"].includes(view!) || !magicLink) ? hideElementClass : "h-10",
                             !disableAnimation && transitionClass,
                         )}
                     >
@@ -450,10 +463,8 @@ export function AuthCard({
                             type="button"
                             variant="secondary"
                             className="gap-2 w-full"
-                            onClick={() => {
-                                setView("magic-link")
-                            }}
-                            disabled={!view || !["signup", "login"].includes(view) || !magicLink}
+                            onClick={() => setView("magic-link")}
+                            disabled={!["signup", "login"].includes(view!) || !magicLink}
                         >
                             <MailIcon />
                             {localization.provider_prefix}
@@ -483,7 +494,7 @@ export function AuthCard({
 
                     {passkey && (
                         <div
-                            className={cn(!view || !["login", "magic-link"].includes(view) ? hideElementClass : "h-10",
+                            className={cn(!["login", "magic-link"].includes(view!) ? hideElementClass : "h-10",
                                 !disableAnimation && transitionClass,
                             )}
                         >
@@ -492,16 +503,18 @@ export function AuthCard({
                                 variant="secondary"
                                 className="gap-2 w-full"
                                 onClick={async () => {
-                                    const { error } = await (authClient.signIn as any).passkey()
+                                    const { error } = await (authClient.signIn as any).passkey({
+                                        callbackURL
+                                    })
 
                                     if (error) {
                                         setAuthToast({
-                                            description: error.message!,
+                                            description: error.message || error.statusText,
                                             variant: "destructive"
                                         })
                                     }
                                 }}
-                                disabled={!view || !["login", "magic-link"].includes(view)}
+                                disabled={!["login", "magic-link"].includes(view!)}
                             >
                                 <Key />
                                 {localization.provider_prefix}
@@ -512,7 +525,7 @@ export function AuthCard({
                     )}
 
                     <div
-                        className={cn((!view || !providers?.length || !["login", "signup", "magic-link"].includes(view)) && hideElementClass,
+                        className={cn((!providers?.length || !["login", "signup", "magic-link"].includes(view!)) && hideElementClass,
                             !disableAnimation && transitionClass,
                             "flex flex-col gap-4"
                         )}
@@ -532,7 +545,7 @@ export function AuthCard({
                                         type="button"
                                         variant="outline"
                                         className="grow"
-                                        disabled={loading || !view || !["login", "signup", "magic-link"].includes(view)}
+                                        disabled={loading || !["login", "signup", "magic-link"].includes(view!)}
                                         onClick={async () => {
                                             const { error } = await authClient.signIn.social({
                                                 provider,
@@ -541,7 +554,7 @@ export function AuthCard({
 
                                             if (error) {
                                                 setAuthToast({
-                                                    description: error.message!,
+                                                    description: error.message || error.statusText,
                                                     variant: "destructive"
                                                 })
                                             }
@@ -562,18 +575,17 @@ export function AuthCard({
                         </div>
                     </div>
                 </form>
-
             </CardContent>
 
             {emailPassword && (
                 <CardFooter>
                     <div className="flex justify-center w-full border-t pt-4">
                         <p className="text-center text-sm text-neutral-500">
-                            {view && (["signup", "forgot-password"].includes(view) ? (
+                            {["signup", "forgot-password"].includes(view!) ? (
                                 localization.signup_footer
                             ) : (
                                 localization.login_footer
-                            ))}
+                            )}
 
                             <Button
                                 asChild={!disableRouting}
@@ -583,18 +595,18 @@ export function AuthCard({
                                 className="text-sm px-1 h-fit underline text-foreground"
                                 onClick={() => setView((view == "signup" || view == "forgot-password") ? "login" : "signup")}
                             >
-                                {view && (disableRouting ? (
-                                    ["signup", "forgot-password"].includes(view) ? localization.login : localization.signup
+                                {disableRouting ? (
+                                    ["signup", "forgot-password"].includes(view!) ? localization.login : localization.signup
                                 ) : (
                                     <LinkComponent
-                                        href={(view == "signup" || view == "forgot-password") ?
+                                        href={["signup", "forgot-password"].includes(view!) ?
                                             getPathname("login")
                                             : getPathname("signup")
                                         }
                                     >
-                                        {["signup", "forgot-password"].includes(view) ? localization.login : localization.signup}
+                                        {["signup", "forgot-password"].includes(view!) ? localization.login : localization.signup}
                                     </LinkComponent>
-                                ))}
+                                )}
                             </Button>
                         </p>
                     </div>
