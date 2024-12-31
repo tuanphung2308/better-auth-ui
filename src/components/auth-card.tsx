@@ -268,11 +268,12 @@ export function AuthCard({
         if (["signup", "forgot-password", "reset-password"].includes(view) && !emailPassword) setView(magicLink ? "magic-link" : "login")
 
         if (!disableRouting) {
-            console.log("navigate to", getPathname(view))
             setTimeout(() => {
                 navigate(getPathname(view))
             })
         }
+
+        setAuthToast(null)
     }, [magicLink, emailPassword, view])
 
     return (
@@ -358,6 +359,7 @@ export function AuthCard({
                                     >
                                         <Button
                                             asChild={!disableRouting}
+                                            type="button"
                                             variant="link"
                                             size="sm"
                                             className="text-sm px-1 h-fit text-foreground hover-underline"
@@ -527,6 +529,7 @@ export function AuthCard({
                                 return (
                                     <Button
                                         key={provider}
+                                        type="button"
                                         variant="outline"
                                         className="grow"
                                         disabled={loading || !view || !["login", "signup", "magic-link"].includes(view)}
@@ -574,6 +577,7 @@ export function AuthCard({
 
                             <Button
                                 asChild={!disableRouting}
+                                type="button"
                                 variant="link"
                                 size="sm"
                                 className="text-xs px-1 h-fit underline text-foreground"
