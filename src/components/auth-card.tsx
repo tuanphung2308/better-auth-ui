@@ -352,7 +352,7 @@ export function AuthCard({
                                 {forgotPassword && (
                                     <div
                                         className={cn(
-                                            view == "login" ? "h-6" : hideElementClass,
+                                            view == "login" ? "h-6" : "opacity-0",
                                             !disableAnimation && transitionClass,
                                             "absolute right-0"
                                         )}
@@ -568,7 +568,7 @@ export function AuthCard({
             {emailPassword && (
                 <CardFooter>
                     <div className="flex justify-center w-full border-t pt-4">
-                        <p className="text-center text-xs text-neutral-500">
+                        <p className="text-center text-sm text-neutral-500">
                             {view && (["signup", "forgot-password"].includes(view) ? (
                                 localization.signup_footer
                             ) : (
@@ -580,7 +580,7 @@ export function AuthCard({
                                 type="button"
                                 variant="link"
                                 size="sm"
-                                className="text-xs px-1 h-fit underline text-foreground"
+                                className="text-sm px-1 h-fit underline text-foreground"
                                 onClick={() => setView((view == "signup" || view == "forgot-password") ? "login" : "signup")}
                             >
                                 {view && (disableRouting ? (
