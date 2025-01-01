@@ -17,9 +17,10 @@ import {
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 
-import { AlertCircle, Key, Loader2, LockIcon, MailIcon } from "lucide-react"
-import { SocialProvider, socialProviders } from "../social-providers"
 import { Icon } from "@iconify/react"
+import { AlertCircle, Eye, EyeOff, Key, Loader2, LockIcon, MailIcon } from "lucide-react"
+
+import { SocialProvider, socialProviders } from "../social-providers"
 import { useIsHydrated } from "../hooks/use-is-hydrated"
 
 type AuthClient = ReturnType<typeof createAuthClient>
@@ -47,6 +48,7 @@ export const defaultLocalization = {
     signup_description: "Enter your information to create your account",
     magic_link_description: "Enter your email to receive a magic link",
     forgot_password_description: "Enter your email to reset your password",
+    reset_password_description: "Enter your new password below",
     provider_description: "Choose a provider to continue",
     email_label: "Email",
     username_label: "Username",
@@ -134,11 +136,11 @@ export function AuthCard({
 }: AuthCardProps) {
     const isHydrated = useIsHydrated()
     localization = { ...defaultLocalization, ...localization }
-    navigate = useMemo(() => navigate || nextRouter?.push || defaultNavigate, [navigate, nextRouter?.push])
+    navigate = useMemo(() => navigate || nextRouter?.push || defaultNavigate, [navigate, nextRouter])
     pathname = useMemo(() => pathname || nextRouter?.asPath, [pathname, nextRouter?.asPath])
     socialLayout = useMemo(() => socialLayout || ((providers && providers.length > 2 && (emailPassword || magicLink)) ? "horizontal" : "vertical"), [socialLayout, providers, emailPassword, magicLink])
 
-    const currentView = useMemo(() => {
+    const currentPath = useMemo(() => {
         const currentPathname = isHydrated ? window.location.pathname : pathname
         const path = currentPathname?.split("/").pop()?.split("?")[0]
         if (authViews.includes(path as AuthView)) {
@@ -176,8 +178,9 @@ export function AuthCard({
     const [password, setPassword] = useState("")
     const [name, setName] = useState("")
     const [loading, setLoading] = useState(false)
-    const [view, setView] = useState(disableRouting ? initialView : currentView)
+    const [view, setView] = useState(disableRouting ? initialView : currentPath)
     const [authToast, setAuthToast] = useState<AuthToastOptions | null>(null)
+    const [showPassword, setShowPassword] = useState(false)
 
     const onSubmit = async (e: FormEvent) => {
         e?.preventDefault()
@@ -256,43 +259,48 @@ export function AuthCard({
     }
 
     useEffect(() => {
-        if (!pathname) return
-        if (currentView) setView(currentView)
-    }, [pathname, currentView])
-
-    useEffect(() => {
         if (!authToast || !toast) return
-
         toast(authToast)
     }, [toast, authToast])
 
     useEffect(() => {
-        if (!view) return
+        if (!currentPath || disableRouting) return
+        if (currentPath != view) setView(currentPath)
 
-        if (!magicLink && view == "magic-link") setView("login")
-        if (magicLink && !emailPassword && view == "login") setView("magic-link")
-        if (["signup", "forgot-password", "reset-password"].includes(view) && !emailPassword) setView(magicLink ? "magic-link" : "login")
-
-        if (!disableRouting && view != currentView) {
-            navigate(getPathname(view))
-        }
-
-        setAuthToast(null)
-    }, [magicLink, emailPassword, view, navigate, disableRouting, getPathname, currentView])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPath, disableRouting])
 
     useEffect(() => {
-        if (view == "logout") {
-            if (sessionData && !(sessionData.user as Record<string, unknown>).isAnonymous) {
-                authClient.signOut()
-            } else if (!sessionPending) {
-                setView("login")
-            }
-        } else if (view != "reset-password") {
-            if (sessionData && !(sessionData.user as Record<string, unknown>).isAnonymous) {
-                navigate(callbackURL)
-            }
+        setAuthToast(null)
+        if (disableRouting || !view) return
+        if (currentPath != view) navigate(getPathname(view))
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [disableRouting, view])
+
+    useEffect(() => {
+        if (!magicLink && view == "magic-link") setView("login")
+        if (magicLink && !emailPassword && view == "login") setView("magic-link")
+        if (["signup", "forgot-password", "reset-password"].includes(view!) && !emailPassword) setView(magicLink ? "magic-link" : "login")
+    }, [magicLink, emailPassword, view])
+
+    useEffect(() => {
+        if (view != "logout") return
+
+        if (sessionData && !(sessionData.user as Record<string, unknown>).isAnonymous) {
+            authClient.signOut()
+        } else if (!sessionPending) {
+            setView("login")
         }
-    }, [authClient, callbackURL, navigate, sessionData, sessionPending, view])
+    }, [authClient, sessionData, sessionPending, view])
+
+    useEffect(() => {
+        if (["reset-password", "logout"].includes(view!)) return
+
+        if (sessionData && !(sessionData.user as Record<string, unknown>).isAnonymous) {
+            navigate(callbackURL)
+        }
+    }, [callbackURL, navigate, sessionData, view])
 
     if (view == "logout") {
         return <Loader2 className="animate-spin" />
@@ -340,7 +348,13 @@ export function AuthCard({
                     )}
 
                     {(emailPassword || magicLink) && (
-                        <div className="grid gap-2">
+                        <div
+                            className={cn(
+                                view == "reset-password" ? hideElementClass : "h-[62px]",
+                                !disableAnimation && transitionClass,
+                                "grid gap-2"
+                            )}
+                        >
                             <Label htmlFor="email">
                                 {localization.email_label}
                             </Label>
@@ -352,6 +366,7 @@ export function AuthCard({
                                 required
                                 onChange={(e) => setEmail(e.target.value)}
                                 value={email}
+                                disabled={view == "reset-password"}
                             />
                         </div>
                     )}
@@ -372,22 +387,22 @@ export function AuthCard({
                                 {forgotPassword && (
                                     <div
                                         className={cn(
-                                            view == "login" ? "h-6" : "opacity-0",
+                                            view != "login" && "opacity-0",
                                             !disableAnimation && transitionClass,
                                             "absolute right-0"
                                         )}
                                     >
                                         <Button
-                                            asChild={!disableRouting}
+                                            asChild={!disableRouting || view != "login"}
                                             type="button"
                                             variant="link"
                                             size="sm"
                                             className="text-sm px-1 h-fit text-foreground hover-underline"
-                                            onClick={() => setView("forgot-password")}
+                                            onClick={() => disableRouting && setView("forgot-password")}
                                             disabled={view != "login"}
                                             tabIndex={view != "login" ? -1 : undefined}
                                         >
-                                            {disableRouting ? (
+                                            {(disableRouting || view != "login") ? (
                                                 localization.forgot_password
                                             ) : (
                                                 <LinkComponent href={getPathname("forgot-password")}>
@@ -399,16 +414,34 @@ export function AuthCard({
                                 )}
                             </div>
 
-                            <Input
-                                id="password"
-                                required
-                                type="password"
-                                placeholder="Password"
-                                autoComplete="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                disabled={["magic-link", "forgot-password"].includes(view!)}
-                            />
+                            <div className="relative">
+                                <Input
+                                    id="password"
+                                    required
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Password"
+                                    autoComplete="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    disabled={["magic-link", "forgot-password"].includes(view!)}
+                                />
+
+                                <Button
+                                    type="button"
+                                    className={cn(["login"].includes(view!) && "!opacity-0",
+                                        !disableAnimation && transitionClass,
+                                        "bg-transparent hover:bg-transparent text-foreground absolute right-0 top-0 h-full px-3 self-center"
+                                    )}
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    disabled={!password}
+                                >
+                                    {showPassword ? (
+                                        <EyeOff />
+                                    ) : (
+                                        <Eye />
+                                    )}
+                                </Button>
+                            </div>
                         </div>
                     )}
 
@@ -570,7 +603,7 @@ export function AuthCard({
             {emailPassword && (
                 <CardFooter>
                     <div className="flex justify-center w-full border-t pt-4">
-                        <p className="text-center text-sm text-neutral-500">
+                        <p className="text-center text-sm text-muted-foreground">
                             {["signup", "forgot-password"].includes(view!) ? (
                                 localization.signup_footer
                             ) : (
@@ -583,7 +616,7 @@ export function AuthCard({
                                 variant="link"
                                 size="sm"
                                 className="text-sm px-1 h-fit underline text-foreground"
-                                onClick={() => setView(["signup", "forgot-password"].includes(view!) ? "login" : "signup")}
+                                onClick={() => disableRouting && setView(["signup", "forgot-password"].includes(view!) ? "login" : "signup")}
                             >
                                 {disableRouting ? (
                                     ["signup", "forgot-password"].includes(view!) ? localization.login : localization.signup
