@@ -424,6 +424,7 @@ export function AuthCard({
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     disabled={["magic-link", "forgot-password"].includes(view!)}
+                                    className="pr-10"
                                 />
 
                                 <Button
