@@ -10,9 +10,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf dist && tsc",
     "dev": "npm run build && tsc-watch --onSuccess \"npx eslint\"",
-    "prepublishOnly": "rm -rf dist && npm run build"
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "typescript",
