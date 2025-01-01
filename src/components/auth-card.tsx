@@ -134,14 +134,11 @@ export function AuthCard({
 }: AuthCardProps) {
     const isHydrated = useIsHydrated()
     localization = { ...defaultLocalization, ...localization }
-    navigate = useMemo(() => {
-        return navigate || nextRouter?.push || defaultNavigate
-    }, [navigate, nextRouter?.push])
+    navigate = useMemo(() => navigate || nextRouter?.push || defaultNavigate, [navigate, nextRouter?.push])
+    pathname = useMemo(() => pathname || nextRouter?.asPath, [pathname, nextRouter?.asPath])
+    socialLayout = useMemo(() => socialLayout || ((providers && providers.length > 2 && (emailPassword || magicLink)) ? "horizontal" : "vertical"), [socialLayout, providers, emailPassword, magicLink])
 
-    pathname = pathname || nextRouter?.asPath
-    socialLayout = socialLayout || ((providers && providers.length > 2 && (emailPassword || magicLink)) ? "horizontal" : "vertical")
-
-    const getCurrentView = useCallback(() => {
+    const currentView = useMemo(() => {
         const currentPathname = isHydrated ? window.location.pathname : pathname
         const path = currentPathname?.split("/").pop()?.split("?")[0]
         if (authViews.includes(path as AuthView)) {
@@ -151,13 +148,7 @@ export function AuthCard({
         return null
     }, [isHydrated, pathname])
 
-    const getPathname = useCallback((view: AuthView) => {
-        const currentPathname = isHydrated ? window.location.pathname : pathname
-        const path = currentPathname?.split("/").slice(0, -1).join("/")
-        return `${path}/${view}` + (callbackURL != "/" ? `?callbackURL=${encodeURIComponent(callbackURL!)}` : "")
-    }, [callbackURL, isHydrated, pathname])
-
-    const getCallbackURL = () => {
+    callbackURL = useMemo(() => {
         if (callbackURL) return callbackURL
 
         if (nextRouter?.query?.callbackURL) {
@@ -172,16 +163,20 @@ export function AuthCard({
         }
 
         return "/"
-    }
+    }, [callbackURL, nextRouter?.query?.callbackURL, isHydrated])
 
-    callbackURL = getCallbackURL()
+    const getPathname = useCallback((view: AuthView) => {
+        const currentPathname = isHydrated ? window.location.pathname : pathname
+        const path = currentPathname?.split("/").slice(0, -1).join("/")
+        return `${path}/${view}` + (callbackURL != "/" ? `?callbackURL=${encodeURIComponent(callbackURL!)}` : "")
+    }, [callbackURL, isHydrated, pathname])
 
     const { data: sessionData, isPending: sessionPending } = authClient.useSession()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [name, setName] = useState("")
     const [loading, setLoading] = useState(false)
-    const [view, setView] = useState(disableRouting ? initialView : getCurrentView())
+    const [view, setView] = useState(disableRouting ? initialView : currentView)
     const [authToast, setAuthToast] = useState<AuthToastOptions | null>(null)
 
     const onSubmit = async (e: FormEvent) => {
@@ -205,7 +200,7 @@ export function AuthCard({
                 break
             }
             case "signup": {
-                const { error } = await authClient.signUp.email({ email, password, name })
+                const { error } = await authClient.signUp.email({ email, password, name, callbackURL })
                 apiError = error
 
                 break
@@ -262,9 +257,8 @@ export function AuthCard({
 
     useEffect(() => {
         if (!pathname) return
-        const currentView = getCurrentView()
         if (currentView) setView(currentView)
-    }, [pathname, getCurrentView])
+    }, [pathname, currentView])
 
     useEffect(() => {
         if (!authToast || !toast) return
@@ -279,14 +273,12 @@ export function AuthCard({
         if (magicLink && !emailPassword && view == "login") setView("magic-link")
         if (["signup", "forgot-password", "reset-password"].includes(view) && !emailPassword) setView(magicLink ? "magic-link" : "login")
 
-        if (!disableRouting && view != getCurrentView()) {
-            setTimeout(() => {
-                navigate(getPathname(view))
-            })
+        if (!disableRouting && view != currentView) {
+            navigate(getPathname(view))
         }
 
         setAuthToast(null)
-    }, [magicLink, emailPassword, view, navigate, disableRouting, getPathname, getCurrentView])
+    }, [magicLink, emailPassword, view, navigate, disableRouting, getPathname, currentView])
 
     useEffect(() => {
         if (view == "logout") {
@@ -295,7 +287,7 @@ export function AuthCard({
             } else if (!sessionPending) {
                 setView("login")
             }
-        } else {
+        } else if (view != "reset-password") {
             if (sessionData && !(sessionData.user as Record<string, unknown>).isAnonymous) {
                 navigate(callbackURL)
             }
