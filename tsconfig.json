@@ -9,11 +9,6 @@
         "resolveJsonModule": true,
         "allowJs": true,
         "incremental": true,
-        "paths": {
-            "@/*": [
-                "./src/*"
-            ]
-        },
         "lib": [
             "ESNext",
             "DOM"

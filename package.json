@@ -10,8 +10,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc && tsc-alias",
-    "dev": "tsc-watch --onSuccess \"tsc-alias && npx eslint\"",
+    "build": "tsc",
+    "dev": "npm run build && tsc-watch --onSuccess \"npx eslint\"",
     "prepublishOnly": "rm -rf dist && npm run build"
   },
   "keywords": [
@@ -44,7 +44,6 @@
     "react-dom": "file:../new-tech/node_modules/react-dom",
     "tailwind-merge": ">=2.6.0",
     "tailwindcss-animate": "^1.0.7",
-    "tsc-alias": "^1.8.10",
     "tsc-watch": "^6.2.1",
     "tsx": "^4.19.2",
     "typescript": "^5.6.2",

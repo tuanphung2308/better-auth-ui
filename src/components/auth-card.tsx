@@ -2,10 +2,10 @@ import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useState } from 
 import { NextRouter } from "next/router"
 import { createAuthClient } from "better-auth/react"
 
-import { cn } from "@/lib/utils"
+import { cn } from "../lib/utils"
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
+import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert"
+import { Button } from "../components/ui/button"
 import {
     Card,
     CardContent,
@@ -13,14 +13,14 @@ import {
     CardTitle,
     CardDescription,
     CardFooter
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "../components/ui/card"
+import { Input } from "../components/ui/input"
+import { Label } from "../components/ui/label"
 
 import { AlertCircle, Key, Loader2, LockIcon, MailIcon } from "lucide-react"
-import { SocialProvider, socialProviders } from "@/social-providers"
+import { SocialProvider, socialProviders } from "../social-providers"
 import { Icon } from "@iconify/react"
-import { useIsHydrated } from "@/hooks/use-is-hydrated"
+import { useIsHydrated } from "../hooks/use-is-hydrated"
 
 type AuthClient = ReturnType<typeof createAuthClient>
 
