@@ -420,7 +420,7 @@ export function AuthCard({
                                     required
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Password"
-                                    autoComplete="password"
+                                    autoComplete={["magic-link", "forgot-password"].includes(view!) ? "off" : (["signup", "reset-password"].includes(view!) ? "new-password" : "password")}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     disabled={["magic-link", "forgot-password"].includes(view!)}
