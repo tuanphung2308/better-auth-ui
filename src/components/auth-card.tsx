@@ -4,18 +4,31 @@ import { createAuthClient } from "better-auth/react"
 
 import { cn } from "../lib/utils"
 
-import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert"
-import { Button } from "../components/ui/button"
+import { Alert as AlertDefault, AlertDescription as AlertDescriptionDefault, AlertTitle as AlertTitleDefault } from "../components/ui/alert"
+import { Alert as AlertNewYork, AlertDescription as AlertDescriptionNewYork, AlertTitle as AlertTitleNewYork } from "../components/ui/new-york/alert"
+import { Button as ButtonDefault } from "../components/ui/button"
+import { Button as ButtonNewYork } from "../components/ui/new-york/button"
 import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-    CardDescription,
-    CardFooter
+    Card as CardDefault,
+    CardContent as CardContentDefault,
+    CardHeader as CardHeaderDefault,
+    CardTitle as CardTitleDefault,
+    CardDescription as CardDescriptionDefault,
+    CardFooter as CardFooterDefault
 } from "../components/ui/card"
-import { Input } from "../components/ui/input"
-import { Label } from "../components/ui/label"
+import {
+    Card as CardNewYork,
+    CardContent as CardContentNewYork,
+    CardHeader as CardHeaderNewYork,
+    CardTitle as CardTitleNewYork,
+    CardDescription as CardDescriptionNewYork,
+    CardFooter as CardFooterNewYork
+} from "../components/ui/new-york/card"
+
+import { Input as InputDefault } from "../components/ui/input"
+import { Input as InputNewYork } from "../components/ui/new-york/input"
+import { Label as LabelDefault } from "../components/ui/label"
+import { Label as LabelNewYork } from "../components/ui/new-york/label"
 
 import { Icon } from "@iconify/react"
 import { AlertCircle, Eye, EyeOff, Key, Loader2, LockIcon, MailIcon } from "lucide-react"
@@ -109,8 +122,9 @@ export interface AuthCardProps {
     signUpWithName?: boolean
     callbackURL?: string
     authPaths?: Partial<Record<AuthView, string>>
+    style?: "default" | "new-york"
     toast?: (options: AuthToastOptions) => void
-    LinkComponent?: React.ComponentType<{ href: string, to: string, className?: string, children: ReactNode }>
+    LinkComponent?: React.ComponentType<{ href: string, to: any, className?: string, children: ReactNode }>
 }
 
 const hideElementClass = "opacity-0 scale-y-0 h-0 overflow-hidden -my-2"
@@ -134,9 +148,26 @@ export function AuthCard({
     signUpWithName,
     callbackURL,
     authPaths,
+    style = "default",
     toast,
     LinkComponent = DefaultLink
 }: AuthCardProps) {
+    const Input = style == "new-york" ? InputNewYork : InputDefault
+    const Label = style == "new-york" ? LabelNewYork : LabelDefault
+
+    const Alert = style == "new-york" ? AlertNewYork : AlertDefault
+    const AlertTitle = style == "new-york" ? AlertTitleNewYork : AlertTitleDefault
+    const AlertDescription = style == "new-york" ? AlertDescriptionNewYork : AlertDescriptionDefault
+
+    const Button = style == "new-york" ? ButtonNewYork : ButtonDefault
+
+    const Card = style == "new-york" ? CardNewYork : CardDefault
+    const CardContent = style == "new-york" ? CardContentNewYork : CardContentDefault
+    const CardHeader = style == "new-york" ? CardHeaderNewYork : CardHeaderDefault
+    const CardTitle = style == "new-york" ? CardTitleNewYork : CardTitleDefault
+    const CardDescription = style == "new-york" ? CardDescriptionNewYork : CardDescriptionDefault
+    const CardFooter = style == "new-york" ? CardFooterNewYork : CardFooterDefault
+
     const isHydrated = useIsHydrated()
     localization = { ...defaultLocalization, ...localization }
     navigate = useMemo(() => navigate || nextRouter?.push || defaultNavigate, [navigate, nextRouter])
