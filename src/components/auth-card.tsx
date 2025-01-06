@@ -107,6 +107,7 @@ export interface AuthCardProps {
     disableAnimation?: boolean
     signUpWithName?: boolean
     callbackURL?: string
+    authPaths?: Partial<Record<AuthView, string>>
     toast?: (options: AuthToastOptions) => void
     LinkComponent?: React.ComponentType<{ href: string, className?: string, children: ReactNode }>
 }
@@ -131,6 +132,7 @@ export function AuthCard({
     disableAnimation,
     signUpWithName,
     callbackURL,
+    authPaths,
     toast,
     LinkComponent = DefaultLink
 }: AuthCardProps) {
@@ -140,15 +142,19 @@ export function AuthCard({
     pathname = useMemo(() => pathname || nextRouter?.asPath, [pathname, nextRouter?.asPath])
     socialLayout = useMemo(() => socialLayout || ((providers && providers.length > 2 && (emailPassword || magicLink)) ? "horizontal" : "vertical"), [socialLayout, providers, emailPassword, magicLink])
 
-    const currentPath = useMemo(() => {
+    const getAuthPath = useCallback((view: AuthView) => {
+        return authPaths?.[view] || view
+    }, [authPaths])
+
+    const currentPathView = useMemo(() => {
         const currentPathname = isHydrated ? window.location.pathname : pathname
         const path = currentPathname?.split("/").pop()?.split("?")[0]
-        if (authViews.includes(path as AuthView)) {
-            return path as AuthView
-        }
 
-        return null
-    }, [isHydrated, pathname])
+        const authPath = Object.keys(authPaths || {}).find((key) => authPaths?.[key as AuthView] == path)
+        if (authPath) return authPath as AuthView
+
+        if (authViews.includes(path as AuthView)) return path as AuthView
+    }, [isHydrated, pathname, authPaths])
 
     callbackURL = useMemo(() => {
         if (callbackURL) return callbackURL
@@ -168,17 +174,18 @@ export function AuthCard({
     }, [callbackURL, nextRouter?.query?.callbackURL, isHydrated])
 
     const getPathname = useCallback((view: AuthView) => {
+        const authPath = getAuthPath(view)
         const currentPathname = isHydrated ? window.location.pathname : pathname
         const path = currentPathname?.split("/").slice(0, -1).join("/")
-        return `${path}/${view}` + (callbackURL != "/" ? `?callbackURL=${encodeURIComponent(callbackURL!)}` : "")
-    }, [callbackURL, isHydrated, pathname])
+        return `${path}/${authPath}` + (callbackURL != "/" ? `?callbackURL=${encodeURIComponent(callbackURL!)}` : "")
+    }, [callbackURL, isHydrated, pathname, getAuthPath])
 
     const { data: sessionData, isPending: sessionPending } = authClient.useSession()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [name, setName] = useState("")
     const [loading, setLoading] = useState(false)
-    const [view, setView] = useState(disableRouting ? initialView : currentPath)
+    const [view, setView] = useState(disableRouting ? initialView : currentPathView)
     const [authToast, setAuthToast] = useState<AuthToastOptions | null>(null)
     const [showPassword, setShowPassword] = useState(false)
 
@@ -264,16 +271,16 @@ export function AuthCard({
     }, [toast, authToast])
 
     useEffect(() => {
-        if (!currentPath || disableRouting) return
-        if (currentPath != view) setView(currentPath)
+        if (!currentPathView || disableRouting) return
+        if (currentPathView != view) setView(currentPathView)
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentPath, disableRouting])
+    }, [currentPathView, disableRouting])
 
     useEffect(() => {
         setAuthToast(null)
         if (disableRouting || !view) return
-        if (currentPath != view) navigate(getPathname(view))
+        if (currentPathView != view) navigate(getPathname(view))
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [disableRouting, view])
