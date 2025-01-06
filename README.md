@@ -18,6 +18,14 @@ To install the package, run:
 npm install @daveyplate/better-auth-ui
 ```
 
+Add the following to your tailwind.config.ts file:
+
+```ts
+content: [
+		"./node_modules/@daveyplate/better-auth-ui/dist/**/*.{js,ts,jsx,tsx,mdx}",
+]
+```
+
 ## Usage
 
 ### Next.js Pages Router
