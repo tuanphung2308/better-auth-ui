@@ -17,6 +17,7 @@ npm install @daveyplate/better-auth-ui
 To use Better Auth UI in a Next.js project, follow these steps:
 
 **Import and Use Components**:
+
 `pages/auth/[auth].tsx`
 ```tsx
 import { AuthCard } from "@daveyplate/better-auth-ui";
@@ -38,9 +39,10 @@ export default function AuthPage() {
 
 To use Better Auth UI in a React project, follow these steps:
 
-Use disableRouting if you don't want to pass navigate.
+Use disableRouting={true} if you don't want to use a dynamic path.
 
 **Import and Use Components**:
+
 `dynamic-auth-page-path.tsx`
 ```tsx
 import { AuthCard } from "@daveyplate/better-auth-ui";
