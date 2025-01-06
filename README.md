@@ -1,3 +1,6 @@
+Collecting workspace information
+
+```markdown
 # @daveyplate/better-auth-ui
 
 Plug & play shadcn/ui components for better-auth.
@@ -64,165 +67,30 @@ export default App;
 
 | Prop Name         | Type                                                                 | Description                                                                                       | Default Value               |
 |-------------------|----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|-----------------------------|
-| 
-
-authClient
-
-      | 
-
-AuthClient
-
-                                                         | The authentication client instance.                                                               | Required                    |
-| 
-
-navigate
-
-        | `(url: string) => void`                                              | Function to navigate to a different URL.                                                          | 
-
-defaultNavigate
-
-           |
-| 
-
-pathname
-
-        | `string`                                                             | The current pathname.                                                                             | 
-
-window.location.pathname
-
-  |
-| 
-
-nextRouter
-
-      | 
-
-NextRouter
-
-                                                         | Next.js router instance.                                                                          | `undefined`                 |
-| 
-
-initialView
-
-     | 
-
-AuthView
-
-                                                           | The initial view to display.                                                                      | `undefined`                 |
-| 
-
-emailPassword
-
-   | `boolean`                                                            | Enable email and password authentication.                                                         | `true`                      |
-| 
-
-username
-
-        | `boolean`                                                            | Enable username field for signup.                                                                 | `false`                     |
-| 
-
-forgotPassword
-
-  | `boolean`                                                            | Enable forgot password functionality.                                                             | `true`                      |
-| 
-
-magicLink
-
-       | `boolean`                                                            | Enable magic link authentication.                                                                 | `false`                     |
-| 
-
-passkey
-
-         | `boolean`                                                            | Enable passkey authentication.                                                                    | `false`                     |
-| 
-
-providers
-
-       | 
-
-SocialProvider[]
-
-                                                   | List of social providers for authentication.                                                      | `[]`                        |
-| 
-
-socialLayout
-
-    | `"horizontal" \| "vertical"`                                         | Layout for social provider buttons.                                                               | `"vertical"`                |
-| 
-
-localization
-
-    | 
-
-Partial<typeof defaultLocalization>
-
-                                | Localization strings for the component.                                                           | 
-
-defaultLocalization
-
-       |
-| 
-
-disableRouting
-
-  | `boolean`                                                            | Disable internal routing.                                                                         | `false`                     |
-| 
-
-disableAnimation
-
-| `boolean`                                                            | Disable animations.                                                                               | `false`                     |
-| 
-
-signUpWithName
-
-  | `boolean`                                                            | Enable name field for signup.                                                                     | `false`                     |
-| 
-
-callbackURL
-
-     | `string`                                                             | URL to redirect to after authentication.                                                          | `"/"`                       |
-| 
-
-authPaths
-
-       | 
-
-Partial<Record<AuthView, string>>
-
-                                  | Custom paths for authentication views.                                                            | `{}`                        |
-| 
-
-classNames
-
-      | 
-
-Partial<AuthClassNames>
-
-                                            | Custom class names for the component elements.                                                    | `{}`                        |
-| 
-
-componentStyle
-
-  | `"default" \| "new-york"`                                            | Style variant for the component.                                                                  | `"default"`                 |
-| 
-
-toast
-
-           | `(options: AuthToastOptions) => void`                                | Function to display toast notifications.                                                          | `undefined`                 |
-| 
-
-LinkComponent
-
-   | 
-
-React.ComponentType<{ href: string, to: any, className?: string, children: ReactNode }>
-
- | Custom link component.                                                                            | 
-
-DefaultLink
-
-               |
+| authClient        | `AuthClient`                                                         | The authentication client instance.                                                               | Required                    |
+| navigate          | `(url: string) => void`                                              | Function to navigate to a different URL.                                                          | `defaultNavigate`           |
+| pathname          | `string`                                                             | The current pathname.                                                                             | `window.location.pathname`  |
+| nextRouter        | `NextRouter`                                                         | Next.js router instance.                                                                          | `undefined`                 |
+| initialView       | `AuthView`                                                           | The initial view to display.                                                                      | `undefined`                 |
+| emailPassword     | `boolean`                                                            | Enable email and password authentication.                                                         | `true`                      |
+| username          | `boolean`                                                            | Enable username field for signup.                                                                 | `false`                     |
+| forgotPassword    | `boolean`                                                            | Enable forgot password functionality.                                                             | `true`                      |
+| magicLink         | `boolean`                                                            | Enable magic link authentication.                                                                 | `false`                     |
+| passkey           | `boolean`                                                            | Enable passkey authentication.                                                                    | `false`                     |
+| providers         | `SocialProvider[]`                                                   | List of social providers for authentication.                                                      | `[]`                        |
+| socialLayout      | `"horizontal" \| "vertical"`                                         | Layout for social provider buttons.                                                               | `"vertical"`                |
+| localization      | `Partial<typeof defaultLocalization>`                                | Localization strings for the component.                                                           | `defaultLocalization`       |
+| disableRouting    | `boolean`                                                            | Disable internal routing.                                                                         | `false`                     |
+| disableAnimation  | `boolean`                                                            | Disable animations.                                                                               | `false`                     |
+| signUpWithName    | `boolean`                                                            | Enable name field for signup.                                                                     | `false`                     |
+| callbackURL       | `string`                                                             | URL to redirect to after authentication.                                                          | `"/"`                       |
+| authPaths         | `Partial<Record<AuthView, string>>`                                  | Custom paths for authentication views.                                                            | `{}`                        |
+| classNames        | `Partial<AuthClassNames>`                                            | Custom class names for the component elements.                                                    | `{}`                        |
+| componentStyle    | `"default" \| "new-york"`                                            | Style variant for the component.                                                                  | `"default"`                 |
+| toast             | `(options: AuthToastOptions) => void`                                | Function to display toast notifications.                                                          | `undefined`                 |
+| LinkComponent     | `React.ComponentType<{ href: string, to: any, className?: string, children: ReactNode }>` | Custom link component.                                                                            | `DefaultLink`               |
 
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
+```
