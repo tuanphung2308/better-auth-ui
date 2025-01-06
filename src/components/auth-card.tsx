@@ -59,41 +59,42 @@ export const defaultLocalization = {
     signupTitle: "Sign up",
     magicLinkTitle: "Magic link",
     forgotPasswordTitle: "Forgot password",
-    resetPasswordTitle: "Reset password",
-    loginDescription: "Enter your email to login to your account",
-    signupDescription: "Enter your information to create your account",
-    magicLinkDescription: "Enter your email to receive a magic link",
-    forgotPasswordDescription: "Enter your email to reset your password",
-    resetPasswordDescription: "Enter your new password below",
-    providerDescription: "Choose a provider to continue",
-    emailLabel: "Email",
-    usernameLabel: "Username",
-    nameLabel: "Name",
-    passwordLabel: "Password",
-    emailPlaceholder: "m@example.com",
-    usernamePlaceholder: "Username",
-    namePlaceholder: "Name",
-    passwordPlaceholder: "Password",
-    loginButton: "Login",
-    signupButton: "Create account",
-    magicLinkButton: "Send magic link",
-    forgotPasswordButton: "Send reset link",
-    resetPasswordButton: "Save new password",
-    providerPrefix: "Continue with",
-    magicLinkProvider: "Magic Link",
-    passkeyProvider: "Passkey",
-    passwordProvider: "Password",
-    loginFooter: "Don't have an account?",
-    signupFooter: "Already have an account?",
-    forgotPassword: "Forgot your password?",
+    reset_password_title: "Reset password",
+    login_description: "Enter your email to login to your account",
+    signup_description: "Enter your information to create your account",
+    magic_link_description: "Enter your email to receive a magic link",
+    forgot_password_description: "Enter your email to reset your password",
+    reset_password_description: "Enter your new password below",
+    provider_description: "Choose a provider to continue",
+    email_label: "Email",
+    username_label: "Username",
+    name_label: "Name",
+    password_label: "Password",
+    email_placeholder: "m@example.com",
+    username_placeholder: "Username",
+    name_placeholder: "Name",
+    password_placeholder: "Password",
+    login_button: "Login",
+    signup_button: "Create account",
+    magic_link_button: "Send magic link",
+    forgot_password_button: "Send reset link",
+    reset_password_button: "Save new password",
+    provider_prefix: "Continue with",
+    magic_link_provider: "Magic Link",
+    passkey_provider: "Passkey",
+    password_provider: "Password",
+    login_footer: "Don't have an account?",
+    signup_footer: "Already have an account?",
+    forgot_password: "Forgot your password?",
     login: "Login",
     signup: "Sign up",
-    verificationLinkEmail: "Check your email for the verification link",
-    resetPasswordEmail: "Check your email for the password reset link",
-    magicLinkEmail: "Check your email for the magic link",
-    passwordUpdated: "Password updated",
+    verification_link_email: "Check your email for the verification link",
+    reset_password_email: "Check your email for the password reset link",
+    magic_link_email: "Check your email for the magic link",
+    password_updated: "Password updated",
     error: "Error",
-    alert: "Alert"
+    alert: "Alert",
+    or_continue_with: "Or continue with",
 }
 
 export type AuthToastOptions = {
@@ -281,7 +282,7 @@ export function AuthCard({
                 if (!error) {
                     setEmail("")
                     setAuthToast({
-                        description: localization.magicLinkEmail!,
+                        description: localization.magic_link_email!,
                         variant: "default"
                     })
                 }
@@ -299,7 +300,7 @@ export function AuthCard({
                     setView("login")
 
                     setAuthToast({
-                        description: localization.resetPasswordEmail!,
+                        description: localization.reset_password_email!,
                         variant: "default"
                     })
                 }
@@ -318,7 +319,7 @@ export function AuthCard({
                     setView("login")
 
                     setAuthToast({
-                        description: localization.passwordUpdated!,
+                        description: localization.password_updated!,
                         variant: "default"
                     })
                 }
@@ -426,7 +427,7 @@ export function AuthCard({
                     className={classNames?.cardDescription}
                 >
                     {(emailPassword || magicLink) ? (view && localization[`${view.replace("-", "_")}_description` as keyof typeof localization])
-                        : localization.providerDescription}
+                        : localization.provider_description}
                 </CardDescription>
             </CardHeader>
 
@@ -450,14 +451,14 @@ export function AuthCard({
                                 className={classNames?.label}
                                 htmlFor="name"
                             >
-                                {localization.nameLabel}
+                                {localization.name_label}
                             </Label>
 
                             <Input
                                 id="name"
                                 className={classNames?.input}
                                 required
-                                placeholder={localization.namePlaceholder}
+                                placeholder={localization.name_placeholder}
                                 onChange={(e) => setName(e.target.value)}
                                 value={name}
                                 disabled={view != "signup"}
@@ -477,14 +478,14 @@ export function AuthCard({
                                 className={classNames?.label}
                                 htmlFor="email"
                             >
-                                {localization.emailLabel}
+                                {localization.email_label}
                             </Label>
 
                             <Input
                                 id="email"
                                 className={classNames?.input}
                                 type="email"
-                                placeholder={localization.emailPlaceholder}
+                                placeholder={localization.email_placeholder}
                                 required
                                 onChange={(e) => setEmail(e.target.value)}
                                 value={email}
@@ -506,7 +507,7 @@ export function AuthCard({
                                     className={classNames?.label}
                                     htmlFor="password"
                                 >
-                                    {localization.passwordLabel}
+                                    {localization.password_label}
                                 </Label>
 
                                 {forgotPassword && (
@@ -531,13 +532,13 @@ export function AuthCard({
                                             tabIndex={view != "login" ? -1 : undefined}
                                         >
                                             {(disableRouting || view != "login") ? (
-                                                localization.forgotPassword
+                                                localization.forgot_password
                                             ) : (
                                                 <LinkComponent
                                                     href={getPathname("forgot-password")}
                                                     to={getPathname("forgot-password")}
                                                 >
-                                                    {localization.forgotPassword}
+                                                    {localization.forgot_password}
                                                 </LinkComponent>
                                             )}
                                         </Button>
@@ -659,9 +660,9 @@ export function AuthCard({
                                 disabled={!["signup", "login", "magic-link"].includes(view!)}
                             >
                                 {view == "magic-link" ? <LockIcon /> : <MailIcon />}
-                                {localization.providerPrefix}
+                                {localization.provider_prefix}
                                 {" "}
-                                {view == "magic-link" ? localization.passwordProvider : localization.magicLinkProvider}
+                                {view == "magic-link" ? localization.password_provider : localization.magic_link_provider}
                             </Button>
                         </div>
                     )}
@@ -694,9 +695,9 @@ export function AuthCard({
                                 disabled={!["login", "magic-link"].includes(view!)}
                             >
                                 <Key />
-                                {localization.providerPrefix}
+                                {localization.provider_prefix}
                                 {" "}
-                                {localization.passkeyProvider}
+                                {localization.passkey_provider}
                             </Button>
                         </div>
                     )}
@@ -744,7 +745,7 @@ export function AuthCard({
 
                                         {socialLayout == "vertical" && (
                                             <>
-                                                {localization.providerPrefix}
+                                                {localization.provider_prefix}
                                                 {" "}
                                                 {socialProvider.name}
                                             </>
@@ -766,9 +767,9 @@ export function AuthCard({
                     <div className="flex justify-center w-full border-t pt-4">
                         <p className="text-center text-sm text-muted-foreground">
                             {["signup", "forgot-password"].includes(view!) ? (
-                                localization.signupFooter
+                                localization.signup_footer
                             ) : (
-                                localization.loginFooter
+                                localization.login_footer
                             )}
 
                             <Button
