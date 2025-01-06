@@ -20,16 +20,41 @@ To use Better Auth UI in a Next.js project, follow these steps:
 
 `pages/auth/[auth].tsx`
 ```tsx
+import { useCallback } from "react";
 import { AuthCard } from "@daveyplate/better-auth-ui";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 export default function AuthPage() {
     const nextRouter = useRouter();
+    const { toast } = useToast();
+
+    const authToast = useCallback((
+        { variant, description, action }: AuthToastOptions
+    ) => {
+        toast({
+            variant,
+            description,
+            action: action && (
+                <ToastAction
+                    altText={action.label}
+                    onClick={action.onClick}
+                >
+                    {action.label}
+                </ToastAction>
+            )
+        })
+    }, [toast]);
 
     return (
         <div className="flex justify-center items-center min-h-screen">
-            <AuthCard authClient={authClient} nextRouter={nextRouter} LinkComponent={Link} />
+            <AuthCard 
+                authClient={authClient} 
+                nextRouter={nextRouter} 
+                LinkComponent={Link} 
+            />
         </div>
     );
 }
@@ -54,7 +79,12 @@ function App() {
 
     return (
         <div className="flex justify-center items-center min-h-screen">
-            <AuthCard authClient={authClient} navigate={navigate} pathname={location.pathname} LinkComponent={NavLink} />
+            <AuthCard 
+                authClient={authClient} 
+                navigate={navigate} 
+                pathname={location.pathname} 
+                LinkComponent={NavLink} 
+            />
         </div>
     );
 }
