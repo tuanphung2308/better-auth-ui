@@ -69,8 +69,6 @@ To use Better Auth UI in a React project, follow these steps:
 Use `disableRouting={true}` if you don't want to use a dynamic path.
 Otherwise, navigate, pathname and LinkComponent are required.
 
-**Import and Use Components**:
-
 `dynamic-auth-page-path.tsx`
 ```tsx
 import { AuthCard } from "@daveyplate/better-auth-ui";
