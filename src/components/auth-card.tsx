@@ -352,6 +352,7 @@ export function AuthCard({
 
     useEffect(() => {
         setAuthToast(null)
+        setShowPassword(false)
         if (disableRouting || !view) return
         if (currentPathView != view) navigate(getPathname(view))
 
@@ -569,7 +570,7 @@ export function AuthCard({
                                         "bg-transparent hover:bg-transparent text-foreground absolute right-0 top-0 h-full px-3 self-center"
                                     )}
                                     onClick={() => setShowPassword(!showPassword)}
-                                    disabled={!password}
+                                    disabled={!password || ["login"].includes(view!)}
                                 >
                                     {showPassword ? (
                                         <EyeOff />
