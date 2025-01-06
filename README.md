@@ -12,7 +12,7 @@ npm install @daveyplate/better-auth-ui
 
 ## Usage
 
-### Next.js
+### Next.js Pages Router
 
 If you don't provide a toast function, the AuthCard 
 will render an inline Alert component for notifications.
