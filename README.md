@@ -14,9 +14,8 @@ npm install @daveyplate/better-auth-ui
 
 ### Next.js
 
-To use Better Auth UI in a Next.js project, follow these steps:
-
-**Import and Use Components**:
+If you don't provide a toast function, the AuthCard 
+will render an inline Alert component for notifications.
 
 `pages/auth/[auth].tsx`
 ```tsx
