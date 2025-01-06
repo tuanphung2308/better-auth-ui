@@ -1,6 +1,3 @@
-Collecting workspace information
-
-```markdown
 # @daveyplate/better-auth-ui
 
 Plug & play shadcn/ui components for better-auth.
