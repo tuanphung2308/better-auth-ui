@@ -2,7 +2,7 @@
 
 Plug & play shadcn/ui components for better-auth.
 
-![better-auth-ui](screenshot.png){ width=100px }
+![better-auth-ui](screenshot.png)
 
 ## Installation
 
