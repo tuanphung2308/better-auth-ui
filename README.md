@@ -1,6 +1,6 @@
 # @daveyplate/better-auth-ui
 
-Plug & play shadcn/ui components for better-auth.
+Plug & play shadcn/ui animated auth components for better-auth.
 
 ![better-auth-ui](screenshot.png)
 
