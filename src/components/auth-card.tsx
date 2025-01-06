@@ -55,10 +55,10 @@ const DefaultLink = (
 const defaultNavigate = (href: string) => window.location.href = href
 
 export const defaultLocalization = {
-    loginTitle: "Login",
-    signupTitle: "Sign up",
-    magicLinkTitle: "Magic link",
-    forgotPasswordTitle: "Forgot password",
+    login_title: "Login",
+    signup_title: "Sign up",
+    magic_link_title: "Magic link",
+    forgot_password_title: "Forgot password",
     reset_password_title: "Reset password",
     login_description: "Enter your email to login to your account",
     signup_description: "Enter your information to create your account",
