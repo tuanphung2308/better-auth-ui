@@ -18,11 +18,11 @@ To install the package, run:
 npm install @daveyplate/better-auth-ui
 ```
 
-Add the following to your tailwind.config.ts file:
+Add the following to tailwind.config.ts:
 
 ```ts
 content: [
-		"./node_modules/@daveyplate/better-auth-ui/dist/**/*.{js,ts,jsx,tsx,mdx}",
+	"./node_modules/@daveyplate/better-auth-ui/dist/**/*.{js,ts,jsx,tsx,mdx}"
 ]
 ```
 
