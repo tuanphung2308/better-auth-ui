@@ -75,6 +75,7 @@ export const defaultLocalization = {
     verification_link_email: "Check your email for the verification link",
     reset_password_email: "Check your email for the password reset link",
     magic_link_email: "Check your email for the magic link",
+    password_updated: "Password updated",
     error: "Error",
     alert: "Alert",
     or_continue_with: "Or continue with",
@@ -251,6 +252,22 @@ export function AuthCard({
                 break
             }
             case "reset-password": {
+                const { error } = await authClient.resetPassword({
+                    newPassword: password
+                })
+                apiError = error
+
+                setPassword("")
+
+                if (!error) {
+                    setView("login")
+
+                    setAuthToast({
+                        description: localization.password_updated!,
+                        variant: "default"
+                    })
+                }
+
                 break
             }
         }
@@ -281,6 +298,23 @@ export function AuthCard({
         setAuthToast(null)
         if (disableRouting || !view) return
         if (currentPathView != view) navigate(getPathname(view))
+
+        if (view == "reset-password") {
+            const queryString = window.location.search
+            const urlParams = new URLSearchParams(queryString)
+            const token = urlParams.get("token")
+
+            if (token == "INVALID_TOKEN") {
+                setAuthToast({
+                    description: "Invalid token",
+                    variant: "destructive"
+                })
+
+                setView("forgot-password")
+            }
+
+            if (!token) setView("forgot-password")
+        }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [disableRouting, view])
