@@ -55,46 +55,45 @@ const DefaultLink = (
 const defaultNavigate = (href: string) => window.location.href = href
 
 export const defaultLocalization = {
-    login_title: "Login",
-    signup_title: "Sign up",
-    magic_link_title: "Magic link",
-    forgot_password_title: "Forgot password",
-    reset_password_title: "Reset password",
-    login_description: "Enter your email to login to your account",
-    signup_description: "Enter your information to create your account",
-    magic_link_description: "Enter your email to receive a magic link",
-    forgot_password_description: "Enter your email to reset your password",
-    reset_password_description: "Enter your new password below",
-    provider_description: "Choose a provider to continue",
-    email_label: "Email",
-    username_label: "Username",
-    name_label: "Name",
-    password_label: "Password",
-    email_placeholder: "m@example.com",
-    username_placeholder: "Username",
-    name_placeholder: "Name",
-    password_placeholder: "Password",
-    login_button: "Login",
-    signup_button: "Create account",
-    magic_link_button: "Send magic link",
-    forgot_password_button: "Send reset link",
-    reset_password_button: "Save new password",
-    provider_prefix: "Continue with",
-    magic_link_provider: "Magic Link",
-    passkey_provider: "Passkey",
-    password_provider: "Password",
-    login_footer: "Don't have an account?",
-    signup_footer: "Already have an account?",
-    forgot_password: "Forgot your password?",
+    loginTitle: "Login",
+    signupTitle: "Sign up",
+    magicLinkTitle: "Magic link",
+    forgotPasswordTitle: "Forgot password",
+    resetPasswordTitle: "Reset password",
+    loginDescription: "Enter your email to login to your account",
+    signupDescription: "Enter your information to create your account",
+    magicLinkDescription: "Enter your email to receive a magic link",
+    forgotPasswordDescription: "Enter your email to reset your password",
+    resetPasswordDescription: "Enter your new password below",
+    providerDescription: "Choose a provider to continue",
+    emailLabel: "Email",
+    usernameLabel: "Username",
+    nameLabel: "Name",
+    passwordLabel: "Password",
+    emailPlaceholder: "m@example.com",
+    usernamePlaceholder: "Username",
+    namePlaceholder: "Name",
+    passwordPlaceholder: "Password",
+    loginButton: "Login",
+    signupButton: "Create account",
+    magicLinkButton: "Send magic link",
+    forgotPasswordButton: "Send reset link",
+    resetPasswordButton: "Save new password",
+    providerPrefix: "Continue with",
+    magicLinkProvider: "Magic Link",
+    passkeyProvider: "Passkey",
+    passwordProvider: "Password",
+    loginFooter: "Don't have an account?",
+    signupFooter: "Already have an account?",
+    forgotPassword: "Forgot your password?",
     login: "Login",
     signup: "Sign up",
-    verification_link_email: "Check your email for the verification link",
-    reset_password_email: "Check your email for the password reset link",
-    magic_link_email: "Check your email for the magic link",
-    password_updated: "Password updated",
+    verificationLinkEmail: "Check your email for the verification link",
+    resetPasswordEmail: "Check your email for the password reset link",
+    magicLinkEmail: "Check your email for the magic link",
+    passwordUpdated: "Password updated",
     error: "Error",
-    alert: "Alert",
-    or_continue_with: "Or continue with",
+    alert: "Alert"
 }
 
 export type AuthToastOptions = {
@@ -104,6 +103,26 @@ export type AuthToastOptions = {
         label: string
         onClick: () => void
     }
+}
+
+export type AuthClassNames = {
+    card?: string
+    cardHeader?: string
+    cardTitle?: string
+    cardDescription?: string
+    cardContent?: string
+    cardFooter?: string
+    form?: string
+    input?: string
+    label?: string
+    button?: string
+    secondaryButton?: string
+    providerButton?: string
+    link?: string
+    alert?: string
+    alertTitle?: string
+    alertDescription?: string
+    alertButton?: string
 }
 
 export interface AuthCardProps {
@@ -125,7 +144,8 @@ export interface AuthCardProps {
     signUpWithName?: boolean
     callbackURL?: string
     authPaths?: Partial<Record<AuthView, string>>
-    style?: "default" | "new-york"
+    classNames?: Partial<AuthClassNames>
+    componentStyle?: "default" | "new-york"
     toast?: (options: AuthToastOptions) => void
     LinkComponent?: React.ComponentType<{ href: string, to: any, className?: string, children: ReactNode }>
 }
@@ -151,25 +171,26 @@ export function AuthCard({
     signUpWithName,
     callbackURL,
     authPaths,
-    style = "default",
+    classNames,
+    componentStyle = "default",
     toast,
     LinkComponent = DefaultLink
 }: AuthCardProps) {
-    const Input = style == "new-york" ? InputNewYork : InputDefault
-    const Label = style == "new-york" ? LabelNewYork : LabelDefault
+    const Input = componentStyle == "new-york" ? InputNewYork : InputDefault
+    const Label = componentStyle == "new-york" ? LabelNewYork : LabelDefault
 
-    const Alert = style == "new-york" ? AlertNewYork : AlertDefault
-    const AlertTitle = style == "new-york" ? AlertTitleNewYork : AlertTitleDefault
-    const AlertDescription = style == "new-york" ? AlertDescriptionNewYork : AlertDescriptionDefault
+    const Alert = componentStyle == "new-york" ? AlertNewYork : AlertDefault
+    const AlertTitle = componentStyle == "new-york" ? AlertTitleNewYork : AlertTitleDefault
+    const AlertDescription = componentStyle == "new-york" ? AlertDescriptionNewYork : AlertDescriptionDefault
 
-    const Button = style == "new-york" ? ButtonNewYork : ButtonDefault
+    const Button = componentStyle == "new-york" ? ButtonNewYork : ButtonDefault
 
-    const Card = style == "new-york" ? CardNewYork : CardDefault
-    const CardContent = style == "new-york" ? CardContentNewYork : CardContentDefault
-    const CardHeader = style == "new-york" ? CardHeaderNewYork : CardHeaderDefault
-    const CardTitle = style == "new-york" ? CardTitleNewYork : CardTitleDefault
-    const CardDescription = style == "new-york" ? CardDescriptionNewYork : CardDescriptionDefault
-    const CardFooter = style == "new-york" ? CardFooterNewYork : CardFooterDefault
+    const Card = componentStyle == "new-york" ? CardNewYork : CardDefault
+    const CardContent = componentStyle == "new-york" ? CardContentNewYork : CardContentDefault
+    const CardHeader = componentStyle == "new-york" ? CardHeaderNewYork : CardHeaderDefault
+    const CardTitle = componentStyle == "new-york" ? CardTitleNewYork : CardTitleDefault
+    const CardDescription = componentStyle == "new-york" ? CardDescriptionNewYork : CardDescriptionDefault
+    const CardFooter = componentStyle == "new-york" ? CardFooterNewYork : CardFooterDefault
 
     const isHydrated = useIsHydrated()
     localization = { ...defaultLocalization, ...localization }
@@ -260,7 +281,7 @@ export function AuthCard({
                 if (!error) {
                     setEmail("")
                     setAuthToast({
-                        description: localization.magic_link_email!,
+                        description: localization.magicLinkEmail!,
                         variant: "default"
                     })
                 }
@@ -278,7 +299,7 @@ export function AuthCard({
                     setView("login")
 
                     setAuthToast({
-                        description: localization.reset_password_email!,
+                        description: localization.resetPasswordEmail!,
                         variant: "default"
                     })
                 }
@@ -297,7 +318,7 @@ export function AuthCard({
                     setView("login")
 
                     setAuthToast({
-                        description: localization.password_updated!,
+                        description: localization.passwordUpdated!,
                         variant: "default"
                     })
                 }
@@ -385,36 +406,58 @@ export function AuthCard({
         <Card
             className={cn(!view && "opacity-0",
                 !disableAnimation && transitionClass,
-                "max-w-sm w-full"
+                "max-w-sm w-full",
+                classNames?.card
             )}
         >
-            <CardHeader>
-                <CardTitle className="text-xl">
+            <CardHeader
+                className={classNames?.cardHeader}
+            >
+                <CardTitle
+                    className={cn(
+                        "text-xl",
+                        classNames?.cardTitle
+                    )}
+                >
                     {view && localization[`${view.replace("-", "_")}_title` as keyof typeof localization]}
                 </CardTitle>
 
-                <CardDescription>
+                <CardDescription
+                    className={classNames?.cardDescription}
+                >
                     {(emailPassword || magicLink) ? (view && localization[`${view.replace("-", "_")}_description` as keyof typeof localization])
-                        : localization.provider_description}
+                        : localization.providerDescription}
                 </CardDescription>
             </CardHeader>
 
-            <CardContent>
-                <form className="flex flex-col gap-4" onSubmit={onSubmit}>
+            <CardContent
+                className={classNames?.cardContent}
+            >
+                <form
+                    className={cn(
+                        "flex flex-col gap-4",
+                        classNames?.form
+                    )}
+                    onSubmit={onSubmit}
+                >
                     {signUpWithName && (
                         <div
                             className={cn(view != "signup" ? hideElementClass : "h-[62px]",
                                 "grid gap-2"
                             )}
                         >
-                            <Label htmlFor="name">
-                                {localization.name_label}
+                            <Label
+                                className={classNames?.label}
+                                htmlFor="name"
+                            >
+                                {localization.nameLabel}
                             </Label>
 
                             <Input
                                 id="name"
+                                className={classNames?.input}
                                 required
-                                placeholder={localization.name_placeholder}
+                                placeholder={localization.namePlaceholder}
                                 onChange={(e) => setName(e.target.value)}
                                 value={name}
                                 disabled={view != "signup"}
@@ -430,14 +473,18 @@ export function AuthCard({
                                 "grid gap-2"
                             )}
                         >
-                            <Label htmlFor="email">
-                                {localization.email_label}
+                            <Label
+                                className={classNames?.label}
+                                htmlFor="email"
+                            >
+                                {localization.emailLabel}
                             </Label>
 
                             <Input
                                 id="email"
+                                className={classNames?.input}
                                 type="email"
-                                placeholder={localization.email_placeholder}
+                                placeholder={localization.emailPlaceholder}
                                 required
                                 onChange={(e) => setEmail(e.target.value)}
                                 value={email}
@@ -455,8 +502,11 @@ export function AuthCard({
                             )}
                         >
                             <div className="flex items-center relative">
-                                <Label htmlFor="password">
-                                    {localization.password_label}
+                                <Label
+                                    className={classNames?.label}
+                                    htmlFor="password"
+                                >
+                                    {localization.passwordLabel}
                                 </Label>
 
                                 {forgotPassword && (
@@ -472,19 +522,22 @@ export function AuthCard({
                                             type="button"
                                             variant="link"
                                             size="sm"
-                                            className="text-sm px-1 h-fit text-foreground hover-underline"
+                                            className={cn(
+                                                "text-sm px-1 h-fit text-foreground hover-underline",
+                                                classNames?.link
+                                            )}
                                             onClick={() => disableRouting && setView("forgot-password")}
                                             disabled={view != "login"}
                                             tabIndex={view != "login" ? -1 : undefined}
                                         >
                                             {(disableRouting || view != "login") ? (
-                                                localization.forgot_password
+                                                localization.forgotPassword
                                             ) : (
                                                 <LinkComponent
                                                     href={getPathname("forgot-password")}
                                                     to={getPathname("forgot-password")}
                                                 >
-                                                    {localization.forgot_password}
+                                                    {localization.forgotPassword}
                                                 </LinkComponent>
                                             )}
                                         </Button>
@@ -502,7 +555,10 @@ export function AuthCard({
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     disabled={["magic-link", "forgot-password"].includes(view!)}
-                                    className="pr-10"
+                                    className={cn(
+                                        "pr-10",
+                                        classNames?.input
+                                    )}
                                 />
 
                                 <Button
@@ -532,14 +588,20 @@ export function AuthCard({
                         >
                             <Alert
                                 variant={authToast?.variant}
-                                className={authToast?.variant == "destructive" ? "bg-destructive/10" : "bg-foreground/5"}
+                                className={cn(
+                                    authToast?.variant == "destructive" ? "bg-destructive/10" : "bg-foreground/5",
+                                    classNames?.alert
+                                )}
                             >
                                 {authToast?.action && (
                                     <Button
                                         type="button"
                                         size="sm"
                                         variant="outline"
-                                        className="absolute top-5 right-4 text-foreground"
+                                        className={cn(
+                                            "absolute top-5 right-4 text-foreground",
+                                            classNames?.alertButton
+                                        )}
                                         onClick={authToast?.action.onClick}
                                     >
                                         {authToast?.action.label}
@@ -548,11 +610,15 @@ export function AuthCard({
 
                                 <AlertCircle className="h-4 w-4" />
 
-                                <AlertTitle>
+                                <AlertTitle
+                                    className={classNames?.alertTitle}
+                                >
                                     {authToast?.variant == "destructive" ? localization.error : localization.alert}
                                 </AlertTitle>
 
-                                <AlertDescription>
+                                <AlertDescription
+                                    className={classNames?.alertDescription}
+                                >
                                     {authToast?.description}
                                 </AlertDescription>
                             </Alert>
@@ -562,7 +628,10 @@ export function AuthCard({
                     {(emailPassword || magicLink) && (
                         <Button
                             type="submit"
-                            className="w-full"
+                            className={cn(
+                                "w-full",
+                                classNames?.button
+                            )}
                             disabled={loading}
                         >
                             {loading ? (
@@ -582,14 +651,17 @@ export function AuthCard({
                             <Button
                                 type="button"
                                 variant="secondary"
-                                className="gap-2 w-full"
+                                className={cn(
+                                    "gap-2 w-full",
+                                    classNames?.secondaryButton
+                                )}
                                 onClick={() => setView(view == "magic-link" ? "login" : "magic-link")}
                                 disabled={!["signup", "login", "magic-link"].includes(view!)}
                             >
                                 {view == "magic-link" ? <LockIcon /> : <MailIcon />}
-                                {localization.provider_prefix}
+                                {localization.providerPrefix}
                                 {" "}
-                                {view == "magic-link" ? localization.password_provider : localization.magic_link_provider}
+                                {view == "magic-link" ? localization.passwordProvider : localization.magicLinkProvider}
                             </Button>
                         </div>
                     )}
@@ -603,7 +675,10 @@ export function AuthCard({
                             <Button
                                 type="button"
                                 variant="secondary"
-                                className="gap-2 w-full"
+                                className={cn(
+                                    "gap-2 w-full",
+                                    classNames?.secondaryButton
+                                )}
                                 onClick={async () => {
                                     const { error } = await (authClient.signIn as any).passkey({
                                         callbackURL
@@ -619,9 +694,9 @@ export function AuthCard({
                                 disabled={!["login", "magic-link"].includes(view!)}
                             >
                                 <Key />
-                                {localization.provider_prefix}
+                                {localization.providerPrefix}
                                 {" "}
-                                {localization.passkey_provider}
+                                {localization.passkeyProvider}
                             </Button>
                         </div>
                     )}
@@ -646,7 +721,10 @@ export function AuthCard({
                                         key={provider}
                                         type="button"
                                         variant="outline"
-                                        className="grow"
+                                        className={cn(
+                                            "grow",
+                                            classNames?.providerButton
+                                        )}
                                         disabled={loading || !["login", "signup", "magic-link"].includes(view!)}
                                         onClick={async () => {
                                             const { error } = await authClient.signIn.social({
@@ -666,7 +744,7 @@ export function AuthCard({
 
                                         {socialLayout == "vertical" && (
                                             <>
-                                                {localization.provider_prefix}
+                                                {localization.providerPrefix}
                                                 {" "}
                                                 {socialProvider.name}
                                             </>
@@ -680,13 +758,17 @@ export function AuthCard({
             </CardContent>
 
             {emailPassword && (
-                <CardFooter>
+                <CardFooter
+                    className={cn(
+                        classNames?.cardFooter
+                    )}
+                >
                     <div className="flex justify-center w-full border-t pt-4">
                         <p className="text-center text-sm text-muted-foreground">
                             {["signup", "forgot-password"].includes(view!) ? (
-                                localization.signup_footer
+                                localization.signupFooter
                             ) : (
-                                localization.login_footer
+                                localization.loginFooter
                             )}
 
                             <Button
@@ -694,7 +776,10 @@ export function AuthCard({
                                 type="button"
                                 variant="link"
                                 size="sm"
-                                className="text-sm px-1 h-fit underline text-foreground"
+                                className={cn(
+                                    "text-sm px-1 h-fit underline text-foreground",
+                                    classNames?.link
+                                )}
                                 onClick={() => disableRouting && setView(["signup", "forgot-password"].includes(view!) ? "login" : "signup")}
                             >
                                 {disableRouting ? (
