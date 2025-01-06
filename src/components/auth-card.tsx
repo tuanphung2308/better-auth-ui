@@ -109,7 +109,7 @@ export interface AuthCardProps {
     callbackURL?: string
     authPaths?: Partial<Record<AuthView, string>>
     toast?: (options: AuthToastOptions) => void
-    LinkComponent?: React.ComponentType<{ href: string, className?: string, children: ReactNode }>
+    LinkComponent?: React.ComponentType<{ href: string, to: string, className?: string, children: ReactNode }>
 }
 
 const hideElementClass = "opacity-0 scale-y-0 h-0 overflow-hidden -my-2"
@@ -412,7 +412,10 @@ export function AuthCard({
                                             {(disableRouting || view != "login") ? (
                                                 localization.forgot_password
                                             ) : (
-                                                <LinkComponent href={getPathname("forgot-password")}>
+                                                <LinkComponent
+                                                    href={getPathname("forgot-password")}
+                                                    to={getPathname("forgot-password")}
+                                                >
                                                     {localization.forgot_password}
                                                 </LinkComponent>
                                             )}
@@ -631,6 +634,10 @@ export function AuthCard({
                                 ) : (
                                     <LinkComponent
                                         href={["signup", "forgot-password"].includes(view!) ?
+                                            getPathname("login")
+                                            : getPathname("signup")
+                                        }
+                                        to={["signup", "forgot-password"].includes(view!) ?
                                             getPathname("login")
                                             : getPathname("signup")
                                         }
