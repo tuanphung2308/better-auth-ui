@@ -2,6 +2,10 @@
 
 Plug & play shadcn/ui animated auth components for better-auth.
 
+Coming Soon: Settings Cards, Email Templates
+
+[Demo](https://newtech.dev/login)
+
 ![better-auth-ui](screenshot.png)
 
 ## Installation
