@@ -97,6 +97,8 @@ export default App;
 
 ## AuthCard Props
 
+You can customize the AuthCard component by passing the following props:
+
 | Prop Name         | Type                                                                 | Description                                                                                       | Default Value               |
 |-------------------|----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|-----------------------------|
 | authClient        | `AuthClient`                                                         | The authentication client instance.                                                               | Required                    |
