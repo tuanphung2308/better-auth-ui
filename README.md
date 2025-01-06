@@ -66,7 +66,8 @@ export default function AuthPage() {
 
 To use Better Auth UI in a React project, follow these steps:
 
-Use disableRouting={true} if you don't want to use a dynamic path.
+Use `disableRouting={true}` if you don't want to use a dynamic path.
+Otherwise, navigate, pathname and LinkComponent are required.
 
 **Import and Use Components**:
 
