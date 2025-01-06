@@ -2,7 +2,9 @@
 
 Plug & play shadcn/ui animated auth components for better-auth.
 
-Coming Soon: Settings Cards, Email Templates
+Fully customizable, see the [AuthCard Props](#authcard-props) section for more details.
+
+Coming Soon: Settings Cards, Email Templates, NextUI Port
 
 [Demo](https://newtech.dev/login)
 
