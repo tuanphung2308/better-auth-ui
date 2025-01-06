@@ -53,7 +53,8 @@ export default function AuthPage() {
             <AuthCard 
                 authClient={authClient} 
                 nextRouter={nextRouter} 
-                LinkComponent={Link} 
+                toast={authToast}
+                LinkComponent={Link}
             />
         </div>
     );
