@@ -196,7 +196,7 @@ export function AuthCard({
     const isHydrated = useIsHydrated()
     localization = { ...defaultLocalization, ...localization }
     navigate = useMemo(() => navigate || nextRouter?.push || defaultNavigate, [navigate, nextRouter])
-    pathname = useMemo(() => pathname || nextRouter?.asPath, [pathname, nextRouter?.asPath])
+    pathname = useMemo(() => nextRouter?.isReady ? nextRouter.asPath : pathname, [pathname, nextRouter?.asPath, nextRouter?.isReady])
     socialLayout = useMemo(() => socialLayout || ((providers && providers.length > 2 && (emailPassword || magicLink)) ? "horizontal" : "vertical"), [socialLayout, providers, emailPassword, magicLink])
 
     const getAuthPath = useCallback((view: AuthView) => {
@@ -234,7 +234,7 @@ export function AuthCard({
         const authPath = getAuthPath(view)
         const currentPathname = isHydrated ? window.location.pathname : pathname
         const path = currentPathname?.split("/").slice(0, -1).join("/")
-        return `${path}/${authPath}` + (callbackURL != "/" ? `?callbackURL=${encodeURIComponent(callbackURL!)}` : "")
+        return `${path}/${authPath}` + ((callbackURL != "/" && isHydrated && new URLSearchParams(window.location.search).get("callbackURL")) ? `?callbackURL=${encodeURIComponent(callbackURL!)}` : "")
     }, [callbackURL, isHydrated, pathname, getAuthPath])
 
     const { data: sessionData, isPending: sessionPending } = authClient.useSession()
