@@ -29,6 +29,11 @@ content: [
 ## Usage
 
 ### Next.js App Router
+
+You must have shadcn/ui installed with CSS variables enabled.
+
+Note: Toast is totally optional, it will render errors inline if not provided. This example uses shadcn/ui Toast.
+
 `app/auth/[auth]/page.tsx`
 ```tsx
 import { authViews } from "@daveyplate/better-auth-ui"
