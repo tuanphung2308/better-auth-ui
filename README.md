@@ -6,7 +6,7 @@ Fully customizable, see the [AuthCard Props](#authcard-props) section for more d
 
 Coming Soon: Settings Cards, Email Templates, NextUI Port
 
-[Demo](https://newtech.dev/login)
+[Demo](https://newtech.dev/auth/login)
 
 ![better-auth-ui](screenshot.png)
 
