@@ -28,6 +28,12 @@ content: [
 
 ## Usage
 
+```
+When using a dynamic route it provides the following paths:
+["login", "signup", "logout", "magic-link", "forgot-password", "reset-password", "logout"]
+Customizable via authPaths prop.
+```
+
 ### Next.js App Router
 
 You must have shadcn/ui installed with CSS variables enabled.
@@ -112,10 +118,6 @@ export default function AuthView() {
 
 If you don't provide a toast function, the AuthCard 
 will render an inline Alert component for notifications.
-
-When using a dynamic route it provides the following paths:
-["login", "signup", "logout", "magic-link", "forgot-password", "reset-password", "logout"]
-Customizable via authPaths prop.
 
 `pages/auth/[auth].tsx`
 ```tsx
