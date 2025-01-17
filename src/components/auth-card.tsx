@@ -205,13 +205,15 @@ export function AuthCard({
     }, [authPaths])
 
     const currentPathView = useMemo(() => {
-        const path = pathname?.split("/").pop()?.split("?")[0]
+        const currentPathname = pathname || (isHydrated ? window.location.pathname : null)
+
+        const path = currentPathname?.split("/").pop()?.split("?")[0]
 
         const authPath = Object.keys(authPaths || {}).find((key) => authPaths?.[key as AuthView] == path)
         if (authPath) return authPath as AuthView
 
         if (authViews.includes(path as AuthView)) return path as AuthView
-    }, [pathname, authPaths])
+    }, [pathname, authPaths, isHydrated])
 
     callbackURL = useMemo(() => {
         if (callbackURL) return callbackURL
@@ -232,7 +234,7 @@ export function AuthCard({
 
     const getPathname = useCallback((view: AuthView) => {
         const authPath = getAuthPath(view)
-        const currentPathname = isHydrated ? window.location.pathname : pathname
+        const currentPathname = pathname || (isHydrated ? window.location.pathname : null)
         const path = currentPathname?.split("/").slice(0, -1).join("/")
         return `${path}/${authPath}` + ((callbackURL != "/" && isHydrated && new URLSearchParams(window.location.search).get("callbackURL")) ? `?callbackURL=${encodeURIComponent(callbackURL!)}` : "")
     }, [callbackURL, isHydrated, pathname, getAuthPath])
