@@ -4,7 +4,7 @@ Plug & play shadcn/ui animated auth components for better-auth.
 
 Fully customizable, see the [AuthCard Props](#authcard-props) section for more details.
 
-Coming Soon: App Router instructions, Settings Cards, Email Templates, NextUI Port
+Coming Soon: Settings Cards, Email Templates, NextUI Port
 
 [Demo](https://newtech.dev/login)
 
@@ -28,27 +28,42 @@ content: [
 
 ## Usage
 
-### Next.js Pages Router
-
-If you don't provide a toast function, the AuthCard 
-will render an inline Alert component for notifications.
-
-When using a dynamic route it provides the following paths:
-["login", "signup", "logout", "magic-link", "forgot-password", "reset-password", "logout"]
-Customizable via authPaths prop.
-
-`pages/auth/[auth].tsx`
+### Next.js App Router
+`app/auth/[auth]/page.tsx`
 ```tsx
-import { useCallback } from "react";
-import { AuthCard } from "@daveyplate/better-auth-ui";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import { useToast } from "@/hooks/use-toast";
-import { ToastAction } from "@/components/ui/toast";
+import { authViews } from "@daveyplate/better-auth-ui"
+import AuthView from "./auth-view"
+
+export function generateStaticParams() {
+    return authViews.map((auth) => ({ auth }))
+}
 
 export default function AuthPage() {
-    const nextRouter = useRouter();
-    const { toast } = useToast();
+    return <AuthView />
+}
+```
+
+`app/auth/[auth]/auth-view.tsx`
+```tsx
+"use client"
+
+import { useCallback } from "react"
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
+
+import { AuthCard, AuthToastOptions } from "@daveyplate/better-auth-ui"
+import { AuthToastOptions } from "@daveyplate/better-auth-ui"
+import { authClient } from "@/lib/auth-client"
+
+import { useToast } from "@/hooks/use-toast"
+import { ToastAction } from "@/components/ui/toast"
+
+export default function AuthView() {
+    const router = useRouter()
+    const pathname = usePathname()
+    const { toast } = useToast()
+
+    const callbackURL = "/"
 
     const authToast = useCallback((
         { variant, description, action }: AuthToastOptions
@@ -65,18 +80,94 @@ export default function AuthPage() {
                 </ToastAction>
             )
         })
-    }, [toast]);
+    }, [toast])
+
+    return (
+        <main className="flex flex-col items-center my-auto p-4">
+            <AuthCard
+                authClient={authClient}
+                pathname={pathname}
+                navigate={router.push}
+                providers={[
+                    "github",
+                ]}
+                toast={authToast}
+                callbackURL={callbackURL}
+                LinkComponent={Link}
+                disableAnimation={true}
+            />
+        </main>
+    )
+}
+```
+
+
+
+### Next.js Pages Router
+
+If you don't provide a toast function, the AuthCard 
+will render an inline Alert component for notifications.
+
+When using a dynamic route it provides the following paths:
+["login", "signup", "logout", "magic-link", "forgot-password", "reset-password", "logout"]
+Customizable via authPaths prop.
+
+`pages/auth/[auth].tsx`
+```tsx
+import { useCallback } from "react"
+import Link from "next/link"
+import { useRouter } from "next/router"
+
+import { AuthCard, authViews } from "@daveyplate/better-auth-ui"
+import { useToast } from "@/hooks/use-toast"
+import { ToastAction } from "@/components/ui/toast"
+
+export default function AuthPage() {
+    const nextRouter = useRouter()
+    const { toast } = useToast()
+
+    const callbackURL = "/"
+
+    const authToast = useCallback((
+        { variant, description, action }: AuthToastOptions
+    ) => {
+        toast({
+            variant,
+            description,
+            action: action && (
+                <ToastAction
+                    altText={action.label}
+                    onClick={action.onClick}
+                >
+                    {action.label}
+                </ToastAction>
+            )
+        })
+    }, [toast])
 
     return (
         <div className="flex justify-center items-center min-h-screen">
             <AuthCard 
                 authClient={authClient} 
-                nextRouter={nextRouter} 
+                nextRouter={nextRouter}
+                providers={[
+                    "github",
+                ]}
                 toast={authToast}
+                callbackURL={callbackURL}
                 LinkComponent={Link}
             />
         </div>
-    );
+    )
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+    return {
+        authViews.map((auth) => {
+            return { params: { auth } }
+        }),
+        fallback: false
+    }
 }
 ```
 
@@ -89,12 +180,12 @@ Otherwise, navigate, pathname and LinkComponent are required.
 
 `dynamic-auth-page-path.tsx`
 ```tsx
-import { AuthCard } from "@daveyplate/better-auth-ui";
-import { useNavigate, useLocation, NavLink } from "react-router-dom";
+import { useNavigate, useLocation, NavLink } from "react-router-dom"
+import { AuthCard } from "@daveyplate/better-auth-ui"
 
-function App() {
-    const navigate = useNavigate();
-    const location = useLocation();
+export default function AuthPage() {
+    const navigate = useNavigate()
+    const location = useLocation()
 
     return (
         <div className="flex justify-center items-center min-h-screen">
@@ -105,10 +196,8 @@ function App() {
                 LinkComponent={NavLink} 
             />
         </div>
-    );
+    )
 }
-
-export default App;
 ```
 
 ## AuthCard Props
