@@ -1,3 +1,5 @@
+"use client"
+
 import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { NextRouter } from "next/router"
 import { createAuthClient } from "better-auth/react"
@@ -38,11 +40,9 @@ import { AlertCircle, Eye, EyeOff, Key, Loader2, LockIcon, MailIcon } from "luci
 
 import { SocialProvider, socialProviders } from "../social-providers"
 import { useIsHydrated } from "../hooks/use-is-hydrated"
+import { AuthView, authViews } from "../auth-views"
 
 type AuthClient = ReturnType<typeof createAuthClient>
-
-export const authViews = ["login", "signup", "logout", "magic-link", "forgot-password", "reset-password", "logout"] as const
-export type AuthView = typeof authViews[number]
 
 const DefaultLink = (
     { href, className, children }: { href: string, className?: string, children: ReactNode }
@@ -194,6 +194,7 @@ export function AuthCard({
     const CardFooter = componentStyle == "new-york" ? CardFooterNewYork : CardFooterDefault
 
     const isHydrated = useIsHydrated()
+
     localization = { ...defaultLocalization, ...localization }
     navigate = useMemo(() => navigate || nextRouter?.push || defaultNavigate, [navigate, nextRouter])
     pathname = useMemo(() => nextRouter?.isReady ? nextRouter.asPath : pathname, [pathname, nextRouter?.asPath, nextRouter?.isReady])
@@ -204,14 +205,13 @@ export function AuthCard({
     }, [authPaths])
 
     const currentPathView = useMemo(() => {
-        const currentPathname = isHydrated ? window.location.pathname : pathname
-        const path = currentPathname?.split("/").pop()?.split("?")[0]
+        const path = pathname?.split("/").pop()?.split("?")[0]
 
         const authPath = Object.keys(authPaths || {}).find((key) => authPaths?.[key as AuthView] == path)
         if (authPath) return authPath as AuthView
 
         if (authViews.includes(path as AuthView)) return path as AuthView
-    }, [isHydrated, pathname, authPaths])
+    }, [pathname, authPaths])
 
     callbackURL = useMemo(() => {
         if (callbackURL) return callbackURL
