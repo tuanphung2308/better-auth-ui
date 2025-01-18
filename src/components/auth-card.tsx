@@ -35,7 +35,6 @@ import { Input as InputNewYork } from "../components/ui/new-york/input"
 import { Label as LabelDefault } from "../components/ui/label"
 import { Label as LabelNewYork } from "../components/ui/new-york/label"
 
-import { Icon } from "@iconify/react"
 import { AlertCircle, Eye, EyeOff, Key, Loader2, LockIcon, MailIcon } from "lucide-react"
 
 import { SocialProvider, socialProviders } from "../social-providers"
@@ -744,7 +743,7 @@ export function AuthCard({
                                             }
                                         }}
                                     >
-                                        <Icon icon={socialProvider.icon} />
+                                        {socialProvider.icon}
 
                                         {socialLayout == "vertical" && (
                                             <>
