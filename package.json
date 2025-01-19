@@ -9,6 +9,7 @@
     "src",
     "dist"
   ],
+  "exports": "./dist/index",
   "scripts": {
     "build": "rm -rf dist && tsc",
     "dev": "npm run build && tsc-watch --onSuccess \"npx eslint\"",
