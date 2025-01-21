@@ -400,8 +400,8 @@ export function AuthCard({
         if (["reset-password", "logout"].includes(view!)) return
 
         if (sessionData && !(sessionData.user as Record<string, unknown>).isAnonymous) {
-            appRouter?.refresh()
             navigate(callbackURL)
+            appRouter?.refresh()
         }
     }, [callbackURL, navigate, sessionData, view, appRouter])
 
