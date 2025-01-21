@@ -98,7 +98,7 @@ export default function AuthView() {
             <AuthCard
                 authClient={authClient}
                 pathname={pathname}
-                navigate={router.push}
+                appRouter={router}
                 providers={[
                     "github",
                 ]}

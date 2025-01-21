@@ -40,6 +40,7 @@ import { AlertCircle, Eye, EyeOff, Key, Loader2, LockIcon, MailIcon } from "luci
 import { SocialProvider, socialProviders } from "../social-providers"
 import { useIsHydrated } from "../hooks/use-is-hydrated"
 import { AuthView, authViews } from "../auth-views"
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
 
 type AuthClient = ReturnType<typeof createAuthClient>
 
@@ -130,6 +131,7 @@ export interface AuthCardProps {
     navigate?: (url: string) => void
     pathname?: string
     nextRouter?: NextRouter
+    appRouter?: AppRouterInstance
     initialView?: AuthView
     emailPassword?: boolean
     username?: boolean
@@ -158,6 +160,7 @@ export function AuthCard({
     navigate,
     pathname,
     nextRouter,
+    appRouter,
     initialView,
     emailPassword = true,
     forgotPassword = true,
@@ -195,7 +198,7 @@ export function AuthCard({
     const isHydrated = useIsHydrated()
 
     localization = { ...defaultLocalization, ...localization }
-    navigate = useMemo(() => navigate || nextRouter?.push || defaultNavigate, [navigate, nextRouter])
+    navigate = useMemo(() => navigate || nextRouter?.push || appRouter?.push || defaultNavigate, [navigate, nextRouter, appRouter])
     pathname = useMemo(() => nextRouter?.isReady ? nextRouter.asPath : pathname, [pathname, nextRouter?.asPath, nextRouter?.isReady])
     socialLayout = useMemo(() => socialLayout || ((providers && providers.length > 2 && (emailPassword || magicLink)) ? "horizontal" : "vertical"), [socialLayout, providers, emailPassword, magicLink])
 
@@ -397,9 +400,10 @@ export function AuthCard({
         if (["reset-password", "logout"].includes(view!)) return
 
         if (sessionData && !(sessionData.user as Record<string, unknown>).isAnonymous) {
+            appRouter?.refresh()
             navigate(callbackURL)
         }
-    }, [callbackURL, navigate, sessionData, view])
+    }, [callbackURL, navigate, sessionData, view, appRouter])
 
     if (view == "logout") {
         return <Loader2 className="animate-spin" />
