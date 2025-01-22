@@ -1,6 +1,6 @@
 "use client"
 
-import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useState } from "react"
+import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { NextRouter } from "next/router"
 import { createAuthClient } from "better-auth/react"
 
@@ -196,6 +196,7 @@ export function AuthCard({
     const CardFooter = componentStyle == "new-york" ? CardFooterNewYork : CardFooterDefault
 
     const isHydrated = useIsHydrated()
+    const signingOut = useRef(false)
 
     localization = { ...defaultLocalization, ...localization }
     navigate = useMemo(() => navigate || nextRouter?.push || appRouter?.push || defaultNavigate, [navigate, nextRouter, appRouter])
@@ -392,10 +393,13 @@ export function AuthCard({
 
     useEffect(() => {
         if (view != "logout") return
+        if (signingOut.current) return
 
+        signingOut.current = true
         authClient.signOut().then(() => {
             navigate(callbackURL)
             appRouter?.refresh()
+            signingOut.current = false
         })
     }, [authClient, view, navigate, appRouter, callbackURL])
 
