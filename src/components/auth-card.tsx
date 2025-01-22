@@ -241,7 +241,6 @@ export function AuthCard({
         return `${path}/${authPath}` + ((callbackURL != "/" && isHydrated && new URLSearchParams(window.location.search).get("callbackURL")) ? `?callbackURL=${encodeURIComponent(callbackURL!)}` : "")
     }, [callbackURL, isHydrated, pathname, getAuthPath])
 
-    const { data: sessionData, isPending: sessionPending } = authClient.useSession()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [name, setName] = useState("")
@@ -267,6 +266,11 @@ export function AuthCard({
             case "login": {
                 const { error } = await authClient.signIn.email({ email, password })
                 apiError = error
+
+                if (!error) {
+                    navigate(callbackURL)
+                    appRouter?.refresh()
+                }
 
                 break
             }
@@ -389,21 +393,10 @@ export function AuthCard({
     useEffect(() => {
         if (view != "logout") return
 
-        if (sessionData && !(sessionData.user as Record<string, unknown>).isAnonymous) {
-            authClient.signOut()
-        } else if (!sessionPending) {
+        authClient.signOut().then(() => {
             setView("login")
-        }
-    }, [authClient, sessionData, sessionPending, view])
-
-    useEffect(() => {
-        if (["reset-password", "logout"].includes(view!)) return
-
-        if (sessionData && !(sessionData.user as Record<string, unknown>).isAnonymous) {
-            navigate(callbackURL)
-            appRouter?.refresh()
-        }
-    }, [callbackURL, navigate, sessionData, view, appRouter])
+        })
+    }, [authClient, view])
 
     if (view == "logout") {
         return <Loader2 className="animate-spin" />
