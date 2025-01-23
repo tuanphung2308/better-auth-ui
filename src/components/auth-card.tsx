@@ -271,9 +271,9 @@ export function AuthCard({
                 apiError = error
 
                 if (!error) {
+                    onSessionChange?.()
                     navigate(callbackURL)
                     appRouter?.refresh()
-                    onSessionChange?.()
                 }
 
                 break
@@ -283,9 +283,9 @@ export function AuthCard({
 
                 if (!error) {
                     if (data?.token) {
+                        onSessionChange?.()
                         navigate(callbackURL)
                         appRouter?.refresh()
-                        onSessionChange?.()
                     } else {
                         setEmail("")
                         setPassword("")
@@ -417,9 +417,9 @@ export function AuthCard({
 
         signingOut.current = true
         authClient.signOut().then(() => {
+            onSessionChange?.()
             setView("login")
             appRouter?.refresh()
-            onSessionChange?.()
             signingOut.current = false
         })
     }, [authClient, view, appRouter, onSessionChange])
