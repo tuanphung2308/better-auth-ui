@@ -149,6 +149,7 @@ export interface AuthCardProps {
     classNames?: Partial<AuthClassNames>
     componentStyle?: "default" | "new-york"
     toast?: (options: AuthToastOptions) => void
+    onSessionChange?: () => void
     LinkComponent?: React.ComponentType<{ href: string, to: any, className?: string, children: ReactNode }>
 }
 
@@ -176,6 +177,7 @@ export function AuthCard({
     authPaths,
     classNames,
     componentStyle = "default",
+    onSessionChange,
     toast,
     LinkComponent = DefaultLink
 }: AuthCardProps) {
@@ -271,12 +273,30 @@ export function AuthCard({
                 if (!error) {
                     navigate(callbackURL)
                     appRouter?.refresh()
+                    onSessionChange?.()
                 }
 
                 break
             }
             case "signup": {
-                const { error } = await authClient.signUp.email({ email, password, name, callbackURL })
+                const { data, error } = await authClient.signUp.email({ email, password, name, callbackURL })
+
+                if (!error) {
+                    if (data?.token) {
+                        navigate(callbackURL)
+                        appRouter?.refresh()
+                        onSessionChange?.()
+                    } else {
+                        setEmail("")
+                        setPassword("")
+                        setView("login")
+                        setAuthToast({
+                            description: localization.verification_link_email!,
+                            variant: "default"
+                        })
+                    }
+                }
+
                 apiError = error
 
                 break
@@ -397,11 +417,12 @@ export function AuthCard({
 
         signingOut.current = true
         authClient.signOut().then(() => {
-            navigate(callbackURL)
+            setView("login")
             appRouter?.refresh()
+            onSessionChange?.()
             signingOut.current = false
         })
-    }, [authClient, view, navigate, appRouter, callbackURL])
+    }, [authClient, view, appRouter, onSessionChange])
 
     if (view == "logout") {
         return <Loader2 className="animate-spin" />
