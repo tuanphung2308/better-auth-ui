@@ -418,11 +418,11 @@ export function AuthCard({
         signingOut.current = true
         authClient.signOut().then(() => {
             onSessionChange?.()
-            setView("login")
+            navigate(callbackURL)
             appRouter?.refresh()
             signingOut.current = false
         })
-    }, [authClient, view, appRouter, onSessionChange])
+    }, [authClient, view, appRouter, onSessionChange, navigate, callbackURL])
 
     if (view == "logout") {
         return <Loader2 className="animate-spin" />
