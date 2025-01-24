@@ -273,7 +273,9 @@ export function AuthCard({
                 if (!error) {
                     onSessionChange?.()
                     navigate(callbackURL)
-                    appRouter?.refresh()
+                    setTimeout(() => {
+                        appRouter?.refresh()
+                    }, 0)
                 }
 
                 break
@@ -285,7 +287,10 @@ export function AuthCard({
                     if (data?.token) {
                         onSessionChange?.()
                         navigate(callbackURL)
-                        appRouter?.refresh()
+
+                        setTimeout(() => {
+                            appRouter?.refresh()
+                        }, 0)
                     } else {
                         setEmail("")
                         setPassword("")
