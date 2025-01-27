@@ -149,7 +149,6 @@ export interface AuthCardProps {
     classNames?: Partial<AuthClassNames>
     componentStyle?: "default" | "new-york"
     toast?: (options: AuthToastOptions) => void
-    onSessionChange?: () => void
     LinkComponent?: React.ComponentType<{ href: string, to: any, className?: string, children: ReactNode }>
 }
 
@@ -177,7 +176,6 @@ export function AuthCard({
     authPaths,
     classNames,
     componentStyle = "default",
-    onSessionChange,
     toast,
     LinkComponent = DefaultLink
 }: AuthCardProps) {
@@ -267,16 +265,8 @@ export function AuthCard({
 
         switch (view) {
             case "login": {
-                const { error } = await authClient.signIn.email({ email, password })
+                const { error } = await authClient.signIn.email({ email, password, callbackURL })
                 apiError = error
-
-                if (!error) {
-                    onSessionChange?.()
-                    navigate(callbackURL)
-                    setTimeout(() => {
-                        appRouter?.refresh()
-                    }, 0)
-                }
 
                 break
             }
@@ -284,14 +274,7 @@ export function AuthCard({
                 const { data, error } = await authClient.signUp.email({ email, password, name, callbackURL })
 
                 if (!error) {
-                    if (data?.token) {
-                        onSessionChange?.()
-                        navigate(callbackURL)
-
-                        setTimeout(() => {
-                            appRouter?.refresh()
-                        }, 0)
-                    } else {
+                    if (!data?.token) {
                         setEmail("")
                         setPassword("")
                         setView("login")
@@ -422,14 +405,9 @@ export function AuthCard({
 
         signingOut.current = true
         authClient.signOut().finally(() => {
-            onSessionChange?.()
-            setView("login")
-
-            setTimeout(() => {
-                appRouter?.refresh()
-            }, 0)
+            window.location.href = callbackURL
         })
-    }, [authClient, view, appRouter, onSessionChange])
+    }, [authClient, view, callbackURL])
 
     if (view == "logout") {
         return <Loader2 className="animate-spin" />
