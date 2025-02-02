@@ -148,7 +148,7 @@ export interface AuthCardProps {
     authPaths?: Partial<Record<AuthView, string>>
     classNames?: Partial<AuthClassNames>
     componentStyle?: "default" | "new-york"
-    onSessionChange?: () => void,
+    onSessionChange?: () => Promise<void>,
     toast?: (options: AuthToastOptions) => void
     LinkComponent?: React.ComponentType<{ href: string, to: any, className?: string, children: ReactNode }>
 }
@@ -270,7 +270,7 @@ export function AuthCard({
                 const { error } = await authClient.signIn.email({ email, password, callbackURL })
                 apiError = error
 
-                if (!error) onSessionChange?.()
+                if (!error) await onSessionChange?.()
 
                 break
             }
@@ -287,7 +287,7 @@ export function AuthCard({
                             variant: "default"
                         })
                     } else {
-                        onSessionChange?.()
+                        await onSessionChange?.()
                     }
                 }
 
@@ -308,7 +308,7 @@ export function AuthCard({
                         description: localization.magic_link_email!,
                         variant: "default"
                     })
-                    onSessionChange?.()
+                    await onSessionChange?.()
                 }
 
                 break
@@ -415,8 +415,8 @@ export function AuthCard({
         if (signingOut.current) return
 
         signingOut.current = true
-        authClient.signOut().finally(() => {
-            onSessionChange?.()
+        authClient.signOut().finally(async () => {
+            await onSessionChange?.()
             window.location.href = callbackURL
         })
     }, [authClient, view, callbackURL, onSessionChange])
