@@ -148,7 +148,7 @@ export interface AuthCardProps {
     authPaths?: Partial<Record<AuthView, string>>
     classNames?: Partial<AuthClassNames>
     componentStyle?: "default" | "new-york"
-    onSessionChange?: () => Promise<void>,
+    onSessionChange?: () => void,
     toast?: (options: AuthToastOptions) => void
     LinkComponent?: React.ComponentType<{ href: string, to: any, className?: string, children: ReactNode }>
 }
@@ -267,15 +267,18 @@ export function AuthCard({
 
         switch (view) {
             case "login": {
-                const { error } = await authClient.signIn.email({ email, password, callbackURL })
+                const { error } = await authClient.signIn.email({ email, password })
                 apiError = error
 
-                if (!error) await onSessionChange?.()
+                if (!error) {
+                    navigate(callbackURL)
+                    onSessionChange?.()
+                }
 
                 break
             }
             case "signup": {
-                const { data, error } = await authClient.signUp.email({ email, password, name, callbackURL })
+                const { data, error } = await authClient.signUp.email({ email, password, name })
 
                 if (!error) {
                     if (!data?.token) {
@@ -287,7 +290,8 @@ export function AuthCard({
                             variant: "default"
                         })
                     } else {
-                        await onSessionChange?.()
+                        navigate(callbackURL)
+                        onSessionChange?.()
                     }
                 }
 
@@ -308,7 +312,6 @@ export function AuthCard({
                         description: localization.magic_link_email!,
                         variant: "default"
                     })
-                    await onSessionChange?.()
                 }
 
                 break
@@ -416,10 +419,10 @@ export function AuthCard({
 
         signingOut.current = true
         authClient.signOut().finally(async () => {
-            await onSessionChange?.()
-            window.location.href = callbackURL
+            navigate(callbackURL)
+            onSessionChange?.()
         })
-    }, [authClient, view, callbackURL, onSessionChange])
+    }, [authClient, view, callbackURL, onSessionChange, navigate])
 
     if (view == "logout") {
         return <Loader2 className="animate-spin" />
@@ -760,8 +763,6 @@ export function AuthCard({
                                                     description: error.message || error.statusText,
                                                     variant: "destructive"
                                                 })
-                                            } else {
-                                                onSessionChange?.()
                                             }
                                         }}
                                     >
