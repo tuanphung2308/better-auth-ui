@@ -40,6 +40,8 @@ You must have shadcn/ui installed with CSS variables enabled.
 
 Note: Toast is totally optional, it will render errors inline if not provided. This example uses shadcn/ui Toast.
 
+If you are using protected middleware routes, `onSessionChange={() => router.refresh()}` is required to clear the router cache, otherwise the user won't be able to navigate to those pages until refreshing.
+
 `app/auth/[auth]/page.tsx`
 ```tsx
 import { authViews } from "@daveyplate/better-auth-ui"
@@ -74,7 +76,7 @@ export default function AuthView() {
     const pathname = usePathname()
     const { toast } = useToast()
 
-    const callbackURL = "/"
+    const redirectTo = "/"
 
     const authToast = useCallback((
         { variant, description, action }: AuthToastOptions
@@ -103,9 +105,10 @@ export default function AuthView() {
                     "github",
                 ]}
                 toast={authToast}
-                callbackURL={callbackURL}
+                redirectTo={redirectTo}
                 LinkComponent={Link}
                 disableAnimation={true}
+                onSessionChange={() => router.refresh()}
             />
         </main>
     )
@@ -133,7 +136,7 @@ export default function AuthPage() {
     const nextRouter = useRouter()
     const { toast } = useToast()
 
-    const callbackURL = "/"
+    const redirectTo = "/"
 
     const authToast = useCallback((
         { variant, description, action }: AuthToastOptions
@@ -161,7 +164,7 @@ export default function AuthPage() {
                     "github",
                 ]}
                 toast={authToast}
-                callbackURL={callbackURL}
+                redirectTo={redirectTo}
                 LinkComponent={Link}
             />
         </div>
@@ -229,7 +232,8 @@ You can customize the AuthCard component by passing the following props:
 | disableRouting    | `boolean`                                                            | Disable internal routing.                                                                         | `false`                     |
 | disableAnimation  | `boolean`                                                            | Disable animations.                                                                               | `false`                     |
 | signUpWithName    | `boolean`                                                            | Enable name field for signup.                                                                     | `false`                     |
-| callbackURL       | `string`                                                             | URL to redirect to after authentication.                                                          | `"/"`                       |
+| redirectTo       | `string`                                                             | URL to client side navigate to after login, sign up or sign out. Defaults to `"/"`                                                          | `"/"`                       |
+| callbackURL       | `string`                                                             | URL to hard navigate to after clicking on link in email, using passkey or connecting a provider, defaults to redirectTo.                                                          | `redirectTo`                       |
 | authPaths         | `Record<AuthView, string>`                                  | Custom paths for authentication views.                                                            | `{}`                        |
 | classNames        | `Record<string, string>`                                            | Custom class names for the component elements.                                                    | `{}`                        |
 | componentStyle    | `"default" \| "new-york"`                                            | Style variant for the component.                                                                  | `"default"`                 |
