@@ -708,9 +708,13 @@ export function AuthCard({
                                     classNames?.secondaryButton
                                 )}
                                 onClick={async () => {
+                                    setLoading(true)
+
                                     const { error } = await (authClient.signIn as any).passkey({
                                         callbackURL
                                     })
+
+                                    setLoading(false)
 
                                     if (error) {
                                         setAuthToast({
@@ -755,10 +759,14 @@ export function AuthCard({
                                         )}
                                         disabled={loading || !["login", "signup", "magic-link"].includes(view!)}
                                         onClick={async () => {
+                                            setLoading(true)
+
                                             const { error } = await authClient.signIn.social({
                                                 provider,
                                                 callbackURL
                                             })
+
+                                            setLoading(false)
 
                                             if (error) {
                                                 setAuthToast({
