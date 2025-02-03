@@ -144,6 +144,7 @@ export interface AuthCardProps {
     disableRouting?: boolean
     disableAnimation?: boolean
     signUpWithName?: boolean
+    redirectTo?: string
     callbackURL?: string
     authPaths?: Partial<Record<AuthView, string>>
     classNames?: Partial<AuthClassNames>
@@ -173,6 +174,7 @@ export function AuthCard({
     disableRouting,
     disableAnimation,
     signUpWithName,
+    redirectTo,
     callbackURL,
     authPaths,
     classNames,
@@ -220,29 +222,29 @@ export function AuthCard({
         if (authViews.includes(path as AuthView)) return path as AuthView
     }, [pathname, authPaths, isHydrated])
 
-    callbackURL = useMemo(() => {
-        if (callbackURL) return callbackURL
+    redirectTo = useMemo(() => {
+        if (redirectTo) return redirectTo
 
-        if (nextRouter?.query?.callbackURL) {
-            return nextRouter.query.callbackURL as string
+        if (nextRouter?.query?.redirectTo) {
+            return nextRouter.query.redirectTo as string
         }
 
         if (isHydrated) {
             const queryString = window.location.search
             const urlParams = new URLSearchParams(queryString)
-            const callbackURLParam = urlParams.get("callbackURL")
-            if (callbackURLParam) return callbackURLParam
+            const redirectToParam = urlParams.get("redirectTo")
+            if (redirectToParam) return redirectToParam
         }
 
         return "/"
-    }, [callbackURL, nextRouter?.query?.callbackURL, isHydrated])
+    }, [redirectTo, nextRouter?.query?.redirectTo, isHydrated])
 
     const getPathname = useCallback((view: AuthView) => {
         const authPath = getAuthPath(view)
         const currentPathname = pathname || (isHydrated ? window.location.pathname : null)
         const path = currentPathname?.split("/").slice(0, -1).join("/")
-        return `${path}/${authPath}` + ((callbackURL != "/" && isHydrated && new URLSearchParams(window.location.search).get("callbackURL")) ? `?callbackURL=${encodeURIComponent(callbackURL!)}` : "")
-    }, [callbackURL, isHydrated, pathname, getAuthPath])
+        return `${path}/${authPath}` + ((redirectTo != "/" && isHydrated && new URLSearchParams(window.location.search).get("redirectTo")) ? `?redirectTo=${encodeURIComponent(redirectTo!)}` : "")
+    }, [redirectTo, isHydrated, pathname, getAuthPath])
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -271,14 +273,14 @@ export function AuthCard({
                 apiError = error
 
                 if (!error) {
-                    navigate(callbackURL)
+                    navigate(redirectTo)
                     onSessionChange?.()
                 }
 
                 break
             }
             case "signup": {
-                const { data, error } = await authClient.signUp.email({ email, password, name })
+                const { data, error } = await authClient.signUp.email({ email, password, name, callbackURL })
 
                 if (!error) {
                     if (!data?.token) {
@@ -290,7 +292,7 @@ export function AuthCard({
                             variant: "default"
                         })
                     } else {
-                        navigate(callbackURL)
+                        navigate(redirectTo)
                         onSessionChange?.()
                     }
                 }
@@ -419,10 +421,10 @@ export function AuthCard({
 
         signingOut.current = true
         authClient.signOut().finally(async () => {
-            navigate(callbackURL)
+            navigate(redirectTo)
             onSessionChange?.()
         })
-    }, [authClient, view, callbackURL, onSessionChange, navigate])
+    }, [authClient, view, redirectTo, onSessionChange, navigate])
 
     if (view == "logout") {
         return <Loader2 className="animate-spin" />
