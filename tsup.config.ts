@@ -3,8 +3,7 @@ import { defineConfig } from "tsup"
 export default defineConfig((env) => {
     return {
         entry: {
-            index: "./src/index.ts",
-            server: "./src/server.ts"
+            index: "./src/index.ts"
         },
         format: ["esm", "cjs"],
         splitting: true,

@@ -24,40 +24,21 @@ import {
 
 import { AuthView, authViews } from "../auth-views"
 import {
-    Alert as AlertDefault,
-    AlertDescription as AlertDescriptionDefault,
-    AlertTitle as AlertTitleDefault
-} from "../components/ui/alert"
-import { Button as ButtonDefault } from "../components/ui/button"
-import {
-    Card as CardDefault,
-    CardContent as CardContentDefault,
-    CardDescription as CardDescriptionDefault,
-    CardFooter as CardFooterDefault,
-    CardHeader as CardHeaderDefault,
-    CardTitle as CardTitleDefault
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle
 } from "../components/ui/card"
-import { Input as InputDefault } from "../components/ui/input"
-import { Label as LabelDefault } from "../components/ui/label"
-import {
-    Alert as AlertNewYork,
-    AlertDescription as AlertDescriptionNewYork,
-    AlertTitle as AlertTitleNewYork
-} from "../components/ui/new-york/alert"
-import { Button as ButtonNewYork } from "../components/ui/new-york/button"
-import {
-    Card as CardNewYork,
-    CardContent as CardContentNewYork,
-    CardDescription as CardDescriptionNewYork,
-    CardFooter as CardFooterNewYork,
-    CardHeader as CardHeaderNewYork,
-    CardTitle as CardTitleNewYork
-} from "../components/ui/new-york/card"
-import { Input as InputNewYork } from "../components/ui/new-york/input"
-import { Label as LabelNewYork } from "../components/ui/new-york/label"
+import { Input } from "../components/ui/input"
+import { Label } from "../components/ui/label"
 import { useIsHydrated } from "../hooks/use-is-hydrated"
 import { cn } from "../lib/utils"
 import { SocialProvider, socialProviders } from "../social-providers"
+
+import { Alert, AlertDescription, AlertTitle } from "./ui/alert"
+import { Button } from "./ui/button"
 
 type AuthClient = ReturnType<typeof createAuthClient>
 
@@ -200,22 +181,6 @@ export function AuthCard({
     toast,
     LinkComponent = DefaultLink
 }: AuthCardProps) {
-    const Input = componentStyle == "new-york" ? InputNewYork : InputDefault
-    const Label = componentStyle == "new-york" ? LabelNewYork : LabelDefault
-
-    const Alert = componentStyle == "new-york" ? AlertNewYork : AlertDefault
-    const AlertTitle = componentStyle == "new-york" ? AlertTitleNewYork : AlertTitleDefault
-    const AlertDescription = componentStyle == "new-york" ? AlertDescriptionNewYork : AlertDescriptionDefault
-
-    const Button = componentStyle == "new-york" ? ButtonNewYork : ButtonDefault
-
-    const Card = componentStyle == "new-york" ? CardNewYork : CardDefault
-    const CardContent = componentStyle == "new-york" ? CardContentNewYork : CardContentDefault
-    const CardHeader = componentStyle == "new-york" ? CardHeaderNewYork : CardHeaderDefault
-    const CardTitle = componentStyle == "new-york" ? CardTitleNewYork : CardTitleDefault
-    const CardDescription = componentStyle == "new-york" ? CardDescriptionNewYork : CardDescriptionDefault
-    const CardFooter = componentStyle == "new-york" ? CardFooterNewYork : CardFooterDefault
-
     const isHydrated = useIsHydrated()
     const signingOut = useRef(false)
 
