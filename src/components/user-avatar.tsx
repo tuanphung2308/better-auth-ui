@@ -2,41 +2,43 @@ import { UserIcon } from "lucide-react"
 import type { ComponentProps } from "react"
 
 import { cn } from "../lib/utils"
+import type { User } from "../types/user"
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 
-type User = {
-    email?: string | null,
-    name?: string | null,
-    firstName?: string | null,
-    fullName?: string | null,
-    isAnonymous?: boolean | null,
-    image?: string | null,
-    avatar?: string | null,
-    avatarUrl?: string | null,
+export interface UserAvatarClassNames {
+    base?: string,
+    image?: string,
+    fallback?: string,
+    fallbackIcon?: string
 }
 
-export function UserAvatar({ user, className, ...props }: { user?: User } & ComponentProps<typeof Avatar>) {
+export function UserAvatar({
+    user, classNames, className, ...props
+}: { user?: User, classNames?: UserAvatarClassNames } & ComponentProps<"div">) {
+    const name = user?.name || user?.fullName || user?.firstName || user?.email
+
     return (
         <Avatar
-            className={cn("bg-muted size-8", className)}
+            className={cn(className, classNames?.base)}
             {...props}
         >
             <AvatarImage
-                alt={user?.name || "Avatar"}
+                alt={name || "Avatar"}
+                className={classNames?.image}
                 src={(user && !user.isAnonymous)
                     ? (user.image || user.avatar || user.avatarUrl) as string
                     : undefined
                 }
             />
 
-            <AvatarFallback className="bg-transparent">
-                {firstTwoCharacters(user?.name || user?.fullName || user?.firstName || user?.email) || (
-                    <UserIcon className="w-[55%]" />
+            <AvatarFallback className={cn("uppercase", classNames?.fallback)} delayMs={10}>
+                {firstTwoCharacters(name) || (
+                    <UserIcon className={cn("w-[55%]", classNames?.fallbackIcon)} />
                 )}
             </AvatarFallback>
         </Avatar>
     )
 }
 
-const firstTwoCharacters = (name?: string | null) => name?.slice(0, 2).toUpperCase()
+const firstTwoCharacters = (name?: string | null) => name?.slice(0, 2)
