@@ -11,6 +11,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             tree={source.pageTree}
             {...baseOptions}
             disableThemeSwitch={true}
+            links={[]}
             sidebar={{
                 footer: (
                     <div className="md:-mt-8 w-32 me-auto">
