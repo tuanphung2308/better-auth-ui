@@ -6,9 +6,14 @@ import { cn } from "../lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 
 type User = {
+    email?: string | null,
     name?: string | null,
+    firstName?: string | null,
+    fullName?: string | null,
     isAnonymous?: boolean | null,
     image?: string | null,
+    avatar?: string | null,
+    avatarUrl?: string | null,
 }
 
 export function UserAvatar({ user, className, ...props }: { user?: User } & ComponentProps<typeof Avatar>) {
@@ -19,15 +24,15 @@ export function UserAvatar({ user, className, ...props }: { user?: User } & Comp
         >
             <AvatarImage
                 alt={user?.name || "Avatar"}
-                src={user && !user.isAnonymous
-                    ? user.image || undefined
+                src={(user && !user.isAnonymous)
+                    ? (user.image || user.avatar || user.avatarUrl) as string
                     : undefined
                 }
             />
 
             <AvatarFallback className="bg-transparent">
-                {firstTwoCharacters(user?.name) || (
-                    <UserIcon className="w-[50%]" />
+                {firstTwoCharacters(user?.name || user?.fullName || user?.firstName || user?.email) || (
+                    <UserIcon className="w-[55%]" />
                 )}
             </AvatarFallback>
         </Avatar>

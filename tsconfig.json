@@ -15,12 +15,7 @@
             "esnext"
         ],
         "module": "esnext",
-        "moduleResolution": "node",
-        "paths": {
-            "@/*": [
-                "./src/*"
-            ]
-        },
+        "moduleResolution": "node"
     },
     "include": [
         "src"
