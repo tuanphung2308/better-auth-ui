@@ -26,6 +26,15 @@ import { UserAvatar, type UserAvatarClassNames } from "../user-avatar"
 type AuthClient = ReturnType<typeof createAuthClient>
 type SessionData = AuthClient["$Infer"]["Session"]
 
+export const userButtonLocalization = {
+    account: "Account",
+    addAccount: "Add Account",
+    settings: "Settings",
+    signIn: "Sign In",
+    signOut: "Sign Out",
+    signUp: "Sign Up"
+}
+
 export interface UserButtonClassNames {
     trigger?: {
         base?: string
@@ -43,6 +52,7 @@ export function UserButtonPrimitive({
     classNames,
     deviceSessions,
     isPending,
+    localization,
     setActiveSession,
     user,
     ...props
@@ -50,10 +60,12 @@ export function UserButtonPrimitive({
     className?: string,
     classNames?: UserButtonClassNames,
     deviceSessions?: SessionData[],
-    isPending?: boolean
+    isPending?: boolean,
+    localization?: Partial<typeof userButtonLocalization>,
     setActiveSession?: (sessionToken: string) => void,
     user?: User
 } & React.ComponentProps<"div">) {
+    localization = { ...userButtonLocalization, ...localization }
     const { authPath, authViews, multiSession, settingsUrl, LinkComponent } = useContext(AuthUIContext)
 
     return (
@@ -88,7 +100,7 @@ export function UserButtonPrimitive({
                     </div>
                 ) : (
                     <div className="px-2 py-1 text-muted-foreground !font-light text-xs">
-                        Account
+                        {localization.account}
                     </div>
                 )}
 
@@ -99,16 +111,14 @@ export function UserButtonPrimitive({
                         <LinkComponent href={`${authPath}/${authViews.signIn}`} to={`${authPath}/${authViews.signIn}`}>
                             <DropdownMenuItem>
                                 <LogInIcon />
-
-                                Sign In
+                                {localization.signIn}
                             </DropdownMenuItem>
                         </LinkComponent>
 
                         <LinkComponent href={`${authPath}/${authViews.signUp}`} to={`${authPath}/${authViews.signUp}`}>
                             <DropdownMenuItem>
                                 <UserRoundPlus />
-
-                                Sign Up
+                                {localization.signUp}
                             </DropdownMenuItem>
                         </LinkComponent>
                     </>
@@ -117,16 +127,14 @@ export function UserButtonPrimitive({
                         <LinkComponent href={settingsUrl || `${authPath}/${authViews.settings}`} to={settingsUrl || `${authPath}/${authViews.settings}`}>
                             <DropdownMenuItem>
                                 <SettingsIcon />
-
-                                Settings
+                                {localization.settings}
                             </DropdownMenuItem>
                         </LinkComponent>
 
                         <LinkComponent href={`${authPath}/${authViews.signOut}`} to={`${authPath}/${authViews.signOut}`}>
                             <DropdownMenuItem>
                                 <LogOutIcon />
-
-                                Sign Out
+                                {localization.signOut}
                             </DropdownMenuItem>
                         </LinkComponent>
                     </>
@@ -166,8 +174,7 @@ export function UserButtonPrimitive({
                         <LinkComponent href={`${authPath}/${authViews.signIn}`} to={`${authPath}/${authViews.signIn}`}>
                             <DropdownMenuItem>
                                 <PlusCircleIcon />
-
-                                Add Account
+                                {localization.addAccount}
                             </DropdownMenuItem>
                         </LinkComponent>
                     </>

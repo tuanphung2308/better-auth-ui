@@ -5,7 +5,11 @@ import { useContext, useEffect, useState } from "react"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
 
-import { type UserButtonClassNames, UserButtonPrimitive } from "./primitives/user-button-primitive"
+import {
+    type UserButtonClassNames,
+    UserButtonPrimitive,
+    type userButtonLocalization
+} from "./primitives/user-button-primitive"
 
 type AuthClient = ReturnType<typeof createAuthClient>
 type SessionData = AuthClient["$Infer"]["Session"]
@@ -13,9 +17,12 @@ type SessionData = AuthClient["$Infer"]["Session"]
 export function UserButton({
     className,
     classNames,
+    localization
 }: {
     className?: string,
-    classNames?: UserButtonClassNames
+    classNames?: UserButtonClassNames,
+    localization?: Partial<typeof userButtonLocalization>
+
 }) {
     const { authClient } = useContext(AuthUIContext)
     const [deviceSessions, setDeviceSessions] = useState<SessionData[] | undefined>(undefined)
@@ -42,6 +49,7 @@ export function UserButton({
             classNames={classNames}
             deviceSessions={deviceSessions}
             isPending={sessionPending || activeSessionPending}
+            localization={localization}
             setActiveSession={(sessionToken) => {
                 setActiveSessionPending(true)
 
