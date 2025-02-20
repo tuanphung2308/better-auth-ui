@@ -1,0 +1,839 @@
+"use client"
+
+import { createAuthClient } from "better-auth/react"
+import {
+    AlertCircle,
+    Eye,
+    EyeOff,
+    Key,
+    Loader2,
+    LockIcon,
+    MailIcon
+} from "lucide-react"
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
+import { NextRouter } from "next/router"
+import {
+    FormEvent,
+    ReactNode,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState
+} from "react"
+
+import { AuthView, authViews } from "./src/auth-views"
+import { Alert, AlertDescription, AlertTitle } from "./src/components/ui/alert"
+import { Button } from "./src/components/ui/button"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle
+} from "./src/components/ui/card"
+import { Input } from "./src/components/ui/input"
+import { Label } from "./src/components/ui/label"
+import { useIsHydrated } from "./src/hooks/use-is-hydrated"
+import { cn } from "./src/lib/utils"
+import { SocialProvider, socialProviders } from "./src/social-providers"
+
+type AuthClient = ReturnType<typeof createAuthClient>
+
+const DefaultLink = (
+    { href, className, children }: { href: string, className?: string, children: ReactNode }
+) => (
+    <a className={className} href={href}>
+        {children}
+    </a>
+)
+
+const defaultNavigate = (href: string) => window.location.href = href
+
+export const defaultLocalization = {
+    login_title: "Login",
+    signup_title: "Sign up",
+    magic_link_title: "Magic link",
+    forgot_password_title: "Forgot password",
+    reset_password_title: "Reset password",
+    login_description: "Enter your email to login to your account",
+    signup_description: "Enter your information to create your account",
+    magic_link_description: "Enter your email to receive a magic link",
+    forgot_password_description: "Enter your email to reset your password",
+    reset_password_description: "Enter your new password below",
+    provider_description: "Choose a provider to continue",
+    email_label: "Email",
+    username_label: "Username",
+    name_label: "Name",
+    password_label: "Password",
+    email_placeholder: "m@example.com",
+    username_placeholder: "Username",
+    name_placeholder: "Name",
+    password_placeholder: "Password",
+    login_button: "Login",
+    signup_button: "Create account",
+    magic_link_button: "Send magic link",
+    forgot_password_button: "Send reset link",
+    reset_password_button: "Save new password",
+    provider_prefix: "Continue with",
+    magic_link_provider: "Magic Link",
+    passkey_provider: "Passkey",
+    password_provider: "Password",
+    login_footer: "Don't have an account?",
+    signup_footer: "Already have an account?",
+    forgot_password: "Forgot your password?",
+    login: "Login",
+    signup: "Sign up",
+    verification_link_email: "Check your email for the verification link",
+    reset_password_email: "Check your email for the password reset link",
+    magic_link_email: "Check your email for the magic link",
+    password_updated: "Password updated",
+    error: "Error",
+    alert: "Alert",
+    or_continue_with: "Or continue with",
+}
+
+export type AuthToastOptions = {
+    description: string
+    variant: "default" | "destructive"
+    action?: {
+        label: string
+        onClick: () => void
+    }
+}
+
+export type AuthClassNames = {
+    card?: string
+    cardHeader?: string
+    cardTitle?: string
+    cardDescription?: string
+    cardContent?: string
+    cardFooter?: string
+    form?: string
+    input?: string
+    label?: string
+    button?: string
+    secondaryButton?: string
+    providerButton?: string
+    link?: string
+    alert?: string
+    alertTitle?: string
+    alertDescription?: string
+    alertButton?: string
+}
+
+export interface AuthCardProps {
+    authClient: AuthClient,
+    navigate?: (url: string) => void
+    pathname?: string
+    nextRouter?: NextRouter
+    appRouter?: AppRouterInstance
+    initialView?: AuthView
+    emailPassword?: boolean
+    username?: boolean
+    forgotPassword?: boolean
+    magicLink?: boolean
+    passkey?: boolean
+    providers?: SocialProvider[]
+    socialLayout?: "horizontal" | "vertical"
+    localization?: Partial<typeof defaultLocalization>
+    disableRouting?: boolean
+    disableAnimation?: boolean
+    signUpWithName?: boolean
+    redirectTo?: string
+    callbackURL?: string
+    authPaths?: Partial<Record<AuthView, string>>
+    classNames?: Partial<AuthClassNames>
+    componentStyle?: "default" | "new-york"
+    onSessionChange?: () => void,
+    toast?: (options: AuthToastOptions) => void
+    LinkComponent?: React.ComponentType<{ href: string, to: unknown, className?: string, children: ReactNode }>
+}
+
+const hideElementClass = "opacity-0 scale-y-0 h-0 overflow-hidden -my-2"
+const transitionClass = "transition-all"
+
+export function AuthCard({
+    authClient,
+    navigate,
+    pathname,
+    nextRouter,
+    appRouter,
+    initialView,
+    emailPassword = true,
+    forgotPassword = true,
+    magicLink,
+    passkey,
+    providers,
+    socialLayout,
+    localization,
+    disableRouting,
+    disableAnimation,
+    signUpWithName,
+    redirectTo,
+    callbackURL,
+    authPaths,
+    classNames,
+    componentStyle = "default",
+    onSessionChange,
+    toast,
+    LinkComponent = DefaultLink
+}: AuthCardProps) {
+    const isHydrated = useIsHydrated()
+    const signingOut = useRef(false)
+
+    localization = { ...defaultLocalization, ...localization }
+    navigate = useMemo(() => navigate || nextRouter?.push || appRouter?.push || defaultNavigate, [navigate, nextRouter, appRouter])
+    pathname = useMemo(() => nextRouter?.isReady ? nextRouter.asPath : pathname, [pathname, nextRouter?.asPath, nextRouter?.isReady])
+    socialLayout = useMemo(() => socialLayout || ((providers && providers.length > 2 && (emailPassword || magicLink)) ? "horizontal" : "vertical"), [socialLayout, providers, emailPassword, magicLink])
+
+    const getAuthPath = useCallback((view: AuthView) => {
+        return authPaths?.[view] || view
+    }, [authPaths])
+
+    const currentPathView = useMemo(() => {
+        const currentPathname = pathname || (isHydrated ? window.location.pathname : null)
+
+        const path = currentPathname?.split("/").pop()?.split("?")[0]
+
+        const authPath = Object.keys(authPaths || {}).find((key) => authPaths?.[key as AuthView] == path)
+        if (authPath) return authPath as AuthView
+
+        if (authViews.includes(path as AuthView)) return path as AuthView
+    }, [pathname, authPaths, isHydrated])
+
+    redirectTo = useMemo(() => {
+        if (redirectTo) return redirectTo
+
+        if (nextRouter?.query?.redirectTo) {
+            return nextRouter.query.redirectTo as string
+        }
+
+        if (isHydrated) {
+            const queryString = window.location.search
+            const urlParams = new URLSearchParams(queryString)
+            const redirectToParam = urlParams.get("redirectTo")
+            if (redirectToParam) return redirectToParam
+        }
+
+        return "/"
+    }, [redirectTo, nextRouter?.query?.redirectTo, isHydrated])
+
+    const getPathname = useCallback((view: AuthView) => {
+        const authPath = getAuthPath(view)
+        const currentPathname = pathname || (isHydrated ? window.location.pathname : null)
+        const path = currentPathname?.split("/").slice(0, -1).join("/")
+        return `${path}/${authPath}` + ((redirectTo != "/" && isHydrated && new URLSearchParams(window.location.search).get("redirectTo")) ? `?redirectTo=${encodeURIComponent(redirectTo!)}` : "")
+    }, [redirectTo, isHydrated, pathname, getAuthPath])
+
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [name, setName] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [view, setView] = useState(disableRouting ? initialView : currentPathView)
+    const [authToast, setAuthToast] = useState<AuthToastOptions | null>(null)
+    const [showPassword, setShowPassword] = useState(false)
+
+    const onSubmit = async (e: FormEvent) => {
+        e?.preventDefault()
+
+        setAuthToast(null)
+        setLoading(true)
+
+        let apiError: {
+            code?: string
+            message?: string
+            status: number
+            statusText: string
+        } | null = null
+
+        switch (view) {
+            case "sign-in": {
+                const { error } = await authClient.signIn.email({ email, password })
+                apiError = error
+
+                if (!error) {
+                    navigate(redirectTo)
+                    onSessionChange?.()
+                }
+
+                break
+            }
+
+            case "sign-up": {
+                const { data, error } = await authClient.signUp.email({ email, password, name, callbackURL })
+
+                if (!error) {
+                    if (!data?.token) {
+                        setEmail("")
+                        setPassword("")
+                        setView("sign-in")
+                        setAuthToast({
+                            description: localization.verification_link_email!,
+                            variant: "default"
+                        })
+                    } else {
+                        navigate(redirectTo)
+                        onSessionChange?.()
+                    }
+                }
+
+                apiError = error
+
+                break
+            }
+
+            case "magic-link": {
+                // @ts-expect-error Optional plugin
+                const { error } = await authClient.signIn.magicLink({
+                    email,
+                    callbackURL
+                })
+
+                apiError = error
+
+                if (!error) {
+                    setEmail("")
+                    setAuthToast({
+                        description: localization.magic_link_email!,
+                        variant: "default"
+                    })
+                }
+
+                break
+            }
+
+            case "forgot-password": {
+                const { error } = await authClient.forgetPassword({
+                    email: email,
+                    redirectTo: getPathname("reset-password")
+                })
+                apiError = error
+
+                if (!error) {
+                    setView("sign-in")
+
+                    setAuthToast({
+                        description: localization.reset_password_email!,
+                        variant: "default"
+                    })
+                }
+
+                break
+            }
+
+            case "reset-password": {
+                const queryString = window.location.search
+                const urlParams = new URLSearchParams(queryString)
+                const token = urlParams.get("token")!
+                const { error } = await authClient.resetPassword({
+                    newPassword: password,
+                    token
+                })
+                apiError = error
+
+                setPassword("")
+
+                if (!error) {
+                    setView("sign-in")
+
+                    setAuthToast({
+                        description: localization.password_updated!,
+                        variant: "default"
+                    })
+                }
+
+                break
+            }
+        }
+
+        setLoading(false)
+
+        if (apiError) {
+            setAuthToast({
+                description: apiError.message || apiError.statusText,
+                variant: "destructive"
+            })
+        }
+    }
+
+    useEffect(() => {
+        if (!authToast || !toast) return
+
+        toast(authToast)
+    }, [toast, authToast])
+
+    useEffect(() => {
+        if (!currentPathView || disableRouting) return
+
+        if (currentPathView != view) setView(currentPathView)
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPathView, disableRouting])
+
+    useEffect(() => {
+        setAuthToast(null)
+        setShowPassword(false)
+
+        if (disableRouting || !view) return
+
+        if (currentPathView != view) navigate(getPathname(view))
+
+        if (view == "reset-password") {
+            const queryString = window.location.search
+            const urlParams = new URLSearchParams(queryString)
+            const token = urlParams.get("token")
+
+            if (token == "INVALID_TOKEN") {
+                setAuthToast({
+                    description: "Invalid token",
+                    variant: "destructive"
+                })
+
+                setView("forgot-password")
+            }
+
+            if (!token) setView("forgot-password")
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [disableRouting, view])
+
+    useEffect(() => {
+        if (!magicLink && view == "magic-link") setView("sign-in")
+
+        if (magicLink && !emailPassword && view == "sign-in") setView("magic-link")
+
+        if (["signup", "forgot-password", "reset-password"].includes(view!) && !emailPassword) setView(magicLink ? "magic-link" : "sign-in")
+    }, [magicLink, emailPassword, view])
+
+    useEffect(() => {
+        if (view != "sign-out") return
+
+        if (signingOut.current) return
+
+        signingOut.current = true
+        authClient.signOut().finally(async () => {
+            navigate(redirectTo)
+            onSessionChange?.()
+        })
+    }, [authClient, view, redirectTo, onSessionChange, navigate])
+
+    if (view == "sign-out") {
+        return <Loader2 className="animate-spin" />
+    }
+
+    return (
+        <Card
+            className={cn(!view && "opacity-0",
+                !disableAnimation && transitionClass,
+                "max-w-sm w-full",
+                classNames?.card
+            )}
+        >
+            <CardHeader
+                className={classNames?.cardHeader}
+            >
+                <CardTitle
+                    className={cn(
+                        "text-xl",
+                        classNames?.cardTitle
+                    )}
+                >
+                    {view && localization[`${view.replace("-", "_")}_title` as keyof typeof localization]}
+                </CardTitle>
+
+                <CardDescription
+                    className={classNames?.cardDescription}
+                >
+                    {(emailPassword || magicLink) ? (view && localization[`${view.replace("-", "_")}_description` as keyof typeof localization])
+                        : localization.provider_description}
+                </CardDescription>
+            </CardHeader>
+
+            <CardContent
+                className={classNames?.cardContent}
+            >
+                <form
+                    className={cn(
+                        "flex flex-col gap-4",
+                        classNames?.form
+                    )}
+                    onSubmit={onSubmit}
+                >
+                    {signUpWithName && (
+                        <div
+                            className={cn(view != "sign-up" ? hideElementClass : "h-[62px]",
+                                "grid gap-2"
+                            )}
+                        >
+                            <Label
+                                className={classNames?.label}
+                                htmlFor="name"
+                            >
+                                {localization.name_label}
+                            </Label>
+
+                            <Input
+                                className={classNames?.input}
+                                disabled={view != "sign-up"}
+                                id="name"
+                                placeholder={localization.name_placeholder}
+                                required
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                            />
+                        </div>
+                    )}
+
+                    {(emailPassword || magicLink) && (
+                        <div
+                            className={cn(
+                                view == "reset-password" ? hideElementClass : "h-[62px]",
+                                !disableAnimation && transitionClass,
+                                "grid gap-2"
+                            )}
+                        >
+                            <Label
+                                className={classNames?.label}
+                                htmlFor="email"
+                            >
+                                {localization.email_label}
+                            </Label>
+
+                            <Input
+                                className={classNames?.input}
+                                disabled={view == "reset-password"}
+                                id="email"
+                                placeholder={localization.email_placeholder}
+                                required
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+                    )}
+
+                    {emailPassword && (
+                        <div
+                            className={cn(
+                                (view == "magic-link" || view == "forgot-password") ? hideElementClass : "h-[62px]",
+                                !disableAnimation && transitionClass,
+                                "grid gap-2"
+                            )}
+                        >
+                            <div className="flex items-center relative">
+                                <Label
+                                    className={classNames?.label}
+                                    htmlFor="password"
+                                >
+                                    {localization.password_label}
+                                </Label>
+
+                                {forgotPassword && (
+                                    <div
+                                        className={cn(
+                                            view != "sign-in" && "opacity-0",
+                                            !disableAnimation && transitionClass,
+                                            "absolute right-0"
+                                        )}
+                                    >
+                                        <Button
+                                            asChild={!disableRouting || view != "sign-in"}
+                                            className={cn(
+                                                "text-sm px-1 h-fit text-foreground hover-underline",
+                                                classNames?.link
+                                            )}
+                                            disabled={view != "sign-in"}
+                                            size="sm"
+                                            tabIndex={view != "sign-in" ? -1 : undefined}
+                                            type="button"
+                                            variant="link"
+                                            onClick={() => disableRouting && setView("forgot-password")}
+                                        >
+                                            {(disableRouting || view != "sign-in") ? (
+                                                localization.forgot_password
+                                            ) : (
+                                                <LinkComponent
+                                                    href={getPathname("forgot-password")}
+                                                    to={getPathname("forgot-password")}
+                                                >
+                                                    {localization.forgot_password}
+                                                </LinkComponent>
+                                            )}
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="relative">
+                                <Input
+                                    autoComplete={["magic-link", "forgot-password"].includes(view!) ? "off" : (["signup", "reset-password"].includes(view!) ? "new-password" : "password")}
+                                    className={cn(
+                                        "pr-10",
+                                        classNames?.input
+                                    )}
+                                    disabled={["magic-link", "forgot-password"].includes(view!)}
+                                    id="password"
+                                    placeholder="Password"
+                                    required
+                                    type={showPassword ? "text" : "password"}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+
+                                <Button
+                                    className={cn(["login"].includes(view!) && "!opacity-0",
+                                        !disableAnimation && transitionClass,
+                                        "bg-transparent hover:bg-transparent text-foreground absolute right-0 top-0 h-full px-3 self-center"
+                                    )}
+                                    disabled={!password || ["login"].includes(view!)}
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? (
+                                        <EyeOff />
+                                    ) : (
+                                        <Eye />
+                                    )}
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+
+                    {!toast && (
+                        <div
+                            className={cn(!authToast && hideElementClass,
+                                !disableAnimation && transitionClass,
+                            )}
+                        >
+                            <Alert
+                                className={cn(
+                                    authToast?.variant == "destructive" ? "bg-destructive/10" : "bg-foreground/5",
+                                    classNames?.alert
+                                )}
+                                variant={authToast?.variant}
+                            >
+                                {authToast?.action && (
+                                    <Button
+                                        className={cn(
+                                            "absolute top-5 right-4 text-foreground",
+                                            classNames?.alertButton
+                                        )}
+                                        size="sm"
+                                        type="button"
+                                        variant="outline"
+                                        onClick={authToast?.action.onClick}
+                                    >
+                                        {authToast?.action.label}
+                                    </Button>
+                                )}
+
+                                <AlertCircle className="h-4 w-4" />
+
+                                <AlertTitle
+                                    className={classNames?.alertTitle}
+                                >
+                                    {authToast?.variant == "destructive" ? localization.error : localization.alert}
+                                </AlertTitle>
+
+                                <AlertDescription
+                                    className={classNames?.alertDescription}
+                                >
+                                    {authToast?.description}
+                                </AlertDescription>
+                            </Alert>
+                        </div>
+                    )}
+
+                    {(emailPassword || magicLink) && (
+                        <Button
+                            className={cn(
+                                "w-full",
+                                classNames?.button
+                            )}
+                            disabled={loading}
+                            type="submit"
+                        >
+                            {loading ? (
+                                <Loader2 className="animate-spin" />
+                            ) : (
+                                view && localization[`${view.replace("-", "_")}_button` as keyof typeof localization]
+                            )}
+                        </Button>
+                    )}
+
+                    {magicLink && emailPassword && (
+                        <div
+                            className={cn((!["signup", "login", "magic-link"].includes(view!)) ? hideElementClass : "h-10",
+                                !disableAnimation && transitionClass,
+                            )}
+                        >
+                            <Button
+                                className={cn(
+                                    "gap-2 w-full",
+                                    classNames?.secondaryButton
+                                )}
+                                disabled={!["signup", "login", "magic-link"].includes(view!)}
+                                type="button"
+                                variant="secondary"
+                                onClick={() => setView(view == "magic-link" ? "sign-in" : "magic-link")}
+                            >
+                                {view == "magic-link" ? <LockIcon /> : <MailIcon />}
+                                {localization.provider_prefix}
+                                {" "}
+                                {view == "magic-link" ? localization.password_provider : localization.magic_link_provider}
+                            </Button>
+                        </div>
+                    )}
+
+                    {passkey && (
+                        <div
+                            className={cn(!["login", "magic-link"].includes(view!) ? hideElementClass : "h-10",
+                                !disableAnimation && transitionClass,
+                            )}
+                        >
+                            <Button
+                                className={cn(
+                                    "gap-2 w-full",
+                                    classNames?.secondaryButton
+                                )}
+                                disabled={!["login", "magic-link"].includes(view!)}
+                                type="button"
+                                variant="secondary"
+                                onClick={async () => {
+                                    setLoading(true)
+
+                                    // @ts-expect-error Optional plugin
+                                    const { error } = await authClient.signIn.passkey({
+                                        callbackURL
+                                    })
+
+                                    setLoading(false)
+
+                                    if (error) {
+                                        setAuthToast({
+                                            description: error.message || error.statusText,
+                                            variant: "destructive"
+                                        })
+                                    }
+                                }}
+                            >
+                                <Key />
+                                {localization.provider_prefix}
+                                {" "}
+                                {localization.passkey_provider}
+                            </Button>
+                        </div>
+                    )}
+
+                    <div
+                        className={cn((!providers?.length || !["login", "signup", "magic-link"].includes(view!)) && hideElementClass,
+                            !disableAnimation && transitionClass,
+                            "flex flex-col gap-4"
+                        )}
+                    >
+                        <div
+                            className={cn(
+                                "w-full gap-2 flex items-center",
+                                "justify-between flex-wrap transition-all",
+                            )}
+                        >
+                            {providers?.map((provider) => {
+                                const socialProvider = socialProviders.find((p) => p.provider == provider)
+                                if (!socialProvider) return null
+                                return (
+                                    <Button
+                                        key={provider}
+                                        className={cn(
+                                            "grow",
+                                            classNames?.providerButton
+                                        )}
+                                        disabled={loading || !["login", "signup", "magic-link"].includes(view!)}
+                                        type="button"
+                                        variant="outline"
+                                        onClick={async () => {
+                                            setLoading(true)
+
+                                            const { error } = await authClient.signIn.social({
+                                                provider,
+                                                callbackURL
+                                            })
+
+                                            setLoading(false)
+
+                                            if (error) {
+                                                setAuthToast({
+                                                    description: error.message || error.statusText,
+                                                    variant: "destructive"
+                                                })
+                                            }
+                                        }}
+                                    >
+                                        {socialProvider.icon}
+
+                                        {socialLayout == "vertical" && (
+                                            <>
+                                                {localization.provider_prefix}
+                                                {" "}
+                                                {socialProvider.name}
+                                            </>
+                                        )}
+                                    </Button>
+                                )
+                            })}
+                        </div>
+                    </div>
+                </form>
+            </CardContent>
+
+            {emailPassword && (
+                <CardFooter
+                    className={cn(
+                        classNames?.cardFooter
+                    )}
+                >
+                    <div className="flex justify-center w-full border-t pt-4">
+                        <p className="text-center text-sm text-muted-foreground">
+                            {["signup", "forgot-password"].includes(view!) ? (
+                                localization.signup_footer
+                            ) : (
+                                localization.login_footer
+                            )}
+
+                            <Button
+                                asChild={!disableRouting}
+                                className={cn(
+                                    "text-sm px-1 h-fit underline text-foreground",
+                                    classNames?.link
+                                )}
+                                size="sm"
+                                type="button"
+                                variant="link"
+                                onClick={() => disableRouting && setView(["sign-up", "forgot-password"].includes(view!) ? "sign-in" : "sign-up")}
+                            >
+                                {disableRouting ? (
+                                    ["signup", "forgot-password"].includes(view!) ? localization.login : localization.signup
+                                ) : (
+                                    <LinkComponent
+                                        href={["signup", "forgot-password"].includes(view!) ?
+                                            getPathname("sign-in")
+                                            : getPathname("sign-up")
+                                        }
+                                        to={["signup", "forgot-password"].includes(view!) ?
+                                            getPathname("sign-in")
+                                            : getPathname("sign-up")
+                                        }
+                                    >
+                                        {["signup", "forgot-password"].includes(view!) ? localization.login : localization.signup}
+                                    </LinkComponent>
+                                )}
+                            </Button>
+                        </p>
+                    </div>
+                </CardFooter>
+            )}
+        </Card>
+    )
+}

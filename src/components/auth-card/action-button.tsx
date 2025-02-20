@@ -2,7 +2,7 @@ import { Loader2 } from "lucide-react"
 import { useFormStatus } from "react-dom"
 
 import { cn } from "../../lib/utils"
-import type { authCardLocalization } from "../new-auth-card"
+import type { authCardLocalization } from "../auth-card"
 import { Button } from "../ui/button"
 
 export function ActionButton({
@@ -23,9 +23,6 @@ export function ActionButton({
                 className
             )}
             disabled={pending}
-            name="action"
-            type="submit"
-            value="HAHAHAHA"
         >
             {pending ? (
                 <Loader2 className="animate-spin" />

@@ -2,7 +2,7 @@ import { useFormStatus } from "react-dom"
 
 import { cn } from "../../lib/utils"
 import type { socialProviders } from "../../social-providers"
-import type { authCardLocalization } from "../new-auth-card"
+import type { authCardLocalization } from "../auth-card"
 import { Button } from "../ui/button"
 
 export function ProviderButton({
@@ -26,6 +26,7 @@ export function ProviderButton({
             )}
             disabled={pending}
             formNoValidate
+            id="provider"
             name="provider"
             value={socialProvider.provider}
             variant="outline"
