@@ -18,7 +18,6 @@
         "moduleResolution": "node"
     },
     "include": [
-        "src",
-        "old-auth-card.tsx"
+        "src"
     ],
 }

@@ -49,7 +49,7 @@ export const authCardLocalization = {
     usernamePlaceholder: "Username"
 }
 
-export function NewAuthCard({
+export function AuthCard({
     className,
     emailPassword = true,
     localization,

@@ -26,7 +26,6 @@ export function ProviderButton({
             )}
             disabled={pending}
             formNoValidate
-            id="provider"
             name="provider"
             value={socialProvider.provider}
             variant="outline"
