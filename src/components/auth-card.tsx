@@ -46,6 +46,7 @@ export const authCardLocalization = {
     signUp: "Sign Up",
     signUpAction: "Create an account",
     signUpDescription: "Enter your information to create an account",
+    signUpEmail: "Check your email for the verification link",
     username: "Username",
     usernamePlaceholder: "Username"
 }
@@ -107,6 +108,7 @@ export function AuthCard({
 
         const email = formData.get("email") as string
         const password = formData.get("password") as string
+        const name = formData.get("name") || "" as string
 
         switch (authView) {
             case "signIn": {
@@ -129,6 +131,22 @@ export function AuthCard({
                     toast.error(error.message)
                 } else {
                     toast.success(localization.magicLinkEmail)
+                }
+
+                break
+            }
+
+            case "signUp": {
+                // @ts-expect-error We omit signUp from the authClient type to support additional fields
+                const { data, error } = await authClient.signUp.email({ email, password, name })
+
+                if (error) {
+                    toast.error(error.message)
+                } else if (data.token) {
+                    onSessionChange?.()
+                    navigate(redirectTo)
+                } else {
+                    toast.success(localization.signUpEmail)
                 }
 
                 break
