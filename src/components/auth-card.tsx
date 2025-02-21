@@ -53,6 +53,7 @@ export const authCardLocalization = {
 
 export function AuthCard({
     className,
+    callbackURL,
     emailPassword = true,
     localization,
     magicLink,
@@ -62,10 +63,10 @@ export function AuthCard({
     redirectTo = "/",
     signUpFields,
     socialLayout = "auto",
-    username,
     onSessionChange
 }: {
     className?: string,
+    callbackURL?: string,
     emailPassword?: boolean,
     localization?: Partial<typeof authCardLocalization>,
     magicLink?: boolean,
@@ -75,9 +76,9 @@ export function AuthCard({
     redirectTo?: string,
     signUpFields?: { field: string, label: string, required?: boolean }[],
     socialLayout?: "auto" | "horizontal" | "vertical",
-    username?: boolean,
     onSessionChange?: () => void,
 }) {
+    callbackURL = callbackURL || redirectTo
     localization = { ...authCardLocalization, ...localization }
 
     if (socialLayout == "auto") {
@@ -86,7 +87,7 @@ export function AuthCard({
 
     const slug = pathname?.split("/").pop()
 
-    const { authClient, authViews, navigate, LinkComponent } = useContext(AuthUIContext)
+    const { authClient, authViews, navigate, usernamePlugin, LinkComponent } = useContext(AuthUIContext)
 
     if (!Object.values(authViews).includes(slug!)) {
         console.error(`Invalid auth view: ${slug}`)
@@ -98,7 +99,7 @@ export function AuthCard({
         const provider = formData.get("provider") as SocialProvider
 
         if (provider) {
-            const { error } = await authClient.signIn.social({ provider, callbackURL: redirectTo })
+            const { error } = await authClient.signIn.social({ provider, callbackURL })
             if (error) {
                 toast.error(error.message)
             }
@@ -125,7 +126,7 @@ export function AuthCard({
 
             case "magicLink": {
                 // @ts-expect-error Optional plugin
-                const { error } = await authClient.signIn.magicLink({ email, callbackURL: redirectTo })
+                const { error } = await authClient.signIn.magicLink({ email, callbackURL })
 
                 if (error) {
                     toast.error(error.message)
@@ -138,7 +139,7 @@ export function AuthCard({
 
             case "signUp": {
                 // @ts-expect-error We omit signUp from the authClient type to support additional fields
-                const { data, error } = await authClient.signUp.email({ email, password, name })
+                const { data, error } = await authClient.signUp.email({ email, password, name, callbackURL })
 
                 if (error) {
                     toast.error(error.message)
@@ -167,7 +168,9 @@ export function AuthCard({
         }
     }, [authView, authClient, navigate, authViews.signIn, onSessionChange])
 
-    if (authView == "signOut") return <Loader2 className="animate-spin" />
+    if (authView == "signOut") return (
+        <Loader2 className="animate-spin" />
+    )
 
     return (
         <Card className={cn("max-w-sm w-full", className)}>
@@ -183,19 +186,36 @@ export function AuthCard({
 
             <CardContent>
                 <form action={formAction} className="grid gap-4">
-                    <div className="grid gap-2">
-                        <Label htmlFor="email">
-                            {localization.email}
-                        </Label>
+                    {usernamePlugin && ["signIn", "signUp"].includes(authView) && (
+                        <div className="grid gap-2">
+                            <Label htmlFor="username">
+                                {localization.username}
+                            </Label>
 
-                        <Input
-                            id="email"
-                            name="email"
-                            placeholder={localization.emailPlaceholder}
-                            required
-                            type="email"
-                        />
-                    </div>
+                            <Input
+                                id="username"
+                                name="username"
+                                placeholder={localization.usernamePlaceholder}
+                                required
+                            />
+                        </div>
+                    )}
+
+                    {(!usernamePlugin || ["signUp", "magicLink", "forgotPassword"].includes(authView)) && (
+                        <div className="grid gap-2">
+                            <Label htmlFor="email">
+                                {localization.email}
+                            </Label>
+
+                            <Input
+                                id="email"
+                                name="email"
+                                placeholder={localization.emailPlaceholder}
+                                required
+                                type="email"
+                            />
+                        </div>
+                    )}
 
                     {["signUp", "signIn"].includes(authView) && (
                         <div className="grid gap-2">
@@ -298,7 +318,7 @@ export function AuthCard({
             </CardContent>
 
             <CardFooter>
-                <div className="flex justify-center w-full border-t py-4">
+                <div className="flex justify-center w-full border-t pt-4 pb-2">
                     <p className="text-center text-sm text-muted-foreground">
                         {authView == "signIn" ? localization.dontHaveAnAccount : localization.alreadyHaveAnAccount}
                         {" "}
