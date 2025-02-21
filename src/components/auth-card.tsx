@@ -35,6 +35,8 @@ export const authCardLocalization = {
     magicLinkAction: "Send magic link",
     magicLinkDescription: "Enter your email to receive a magic link",
     magicLinkEmail: "Check your email for the magic link",
+    name: "Name",
+    namePlaceholder: "Name",
     passkey: "Passkey",
     password: "Password",
     passwordPlaceholder: "Password",
@@ -48,7 +50,8 @@ export const authCardLocalization = {
     signUpDescription: "Enter your information to create an account",
     signUpEmail: "Check your email for the verification link",
     username: "Username",
-    usernamePlaceholder: "Username"
+    usernameSignInPlaceholder: "Username or email",
+    usernameSignUpPlaceholder: "Username"
 }
 
 export function AuthCard({
@@ -61,7 +64,8 @@ export function AuthCard({
     pathname,
     providers = [],
     redirectTo = "/",
-    signUpFields,
+    //    signUpFields,
+    signUpWithName = false,
     socialLayout = "auto",
     onSessionChange
 }: {
@@ -74,7 +78,8 @@ export function AuthCard({
     pathname?: string,
     providers?: SocialProvider[],
     redirectTo?: string,
-    signUpFields?: { field: string, label: string, required?: boolean }[],
+    //   signUpFields?: { field: string, label: string, required?: boolean }[],
+    signUpWithName?: boolean,
     socialLayout?: "auto" | "horizontal" | "vertical",
     onSessionChange?: () => void,
 }) {
@@ -87,7 +92,7 @@ export function AuthCard({
 
     const slug = pathname?.split("/").pop()
 
-    const { authClient, authViews, navigate, usernamePlugin, LinkComponent } = useContext(AuthUIContext)
+    const { authClient, authViews, navigate, enableUsername, LinkComponent } = useContext(AuthUIContext)
 
     if (!Object.values(authViews).includes(slug!)) {
         console.error(`Invalid auth view: ${slug}`)
@@ -186,7 +191,21 @@ export function AuthCard({
 
             <CardContent>
                 <form action={formAction} className="grid gap-4">
-                    {usernamePlugin && ["signIn", "signUp"].includes(authView) && (
+                    {authView == "signUp" && signUpWithName && (
+                        <div className="grid gap-2">
+                            <Label htmlFor="name">
+                                {localization.name}
+                            </Label>
+
+                            <Input
+                                id="name"
+                                name="name"
+                                placeholder={localization.namePlaceholder}
+                            />
+                        </div>
+                    )}
+
+                    {enableUsername && ["signIn", "signUp"].includes(authView) && (
                         <div className="grid gap-2">
                             <Label htmlFor="username">
                                 {localization.username}
@@ -195,13 +214,13 @@ export function AuthCard({
                             <Input
                                 id="username"
                                 name="username"
-                                placeholder={localization.usernamePlaceholder}
+                                placeholder={authView == "signIn" ? localization.usernameSignInPlaceholder : localization.usernameSignUpPlaceholder}
                                 required
                             />
                         </div>
                     )}
 
-                    {(!usernamePlugin || ["signUp", "magicLink", "forgotPassword"].includes(authView)) && (
+                    {(!enableUsername || ["signUp", "magicLink", "forgotPassword"].includes(authView)) && (
                         <div className="grid gap-2">
                             <Label htmlFor="email">
                                 {localization.email}
