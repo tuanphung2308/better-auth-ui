@@ -34,6 +34,7 @@ export const authCardLocalization = {
     magicLink: "Magic Link",
     magicLinkAction: "Send magic link",
     magicLinkDescription: "Enter your email to receive a magic link",
+    magicLinkEmail: "Check your email for the magic link",
     passkey: "Passkey",
     password: "Password",
     passwordPlaceholder: "Password",
@@ -75,7 +76,6 @@ export function AuthCard({
     socialLayout?: "auto" | "horizontal" | "vertical",
     username?: boolean,
     onSessionChange?: () => void,
-
 }) {
     localization = { ...authCardLocalization, ...localization }
 
@@ -108,17 +108,31 @@ export function AuthCard({
         const email = formData.get("email") as string
         const password = formData.get("password") as string
 
-        if (authView == "signIn") {
-            const { error } = await authClient.signIn.email({ email, password })
-            if (error) {
-                toast.error(error.message)
-            } else {
-                onSessionChange?.()
-                navigate(redirectTo)
+        switch (authView) {
+            case "signIn": {
+                const { error } = await authClient.signIn.email({ email, password })
+                if (error) {
+                    toast.error(error.message)
+                } else {
+                    onSessionChange?.()
+                    navigate(redirectTo)
+                }
+
+                break
             }
-        } else {
-            // @ts-expect-error We omit signUp on authClient type for custom fields support
-            await authClient.signUp.email({ email, password })
+
+            case "magicLink": {
+                // @ts-expect-error Optional plugin
+                const { error } = await authClient.signIn.magicLink({ email, callbackURL: redirectTo })
+
+                if (error) {
+                    toast.error(error.message)
+                } else {
+                    toast.success(localization.magicLinkEmail)
+                }
+
+                break
+            }
         }
     }
 
