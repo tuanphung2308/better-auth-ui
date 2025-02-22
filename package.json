@@ -26,16 +26,6 @@
         "types": "./dist/tanstack.d.cts",
         "default": "./dist/tanstack.cjs"
       }
-    },
-    "./server": {
-      "import": {
-        "types": "./dist/server.d.ts",
-        "default": "./dist/server.js"
-      },
-      "require": {
-        "types": "./dist/server.d.cts",
-        "default": "./dist/server.cjs"
-      }
     }
   },
   "files": [

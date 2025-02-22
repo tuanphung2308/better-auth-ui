@@ -57,29 +57,29 @@ export const authCardLocalization = {
 export function AuthCard({
     className,
     callbackURL,
-    emailPassword = true,
+    disableCredentials,
+    enableMagicLink,
+    enableName,
+    enablePasskey,
     localization,
-    magicLink,
-    passkey,
     pathname,
     providers = [],
     redirectTo = "/",
     //    signUpFields,
-    signUpWithName = false,
     socialLayout = "auto",
     onSessionChange
 }: {
     className?: string,
     callbackURL?: string,
-    emailPassword?: boolean,
+    disableCredentials?: boolean,
+    enableMagicLink?: boolean,
+    enableName?: boolean,
+    enablePasskey?: boolean,
     localization?: Partial<typeof authCardLocalization>,
-    magicLink?: boolean,
-    passkey?: boolean,
     pathname?: string,
     providers?: SocialProvider[],
     redirectTo?: string,
     //   signUpFields?: { field: string, label: string, required?: boolean }[],
-    signUpWithName?: boolean,
     socialLayout?: "auto" | "horizontal" | "vertical",
     onSessionChange?: () => void,
 }) {
@@ -191,7 +191,7 @@ export function AuthCard({
 
             <CardContent>
                 <form action={formAction} className="grid gap-4">
-                    {authView == "signUp" && signUpWithName && (
+                    {authView == "signUp" && enableName && (
                         <div className="grid gap-2">
                             <Label htmlFor="name">
                                 {localization.name}
@@ -270,7 +270,7 @@ export function AuthCard({
                         localization={localization}
                     />
 
-                    {magicLink && emailPassword && (
+                    {enableMagicLink && !disableCredentials && (
                         <LinkComponent
                             href={authView == "magicLink" ? authViews.signIn : authViews.magicLink}
                             to={authView == "magicLink" ? authViews.signIn : authViews.magicLink}
@@ -320,7 +320,7 @@ export function AuthCard({
                                 })}
                             </div>
 
-                            {passkey && (
+                            {enablePasskey && (
                                 <Button
                                     className="w-full"
                                     variant="secondary"
