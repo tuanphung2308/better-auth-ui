@@ -1,7 +1,7 @@
 "use client"
 
 import { KeyIcon, Loader2, LockIcon, MailIcon } from "lucide-react"
-import { useContext, useEffect, useRef } from "react"
+import { useContext, useEffect, useMemo, useRef } from "react"
 import { toast } from "sonner"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
@@ -64,8 +64,7 @@ export function AuthCard({
     localization,
     pathname,
     providers = [],
-    redirectTo = "/",
-    //    signUpFields,
+    redirectTo: redirectToProp,
     socialLayout = "auto",
     onSessionChange
 }: {
@@ -79,10 +78,13 @@ export function AuthCard({
     pathname?: string,
     providers?: SocialProvider[],
     redirectTo?: string,
-    //   signUpFields?: { field: string, label: string, required?: boolean }[],
     socialLayout?: "auto" | "horizontal" | "vertical",
     onSessionChange?: () => void,
 }) {
+    const redirectTo = useMemo(() => {
+        return redirectToProp || new URLSearchParams(window.location.search).get("redirectTo") || "/"
+    }, [redirectToProp])
+
     callbackURL = callbackURL || redirectTo
     localization = { ...authCardLocalization, ...localization }
 
