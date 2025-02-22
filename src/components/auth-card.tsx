@@ -1,11 +1,11 @@
 "use client"
 
 import { KeyIcon, Loader2, LockIcon, MailIcon } from "lucide-react"
-import { useContext, useEffect, useMemo, useRef } from "react"
+import { useContext, useEffect, useRef } from "react"
 import { toast } from "sonner"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
-import { cn } from "../lib/utils"
+import { cn, isValidEmail } from "../lib/utils"
 import { type SocialProvider, socialProviders } from "../social-providers"
 
 import { ActionButton } from "./auth-card/action-button"
@@ -64,7 +64,7 @@ export function AuthCard({
     localization,
     pathname,
     providers = [],
-    redirectTo: redirectToProp,
+    redirectTo,
     socialLayout = "auto",
     onSessionChange
 }: {
@@ -81,11 +81,9 @@ export function AuthCard({
     socialLayout?: "auto" | "horizontal" | "vertical",
     onSessionChange?: () => void,
 }) {
-    const redirectTo = useMemo(() => {
-        return redirectToProp || new URLSearchParams(window.location.search).get("redirectTo") || "/"
-    }, [redirectToProp])
+    const getRedirectTo = () => redirectTo || new URLSearchParams(window.location.search).get("redirectTo") || "/"
+    const getCallbackURL = () => callbackURL || getRedirectTo()
 
-    callbackURL = callbackURL || redirectTo
     localization = { ...authCardLocalization, ...localization }
 
     if (socialLayout == "auto") {
@@ -100,13 +98,13 @@ export function AuthCard({
         console.error(`Invalid auth view: ${slug}`)
     }
 
-    const authView = Object.entries(authViews).find(([_, value]) => value === slug)?.[0] || "signIn" as keyof typeof authViews
+    const authView = Object.entries(authViews).find(([_, value]) => value === slug)?.[0] || "signIn"
 
     const formAction = async (formData: FormData) => {
         const provider = formData.get("provider") as SocialProvider
 
         if (provider) {
-            const { error } = await authClient.signIn.social({ provider, callbackURL })
+            const { error } = await authClient.signIn.social({ provider, callbackURL: getCallbackURL() })
             if (error) {
                 toast.error(error.message)
             }
@@ -122,9 +120,8 @@ export function AuthCard({
             case "signIn": {
                 if (enableUsername) {
                     const username = formData.get("username") as string
-                    console.log("username", username)
 
-                    if (!username.includes("@")) {
+                    if (isValidEmail(username)) {
                         // @ts-expect-error Optional plugin
                         const { error } = await authClient.signIn.username({
                             username,
@@ -135,7 +132,7 @@ export function AuthCard({
                             toast.error(error.message)
                         } else {
                             onSessionChange?.()
-                            navigate(redirectTo)
+                            navigate(getRedirectTo())
                         }
 
                         return
@@ -149,7 +146,7 @@ export function AuthCard({
                     toast.error(error.message)
                 } else {
                     onSessionChange?.()
-                    navigate(redirectTo)
+                    navigate(getRedirectTo())
                 }
 
                 break
@@ -157,7 +154,7 @@ export function AuthCard({
 
             case "magicLink": {
                 // @ts-expect-error Optional plugin
-                const { error } = await authClient.signIn.magicLink({ email, callbackURL })
+                const { error } = await authClient.signIn.magicLink({ email, callbackURL: getCallbackURL() })
 
                 if (error) {
                     toast.error(error.message)
@@ -169,7 +166,7 @@ export function AuthCard({
             }
 
             case "signUp": {
-                const params = { email, password, name, callbackURL } as Record<string, string>
+                const params = { email, password, name, callbackURL: getCallbackURL() } as Record<string, string>
 
                 if (enableUsername) {
                     params.username = formData.get("username") as string
@@ -182,7 +179,7 @@ export function AuthCard({
                     toast.error(error.message)
                 } else if (data.token) {
                     onSessionChange?.()
-                    navigate(redirectTo)
+                    navigate(getRedirectTo())
                 } else {
                     toast.success(localization.signUpEmail)
                 }
