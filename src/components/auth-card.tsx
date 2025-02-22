@@ -192,14 +192,14 @@ export function AuthCard({
     const signingOut = useRef(false)
 
     useEffect(() => {
-        if (authView == "signOut" && !signingOut.current) {
-            signingOut.current = true
-            authClient.signOut().finally(async () => {
-                navigate(authViews.signIn)
-                onSessionChange?.()
-                signingOut.current = false
-            })
-        }
+        if (authView != "signOut" || !signingOut.current) return
+
+        signingOut.current = true
+        authClient.signOut().finally(async () => {
+            navigate(authViews.signIn)
+            onSessionChange?.()
+            signingOut.current = false
+        })
     }, [authView, authClient, navigate, authViews.signIn, onSessionChange])
 
     if (authView == "signOut") return (
