@@ -112,12 +112,36 @@ export function AuthCard({
             return
         }
 
-        const email = formData.get("email") as string
+        let email = formData.get("email") as string
         const password = formData.get("password") as string
         const name = formData.get("name") || "" as string
 
         switch (authView) {
             case "signIn": {
+                if (enableUsername) {
+                    const username = formData.get("username") as string
+                    console.log("username", username)
+
+                    if (!username.includes("@")) {
+                        // @ts-expect-error Optional plugin
+                        const { error } = await authClient.signIn.username({
+                            username,
+                            password
+                        })
+
+                        if (error) {
+                            toast.error(error.message)
+                        } else {
+                            onSessionChange?.()
+                            navigate(redirectTo)
+                        }
+
+                        return
+                    } else {
+                        email = username
+                    }
+                }
+
                 const { error } = await authClient.signIn.email({ email, password })
                 if (error) {
                     toast.error(error.message)
@@ -143,8 +167,14 @@ export function AuthCard({
             }
 
             case "signUp": {
+                const params = { email, password, name, callbackURL } as Record<string, string>
+
+                if (enableUsername) {
+                    params.username = formData.get("username") as string
+                }
+
                 // @ts-expect-error We omit signUp from the authClient type to support additional fields
-                const { data, error } = await authClient.signUp.email({ email, password, name, callbackURL })
+                const { data, error } = await authClient.signUp.email(params)
 
                 if (error) {
                     toast.error(error.message)
