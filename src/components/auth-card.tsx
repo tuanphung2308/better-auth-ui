@@ -121,7 +121,7 @@ export function AuthCard({
                 if (enableUsername) {
                     const username = formData.get("username") as string
 
-                    if (isValidEmail(username)) {
+                    if (!isValidEmail(username)) {
                         // @ts-expect-error Optional plugin
                         const { error } = await authClient.signIn.username({
                             username,
