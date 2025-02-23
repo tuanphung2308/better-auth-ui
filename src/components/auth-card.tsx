@@ -44,6 +44,7 @@ export const authCardLocalization = {
     resetPassword: "Reset Password",
     resetPasswordAction: "Save new password",
     resetPasswordDescription: "Enter your new password below",
+    resetPasswordInvalidToken: "Invalid reset password link",
     resetPasswordSuccess: "Password reset successfully",
     signIn: "Sign In",
     signInAction: "Login",
@@ -87,7 +88,7 @@ export function AuthCard({
     onSessionChange?: () => void,
 }) {
     const getRedirectTo = useCallback(() => redirectTo || new URLSearchParams(window.location.search).get("redirectTo") || "/", [redirectTo])
-    const getCallbackURL = () => callbackURL || getRedirectTo()
+    const getCallbackURL = useCallback(() => callbackURL || getRedirectTo(), [callbackURL, getRedirectTo])
 
     localization = { ...authCardLocalization, ...localization }
 
@@ -103,7 +104,7 @@ export function AuthCard({
         console.error(`Invalid auth view: ${slug}`)
     }
 
-    const authView = Object.entries(authViews).find(([_, value]) => value === slug)?.[0] || "signIn"
+    const authView = (Object.entries(authViews).find(([_, value]) => value === slug)?.[0] || "signIn") as keyof typeof authViews
 
     const formAction = async (formData: FormData) => {
         const provider = formData.get("provider") as SocialProvider
@@ -203,14 +204,15 @@ export function AuthCard({
                     toast.error(error.message)
                 } else {
                     toast.success(localization.forgotPasswordEmail)
+                    navigate(authViews.signIn)
                 }
 
                 break
             }
 
             case "resetPassword": {
-                const urlParams = new URLSearchParams(window.location.search)
-                const token = urlParams.get("token") as string
+                const searchParams = new URLSearchParams(window.location.search)
+                const token = searchParams.get("token") as string
 
                 const { error } = await authClient.resetPassword({
                     newPassword: password,
@@ -241,6 +243,17 @@ export function AuthCard({
             signingOut.current = false
         })
     }, [authView, authClient, navigate, authViews.signIn, onSessionChange, getRedirectTo])
+
+    useEffect(() => {
+        if (authView != "resetPassword") return
+
+        const searchParams = new URLSearchParams(window.location.search)
+        const token = searchParams.get("token")
+        if (!token || token == "INVALID_TOKEN") {
+            toast.error(localization.resetPasswordInvalidToken)
+            navigate(authViews.signIn)
+        }
+    }, [authView, authViews, navigate, localization])
 
     if (authView == "signOut") return (
         <Loader2 className="animate-spin" />
