@@ -55,14 +55,14 @@ export const authLocalization = {
 }
 
 export type AuthCardClassNames = {
-    base?: string,
-    content?: string,
-    header?: string,
-    title?: string,
-    description?: string,
-    footer?: string,
-    footerLink?: string,
+    base?: string
+    content?: string
+    description?: string
+    footer?: string
+    footerLink?: string
     form?: AuthFormClassNames
+    header?: string
+    title?: string
 }
 
 export function AuthCard({

@@ -16,12 +16,12 @@ import { authLocalization } from "./auth-card"
 import { ProviderButton } from "./provider-button"
 
 export type AuthFormClassNames = {
-    base?: string,
-    label?: string,
-    input?: string,
-    actionButton?: string,
-    providerButton?: string,
-    forgotPasswordLink?: string,
+    base?: string
+    actionButton?: string
+    forgotPasswordLink?: string
+    input?: string
+    label?: string
+    providerButton?: string
     secondaryButton?: string
 }
 

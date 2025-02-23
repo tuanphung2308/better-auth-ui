@@ -36,6 +36,7 @@ export const userButtonLocalization = {
 }
 
 export type UserButtonClassNames = {
+    base?: string
     trigger?: {
         base?: string
         avatar?: UserAvatarClassNames
@@ -44,6 +45,8 @@ export type UserButtonClassNames = {
     content?: {
         base?: string
         avatar?: UserAvatarClassNames
+        menuItem?: string
+        separator?: string
     }
 }
 
@@ -75,13 +78,13 @@ export function UserButtonPrimitive({
                 disabled={isPending}
             >
                 {(isPending) ? (
-                    <Skeleton className={cn("size-8 rounded-full", className, "bg-muted", classNames?.trigger?.skeleton)} {...props} />
+                    <Skeleton className={cn("size-8 rounded-full", className, classNames?.base, "bg-muted", classNames?.trigger?.skeleton)} {...props} />
                 ) : (
-                    <UserAvatar className={cn("size-8", className)} classNames={classNames?.trigger?.avatar} user={user} {...props} />
+                    <UserAvatar className={cn("size-8", className, classNames?.base)} classNames={classNames?.trigger?.avatar} user={user} {...props} />
                 )}
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent className="me-3" onCloseAutoFocus={(e) => e.preventDefault()}>
+            <DropdownMenuContent className={cn("me-3", classNames?.content?.base)} onCloseAutoFocus={(e) => e.preventDefault()}>
                 {(user && !user.isAnonymous) ? (
                     <div className="flex gap-2 p-2 items-center">
                         <UserAvatar className={cn("size-8")} classNames={classNames?.content?.avatar} user={user} />
@@ -104,19 +107,19 @@ export function UserButtonPrimitive({
                     </div>
                 )}
 
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className={classNames?.content?.separator} />
 
                 {!user || user.isAnonymous ? (
                     <>
                         <LinkComponent href={`${basePath}/${viewPaths.signIn}`} to={`${basePath}/${viewPaths.signIn}`}>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <LogInIcon />
                                 {localization.signIn}
                             </DropdownMenuItem>
                         </LinkComponent>
 
                         <LinkComponent href={`${basePath}/${viewPaths.signUp}`} to={`${basePath}/${viewPaths.signUp}`}>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <UserRoundPlus />
                                 {localization.signUp}
                             </DropdownMenuItem>
@@ -125,14 +128,14 @@ export function UserButtonPrimitive({
                 ) : (
                     <>
                         <LinkComponent href={settingsUrl || `${basePath}/settings`} to={settingsUrl || `${basePath}/settings`}>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <SettingsIcon />
                                 {localization.settings}
                             </DropdownMenuItem>
                         </LinkComponent>
 
                         <LinkComponent href={`${basePath}/${viewPaths.signOut}`} to={`${basePath}/${viewPaths.signOut}`}>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <LogOutIcon />
                                 {localization.signOut}
                             </DropdownMenuItem>
@@ -142,12 +145,13 @@ export function UserButtonPrimitive({
 
                 {user && multiSession && (
                     <>
-                        <DropdownMenuSeparator />
+                        <DropdownMenuSeparator className={classNames?.content?.separator} />
 
                         {deviceSessions?.filter((sessionData) => sessionData.user.id !== user?.id)
                             .map(({ session, user }) => (
                                 <Fragment key={session.id}>
                                     <DropdownMenuItem
+                                        className={classNames?.content?.menuItem}
                                         onClick={() => setActiveSession?.(session.token)}
                                     >
                                         <div className="flex gap-2 items-center">
@@ -167,12 +171,12 @@ export function UserButtonPrimitive({
                                         </div>
                                     </DropdownMenuItem>
 
-                                    <DropdownMenuSeparator />
+                                    <DropdownMenuSeparator className={classNames?.content?.separator} />
                                 </Fragment>
                             ))}
 
                         <LinkComponent href={`${basePath}/${viewPaths.signIn}`} to={`${basePath}/${viewPaths.signIn}`}>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <PlusCircleIcon />
                                 {localization.addAccount}
                             </DropdownMenuItem>
