@@ -63,26 +63,26 @@ export function AuthCard({
     className,
     callbackURL,
     disableCredentials,
-    enableMagicLink,
-    enableName,
-    enablePasskey,
     localization,
+    magicLink,
+    passkey,
     pathname,
     providers = [],
     redirectTo,
+    signUpName,
     socialLayout = "auto",
     onSessionChange
 }: {
     className?: string,
     callbackURL?: string,
     disableCredentials?: boolean,
-    enableMagicLink?: boolean,
-    enableName?: boolean,
-    enablePasskey?: boolean,
     localization?: Partial<typeof authCardLocalization>,
+    magicLink?: boolean,
+    passkey?: boolean,
     pathname?: string,
     providers?: SocialProvider[],
     redirectTo?: string,
+    signUpName?: boolean,
     socialLayout?: "auto" | "horizontal" | "vertical",
     onSessionChange?: () => void,
 }) {
@@ -97,7 +97,7 @@ export function AuthCard({
 
     const slug = pathname?.split("/").pop()
 
-    const { authClient, authViews, navigate, enableUsername, LinkComponent } = useContext(AuthUIContext)
+    const { authClient, authViews, navigate, usernamePlugin, LinkComponent } = useContext(AuthUIContext)
 
     if (!Object.values(authViews).includes(slug!)) {
         console.error(`Invalid auth view: ${slug}`)
@@ -123,7 +123,7 @@ export function AuthCard({
 
         switch (authView) {
             case "signIn": {
-                if (enableUsername) {
+                if (usernamePlugin) {
                     const username = formData.get("username") as string
 
                     if (!isValidEmail(username)) {
@@ -173,7 +173,7 @@ export function AuthCard({
             case "signUp": {
                 const params = { email, password, name, callbackURL: getCallbackURL() } as Record<string, unknown>
 
-                if (enableUsername) {
+                if (usernamePlugin) {
                     params.username = formData.get("username")
                 }
 
@@ -260,7 +260,7 @@ export function AuthCard({
 
             <CardContent>
                 <form action={formAction} className="grid gap-4">
-                    {authView == "signUp" && enableName && (
+                    {authView == "signUp" && signUpName && (
                         <div className="grid gap-2">
                             <Label htmlFor="name">
                                 {localization.name}
@@ -274,7 +274,7 @@ export function AuthCard({
                         </div>
                     )}
 
-                    {enableUsername && ["signIn", "signUp"].includes(authView) && (
+                    {usernamePlugin && ["signIn", "signUp"].includes(authView) && (
                         <div className="grid gap-2">
                             <Label htmlFor="username">
                                 {localization.username}
@@ -289,7 +289,7 @@ export function AuthCard({
                         </div>
                     )}
 
-                    {((!enableUsername && authView != "resetPassword") || ["signUp", "magicLink", "forgotPassword"].includes(authView)) && (
+                    {((!usernamePlugin && authView != "resetPassword") || ["signUp", "magicLink", "forgotPassword"].includes(authView)) && (
                         <div className="grid gap-2">
                             <Label htmlFor="email">
                                 {localization.email}
@@ -339,7 +339,7 @@ export function AuthCard({
                         localization={localization}
                     />
 
-                    {enableMagicLink && !disableCredentials && authView != "resetPassword" && (
+                    {magicLink && !disableCredentials && authView != "resetPassword" && (
                         <LinkComponent
                             href={authView == "magicLink" ? authViews.signIn : authViews.magicLink}
                             to={authView == "magicLink" ? authViews.signIn : authViews.magicLink}
@@ -389,7 +389,7 @@ export function AuthCard({
                                 })}
                             </div>
 
-                            {enablePasskey && (
+                            {passkey && (
                                 <Button
                                     className="w-full"
                                     variant="secondary"

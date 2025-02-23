@@ -32,7 +32,7 @@ export type AuthUIContextType = {
     multiSession: boolean,
     navigate: (href: string) => void
     settingsUrl?: string,
-    enableUsername?: boolean,
+    usernamePlugin?: boolean,
     LinkComponent: Link
 }
 
