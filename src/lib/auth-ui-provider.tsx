@@ -3,6 +3,8 @@
 import type { createAuthClient } from "better-auth/react"
 import { ReactNode, createContext } from "react"
 
+import type { SocialProvider } from "../social-providers"
+
 const DefaultLink = (
     { href, className, children }: { href: string, className?: string, children: ReactNode }
 ) => (
@@ -32,6 +34,7 @@ export type AuthUIContextType = {
     colorIcons?: boolean,
     multiSession?: boolean,
     navigate: typeof defaultNavigate,
+    providers?: SocialProvider[],
     settingsUrl?: string,
     usernamePlugin?: boolean,
     viewPaths: typeof authViewPaths,

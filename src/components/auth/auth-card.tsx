@@ -4,7 +4,6 @@ import { useContext } from "react"
 
 import { AuthUIContext, type AuthView } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
-import { type SocialProvider } from "../../social-providers"
 import {
     Card,
     CardContent,
@@ -63,7 +62,6 @@ export function AuthCard({
     magicLink,
     passkey,
     pathname,
-    providers = [],
     redirectTo,
     signUpName,
     socialLayout = "auto",
@@ -77,7 +75,6 @@ export function AuthCard({
     magicLink?: boolean,
     passkey?: boolean,
     pathname?: string,
-    providers?: SocialProvider[],
     redirectTo?: string,
     signUpName?: boolean,
     socialLayout?: "auto" | "horizontal" | "vertical",
@@ -104,7 +101,6 @@ export function AuthCard({
             localization={localization}
             magicLink={magicLink}
             passkey={passkey}
-            providers={providers}
             redirectTo={redirectTo}
             signUpName={signUpName}
             socialLayout={socialLayout}
@@ -137,7 +133,6 @@ export function AuthCard({
                     localization={localization}
                     magicLink={magicLink}
                     passkey={passkey}
-                    providers={providers}
                     redirectTo={redirectTo}
                     signUpName={signUpName}
                     socialLayout={socialLayout}

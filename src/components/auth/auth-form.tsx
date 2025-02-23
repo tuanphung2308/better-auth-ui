@@ -23,7 +23,6 @@ export function AuthForm({
     magicLink,
     passkey,
     pathname,
-    providers = [],
     redirectTo,
     signUpName,
     socialLayout = "auto",
@@ -37,7 +36,6 @@ export function AuthForm({
     magicLink?: boolean,
     passkey?: boolean,
     pathname?: string,
-    providers?: SocialProvider[],
     redirectTo?: string,
     signUpName?: boolean,
     socialLayout?: "auto" | "horizontal" | "vertical",
@@ -49,11 +47,11 @@ export function AuthForm({
 
     localization = { ...authLocalization, ...localization }
 
-    if (socialLayout == "auto") {
-        socialLayout = disableCredentials ? "vertical" : (providers?.length > 3 ? "horizontal" : "vertical")
-    }
+    const { authClient, viewPaths, navigate, providers, usernamePlugin, LinkComponent } = useContext(AuthUIContext)
 
-    const { authClient, viewPaths, navigate, usernamePlugin, LinkComponent } = useContext(AuthUIContext)
+    if (socialLayout == "auto") {
+        socialLayout = disableCredentials ? "vertical" : (providers && providers.length > 3 ? "horizontal" : "vertical")
+    }
 
     const path = pathname?.split("/").pop()
 
@@ -356,7 +354,7 @@ export function AuthForm({
                 </LinkComponent>
             )}
 
-            {!["forgotPassword", "resetPassword"].includes(view) && (
+            {!["forgotPassword", "resetPassword"].includes(view) && providers?.length && (
                 <>
                     <div
                         className={cn(
