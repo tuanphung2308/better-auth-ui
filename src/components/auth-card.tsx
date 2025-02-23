@@ -24,6 +24,7 @@ import { Label } from "./ui/label"
 
 export const authCardLocalization = {
     alreadyHaveAnAccount: "Already have an account?",
+    disableCredentialsDescription: "Choose a provider to login to your account",
     dontHaveAnAccount: "Don't have an account?",
     email: "Email",
     emailPlaceholder: "m@example.com",
@@ -93,7 +94,7 @@ export function AuthCard({
     localization = { ...authCardLocalization, ...localization }
 
     if (socialLayout == "auto") {
-        socialLayout = providers?.length > 3 ? "horizontal" : "vertical"
+        socialLayout = disableCredentials ? "vertical" : (providers?.length > 3 ? "horizontal" : "vertical")
     }
 
     const slug = pathname?.split("/").pop()
@@ -124,6 +125,19 @@ export function AuthCard({
 
         switch (authView) {
             case "signIn": {
+                if (disableCredentials) {
+                    // @ts-expect-error Optional plugin
+                    const { error } = await authClient.signIn.magicLink({ email, callbackURL: getCallbackURL() })
+
+                    if (error) {
+                        toast.error(error.message)
+                    } else {
+                        toast.success(localization.magicLinkEmail)
+                    }
+
+                    return
+                }
+
                 if (usernamePlugin) {
                     const username = formData.get("username") as string
 
@@ -232,6 +246,7 @@ export function AuthCard({
     }
 
     const signingOut = useRef(false)
+    const checkingResetPasswordToken = useRef(false)
 
     useEffect(() => {
         if (authView != "signOut" || signingOut.current) return
@@ -245,15 +260,30 @@ export function AuthCard({
     }, [authView, authClient, navigate, authViews.signIn, onSessionChange, getRedirectTo])
 
     useEffect(() => {
-        if (authView != "resetPassword") return
+        if (authView != "resetPassword" || checkingResetPasswordToken.current) return
+
+        checkingResetPasswordToken.current = true
 
         const searchParams = new URLSearchParams(window.location.search)
         const token = searchParams.get("token")
         if (!token || token == "INVALID_TOKEN") {
-            toast.error(localization.resetPasswordInvalidToken)
             navigate(authViews.signIn)
+            setTimeout(() => {
+                toast.error(localization.resetPasswordInvalidToken)
+                checkingResetPasswordToken.current = false
+            }, 100)
         }
     }, [authView, authViews, navigate, localization])
+
+    useEffect(() => {
+        if (authView == "magicLink" && !magicLink) {
+            navigate(authViews.signIn)
+        }
+
+        if (["signUp", "forgotPassword", "resetPassword"].includes(authView) && disableCredentials) {
+            navigate(authViews.signIn)
+        }
+    }, [authView, authViews, disableCredentials, navigate, magicLink])
 
     if (authView == "signOut") return (
         <Loader2 className="animate-spin" />
@@ -267,13 +297,17 @@ export function AuthCard({
                 </CardTitle>
 
                 <CardDescription className="text-xs md:text-sm">
-                    {localization[authView + "Description" as keyof typeof localization]}
+                    {(disableCredentials && !magicLink) ? (
+                        localization.disableCredentialsDescription
+                    ) : (
+                        localization[authView + "Description" as keyof typeof localization]
+                    )}
                 </CardDescription>
             </CardHeader>
 
             <CardContent>
                 <form action={formAction} className="grid gap-4">
-                    {authView == "signUp" && signUpName && (
+                    {!disableCredentials && authView == "signUp" && signUpName && (
                         <div className="grid gap-2">
                             <Label htmlFor="name">
                                 {localization.name}
@@ -287,7 +321,7 @@ export function AuthCard({
                         </div>
                     )}
 
-                    {usernamePlugin && ["signIn", "signUp"].includes(authView) && (
+                    {!disableCredentials && usernamePlugin && ["signIn", "signUp"].includes(authView) && (
                         <div className="grid gap-2">
                             <Label htmlFor="username">
                                 {localization.username}
@@ -302,7 +336,7 @@ export function AuthCard({
                         </div>
                     )}
 
-                    {((!usernamePlugin && authView != "resetPassword") || ["signUp", "magicLink", "forgotPassword"].includes(authView)) && (
+                    {(!disableCredentials || (["signIn", "magicLink"].includes(authView) && magicLink)) && ((!usernamePlugin && authView != "resetPassword") || ["signUp", "magicLink", "forgotPassword"].includes(authView)) && (
                         <div className="grid gap-2">
                             <Label htmlFor="email">
                                 {localization.email}
@@ -318,7 +352,7 @@ export function AuthCard({
                         </div>
                     )}
 
-                    {["signUp", "signIn", "resetPassword"].includes(authView) && (
+                    {!disableCredentials && ["signUp", "signIn", "resetPassword"].includes(authView) && (
                         <div className="grid gap-2">
                             <div className="flex items-center">
                                 <Label htmlFor="password">
@@ -347,10 +381,12 @@ export function AuthCard({
                         </div>
                     )}
 
-                    <ActionButton
-                        authView={authView}
-                        localization={localization}
-                    />
+                    {(!disableCredentials || (["signIn", "magicLink"].includes(authView) && magicLink)) && (
+                        <ActionButton
+                            authView={authView}
+                            localization={localization}
+                        />
+                    )}
 
                     {magicLink && !disableCredentials && authView != "resetPassword" && (
                         <LinkComponent
@@ -418,22 +454,24 @@ export function AuthCard({
                 </form>
             </CardContent>
 
-            <CardFooter>
-                <div className="flex justify-center w-full border-t pt-4">
-                    <p className="text-center text-sm text-muted-foreground">
-                        {authView == "signIn" ? localization.dontHaveAnAccount : localization.alreadyHaveAnAccount}
-                        {" "}
+            {!disableCredentials && (
+                <CardFooter>
+                    <div className="flex justify-center w-full border-t pt-4">
+                        <p className="text-center text-sm text-muted-foreground">
+                            {authView == "signIn" ? localization.dontHaveAnAccount : localization.alreadyHaveAnAccount}
+                            {" "}
 
-                        <LinkComponent
-                            className="underline text-foreground"
-                            href={`${authViews[authView == "signIn" ? "signUp" : "signIn"]}`}
-                            to={`${authViews[authView == "signIn" ? "signUp" : "signIn"]}`}
-                        >
-                            {authView == "signIn" ? localization.signUp : localization.signIn}
-                        </LinkComponent>
-                    </p>
-                </div>
-            </CardFooter>
+                            <LinkComponent
+                                className="underline text-foreground"
+                                href={`${authViews[authView == "signIn" ? "signUp" : "signIn"]}`}
+                                to={`${authViews[authView == "signIn" ? "signUp" : "signIn"]}`}
+                            >
+                                {authView == "signIn" ? localization.signUp : localization.signIn}
+                            </LinkComponent>
+                        </p>
+                    </div>
+                </CardFooter>
+            )}
         </Card>
     )
 }
