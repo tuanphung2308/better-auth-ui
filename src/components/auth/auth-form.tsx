@@ -4,16 +4,16 @@ import { KeyIcon, Loader2, LockIcon, MailIcon } from "lucide-react"
 import { useCallback, useContext, useEffect, useRef } from "react"
 import { toast } from "sonner"
 
-import { AuthUIContext, type AuthView } from "../lib/auth-ui-provider"
-import { cn, isValidEmail } from "../lib/utils"
-import { type SocialProvider, socialProviders } from "../social-providers"
+import { AuthUIContext, type AuthView } from "../../lib/auth-ui-provider"
+import { cn, isValidEmail } from "../../lib/utils"
+import { type SocialProvider, socialProviders } from "../../social-providers"
+import { Button } from "../ui/button"
+import { Input } from "../ui/input"
+import { Label } from "../ui/label"
 
-import { authCardLocalization } from "./auth-card"
-import { ActionButton } from "./auth-card/action-button"
-import { ProviderButton } from "./auth-card/provider-button"
-import { Button } from "./ui/button"
-import { Input } from "./ui/input"
-import { Label } from "./ui/label"
+import { ActionButton } from "./action-button"
+import { authLocalization } from "./auth-card"
+import { ProviderButton } from "./provider-button"
 
 export function AuthForm({
     className,
@@ -33,7 +33,7 @@ export function AuthForm({
     className?: string,
     callbackURL?: string,
     disableCredentials?: boolean,
-    localization?: Partial<typeof authCardLocalization>,
+    localization?: Partial<typeof authLocalization>,
     magicLink?: boolean,
     passkey?: boolean,
     pathname?: string,
@@ -47,7 +47,7 @@ export function AuthForm({
     const getRedirectTo = useCallback(() => redirectTo || new URLSearchParams(window.location.search).get("redirectTo") || "/", [redirectTo])
     const getCallbackURL = useCallback(() => callbackURL || getRedirectTo(), [callbackURL, getRedirectTo])
 
-    localization = { ...authCardLocalization, ...localization }
+    localization = { ...authLocalization, ...localization }
 
     if (socialLayout == "auto") {
         socialLayout = disableCredentials ? "vertical" : (providers?.length > 3 ? "horizontal" : "vertical")

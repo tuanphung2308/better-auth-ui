@@ -18,67 +18,67 @@ export const socialProviders = [
     {
         "provider": "apple",
         "name": "Apple",
-        "icon": <AppleIcon />
+        "icon": AppleIcon
     },
     {
         "provider": "discord",
         "name": "Discord",
-        "icon": <DiscordIcon />
-    },
-    {
-        "provider": "facebook",
-        "name": "Facebook",
-        "icon": <FacebookIcon />
-    },
-    {
-        "provider": "github",
-        "name": "GitHub",
-        "icon": <GitHubIcon />
-    },
-    {
-        "provider": "google",
-        "name": "Google",
-        "icon": <GoogleIcon />
-    },
-    {
-        "provider": "microsoft",
-        "name": "Microsoft",
-        "icon": <MicrosoftIcon />
-    },
-    {
-        "provider": "twitch",
-        "name": "Twitch",
-        "icon": <TwitchIcon />
-    },
-    {
-        "provider": "twitter",
-        "name": "X",
-        "icon": <XIcon />
+        "icon": DiscordIcon
     },
     {
         "provider": "dropbox",
         "name": "Dropbox",
-        "icon": <DropboxIcon />
+        "icon": DropboxIcon
     },
     {
-        "provider": "linkedin",
-        "name": "LinkedIn",
-        "icon": <LinkedInIcon />
+        "provider": "facebook",
+        "name": "Facebook",
+        "icon": FacebookIcon
+    },
+    {
+        "provider": "github",
+        "name": "GitHub",
+        "icon": GitHubIcon
     },
     {
         "provider": "gitlab",
         "name": "GitLab",
-        "icon": <GitLabIcon />
+        "icon": GitLabIcon
+    },
+    {
+        "provider": "google",
+        "name": "Google",
+        "icon": GoogleIcon
+    },
+    {
+        "provider": "linkedin",
+        "name": "LinkedIn",
+        "icon": LinkedInIcon
+    },
+    {
+        "provider": "microsoft",
+        "name": "Microsoft",
+        "icon": MicrosoftIcon
     },
     {
         "provider": "reddit",
         "name": "Reddit",
-        "icon": <RedditIcon />
+        "icon": RedditIcon
     },
     {
         "provider": "spotify",
         "name": "Spotify",
-        "icon": <SpotifyIcon />
+        "icon": SpotifyIcon
+    },
+    {
+        "provider": "twitch",
+        "name": "Twitch",
+        "icon": TwitchIcon
+    },
+    {
+        "provider": "twitter",
+        "name": "X",
+        "icon": XIcon
     }
 ] as const
 

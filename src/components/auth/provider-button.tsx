@@ -1,9 +1,12 @@
+import { useContext } from "react"
 import { useFormStatus } from "react-dom"
 
+import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import type { socialProviders } from "../../social-providers"
-import type { authCardLocalization } from "../auth-card"
 import { Button } from "../ui/button"
+
+import type { authLocalization } from "./auth-card"
 
 export function ProviderButton({
     className,
@@ -12,11 +15,12 @@ export function ProviderButton({
     socialProvider
 }: {
     className?: string,
-    localization: Partial<typeof authCardLocalization>,
+    localization: Partial<typeof authLocalization>,
     socialLayout: "auto" | "horizontal" | "vertical",
     socialProvider: typeof socialProviders[number]
 }) {
     const { pending } = useFormStatus()
+    const { colorIcons } = useContext(AuthUIContext)
 
     return (
         <Button
@@ -30,7 +34,7 @@ export function ProviderButton({
             value={socialProvider.provider}
             variant="outline"
         >
-            {socialProvider.icon}
+            <socialProvider.icon color={colorIcons} />
 
             {socialLayout == "vertical" && (
                 <>

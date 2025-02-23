@@ -2,11 +2,9 @@
 
 import { useContext } from "react"
 
-import { AuthUIContext, type AuthView } from "../lib/auth-ui-provider"
-import { cn } from "../lib/utils"
-import { type SocialProvider } from "../social-providers"
-
-import { AuthForm } from "./auth-form"
+import { AuthUIContext, type AuthView } from "../../lib/auth-ui-provider"
+import { cn } from "../../lib/utils"
+import { type SocialProvider } from "../../social-providers"
 import {
     Card,
     CardContent,
@@ -14,9 +12,11 @@ import {
     CardFooter,
     CardHeader,
     CardTitle
-} from "./ui/card"
+} from "../ui/card"
 
-export const authCardLocalization = {
+import { AuthForm } from "./auth-form"
+
+export const authLocalization = {
     alreadyHaveAnAccount: "Already have an account?",
     disableCredentialsDescription: "Choose a provider to login to your account",
     dontHaveAnAccount: "Don't have an account?",
@@ -73,7 +73,7 @@ export function AuthCard({
     className?: string,
     callbackURL?: string,
     disableCredentials?: boolean,
-    localization?: Partial<typeof authCardLocalization>,
+    localization?: Partial<typeof authLocalization>,
     magicLink?: boolean,
     passkey?: boolean,
     pathname?: string,
@@ -84,7 +84,7 @@ export function AuthCard({
     view?: AuthView,
     onSessionChange?: () => void,
 }) {
-    localization = { ...authCardLocalization, ...localization }
+    localization = { ...authLocalization, ...localization }
 
     const path = pathname?.split("/").pop()
 
