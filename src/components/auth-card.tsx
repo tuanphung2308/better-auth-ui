@@ -30,6 +30,7 @@ export const authCardLocalization = {
     forgotPassword: "Forgot Password",
     forgotPasswordAction: "Send reset link",
     forgotPasswordDescription: "Enter your email to reset your password",
+    forgotPasswordEmail: "Check your email for the password reset link",
     forgotPasswordLink: "Forgot your password?",
     magicLink: "Magic Link",
     magicLinkAction: "Send magic link",
@@ -40,6 +41,10 @@ export const authCardLocalization = {
     passkey: "Passkey",
     password: "Password",
     passwordPlaceholder: "Password",
+    resetPassword: "Reset Password",
+    resetPasswordAction: "Save new password",
+    resetPasswordDescription: "Enter your new password below",
+    resetPasswordSuccess: "Password reset successfully",
     signIn: "Sign In",
     signInAction: "Login",
     signInDescription: "Enter your email below to login to your account",
@@ -187,6 +192,40 @@ export function AuthCard({
 
                 break
             }
+
+            case "forgotPassword": {
+                const { error } = await authClient.forgetPassword({
+                    email: email,
+                    redirectTo: window.location.pathname.replace(authViews.forgotPassword, authViews.resetPassword)
+                })
+
+                if (error) {
+                    toast.error(error.message)
+                } else {
+                    toast.success(localization.forgotPasswordEmail)
+                }
+
+                break
+            }
+
+            case "resetPassword": {
+                const urlParams = new URLSearchParams(window.location.search)
+                const token = urlParams.get("token") as string
+
+                const { error } = await authClient.resetPassword({
+                    newPassword: password,
+                    token
+                })
+
+                if (error) {
+                    toast.error(error.message)
+                } else {
+                    toast.success(localization.resetPasswordSuccess)
+                    navigate(authViews.signIn)
+                }
+
+                break
+            }
         }
     }
 
@@ -250,7 +289,7 @@ export function AuthCard({
                         </div>
                     )}
 
-                    {(!enableUsername || ["signUp", "magicLink", "forgotPassword"].includes(authView)) && (
+                    {((!enableUsername && authView != "resetPassword") || ["signUp", "magicLink", "forgotPassword"].includes(authView)) && (
                         <div className="grid gap-2">
                             <Label htmlFor="email">
                                 {localization.email}
@@ -266,7 +305,7 @@ export function AuthCard({
                         </div>
                     )}
 
-                    {["signUp", "signIn"].includes(authView) && (
+                    {["signUp", "signIn", "resetPassword"].includes(authView) && (
                         <div className="grid gap-2">
                             <div className="flex items-center">
                                 <Label htmlFor="password">
@@ -300,7 +339,7 @@ export function AuthCard({
                         localization={localization}
                     />
 
-                    {enableMagicLink && !disableCredentials && (
+                    {enableMagicLink && !disableCredentials && authView != "resetPassword" && (
                         <LinkComponent
                             href={authView == "magicLink" ? authViews.signIn : authViews.magicLink}
                             to={authView == "magicLink" ? authViews.signIn : authViews.magicLink}
@@ -325,7 +364,7 @@ export function AuthCard({
                         </LinkComponent>
                     )}
 
-                    {authView != "forgotPassword" && (
+                    {!["forgotPassword", "resetPassword"].includes(authView) && (
                         <>
                             <div
                                 className={cn(
