@@ -1,5 +1,6 @@
 export * from "./lib/auth-ui-provider"
 export * from "./components/auth-card"
+export * from "./components/auth-form"
 export * from "./social-providers"
 export * from "./components/user-avatar"
 export * from "./components/user-button"

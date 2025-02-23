@@ -1,0 +1,399 @@
+"use client"
+
+import { KeyIcon, Loader2, LockIcon, MailIcon } from "lucide-react"
+import { useCallback, useContext, useEffect, useRef } from "react"
+import { toast } from "sonner"
+
+import { AuthUIContext, type AuthView } from "../lib/auth-ui-provider"
+import { cn, isValidEmail } from "../lib/utils"
+import { type SocialProvider, socialProviders } from "../social-providers"
+
+import { authCardLocalization } from "./auth-card"
+import { ActionButton } from "./auth-card/action-button"
+import { ProviderButton } from "./auth-card/provider-button"
+import { Button } from "./ui/button"
+import { Input } from "./ui/input"
+import { Label } from "./ui/label"
+
+export function AuthForm({
+    className,
+    callbackURL,
+    disableCredentials,
+    localization,
+    magicLink,
+    passkey,
+    pathname,
+    providers = [],
+    redirectTo,
+    signUpName,
+    socialLayout = "auto",
+    view,
+    onSessionChange
+}: {
+    className?: string,
+    callbackURL?: string,
+    disableCredentials?: boolean,
+    localization?: Partial<typeof authCardLocalization>,
+    magicLink?: boolean,
+    passkey?: boolean,
+    pathname?: string,
+    providers?: SocialProvider[],
+    redirectTo?: string,
+    signUpName?: boolean,
+    socialLayout?: "auto" | "horizontal" | "vertical",
+    view?: AuthView,
+    onSessionChange?: () => void,
+}) {
+    const getRedirectTo = useCallback(() => redirectTo || new URLSearchParams(window.location.search).get("redirectTo") || "/", [redirectTo])
+    const getCallbackURL = useCallback(() => callbackURL || getRedirectTo(), [callbackURL, getRedirectTo])
+
+    localization = { ...authCardLocalization, ...localization }
+
+    if (socialLayout == "auto") {
+        socialLayout = disableCredentials ? "vertical" : (providers?.length > 3 ? "horizontal" : "vertical")
+    }
+
+    const { authClient, viewPaths, navigate, usernamePlugin, LinkComponent } = useContext(AuthUIContext)
+
+    const path = pathname?.split("/").pop()
+
+    if (path && !Object.values(viewPaths).includes(path)) {
+        console.error(`Invalid auth view: ${path}`)
+    }
+
+    view = view || (Object.entries(viewPaths).find(([_, value]) => value === path)?.[0] || "signIn") as AuthView
+
+    const formAction = async (formData: FormData) => {
+        const provider = formData.get("provider") as SocialProvider
+
+        if (provider) {
+            const { error } = await authClient.signIn.social({ provider, callbackURL: getCallbackURL() })
+            if (error) {
+                toast.error(error.message)
+            }
+
+            return
+        }
+
+        let email = formData.get("email") as string
+        const password = formData.get("password") as string
+        const name = formData.get("name") || "" as string
+
+        switch (view) {
+            case "signIn": {
+                if (disableCredentials) {
+                    // @ts-expect-error Optional plugin
+                    const { error } = await authClient.signIn.magicLink({ email, callbackURL: getCallbackURL() })
+
+                    if (error) {
+                        toast.error(error.message)
+                    } else {
+                        toast.success(localization.magicLinkEmail)
+                    }
+
+                    return
+                }
+
+                if (usernamePlugin) {
+                    const username = formData.get("username") as string
+
+                    if (!isValidEmail(username)) {
+                        // @ts-expect-error Optional plugin
+                        const { error } = await authClient.signIn.username({
+                            username,
+                            password
+                        })
+
+                        if (error) {
+                            toast.error(error.message)
+                        } else {
+                            onSessionChange?.()
+                            navigate(getRedirectTo())
+                        }
+
+                        return
+                    } else {
+                        email = username
+                    }
+                }
+
+                const { error } = await authClient.signIn.email({ email, password })
+                if (error) {
+                    toast.error(error.message)
+                } else {
+                    onSessionChange?.()
+                    navigate(getRedirectTo())
+                }
+
+                break
+            }
+
+            case "magicLink": {
+                // @ts-expect-error Optional plugin
+                const { error } = await authClient.signIn.magicLink({ email, callbackURL: getCallbackURL() })
+
+                if (error) {
+                    toast.error(error.message)
+                } else {
+                    toast.success(localization.magicLinkEmail)
+                }
+
+                break
+            }
+
+            case "signUp": {
+                const params = { email, password, name, callbackURL: getCallbackURL() } as Record<string, unknown>
+
+                if (usernamePlugin) {
+                    params.username = formData.get("username")
+                }
+
+                // @ts-expect-error We omit signUp from the authClient type to support additional fields
+                const { data, error } = await authClient.signUp.email(params)
+
+                if (error) {
+                    toast.error(error.message)
+                } else if (data.token) {
+                    onSessionChange?.()
+                    navigate(getRedirectTo())
+                } else {
+                    navigate(viewPaths.signIn)
+                    toast.success(localization.signUpEmail)
+                }
+
+                break
+            }
+
+            case "forgotPassword": {
+                const { error } = await authClient.forgetPassword({
+                    email: email,
+                    redirectTo: window.location.pathname.replace(viewPaths.forgotPassword, viewPaths.resetPassword)
+                })
+
+                if (error) {
+                    toast.error(error.message)
+                } else {
+                    toast.success(localization.forgotPasswordEmail)
+                    navigate(viewPaths.signIn)
+                }
+
+                break
+            }
+
+            case "resetPassword": {
+                const searchParams = new URLSearchParams(window.location.search)
+                const token = searchParams.get("token") as string
+
+                const { error } = await authClient.resetPassword({
+                    newPassword: password,
+                    token
+                })
+
+                if (error) {
+                    toast.error(error.message)
+                } else {
+                    toast.success(localization.resetPasswordSuccess)
+                    navigate(viewPaths.signIn)
+                }
+
+                break
+            }
+        }
+    }
+
+    const signingOut = useRef(false)
+    const checkingResetPasswordToken = useRef(false)
+
+    useEffect(() => {
+        if (view != "signOut" || signingOut.current) return
+
+        signingOut.current = true
+        authClient.signOut().finally(async () => {
+            navigate(getRedirectTo())
+            onSessionChange?.()
+            signingOut.current = false
+        })
+    }, [view, authClient, navigate, viewPaths.signIn, onSessionChange, getRedirectTo])
+
+    useEffect(() => {
+        if (view != "resetPassword" || checkingResetPasswordToken.current) return
+
+        checkingResetPasswordToken.current = true
+
+        const searchParams = new URLSearchParams(window.location.search)
+        const token = searchParams.get("token")
+        if (!token || token == "INVALID_TOKEN") {
+            navigate(viewPaths.signIn)
+            setTimeout(() => {
+                toast.error(localization.resetPasswordInvalidToken)
+                checkingResetPasswordToken.current = false
+            }, 100)
+        }
+    }, [view, viewPaths, navigate, localization])
+
+    useEffect(() => {
+        if (view == "magicLink" && !magicLink) {
+            navigate(viewPaths.signIn)
+        }
+
+        if (["signUp", "forgotPassword", "resetPassword"].includes(view) && disableCredentials) {
+            navigate(viewPaths.signIn)
+        }
+    }, [view, viewPaths, disableCredentials, navigate, magicLink])
+
+    if (view == "signOut") return (
+        <Loader2 className="animate-spin" />
+    )
+
+    return (
+        <form
+            action={formAction}
+            className={cn("grid gap-4 w-full", className)}
+        >
+            {!disableCredentials && view == "signUp" && signUpName && (
+                <div className="grid gap-2">
+                    <Label htmlFor="name">
+                        {localization.name}
+                    </Label>
+
+                    <Input
+                        id="name"
+                        name="name"
+                        placeholder={localization.namePlaceholder}
+                    />
+                </div>
+            )}
+
+            {!disableCredentials && usernamePlugin && ["signIn", "signUp"].includes(view) && (
+                <div className="grid gap-2">
+                    <Label htmlFor="username">
+                        {localization.username}
+                    </Label>
+
+                    <Input
+                        id="username"
+                        name="username"
+                        placeholder={view == "signIn" ? localization.usernameSignInPlaceholder : localization.usernameSignUpPlaceholder}
+                        required
+                    />
+                </div>
+            )}
+
+            {(!disableCredentials || (["signIn", "magicLink"].includes(view) && magicLink)) && ((!usernamePlugin && view != "resetPassword") || ["signUp", "magicLink", "forgotPassword"].includes(view)) && (
+                <div className="grid gap-2">
+                    <Label htmlFor="email">
+                        {localization.email}
+                    </Label>
+
+                    <Input
+                        id="email"
+                        name="email"
+                        placeholder={localization.emailPlaceholder}
+                        required
+                        type="email"
+                    />
+                </div>
+            )}
+
+            {!disableCredentials && ["signUp", "signIn", "resetPassword"].includes(view) && (
+                <div className="grid gap-2">
+                    <div className="flex items-center">
+                        <Label htmlFor="password">
+                            {localization.password}
+                        </Label>
+
+                        {view == "signIn" && (
+                            <LinkComponent
+                                className="ml-auto inline-block text-sm hover:underline -my-1"
+                                href="forgot-password"
+                                to="forgot-password"
+                            >
+                                {localization.forgotPasswordLink}
+                            </LinkComponent>
+                        )}
+                    </div>
+
+                    <Input
+                        autoComplete={["signUp", "resetPassword"].includes(view!) ? "new-password" : "password"}
+                        id="password"
+                        name="password"
+                        placeholder={localization.passwordPlaceholder}
+                        required
+                        type="password"
+                    />
+                </div>
+            )}
+
+            {(!disableCredentials || (["signIn", "magicLink"].includes(view) && magicLink)) && (
+                <ActionButton
+                    authView={view}
+                    localization={localization}
+                />
+            )}
+
+            {magicLink && !disableCredentials && view != "resetPassword" && (
+                <LinkComponent
+                    href={view == "magicLink" ? viewPaths.signIn : viewPaths.magicLink}
+                    to={view == "magicLink" ? viewPaths.signIn : viewPaths.magicLink}
+                >
+                    <Button
+                        className="w-full"
+                        variant="secondary"
+                    >
+                        {view == "magicLink"
+                            ? <LockIcon />
+                            : <MailIcon />
+                        }
+
+                        {localization.signInWith}
+                        {" "}
+
+                        {view == "magicLink"
+                            ? localization.password
+                            : localization.magicLink
+                        }
+                    </Button>
+                </LinkComponent>
+            )}
+
+            {!["forgotPassword", "resetPassword"].includes(view) && (
+                <>
+                    <div
+                        className={cn(
+                            "w-full gap-2 flex items-center",
+                            "justify-between",
+                            socialLayout == "horizontal" && "flex-wrap",
+                            socialLayout == "vertical" && "flex-col"
+                        )}
+                    >
+                        {providers?.map((provider) => {
+                            const socialProvider = socialProviders.find((socialProvider) => socialProvider.provider == provider)
+                            if (!socialProvider) return null
+
+                            return (
+                                <ProviderButton
+                                    key={provider}
+                                    localization={localization}
+                                    socialLayout={socialLayout}
+                                    socialProvider={socialProvider}
+                                />
+                            )
+                        })}
+                    </div>
+
+                    {passkey && (
+                        <Button
+                            className="w-full"
+                            variant="secondary"
+                        >
+                            <KeyIcon />
+                            {localization.signInWith}
+                            {" "}
+                            {localization.passkey}
+                        </Button>
+                    )}
+                </>
+            )}
+        </form>
+    )
+}

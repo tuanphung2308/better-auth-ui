@@ -1,16 +1,12 @@
 "use client"
 
-import { KeyIcon, Loader2, LockIcon, MailIcon } from "lucide-react"
-import { useCallback, useContext, useEffect, useRef } from "react"
-import { toast } from "sonner"
+import { useContext } from "react"
 
-import { AuthUIContext } from "../lib/auth-ui-provider"
-import { cn, isValidEmail } from "../lib/utils"
-import { type SocialProvider, socialProviders } from "../social-providers"
+import { AuthUIContext, type AuthView } from "../lib/auth-ui-provider"
+import { cn } from "../lib/utils"
+import { type SocialProvider } from "../social-providers"
 
-import { ActionButton } from "./auth-card/action-button"
-import { ProviderButton } from "./auth-card/provider-button"
-import { Button } from "./ui/button"
+import { AuthForm } from "./auth-form"
 import {
     Card,
     CardContent,
@@ -19,8 +15,6 @@ import {
     CardHeader,
     CardTitle
 } from "./ui/card"
-import { Input } from "./ui/input"
-import { Label } from "./ui/label"
 
 export const authCardLocalization = {
     alreadyHaveAnAccount: "Already have an account?",
@@ -73,6 +67,7 @@ export function AuthCard({
     redirectTo,
     signUpName,
     socialLayout = "auto",
+    view,
     onSessionChange
 }: {
     className?: string,
@@ -86,387 +81,84 @@ export function AuthCard({
     redirectTo?: string,
     signUpName?: boolean,
     socialLayout?: "auto" | "horizontal" | "vertical",
+    view?: AuthView,
     onSessionChange?: () => void,
 }) {
-    const getRedirectTo = useCallback(() => redirectTo || new URLSearchParams(window.location.search).get("redirectTo") || "/", [redirectTo])
-    const getCallbackURL = useCallback(() => callbackURL || getRedirectTo(), [callbackURL, getRedirectTo])
-
     localization = { ...authCardLocalization, ...localization }
 
-    if (socialLayout == "auto") {
-        socialLayout = disableCredentials ? "vertical" : (providers?.length > 3 ? "horizontal" : "vertical")
+    const path = pathname?.split("/").pop()
+
+    const { viewPaths, LinkComponent } = useContext(AuthUIContext)
+
+    if (path && !Object.values(viewPaths).includes(path)) {
+        console.error(`Invalid auth view: ${path}`)
     }
 
-    const slug = pathname?.split("/").pop()
+    view = view || (Object.entries(viewPaths).find(([_, value]) => value === path)?.[0] || "signIn") as AuthView
 
-    const { authClient, authViews, navigate, usernamePlugin, LinkComponent } = useContext(AuthUIContext)
-
-    if (!Object.values(authViews).includes(slug!)) {
-        console.error(`Invalid auth view: ${slug}`)
-    }
-
-    const authView = (Object.entries(authViews).find(([_, value]) => value === slug)?.[0] || "signIn") as keyof typeof authViews
-
-    const formAction = async (formData: FormData) => {
-        const provider = formData.get("provider") as SocialProvider
-
-        if (provider) {
-            const { error } = await authClient.signIn.social({ provider, callbackURL: getCallbackURL() })
-            if (error) {
-                toast.error(error.message)
-            }
-
-            return
-        }
-
-        let email = formData.get("email") as string
-        const password = formData.get("password") as string
-        const name = formData.get("name") || "" as string
-
-        switch (authView) {
-            case "signIn": {
-                if (disableCredentials) {
-                    // @ts-expect-error Optional plugin
-                    const { error } = await authClient.signIn.magicLink({ email, callbackURL: getCallbackURL() })
-
-                    if (error) {
-                        toast.error(error.message)
-                    } else {
-                        toast.success(localization.magicLinkEmail)
-                    }
-
-                    return
-                }
-
-                if (usernamePlugin) {
-                    const username = formData.get("username") as string
-
-                    if (!isValidEmail(username)) {
-                        // @ts-expect-error Optional plugin
-                        const { error } = await authClient.signIn.username({
-                            username,
-                            password
-                        })
-
-                        if (error) {
-                            toast.error(error.message)
-                        } else {
-                            onSessionChange?.()
-                            navigate(getRedirectTo())
-                        }
-
-                        return
-                    } else {
-                        email = username
-                    }
-                }
-
-                const { error } = await authClient.signIn.email({ email, password })
-                if (error) {
-                    toast.error(error.message)
-                } else {
-                    onSessionChange?.()
-                    navigate(getRedirectTo())
-                }
-
-                break
-            }
-
-            case "magicLink": {
-                // @ts-expect-error Optional plugin
-                const { error } = await authClient.signIn.magicLink({ email, callbackURL: getCallbackURL() })
-
-                if (error) {
-                    toast.error(error.message)
-                } else {
-                    toast.success(localization.magicLinkEmail)
-                }
-
-                break
-            }
-
-            case "signUp": {
-                const params = { email, password, name, callbackURL: getCallbackURL() } as Record<string, unknown>
-
-                if (usernamePlugin) {
-                    params.username = formData.get("username")
-                }
-
-                // @ts-expect-error We omit signUp from the authClient type to support additional fields
-                const { data, error } = await authClient.signUp.email(params)
-
-                if (error) {
-                    toast.error(error.message)
-                } else if (data.token) {
-                    onSessionChange?.()
-                    navigate(getRedirectTo())
-                } else {
-                    navigate(authViews.signIn)
-                    toast.success(localization.signUpEmail)
-                }
-
-                break
-            }
-
-            case "forgotPassword": {
-                const { error } = await authClient.forgetPassword({
-                    email: email,
-                    redirectTo: window.location.pathname.replace(authViews.forgotPassword, authViews.resetPassword)
-                })
-
-                if (error) {
-                    toast.error(error.message)
-                } else {
-                    toast.success(localization.forgotPasswordEmail)
-                    navigate(authViews.signIn)
-                }
-
-                break
-            }
-
-            case "resetPassword": {
-                const searchParams = new URLSearchParams(window.location.search)
-                const token = searchParams.get("token") as string
-
-                const { error } = await authClient.resetPassword({
-                    newPassword: password,
-                    token
-                })
-
-                if (error) {
-                    toast.error(error.message)
-                } else {
-                    toast.success(localization.resetPasswordSuccess)
-                    navigate(authViews.signIn)
-                }
-
-                break
-            }
-        }
-    }
-
-    const signingOut = useRef(false)
-    const checkingResetPasswordToken = useRef(false)
-
-    useEffect(() => {
-        if (authView != "signOut" || signingOut.current) return
-
-        signingOut.current = true
-        authClient.signOut().finally(async () => {
-            navigate(getRedirectTo())
-            onSessionChange?.()
-            signingOut.current = false
-        })
-    }, [authView, authClient, navigate, authViews.signIn, onSessionChange, getRedirectTo])
-
-    useEffect(() => {
-        if (authView != "resetPassword" || checkingResetPasswordToken.current) return
-
-        checkingResetPasswordToken.current = true
-
-        const searchParams = new URLSearchParams(window.location.search)
-        const token = searchParams.get("token")
-        if (!token || token == "INVALID_TOKEN") {
-            navigate(authViews.signIn)
-            setTimeout(() => {
-                toast.error(localization.resetPasswordInvalidToken)
-                checkingResetPasswordToken.current = false
-            }, 100)
-        }
-    }, [authView, authViews, navigate, localization])
-
-    useEffect(() => {
-        if (authView == "magicLink" && !magicLink) {
-            navigate(authViews.signIn)
-        }
-
-        if (["signUp", "forgotPassword", "resetPassword"].includes(authView) && disableCredentials) {
-            navigate(authViews.signIn)
-        }
-    }, [authView, authViews, disableCredentials, navigate, magicLink])
-
-    if (authView == "signOut") return (
-        <Loader2 className="animate-spin" />
+    if (view == "signOut") return (
+        <AuthForm
+            callbackURL={callbackURL}
+            className={className}
+            disableCredentials={disableCredentials}
+            localization={localization}
+            magicLink={magicLink}
+            passkey={passkey}
+            providers={providers}
+            redirectTo={redirectTo}
+            signUpName={signUpName}
+            socialLayout={socialLayout}
+            view={view}
+            onSessionChange={onSessionChange}
+        />
     )
 
     return (
-        <Card className={cn("max-w-sm w-full", className)}>
+        <Card className={cn("w-full max-w-sm", className)}>
             <CardHeader>
                 <CardTitle className="text-lg md:text-xl">
-                    {localization[authView as keyof typeof localization]}
+                    {localization[view as keyof typeof localization]}
                 </CardTitle>
 
                 <CardDescription className="text-xs md:text-sm">
                     {(disableCredentials && !magicLink) ? (
                         localization.disableCredentialsDescription
                     ) : (
-                        localization[authView + "Description" as keyof typeof localization]
+                        localization[view + "Description" as keyof typeof localization]
                     )}
                 </CardDescription>
             </CardHeader>
 
             <CardContent>
-                <form action={formAction} className="grid gap-4">
-                    {!disableCredentials && authView == "signUp" && signUpName && (
-                        <div className="grid gap-2">
-                            <Label htmlFor="name">
-                                {localization.name}
-                            </Label>
-
-                            <Input
-                                id="name"
-                                name="name"
-                                placeholder={localization.namePlaceholder}
-                            />
-                        </div>
-                    )}
-
-                    {!disableCredentials && usernamePlugin && ["signIn", "signUp"].includes(authView) && (
-                        <div className="grid gap-2">
-                            <Label htmlFor="username">
-                                {localization.username}
-                            </Label>
-
-                            <Input
-                                id="username"
-                                name="username"
-                                placeholder={authView == "signIn" ? localization.usernameSignInPlaceholder : localization.usernameSignUpPlaceholder}
-                                required
-                            />
-                        </div>
-                    )}
-
-                    {(!disableCredentials || (["signIn", "magicLink"].includes(authView) && magicLink)) && ((!usernamePlugin && authView != "resetPassword") || ["signUp", "magicLink", "forgotPassword"].includes(authView)) && (
-                        <div className="grid gap-2">
-                            <Label htmlFor="email">
-                                {localization.email}
-                            </Label>
-
-                            <Input
-                                id="email"
-                                name="email"
-                                placeholder={localization.emailPlaceholder}
-                                required
-                                type="email"
-                            />
-                        </div>
-                    )}
-
-                    {!disableCredentials && ["signUp", "signIn", "resetPassword"].includes(authView) && (
-                        <div className="grid gap-2">
-                            <div className="flex items-center">
-                                <Label htmlFor="password">
-                                    {localization.password}
-                                </Label>
-
-                                {authView == "signIn" && (
-                                    <LinkComponent
-                                        className="ml-auto inline-block text-sm hover:underline -my-1"
-                                        href="forgot-password"
-                                        to="forgot-password"
-                                    >
-                                        {localization.forgotPasswordLink}
-                                    </LinkComponent>
-                                )}
-                            </div>
-
-                            <Input
-                                autoComplete={["signUp", "resetPassword"].includes(authView!) ? "new-password" : "password"}
-                                id="password"
-                                name="password"
-                                placeholder={localization.passwordPlaceholder}
-                                required
-                                type="password"
-                            />
-                        </div>
-                    )}
-
-                    {(!disableCredentials || (["signIn", "magicLink"].includes(authView) && magicLink)) && (
-                        <ActionButton
-                            authView={authView}
-                            localization={localization}
-                        />
-                    )}
-
-                    {magicLink && !disableCredentials && authView != "resetPassword" && (
-                        <LinkComponent
-                            href={authView == "magicLink" ? authViews.signIn : authViews.magicLink}
-                            to={authView == "magicLink" ? authViews.signIn : authViews.magicLink}
-                        >
-                            <Button
-                                className="w-full"
-                                variant="secondary"
-                            >
-                                {authView == "magicLink"
-                                    ? <LockIcon />
-                                    : <MailIcon />
-                                }
-
-                                {localization.signInWith}
-                                {" "}
-
-                                {authView == "magicLink"
-                                    ? localization.password
-                                    : localization.magicLink
-                                }
-                            </Button>
-                        </LinkComponent>
-                    )}
-
-                    {!["forgotPassword", "resetPassword"].includes(authView) && (
-                        <>
-                            <div
-                                className={cn(
-                                    "w-full gap-2 flex items-center",
-                                    "justify-between",
-                                    socialLayout == "horizontal" && "flex-wrap",
-                                    socialLayout == "vertical" && "flex-col"
-                                )}
-                            >
-                                {providers?.map((provider) => {
-                                    const socialProvider = socialProviders.find((socialProvider) => socialProvider.provider == provider)
-                                    if (!socialProvider) return null
-
-                                    return (
-                                        <ProviderButton
-                                            key={provider}
-                                            localization={localization}
-                                            socialLayout={socialLayout}
-                                            socialProvider={socialProvider}
-                                        />
-                                    )
-                                })}
-                            </div>
-
-                            {passkey && (
-                                <Button
-                                    className="w-full"
-                                    variant="secondary"
-                                >
-                                    <KeyIcon />
-                                    {localization.signInWith}
-                                    {" "}
-                                    {localization.passkey}
-                                </Button>
-                            )}
-                        </>
-                    )}
-                </form>
+                <AuthForm
+                    callbackURL={callbackURL}
+                    className={className}
+                    disableCredentials={disableCredentials}
+                    localization={localization}
+                    magicLink={magicLink}
+                    passkey={passkey}
+                    providers={providers}
+                    redirectTo={redirectTo}
+                    signUpName={signUpName}
+                    socialLayout={socialLayout}
+                    view={view}
+                    onSessionChange={onSessionChange}
+                />
             </CardContent>
 
             {!disableCredentials && (
                 <CardFooter>
                     <div className="flex justify-center w-full border-t pt-4">
                         <p className="text-center text-sm text-muted-foreground">
-                            {authView == "signIn" ? localization.dontHaveAnAccount : localization.alreadyHaveAnAccount}
+                            {view == "signIn" ? localization.dontHaveAnAccount : localization.alreadyHaveAnAccount}
                             {" "}
 
                             <LinkComponent
                                 className="underline text-foreground"
-                                href={`${authViews[authView == "signIn" ? "signUp" : "signIn"]}`}
-                                to={`${authViews[authView == "signIn" ? "signUp" : "signIn"]}`}
+                                href={`${viewPaths[view == "signIn" ? "signUp" : "signIn"]}`}
+                                to={`${viewPaths[view == "signIn" ? "signUp" : "signIn"]}`}
                             >
-                                {authView == "signIn" ? localization.signUp : localization.signIn}
+                                {view == "signIn" ? localization.signUp : localization.signIn}
                             </LinkComponent>
                         </p>
                     </div>

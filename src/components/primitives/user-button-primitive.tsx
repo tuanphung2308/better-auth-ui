@@ -66,7 +66,7 @@ export function UserButtonPrimitive({
     user?: User
 } & React.ComponentProps<"div">) {
     localization = { ...userButtonLocalization, ...localization }
-    const { authPath, authViews, multiSession, settingsUrl, LinkComponent } = useContext(AuthUIContext)
+    const { basePath, viewPaths, multiSession, settingsUrl, LinkComponent } = useContext(AuthUIContext)
 
     return (
         <DropdownMenu>
@@ -108,14 +108,14 @@ export function UserButtonPrimitive({
 
                 {!user || user.isAnonymous ? (
                     <>
-                        <LinkComponent href={`${authPath}/${authViews.signIn}`} to={`${authPath}/${authViews.signIn}`}>
+                        <LinkComponent href={`${basePath}/${viewPaths.signIn}`} to={`${basePath}/${viewPaths.signIn}`}>
                             <DropdownMenuItem>
                                 <LogInIcon />
                                 {localization.signIn}
                             </DropdownMenuItem>
                         </LinkComponent>
 
-                        <LinkComponent href={`${authPath}/${authViews.signUp}`} to={`${authPath}/${authViews.signUp}`}>
+                        <LinkComponent href={`${basePath}/${viewPaths.signUp}`} to={`${basePath}/${viewPaths.signUp}`}>
                             <DropdownMenuItem>
                                 <UserRoundPlus />
                                 {localization.signUp}
@@ -124,14 +124,14 @@ export function UserButtonPrimitive({
                     </>
                 ) : (
                     <>
-                        <LinkComponent href={settingsUrl || `${authPath}/${authViews.settings}`} to={settingsUrl || `${authPath}/${authViews.settings}`}>
+                        <LinkComponent href={settingsUrl || `${basePath}/settings`} to={settingsUrl || `${basePath}/settings`}>
                             <DropdownMenuItem>
                                 <SettingsIcon />
                                 {localization.settings}
                             </DropdownMenuItem>
                         </LinkComponent>
 
-                        <LinkComponent href={`${authPath}/${authViews.signOut}`} to={`${authPath}/${authViews.signOut}`}>
+                        <LinkComponent href={`${basePath}/${viewPaths.signOut}`} to={`${basePath}/${viewPaths.signOut}`}>
                             <DropdownMenuItem>
                                 <LogOutIcon />
                                 {localization.signOut}
@@ -171,7 +171,7 @@ export function UserButtonPrimitive({
                                 </Fragment>
                             ))}
 
-                        <LinkComponent href={`${authPath}/${authViews.signIn}`} to={`${authPath}/${authViews.signIn}`}>
+                        <LinkComponent href={`${basePath}/${viewPaths.signIn}`} to={`${basePath}/${viewPaths.signIn}`}>
                             <DropdownMenuItem>
                                 <PlusCircleIcon />
                                 {localization.addAccount}

@@ -15,20 +15,21 @@ const defaultNavigate = (href: string) => window.location.href = href
 
 export type Link = React.ComponentType<{ href: string, to: unknown, className?: string, children: ReactNode }>
 
-export const defaultAuthViews = {
+export const viewPaths = {
     signUp: "sign-up",
     signIn: "sign-in",
     signOut: "sign-out",
     magicLink: "magic-link",
     forgotPassword: "forgot-password",
-    resetPassword: "reset-password",
-    settings: "settings",
+    resetPassword: "reset-password"
 }
+
+export type AuthView = keyof typeof viewPaths
 
 export type AuthUIContextType = {
     authClient: Omit<ReturnType<typeof createAuthClient>, "signUp">,
-    authPath: string,
-    authViews: typeof defaultAuthViews,
+    basePath: string,
+    viewPaths: typeof viewPaths,
     multiSession: boolean,
     navigate: (href: string) => void
     settingsUrl?: string,
@@ -38,15 +39,15 @@ export type AuthUIContextType = {
 
 export type AuthUIProviderProps = {
     authClient: ReturnType<typeof createAuthClient>
-    authViews?: Partial<typeof defaultAuthViews>
-} & Partial<Omit<AuthUIContextType, "authViews">>
+    viewPaths?: Partial<typeof viewPaths>
+} & Partial<Omit<AuthUIContextType, "viewPaths">>
 
 export const AuthUIContext = createContext<AuthUIContextType>({} as unknown as AuthUIContextType)
 
 export const AuthUIProvider = ({
     children,
-    authPath = "/auth",
-    authViews,
+    basePath = "/auth",
+    viewPaths: viewPathsProp,
     multiSession = false,
     navigate = defaultNavigate,
     LinkComponent = DefaultLink,
@@ -57,8 +58,8 @@ export const AuthUIProvider = ({
     return (
         <AuthUIContext.Provider
             value={{
-                authViews: { ...defaultAuthViews, ...authViews },
-                authPath,
+                viewPaths: { ...viewPaths, ...viewPathsProp },
+                basePath,
                 multiSession,
                 navigate,
                 LinkComponent,
