@@ -15,8 +15,19 @@ import { ActionButton } from "./action-button"
 import { authLocalization } from "./auth-card"
 import { ProviderButton } from "./provider-button"
 
+export type AuthFormClassNames = {
+    base?: string,
+    label?: string,
+    input?: string,
+    actionButton?: string,
+    providerButton?: string,
+    forgotPasswordLink?: string,
+    secondaryButton?: string
+}
+
 export function AuthForm({
     className,
+    classNames,
     callbackURL,
     disableCredentials,
     localization,
@@ -30,6 +41,7 @@ export function AuthForm({
     onSessionChange
 }: {
     className?: string,
+    classNames?: AuthFormClassNames,
     callbackURL?: string,
     disableCredentials?: boolean,
     localization?: Partial<typeof authLocalization>,
@@ -246,15 +258,16 @@ export function AuthForm({
     return (
         <form
             action={formAction}
-            className={cn("grid gap-4 w-full", className)}
+            className={cn("grid gap-4 w-full", className, classNames?.base)}
         >
             {!disableCredentials && view == "signUp" && signUpName && (
                 <div className="grid gap-2">
-                    <Label htmlFor="name">
+                    <Label className={classNames?.label} htmlFor="name">
                         {localization.name}
                     </Label>
 
                     <Input
+                        className={classNames?.input}
                         id="name"
                         name="name"
                         placeholder={localization.namePlaceholder}
@@ -264,11 +277,12 @@ export function AuthForm({
 
             {!disableCredentials && usernamePlugin && ["signIn", "signUp"].includes(view) && (
                 <div className="grid gap-2">
-                    <Label htmlFor="username">
+                    <Label className={classNames?.label} htmlFor="username">
                         {localization.username}
                     </Label>
 
                     <Input
+                        className={classNames?.input}
                         id="username"
                         name="username"
                         placeholder={view == "signIn" ? localization.usernameSignInPlaceholder : localization.usernameSignUpPlaceholder}
@@ -279,11 +293,12 @@ export function AuthForm({
 
             {(!disableCredentials || (["signIn", "magicLink"].includes(view) && magicLink)) && ((!usernamePlugin && view != "resetPassword") || ["signUp", "magicLink", "forgotPassword"].includes(view)) && (
                 <div className="grid gap-2">
-                    <Label htmlFor="email">
+                    <Label className={classNames?.label} htmlFor="email">
                         {localization.email}
                     </Label>
 
                     <Input
+                        className={classNames?.input}
                         id="email"
                         name="email"
                         placeholder={localization.emailPlaceholder}
@@ -296,13 +311,15 @@ export function AuthForm({
             {!disableCredentials && ["signUp", "signIn", "resetPassword"].includes(view) && (
                 <div className="grid gap-2">
                     <div className="flex items-center">
-                        <Label htmlFor="password">
+                        <Label className={classNames?.label} htmlFor="password">
                             {localization.password}
                         </Label>
 
                         {view == "signIn" && (
                             <LinkComponent
-                                className="ml-auto inline-block text-sm hover:underline -my-1"
+                                className={cn("ml-auto inline-block text-sm hover:underline -my-1",
+                                    classNames?.forgotPasswordLink
+                                )}
                                 href="forgot-password"
                                 to="forgot-password"
                             >
@@ -313,6 +330,7 @@ export function AuthForm({
 
                     <Input
                         autoComplete={["signUp", "resetPassword"].includes(view!) ? "new-password" : "password"}
+                        className={classNames?.input}
                         id="password"
                         name="password"
                         placeholder={localization.passwordPlaceholder}
@@ -325,6 +343,7 @@ export function AuthForm({
             {(!disableCredentials || (["signIn", "magicLink"].includes(view) && magicLink)) && (
                 <ActionButton
                     authView={view}
+                    className={classNames?.actionButton}
                     localization={localization}
                 />
             )}
@@ -335,7 +354,7 @@ export function AuthForm({
                     to={view == "magicLink" ? viewPaths.signIn : viewPaths.magicLink}
                 >
                     <Button
-                        className="w-full"
+                        className={cn("w-full", classNames?.secondaryButton)}
                         variant="secondary"
                     >
                         {view == "magicLink"
@@ -371,6 +390,7 @@ export function AuthForm({
                             return (
                                 <ProviderButton
                                     key={provider}
+                                    className={classNames?.providerButton}
                                     localization={localization}
                                     socialLayout={socialLayout}
                                     socialProvider={socialProvider}
@@ -381,7 +401,7 @@ export function AuthForm({
 
                     {passkey && (
                         <Button
-                            className="w-full"
+                            className={cn("w-full", classNames?.secondaryButton)}
                             variant="secondary"
                         >
                             <KeyIcon />

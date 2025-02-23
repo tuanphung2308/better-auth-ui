@@ -19,10 +19,7 @@ export function ActionButton({
 
     return (
         <Button
-            className={cn(
-                "w-full",
-                className
-            )}
+            className={cn("w-full", className)}
             disabled={pending}
         >
             {pending ? (

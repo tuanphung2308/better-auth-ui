@@ -13,7 +13,7 @@ import {
     CardTitle
 } from "../ui/card"
 
-import { AuthForm } from "./auth-form"
+import { AuthForm, type AuthFormClassNames } from "./auth-form"
 
 export const authLocalization = {
     alreadyHaveAnAccount: "Already have an account?",
@@ -54,8 +54,20 @@ export const authLocalization = {
     usernameSignUpPlaceholder: "Username"
 }
 
+export type AuthCardClassNames = {
+    base?: string,
+    content?: string,
+    header?: string,
+    title?: string,
+    description?: string,
+    footer?: string,
+    footerLink?: string,
+    form?: AuthFormClassNames
+}
+
 export function AuthCard({
     className,
+    classNames,
     callbackURL,
     disableCredentials,
     localization,
@@ -69,6 +81,7 @@ export function AuthCard({
     onSessionChange
 }: {
     className?: string,
+    classNames?: AuthCardClassNames,
     callbackURL?: string,
     disableCredentials?: boolean,
     localization?: Partial<typeof authLocalization>,
@@ -96,7 +109,7 @@ export function AuthCard({
     if (view == "signOut") return (
         <AuthForm
             callbackURL={callbackURL}
-            className={className}
+            classNames={classNames?.form}
             disableCredentials={disableCredentials}
             localization={localization}
             magicLink={magicLink}
@@ -110,13 +123,13 @@ export function AuthCard({
     )
 
     return (
-        <Card className={cn("w-full max-w-sm", className)}>
-            <CardHeader>
-                <CardTitle className="text-lg md:text-xl">
+        <Card className={cn("w-full max-w-sm", className, classNames?.base)}>
+            <CardHeader className={classNames?.header}>
+                <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                     {localization[view as keyof typeof localization]}
                 </CardTitle>
 
-                <CardDescription className="text-xs md:text-sm">
+                <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
                     {(disableCredentials && !magicLink) ? (
                         localization.disableCredentialsDescription
                     ) : (
@@ -125,10 +138,10 @@ export function AuthCard({
                 </CardDescription>
             </CardHeader>
 
-            <CardContent>
+            <CardContent className={classNames?.content}>
                 <AuthForm
                     callbackURL={callbackURL}
-                    className={className}
+                    classNames={classNames?.form}
                     disableCredentials={disableCredentials}
                     localization={localization}
                     magicLink={magicLink}
@@ -142,21 +155,16 @@ export function AuthCard({
             </CardContent>
 
             {!disableCredentials && (
-                <CardFooter>
-                    <div className="flex justify-center w-full border-t pt-4">
-                        <p className="text-center text-sm text-muted-foreground">
-                            {view == "signIn" ? localization.dontHaveAnAccount : localization.alreadyHaveAnAccount}
-                            {" "}
+                <CardFooter className={cn("justify-center text-sm text-muted-foreground gap-1", classNames?.footer)}>
+                    {view == "signIn" ? localization.dontHaveAnAccount : localization.alreadyHaveAnAccount}
 
-                            <LinkComponent
-                                className="underline text-foreground"
-                                href={`${viewPaths[view == "signIn" ? "signUp" : "signIn"]}`}
-                                to={`${viewPaths[view == "signIn" ? "signUp" : "signIn"]}`}
-                            >
-                                {view == "signIn" ? localization.signUp : localization.signIn}
-                            </LinkComponent>
-                        </p>
-                    </div>
+                    <LinkComponent
+                        className={cn("underline text-foreground", classNames?.footerLink)}
+                        href={`${viewPaths[view == "signIn" ? "signUp" : "signIn"]}`}
+                        to={`${viewPaths[view == "signIn" ? "signUp" : "signIn"]}`}
+                    >
+                        {view == "signIn" ? localization.signUp : localization.signIn}
+                    </LinkComponent>
                 </CardFooter>
             )}
         </Card>

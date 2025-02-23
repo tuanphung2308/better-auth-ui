@@ -35,7 +35,7 @@ export const userButtonLocalization = {
     signUp: "Sign Up"
 }
 
-export interface UserButtonClassNames {
+export type UserButtonClassNames = {
     trigger?: {
         base?: string
         avatar?: UserAvatarClassNames
