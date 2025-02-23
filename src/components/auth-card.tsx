@@ -1,7 +1,7 @@
 "use client"
 
 import { KeyIcon, Loader2, LockIcon, MailIcon } from "lucide-react"
-import { useContext, useEffect, useRef } from "react"
+import { useCallback, useContext, useEffect, useRef } from "react"
 import { toast } from "sonner"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
@@ -81,7 +81,7 @@ export function AuthCard({
     socialLayout?: "auto" | "horizontal" | "vertical",
     onSessionChange?: () => void,
 }) {
-    const getRedirectTo = () => redirectTo || new URLSearchParams(window.location.search).get("redirectTo") || "/"
+    const getRedirectTo = useCallback(() => redirectTo || new URLSearchParams(window.location.search).get("redirectTo") || "/", [redirectTo])
     const getCallbackURL = () => callbackURL || getRedirectTo()
 
     localization = { ...authCardLocalization, ...localization }
@@ -166,10 +166,10 @@ export function AuthCard({
             }
 
             case "signUp": {
-                const params = { email, password, name, callbackURL: getCallbackURL() } as Record<string, string>
+                const params = { email, password, name, callbackURL: getCallbackURL() } as Record<string, unknown>
 
                 if (enableUsername) {
-                    params.username = formData.get("username") as string
+                    params.username = formData.get("username")
                 }
 
                 // @ts-expect-error We omit signUp from the authClient type to support additional fields
@@ -181,6 +181,7 @@ export function AuthCard({
                     onSessionChange?.()
                     navigate(getRedirectTo())
                 } else {
+                    navigate(authViews.signIn)
                     toast.success(localization.signUpEmail)
                 }
 
@@ -192,15 +193,15 @@ export function AuthCard({
     const signingOut = useRef(false)
 
     useEffect(() => {
-        if (authView != "signOut" || !signingOut.current) return
+        if (authView != "signOut" || signingOut.current) return
 
         signingOut.current = true
         authClient.signOut().finally(async () => {
-            navigate(authViews.signIn)
+            navigate(getRedirectTo())
             onSessionChange?.()
             signingOut.current = false
         })
-    }, [authView, authClient, navigate, authViews.signIn, onSessionChange])
+    }, [authView, authClient, navigate, authViews.signIn, onSessionChange, getRedirectTo])
 
     if (authView == "signOut") return (
         <Loader2 className="animate-spin" />
@@ -366,7 +367,7 @@ export function AuthCard({
             </CardContent>
 
             <CardFooter>
-                <div className="flex justify-center w-full border-t pt-4 pb-2">
+                <div className="flex justify-center w-full border-t pt-4">
                     <p className="text-center text-sm text-muted-foreground">
                         {authView == "signIn" ? localization.dontHaveAnAccount : localization.alreadyHaveAnAccount}
                         {" "}
