@@ -13,6 +13,8 @@ export const settingsLocalization = {
     emailDescription: "Enter the email address you want to use to log in.",
     emailInstructions: "Please use a valid email address.",
     emailPlaceholder: "m@example.com",
+    emailVerifyChange: "Please check your email to verify the change.",
+    emailVerification: "Check your email for the verification link.",
     save: "Save"
 }
 

@@ -38,7 +38,7 @@ const eslintConfig = [
         { blankLine: "always", prev: "if", next: "*" },
         { blankLine: "any", prev: "if", next: "return" },
         { blankLine: "any", prev: "if", next: "if" },
-        { blankLine: "always", prev: "*", next: "if" },
+        { blankLine: "any", prev: "*", next: "if" },
         { blankLine: "any", prev: ["const", "let", "var"], next: "*" },
         { blankLine: "any", prev: ["*"], next: ["const", "let", "var"] },
         { blankLine: "any", prev: ["const", "let", "var"], next: ["const", "let", "var"] },

@@ -33,7 +33,14 @@ export function ProviderButton({
             value={socialProvider.provider}
             variant="outline"
         >
-            <socialProvider.icon color={colorIcons} />
+            {colorIcons ? (
+                <socialProvider.icon color />
+            ) : (
+                <>
+                    <socialProvider.icon className="dark:hidden" color />
+                    <socialProvider.icon className="hidden dark:block" />
+                </>
+            )}
 
             {socialLayout == "vertical" && (
                 <>

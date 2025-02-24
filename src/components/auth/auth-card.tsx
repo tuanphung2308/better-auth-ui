@@ -24,7 +24,7 @@ export const authLocalization = {
     forgotPassword: "Forgot Password",
     forgotPasswordAction: "Send reset link",
     forgotPasswordDescription: "Enter your email to reset your password",
-    forgotPasswordEmail: "Check your email for the password reset link",
+    forgotPasswordEmail: "Check your email for the password reset link.",
     forgotPasswordLink: "Forgot your password?",
     magicLink: "Magic Link",
     magicLinkAction: "Send magic link",
@@ -48,7 +48,7 @@ export const authLocalization = {
     signUp: "Sign Up",
     signUpAction: "Create an account",
     signUpDescription: "Enter your information to create an account",
-    signUpEmail: "Check your email for the verification link",
+    signUpEmail: "Check your email for the verification link.",
     username: "Username",
     usernameSignInPlaceholder: "Username or email",
     usernameSignUpPlaceholder: "Username"
