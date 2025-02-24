@@ -10,11 +10,13 @@ import type { authLocalization } from "./auth-card"
 
 export function ProviderButton({
     className,
+    isLoading,
     localization,
     socialLayout,
     socialProvider
 }: {
     className?: string,
+    isLoading?: boolean,
     localization: Partial<typeof authLocalization>,
     socialLayout: "auto" | "horizontal" | "vertical",
     socialProvider: typeof socialProviders[number]
@@ -25,7 +27,7 @@ export function ProviderButton({
     return (
         <Button
             className={cn(socialLayout == "vertical" ? "w-full" : "grow", className)}
-            disabled={pending}
+            disabled={pending || isLoading}
             formNoValidate
             name="provider"
             value={socialProvider.provider}

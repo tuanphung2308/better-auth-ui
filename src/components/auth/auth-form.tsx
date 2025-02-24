@@ -1,18 +1,25 @@
 "use client"
 
-import { KeyIcon, Loader2, LockIcon, MailIcon } from "lucide-react"
-import { useCallback, useContext, useEffect, useRef } from "react"
+import { Loader2 } from "lucide-react"
+import {
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
+    useState
+} from "react"
 import { toast } from "sonner"
 
 import { AuthUIContext, type AuthView } from "../../lib/auth-ui-provider"
 import { cn, isValidEmail } from "../../lib/utils"
 import { type SocialProvider, socialProviders } from "../../social-providers"
-import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
 import { ActionButton } from "./action-button"
 import { authLocalization } from "./auth-card"
+import { MagicLinkButton } from "./magic-link-button"
+import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
 
 export type AuthFormClassNames = {
@@ -56,6 +63,7 @@ export function AuthForm({
 }) {
     const getRedirectTo = useCallback(() => redirectTo || new URLSearchParams(window.location.search).get("redirectTo") || "/", [redirectTo])
     const getCallbackURL = useCallback(() => callbackURL || getRedirectTo(), [callbackURL, getRedirectTo])
+    const [isLoading, setIsLoading] = useState(false)
 
     localization = { ...authLocalization, ...localization }
 
@@ -80,8 +88,21 @@ export function AuthForm({
             const { error } = await authClient.signIn.social({ provider, callbackURL: getCallbackURL() })
             if (error) {
                 toast.error(error.message || error.statusText)
+            } else {
+                setIsLoading(true)
             }
 
+            return
+        }
+
+        if (formData.get("passkey")) {
+            // @ts-expect-error Optional plugin
+            const { error } = await authClient.signIn.passkey({ callbackURL: getCallbackURL() })
+            if (error) {
+                toast.error(error.message || error.statusText)
+            } else {
+                setIsLoading(true)
+            }
             return
         }
 
@@ -117,6 +138,7 @@ export function AuthForm({
                         if (error) {
                             toast.error(error.message || error.statusText)
                         } else {
+                            setIsLoading(true)
                             onSessionChange?.()
                             navigate(getRedirectTo())
                         }
@@ -131,6 +153,7 @@ export function AuthForm({
                 if (error) {
                     toast.error(error.message || error.statusText)
                 } else {
+                    setIsLoading(true)
                     onSessionChange?.()
                     navigate(getRedirectTo())
                 }
@@ -164,6 +187,7 @@ export function AuthForm({
                 if (error) {
                     toast.error(error.message || error.statusText)
                 } else if (data.token) {
+                    setIsLoading(true)
                     onSessionChange?.()
                     navigate(getRedirectTo())
                 } else {
@@ -344,33 +368,18 @@ export function AuthForm({
                 <ActionButton
                     authView={view}
                     className={classNames?.actionButton}
+                    isLoading={isLoading}
                     localization={localization}
                 />
             )}
 
             {magicLink && !disableCredentials && view != "resetPassword" && (
-                <LinkComponent
-                    href={view == "magicLink" ? viewPaths.signIn : viewPaths.magicLink}
-                    to={view == "magicLink" ? viewPaths.signIn : viewPaths.magicLink}
-                >
-                    <Button
-                        className={cn("w-full", classNames?.secondaryButton)}
-                        variant="secondary"
-                    >
-                        {view == "magicLink"
-                            ? <LockIcon />
-                            : <MailIcon />
-                        }
-
-                        {localization.signInWith}
-                        {" "}
-
-                        {view == "magicLink"
-                            ? localization.password
-                            : localization.magicLink
-                        }
-                    </Button>
-                </LinkComponent>
+                <MagicLinkButton
+                    className={classNames?.secondaryButton}
+                    isLoading={isLoading}
+                    localization={localization}
+                    view={view}
+                />
             )}
 
             {!["forgotPassword", "resetPassword"].includes(view) && providers?.length && (
@@ -391,6 +400,7 @@ export function AuthForm({
                                 <ProviderButton
                                     key={provider}
                                     className={classNames?.providerButton}
+                                    isLoading={isLoading}
                                     localization={localization}
                                     socialLayout={socialLayout}
                                     socialProvider={socialProvider}
@@ -400,15 +410,11 @@ export function AuthForm({
                     </div>
 
                     {passkey && (
-                        <Button
-                            className={cn("w-full", classNames?.secondaryButton)}
-                            variant="secondary"
-                        >
-                            <KeyIcon />
-                            {localization.signInWith}
-                            {" "}
-                            {localization.passkey}
-                        </Button>
+                        <PasskeyButton
+                            className={classNames?.secondaryButton}
+                            isLoading={isLoading}
+                            localization={localization}
+                        />
                     )}
                 </>
             )}
