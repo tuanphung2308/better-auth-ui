@@ -17,6 +17,7 @@ export function UserAvatar({
     user, classNames, className, ...props
 }: { user?: User, classNames?: UserAvatarClassNames } & ComponentProps<"div">) {
     const name = user?.name || user?.fullName || user?.firstName || user?.email
+    const src = (user?.image || user?.avatar || user?.avatarUrl) as string
 
     return (
         <Avatar
@@ -32,7 +33,7 @@ export function UserAvatar({
                 }
             />
 
-            <AvatarFallback className={cn("uppercase", classNames?.fallback)} delayMs={100}>
+            <AvatarFallback className={cn("uppercase", classNames?.fallback)} delayMs={src ? 200 : 0}>
                 {firstTwoCharacters(name) || (
                     <UserIcon className={cn("w-[55%]", classNames?.fallbackIcon)} />
                 )}
