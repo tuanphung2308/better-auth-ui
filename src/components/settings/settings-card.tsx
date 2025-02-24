@@ -85,7 +85,7 @@ export function SettingsCard({
                     />
                 </CardContent>
 
-                <CardFooter className={cn("border-t bg-muted/30 py-4 md:py-3 flex flex-col md:flex-row gap-4 justify-between", classNames?.footer)}>
+                <CardFooter className={cn("border-t bg-muted/20 py-4 md:py-3 flex flex-col md:flex-row gap-4 justify-between", classNames?.footer)}>
                     <CardDescription className={cn("text-xs md:text-sm", classNames?.instructions)}>
                         {localization[name + "Instructions"]}
                     </CardDescription>
