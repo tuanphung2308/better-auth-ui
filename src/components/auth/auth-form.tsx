@@ -37,6 +37,7 @@ export function AuthForm({
     classNames,
     callbackURL,
     disableCredentials,
+    forgotPassword = true,
     localization,
     magicLink,
     passkey,
@@ -51,6 +52,7 @@ export function AuthForm({
     classNames?: AuthFormClassNames,
     callbackURL?: string,
     disableCredentials?: boolean,
+    forgotPassword?: boolean,
     localization?: Partial<typeof authLocalization>,
     magicLink?: boolean,
     passkey?: boolean,
@@ -339,7 +341,7 @@ export function AuthForm({
                             {localization.password}
                         </Label>
 
-                        {view == "signIn" && (
+                        {view == "signIn" && forgotPassword && (
                             <LinkComponent
                                 className={cn("ml-auto inline-block text-sm hover:underline -my-1",
                                     classNames?.forgotPasswordLink

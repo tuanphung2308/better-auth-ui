@@ -70,6 +70,7 @@ export function AuthCard({
     classNames,
     callbackURL,
     disableCredentials,
+    forgotPassword = true,
     localization,
     magicLink,
     passkey,
@@ -84,6 +85,7 @@ export function AuthCard({
     classNames?: AuthCardClassNames,
     callbackURL?: string,
     disableCredentials?: boolean,
+    forgotPassword?: boolean,
     localization?: Partial<typeof authLocalization>,
     magicLink?: boolean,
     passkey?: boolean,
@@ -143,6 +145,7 @@ export function AuthCard({
                     callbackURL={callbackURL}
                     classNames={classNames?.form}
                     disableCredentials={disableCredentials}
+                    forgotPassword={forgotPassword}
                     localization={localization}
                     magicLink={magicLink}
                     passkey={passkey}
