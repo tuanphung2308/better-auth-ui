@@ -20,32 +20,30 @@ export function MagicLinkButton({
     view: AuthView
 }) {
     const { pending } = useFormStatus()
-    const { viewPaths, LinkComponent } = useContext(AuthUIContext)
+    const { viewPaths, navigate } = useContext(AuthUIContext)
 
     return (
-        <LinkComponent
-            className={cn((pending || isLoading) && "pointer-events-none cursor-default")}
-            href={view == "magicLink" ? viewPaths.signIn : viewPaths.magicLink}
-            to={view == "magicLink" ? viewPaths.signIn : viewPaths.magicLink}
+        <Button
+            className={cn("w-full", className)}
+            disabled={pending || isLoading}
+            type="button"
+            variant="secondary"
+            onClick={() => {
+                navigate(view == "magicLink" ? viewPaths.signIn : viewPaths.magicLink)
+            }}
         >
-            <Button
-                className={cn("w-full", className)}
-                disabled={pending || isLoading}
-                variant="secondary"
-            >
-                {view == "magicLink"
-                    ? <LockIcon />
-                    : <MailIcon />
-                }
+            {view == "magicLink"
+                ? <LockIcon />
+                : <MailIcon />
+            }
 
-                {localization.signInWith}
-                {" "}
+            {localization.signInWith}
+            {" "}
 
-                {view == "magicLink"
-                    ? localization.password
-                    : localization.magicLink
-                }
-            </Button>
-        </LinkComponent>
+            {view == "magicLink"
+                ? localization.password
+                : localization.magicLink
+            }
+        </Button>
     )
 }
