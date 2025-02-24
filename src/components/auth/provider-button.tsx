@@ -18,11 +18,11 @@ export function ProviderButton({
     className?: string,
     isLoading?: boolean,
     localization: Partial<typeof authLocalization>,
-    socialLayout: "auto" | "horizontal" | "vertical",
+    socialLayout: "auto" | "horizontal" | "grid" | "vertical",
     socialProvider: typeof socialProviders[number]
 }) {
     const { pending } = useFormStatus()
-    const { colorIcons } = useContext(AuthUIContext)
+    const { colorIcons, noColorIcons } = useContext(AuthUIContext)
 
     return (
         <Button
@@ -35,6 +35,8 @@ export function ProviderButton({
         >
             {colorIcons ? (
                 <socialProvider.icon color />
+            ) : noColorIcons ? (
+                <socialProvider.icon />
             ) : (
                 <>
                     <socialProvider.icon className="dark:hidden" color />

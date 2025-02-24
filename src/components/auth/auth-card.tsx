@@ -69,11 +69,7 @@ export function AuthCard({
     className,
     classNames,
     callbackURL,
-    disableCredentials,
-    forgotPassword = true,
     localization,
-    magicLink,
-    passkey,
     pathname,
     redirectTo,
     signUpName,
@@ -84,15 +80,11 @@ export function AuthCard({
     className?: string,
     classNames?: AuthCardClassNames,
     callbackURL?: string,
-    disableCredentials?: boolean,
-    forgotPassword?: boolean,
     localization?: Partial<typeof authLocalization>,
-    magicLink?: boolean,
-    passkey?: boolean,
     pathname?: string,
     redirectTo?: string,
     signUpName?: boolean,
-    socialLayout?: "auto" | "horizontal" | "vertical",
+    socialLayout?: "auto" | "horizontal" | "grid" | "vertical",
     view?: AuthView,
     onSessionChange?: () => void,
 }) {
@@ -100,7 +92,7 @@ export function AuthCard({
 
     const path = pathname?.split("/").pop()
 
-    const { viewPaths, LinkComponent } = useContext(AuthUIContext)
+    const { credentials, magicLink, viewPaths, LinkComponent } = useContext(AuthUIContext)
 
     if (path && !Object.values(viewPaths).includes(path)) {
         console.error(`Invalid auth view: ${path}`)
@@ -112,10 +104,7 @@ export function AuthCard({
         <AuthForm
             callbackURL={callbackURL}
             classNames={classNames?.form}
-            disableCredentials={disableCredentials}
             localization={localization}
-            magicLink={magicLink}
-            passkey={passkey}
             redirectTo={redirectTo}
             signUpName={signUpName}
             socialLayout={socialLayout}
@@ -132,7 +121,7 @@ export function AuthCard({
                 </CardTitle>
 
                 <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
-                    {(disableCredentials && !magicLink) ? (
+                    {(!credentials && !magicLink) ? (
                         localization.disableCredentialsDescription
                     ) : (
                         localization[view + "Description" as keyof typeof localization]
@@ -144,11 +133,7 @@ export function AuthCard({
                 <AuthForm
                     callbackURL={callbackURL}
                     classNames={classNames?.form}
-                    disableCredentials={disableCredentials}
-                    forgotPassword={forgotPassword}
                     localization={localization}
-                    magicLink={magicLink}
-                    passkey={passkey}
                     redirectTo={redirectTo}
                     signUpName={signUpName}
                     socialLayout={socialLayout}
@@ -157,7 +142,7 @@ export function AuthCard({
                 />
             </CardContent>
 
-            {!disableCredentials && (
+            {credentials && (
                 <CardFooter className={cn("justify-center text-sm text-muted-foreground gap-1", classNames?.footer)}>
                     {view == "signIn" ? localization.dontHaveAnAccount : localization.alreadyHaveAnAccount}
 

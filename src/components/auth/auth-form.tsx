@@ -36,11 +36,7 @@ export function AuthForm({
     className,
     classNames,
     callbackURL,
-    disableCredentials,
-    forgotPassword = true,
     localization,
-    magicLink,
-    passkey,
     pathname,
     redirectTo,
     signUpName,
@@ -51,15 +47,11 @@ export function AuthForm({
     className?: string,
     classNames?: AuthFormClassNames,
     callbackURL?: string,
-    disableCredentials?: boolean,
-    forgotPassword?: boolean,
     localization?: Partial<typeof authLocalization>,
-    magicLink?: boolean,
-    passkey?: boolean,
     pathname?: string,
     redirectTo?: string,
     signUpName?: boolean,
-    socialLayout?: "auto" | "horizontal" | "vertical",
+    socialLayout?: "auto" | "horizontal" | "grid" | "vertical",
     view?: AuthView,
     onSessionChange?: () => void,
 }) {
@@ -69,10 +61,21 @@ export function AuthForm({
 
     localization = { ...authLocalization, ...localization }
 
-    const { authClient, viewPaths, navigate, providers, usernamePlugin, LinkComponent } = useContext(AuthUIContext)
+    const {
+        authClient,
+        credentials,
+        forgotPassword,
+        magicLink,
+        navigate,
+        passkey,
+        providers,
+        username: usernamePlugin,
+        viewPaths,
+        LinkComponent
+    } = useContext(AuthUIContext)
 
     if (socialLayout == "auto") {
-        socialLayout = disableCredentials ? "vertical" : (providers && providers.length > 3 ? "horizontal" : "vertical")
+        socialLayout = !credentials ? "vertical" : (providers && providers.length > 3 ? "horizontal" : "vertical")
     }
 
     const path = pathname?.split("/").pop()
@@ -114,7 +117,7 @@ export function AuthForm({
 
         switch (view) {
             case "signIn": {
-                if (disableCredentials) {
+                if (!credentials) {
                     // @ts-expect-error Optional plugin
                     const { error } = await authClient.signIn.magicLink({ email, callbackURL: getCallbackURL() })
 
@@ -272,10 +275,10 @@ export function AuthForm({
             navigate(viewPaths.signIn)
         }
 
-        if (["signUp", "forgotPassword", "resetPassword"].includes(view) && disableCredentials) {
+        if (["signUp", "forgotPassword", "resetPassword"].includes(view) && !credentials) {
             navigate(viewPaths.signIn)
         }
-    }, [view, viewPaths, disableCredentials, navigate, magicLink])
+    }, [view, viewPaths, credentials, navigate, magicLink])
 
     if (view == "signOut") return (
         <Loader2 className="animate-spin" />
@@ -286,7 +289,7 @@ export function AuthForm({
             action={formAction}
             className={cn("grid gap-4 w-full", className, classNames?.base)}
         >
-            {!disableCredentials && view == "signUp" && signUpName && (
+            {credentials && view == "signUp" && signUpName && (
                 <div className="grid gap-2">
                     <Label className={classNames?.label} htmlFor="name">
                         {localization.name}
@@ -301,7 +304,7 @@ export function AuthForm({
                 </div>
             )}
 
-            {!disableCredentials && usernamePlugin && ["signIn", "signUp"].includes(view) && (
+            {credentials && usernamePlugin && ["signIn", "signUp"].includes(view) && (
                 <div className="grid gap-2">
                     <Label className={classNames?.label} htmlFor="username">
                         {localization.username}
@@ -317,7 +320,7 @@ export function AuthForm({
                 </div>
             )}
 
-            {(!disableCredentials || (["signIn", "magicLink"].includes(view) && magicLink)) && ((!usernamePlugin && view != "resetPassword") || ["signUp", "magicLink", "forgotPassword"].includes(view)) && (
+            {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) && ((!usernamePlugin && view != "resetPassword") || ["signUp", "magicLink", "forgotPassword"].includes(view)) && (
                 <div className="grid gap-2">
                     <Label className={classNames?.label} htmlFor="email">
                         {localization.email}
@@ -334,7 +337,7 @@ export function AuthForm({
                 </div>
             )}
 
-            {!disableCredentials && ["signUp", "signIn", "resetPassword"].includes(view) && (
+            {credentials && ["signUp", "signIn", "resetPassword"].includes(view) && (
                 <div className="grid gap-2">
                     <div className="flex items-center">
                         <Label className={classNames?.label} htmlFor="password">
@@ -366,7 +369,7 @@ export function AuthForm({
                 </div>
             )}
 
-            {(!disableCredentials || (["signIn", "magicLink"].includes(view) && magicLink)) && (
+            {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) && (
                 <ActionButton
                     authView={view}
                     className={classNames?.actionButton}
@@ -375,7 +378,7 @@ export function AuthForm({
                 />
             )}
 
-            {magicLink && !disableCredentials && view != "resetPassword" && (
+            {magicLink && credentials && view != "resetPassword" && (
                 <MagicLinkButton
                     className={classNames?.secondaryButton}
                     isLoading={isLoading}
