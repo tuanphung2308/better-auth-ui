@@ -3,7 +3,6 @@
 import { useContext } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { isValidEmail } from "../../lib/utils"
 
 import { SettingsCard, type SettingsCardClassNames } from "./settings-card"
 import type { settingsLocalization } from "./settings-cards"
@@ -25,16 +24,10 @@ export function ChangeEmailCard({
 
         if (email == sessionData?.user.email) return {}
 
-        if (isValidEmail(email) === false) {
-            return { error: { message: "Invalid email address" } }
-        }
-
-        const { data, error } = await authClient.changeEmail({
+        const { error } = await authClient.changeEmail({
             newEmail: email,
             callbackURL: window.location.href.replace(window.location.origin, "")
         })
-
-        console.log("data", data)
 
         return { error }
     }
