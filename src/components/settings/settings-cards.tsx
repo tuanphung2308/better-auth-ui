@@ -14,6 +14,7 @@ import { UpdateUsernameCard } from "./update-username-card"
 export const settingsLocalization = {
     deleteAccount: "Delete Account",
     deleteAccountDescription: "Permanently remove your Account and all of its contents. This action is not reversible, so please continue with caution.",
+    deleteAccountInstructions: "Please enter your password to confirm the deletion of your account. This action is not reversible, so please continue with caution.",
     name: "Name",
     nameDescription: "Please enter your full name, or a display name.",
     nameInstructions: "Please use 32 characters at maximum.",
@@ -24,6 +25,10 @@ export const settingsLocalization = {
     emailPlaceholder: "m@example.com",
     emailVerifyChange: "Please check your email to verify the change.",
     emailVerification: "Check your email for the verification link.",
+    password: "Password",
+    passwordDescription: "Enter your current password.",
+    passwordInstructions: "Please use 8 characters at minimum.",
+    passwordPlaceholder: "Password",
     save: "Save",
     username: "Username",
     usernameDescription: "Enter the username you want to use to log in.",
@@ -40,11 +45,11 @@ export function SettingsCards({
     classNames?: SettingsCardClassNames,
     localization?: Partial<typeof settingsLocalization>
 }) {
-    const { usernamePlugin } = useContext(AuthUIContext)
+    const { username, deleteUser } = useContext(AuthUIContext)
 
     return (
         <div className={cn("w-full flex flex-col gap-4 items-center", className)}>
-            {usernamePlugin && (
+            {username && (
                 <UpdateUsernameCard
                     classNames={classNames}
                     localization={localization}
@@ -61,7 +66,9 @@ export function SettingsCards({
                 localization={localization}
             />
 
-            <DeleteAccountCard />
+            {deleteUser && (
+                <DeleteAccountCard />
+            )}
         </div>
     )
 }

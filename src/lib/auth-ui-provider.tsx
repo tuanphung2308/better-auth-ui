@@ -34,6 +34,8 @@ export type AuthUIContextType = {
     baseURL?: string
     colorIcons?: boolean
     credentials?: boolean
+    deleteAccountVerification?: boolean
+    deleteUser?: boolean
     forgotPassword?: boolean
     magicLink?: boolean
     multiSession?: boolean
