@@ -79,7 +79,7 @@ export function AuthForm({
         if (provider) {
             const { error } = await authClient.signIn.social({ provider, callbackURL: getCallbackURL() })
             if (error) {
-                toast.error(error.message)
+                toast.error(error.message || error.statusText)
             }
 
             return
@@ -96,7 +96,7 @@ export function AuthForm({
                     const { error } = await authClient.signIn.magicLink({ email, callbackURL: getCallbackURL() })
 
                     if (error) {
-                        toast.error(error.message)
+                        toast.error(error.message || error.statusText)
                     } else {
                         toast.success(localization.magicLinkEmail)
                     }
@@ -115,7 +115,7 @@ export function AuthForm({
                         })
 
                         if (error) {
-                            toast.error(error.message)
+                            toast.error(error.message || error.statusText)
                         } else {
                             onSessionChange?.()
                             navigate(getRedirectTo())
@@ -129,7 +129,7 @@ export function AuthForm({
 
                 const { error } = await authClient.signIn.email({ email, password })
                 if (error) {
-                    toast.error(error.message)
+                    toast.error(error.message || error.statusText)
                 } else {
                     onSessionChange?.()
                     navigate(getRedirectTo())
@@ -143,7 +143,7 @@ export function AuthForm({
                 const { error } = await authClient.signIn.magicLink({ email, callbackURL: getCallbackURL() })
 
                 if (error) {
-                    toast.error(error.message)
+                    toast.error(error.message || error.statusText)
                 } else {
                     toast.success(localization.magicLinkEmail)
                 }
@@ -162,7 +162,7 @@ export function AuthForm({
                 const { data, error } = await authClient.signUp.email(params)
 
                 if (error) {
-                    toast.error(error.message)
+                    toast.error(error.message || error.statusText)
                 } else if (data.token) {
                     onSessionChange?.()
                     navigate(getRedirectTo())
@@ -181,7 +181,7 @@ export function AuthForm({
                 })
 
                 if (error) {
-                    toast.error(error.message)
+                    toast.error(error.message || error.statusText)
                 } else {
                     toast.success(localization.forgotPasswordEmail)
                     navigate(viewPaths.signIn)
@@ -200,7 +200,7 @@ export function AuthForm({
                 })
 
                 if (error) {
-                    toast.error(error.message)
+                    toast.error(error.message || error.statusText)
                 } else {
                     toast.success(localization.resetPasswordSuccess)
                     navigate(viewPaths.signIn)

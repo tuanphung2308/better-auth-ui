@@ -1,8 +1,8 @@
 import { cn } from "../../lib/utils"
 
-import { EmailCard } from "./email-card"
-import { NameCard } from "./name-card"
+import { ChangeEmailCard } from "./change-email-card"
 import type { SettingsCardClassNames } from "./settings-card"
+import { UpdateNameCard } from "./update-name-card"
 
 export const settingsLocalization = {
     name: "Name",
@@ -27,12 +27,12 @@ export function SettingsCards({
 }) {
     return (
         <div className={cn("w-full flex flex-col gap-4 items-center", className)}>
-            <NameCard
+            <UpdateNameCard
                 classNames={classNames}
                 localization={localization}
             />
 
-            <EmailCard
+            <ChangeEmailCard
                 classNames={classNames}
                 localization={localization}
             />

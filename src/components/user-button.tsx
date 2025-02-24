@@ -2,6 +2,7 @@
 
 import { type createAuthClient } from "better-auth/react"
 import { useContext, useEffect, useState } from "react"
+import { toast } from "sonner"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
 
@@ -22,7 +23,6 @@ export function UserButton({
     className?: string,
     classNames?: UserButtonClassNames,
     localization?: Partial<typeof userButtonLocalization>
-
 }) {
     const { authClient } = useContext(AuthUIContext)
     const [deviceSessions, setDeviceSessions] = useState<SessionData[] | undefined>(undefined)
@@ -50,11 +50,15 @@ export function UserButton({
             deviceSessions={deviceSessions}
             isPending={sessionPending || activeSessionPending}
             localization={localization}
-            setActiveSession={(sessionToken) => {
+            setActiveSession={async (sessionToken) => {
                 setActiveSessionPending(true)
 
                 // @ts-expect-error Optional plugin
-                authClient?.multiSession.setActive({ sessionToken })
+                const { error } = await authClient?.multiSession.setActive({ sessionToken })
+
+                if (error) {
+                    toast.error(error.message || error.statusText)
+                }
             }}
             user={sessionData?.user}
         />

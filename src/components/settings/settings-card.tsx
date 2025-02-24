@@ -1,6 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { Loader2 } from "lucide-react"
+import { useActionState, useState } from "react"
+import { toast } from "sonner"
 
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
@@ -31,12 +33,14 @@ export function SettingsCard({
     className,
     classNames,
     defaultValue,
+    formAction,
     localization,
     name
 }: {
     className?: string,
     classNames?: SettingsCardClassNames,
     defaultValue?: string,
+    formAction: (formData: FormData) => Promise<{ error?: { code?: string, message?: string, status?: number, statusText?: string } | null }>,
     localization?: Record<string, string>,
     name: string
 }) {
@@ -44,9 +48,24 @@ export function SettingsCard({
 
     const [disabled, setDisabled] = useState(true)
 
+    const performAction = async (_: Record<string, string>, formData: FormData) => {
+        const formDataObject = Object.fromEntries(formData.entries())
+
+        setDisabled(true)
+        const { error } = await formAction(formData)
+        if (error) {
+            toast.error(error.message || error.statusText)
+            setDisabled(false)
+        }
+
+        return formDataObject as Record<string, string>
+    }
+
+    const [state, action, isSubmitting] = useActionState(performAction, {})
+
     return (
         <Card className={cn("w-full max-w-md overflow-hidden", className, classNames?.base)}>
-            <form>
+            <form action={action}>
                 <CardHeader className={classNames?.header}>
                     <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                         {localization[name]}
@@ -59,20 +78,28 @@ export function SettingsCard({
 
                 <CardContent className={classNames?.content}>
                     <Input
-                        defaultValue={defaultValue}
+                        defaultValue={state[name] ?? defaultValue}
                         name={name}
                         placeholder={localization[name + "Placeholder"]}
                         onChange={() => setDisabled(false)}
                     />
                 </CardContent>
 
-                <CardFooter className={cn("border-t bg-muted/40 py-4 md:py-3 flex flex-col md:flex-row gap-4 justify-between", classNames?.footer)}>
+                <CardFooter className={cn("border-t bg-muted/30 py-4 md:py-3 flex flex-col md:flex-row gap-4 justify-between", classNames?.footer)}>
                     <CardDescription className={cn("text-xs md:text-sm", classNames?.instructions)}>
                         {localization[name + "Instructions"]}
                     </CardDescription>
 
-                    <Button className={classNames?.saveButton} disabled={disabled} size="sm">
-                        {localization.save}
+                    <Button className={classNames?.saveButton} disabled={isSubmitting || disabled} size="sm">
+                        <span className={cn(isSubmitting && "opacity-0")}>
+                            {localization.save}
+                        </span>
+
+                        {isSubmitting && (
+                            <span className="absolute">
+                                <Loader2 className="animate-spin" />
+                            </span>
+                        )}
                     </Button>
                 </CardFooter>
             </form>
