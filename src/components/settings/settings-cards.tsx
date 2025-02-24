@@ -1,8 +1,14 @@
+"use client"
+
+import { useContext } from "react"
+
+import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 
 import { ChangeEmailCard } from "./change-email-card"
 import type { SettingsCardClassNames } from "./settings-card"
 import { UpdateNameCard } from "./update-name-card"
+import { UpdateUsernameCard } from "./update-username-card"
 
 export const settingsLocalization = {
     name: "Name",
@@ -15,7 +21,11 @@ export const settingsLocalization = {
     emailPlaceholder: "m@example.com",
     emailVerifyChange: "Please check your email to verify the change.",
     emailVerification: "Check your email for the verification link.",
-    save: "Save"
+    save: "Save",
+    username: "Username",
+    usernameDescription: "Enter the username you want to use to log in.",
+    usernameInstructions: "Please use 32 characters at maximum.",
+    usernamePlaceholder: "Username",
 }
 
 export function SettingsCards({
@@ -27,8 +37,16 @@ export function SettingsCards({
     classNames?: SettingsCardClassNames,
     localization?: Partial<typeof settingsLocalization>
 }) {
+    const { usernamePlugin } = useContext(AuthUIContext)
     return (
         <div className={cn("w-full flex flex-col gap-4 items-center", className)}>
+            {usernamePlugin && (
+                <UpdateUsernameCard
+                    classNames={classNames}
+                    localization={localization}
+                />
+            )}
+
             <UpdateNameCard
                 classNames={classNames}
                 localization={localization}

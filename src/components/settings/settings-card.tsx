@@ -33,16 +33,24 @@ export function SettingsCard({
     className,
     classNames,
     defaultValue,
-    formAction,
+    description,
+    instructions,
     localization,
-    name
+    name,
+    placeholder,
+    title,
+    formAction,
 }: {
     className?: string,
     classNames?: SettingsCardClassNames,
     defaultValue?: string,
-    formAction: (formData: FormData) => Promise<{ error?: { code?: string, message?: string, status?: number, statusText?: string } | null }>,
+    description?: string,
+    instructions?: string,
     localization?: Record<string, string>,
     name: string
+    placeholder?: string,
+    title?: string,
+    formAction: (formData: FormData) => Promise<{ error?: { code?: string, message?: string, status?: number, statusText?: string } | null }>,
 }) {
     localization = { ...settingsLocalization, ...localization }
 
@@ -68,11 +76,11 @@ export function SettingsCard({
             <form action={action}>
                 <CardHeader className={classNames?.header}>
                     <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {localization[name]}
+                        {title}
                     </CardTitle>
 
                     <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
-                        {localization[name + "Description"]}
+                        {description}
                     </CardDescription>
                 </CardHeader>
 
@@ -80,15 +88,17 @@ export function SettingsCard({
                     <Input
                         defaultValue={state[name] ?? defaultValue}
                         name={name}
-                        placeholder={localization[name + "Placeholder"]}
+                        placeholder={placeholder}
                         onChange={() => setDisabled(false)}
                     />
                 </CardContent>
 
-                <CardFooter className={cn("border-t bg-muted/20 py-4 md:py-3 flex flex-col md:flex-row gap-4 justify-between", classNames?.footer)}>
-                    <CardDescription className={cn("text-xs md:text-sm", classNames?.instructions)}>
-                        {localization[name + "Instructions"]}
-                    </CardDescription>
+                <CardFooter className={cn("border-t bg-muted dark:bg-transparent py-4 md:py-3 flex flex-col md:flex-row gap-4 justify-between", classNames?.footer)}>
+                    {instructions && (
+                        <CardDescription className={cn("text-xs md:text-sm", classNames?.instructions)}>
+                            {instructions}
+                        </CardDescription>
+                    )}
 
                     <Button className={classNames?.saveButton} disabled={isSubmitting || disabled} size="sm">
                         <span className={cn(isSubmitting && "opacity-0")}>

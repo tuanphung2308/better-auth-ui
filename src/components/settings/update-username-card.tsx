@@ -8,7 +8,7 @@ import { type SettingsCardClassNames } from "./settings-card"
 import { settingsLocalization } from "./settings-cards"
 import { UpdateFieldCard } from "./update-field-card"
 
-export function UpdateNameCard({
+export function UpdateUsernameCard({
     className,
     classNames,
     localization
@@ -22,18 +22,21 @@ export function UpdateNameCard({
     const { authClient } = useContext(AuthUIContext)
     const { data: sessionData } = authClient.useSession()
 
+    // @ts-expect-error Optional plugin
+    const defaultValue = sessionData?.user.username
+
     return (
         <UpdateFieldCard
-            key={sessionData?.user.name}
+            key={defaultValue}
             className={className}
             classNames={classNames}
-            defaultValue={sessionData?.user.name}
-            description={localization.nameDescription}
-            instructions={localization.nameInstructions}
+            defaultValue={defaultValue}
+            description={localization.usernameDescription}
+            instructions={localization.usernameInstructions}
             localization={localization}
-            name="name"
-            placeholder={localization.namePlaceholder}
-            title={localization.name}
+            name="username"
+            placeholder={localization.usernamePlaceholder}
+            title={localization.username}
         />
     )
 }
