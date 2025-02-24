@@ -6,11 +6,14 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 
 import { ChangeEmailCard } from "./change-email-card"
+import { DeleteAccountCard } from "./delete-account-card"
 import type { SettingsCardClassNames } from "./settings-card"
 import { UpdateNameCard } from "./update-name-card"
 import { UpdateUsernameCard } from "./update-username-card"
 
 export const settingsLocalization = {
+    deleteAccount: "Delete Account",
+    deleteAccountDescription: "Permanently remove your Account and all of its contents. This action is not reversible, so please continue with caution.",
     name: "Name",
     nameDescription: "Please enter your full name, or a display name.",
     nameInstructions: "Please use 32 characters at maximum.",
@@ -38,6 +41,7 @@ export function SettingsCards({
     localization?: Partial<typeof settingsLocalization>
 }) {
     const { usernamePlugin } = useContext(AuthUIContext)
+
     return (
         <div className={cn("w-full flex flex-col gap-4 items-center", className)}>
             {usernamePlugin && (
@@ -56,6 +60,8 @@ export function SettingsCards({
                 classNames={classNames}
                 localization={localization}
             />
+
+            <DeleteAccountCard />
         </div>
     )
 }

@@ -38,6 +38,7 @@ export function SettingsCard({
     localization,
     name,
     placeholder,
+    saveLabel,
     title,
     formAction,
 }: {
@@ -49,6 +50,7 @@ export function SettingsCard({
     localization?: Record<string, string>,
     name: string
     placeholder?: string,
+    saveLabel?: string,
     title?: string,
     formAction: (formData: FormData) => Promise<{ error?: { code?: string, message?: string, status?: number, statusText?: string } | null }>,
 }) {
@@ -72,7 +74,7 @@ export function SettingsCard({
     const [state, action, isSubmitting] = useActionState(performAction, {})
 
     return (
-        <Card className={cn("w-full max-w-md overflow-hidden", className, classNames?.base)}>
+        <Card className={cn("w-full max-w-lg overflow-hidden", className, classNames?.base)}>
             <form action={action}>
                 <CardHeader className={classNames?.header}>
                     <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
@@ -100,9 +102,9 @@ export function SettingsCard({
                         </CardDescription>
                     )}
 
-                    <Button className={classNames?.saveButton} disabled={isSubmitting || disabled} size="sm">
+                    <Button className={cn("md:ms-auto", classNames?.saveButton)} disabled={isSubmitting || disabled} size="sm">
                         <span className={cn(isSubmitting && "opacity-0")}>
-                            {localization.save}
+                            {saveLabel || localization.save}
                         </span>
 
                         {isSubmitting && (
