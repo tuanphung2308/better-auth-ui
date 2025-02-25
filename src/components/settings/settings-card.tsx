@@ -25,6 +25,7 @@ export type SettingsCardClassNames = {
     footer?: string
     header?: string
     instructions?: string
+    label?: string
     saveButton?: string
     title?: string
 }

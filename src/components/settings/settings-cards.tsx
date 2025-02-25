@@ -6,12 +6,19 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 
 import { ChangeEmailCard } from "./change-email-card"
+import { ChangePasswordCard } from "./change-password-card"
 import { DeleteAccountCard } from "./delete-account-card"
 import type { SettingsCardClassNames } from "./settings-card"
 import { UpdateNameCard } from "./update-name-card"
 import { UpdateUsernameCard } from "./update-username-card"
 
 export const settingsLocalization = {
+    changePassword: "Change Password",
+    changePasswordDescription: "Enter your current password and a new password.",
+    changePasswordInstructions: "Please use 8 characters at minimum.",
+    changePasswordSuccess: "Your password has been changed.",
+    currentPassword: "Current Password",
+    currentPasswordPlaceholder: "Current Password",
     deleteAccount: "Delete Account",
     deleteAccountDescription: "Permanently remove your Account and all of its contents. This action is not reversible, so please continue with caution.",
     deleteAccountInstructions: "Please enter your password to confirm the deletion of your account. This action is not reversible, so please continue with caution.",
@@ -27,6 +34,8 @@ export const settingsLocalization = {
     emailPlaceholder: "m@example.com",
     emailVerifyChange: "Please check your email to verify the change.",
     emailVerification: "Please check your email for the verification link.",
+    newPassword: "New Password",
+    newPasswordPlaceholder: "New Password",
     password: "Password",
     passwordDescription: "Enter your current password.",
     passwordInstructions: "Please use 8 characters at minimum.",
@@ -47,7 +56,7 @@ export function SettingsCards({
     classNames?: SettingsCardClassNames,
     localization?: Partial<typeof settingsLocalization>
 }) {
-    const { username, deleteUser } = useContext(AuthUIContext)
+    const { credentials, deleteUser, username, } = useContext(AuthUIContext)
 
     return (
         <div className={cn("w-full flex flex-col gap-4 items-center", className)}>
@@ -67,6 +76,13 @@ export function SettingsCards({
                 classNames={classNames}
                 localization={localization}
             />
+
+            {credentials && (
+                <ChangePasswordCard
+                    classNames={classNames}
+                    localization={localization}
+                />
+            )}
 
             {deleteUser && (
                 <DeleteAccountCard />

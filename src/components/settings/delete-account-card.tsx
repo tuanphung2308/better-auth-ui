@@ -43,9 +43,15 @@ export function DeleteAccountCard({
     const formAction = async (_: unknown, formData: FormData) => {
         const password = formData.get("password") as string
 
-        const { error } = await authClient.deleteUser({
+        const params: Record<string, string> = {
             password
-        })
+        }
+
+        if (deleteAccountVerification) {
+            params.callbackURL = `${basePath}/${viewPaths.signOut}`
+        }
+
+        const { error } = await authClient.deleteUser(params)
 
         if (error) {
             toast.error(error.message || error.statusText)
@@ -54,10 +60,8 @@ export function DeleteAccountCard({
                 toast(localization?.deleteAccountEmail)
             } else {
                 toast.success(localization?.deleteAccountSuccess)
+                navigate(`${basePath}/${viewPaths.signOut}`)
             }
-
-            // Sign Out
-            navigate(`${basePath}/${viewPaths.signOut}`)
         }
     }
 
