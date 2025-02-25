@@ -1,4 +1,6 @@
-import { useContext } from "react"
+import { Loader2 } from "lucide-react"
+import { useActionState, useContext } from "react"
+import { toast } from "sonner"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
@@ -36,22 +38,33 @@ export function DeleteAccountCard({
 }) {
     localization = { ...settingsLocalization, ...localization }
 
-    const { deleteAccountVerification } = useContext(AuthUIContext)
+    const { authClient, basePath, deleteAccountVerification, viewPaths, navigate } = useContext(AuthUIContext)
 
-    const deleteAccount = () => {
-        if (deleteAccountVerification) {
+    const formAction = async (_: unknown, formData: FormData) => {
+        const password = formData.get("password") as string
 
+        const { error } = await authClient.deleteUser({
+            password
+        })
+
+        if (error) {
+            toast.error(error.message || error.statusText)
         } else {
+            if (deleteAccountVerification) {
+                toast(localization?.deleteAccountEmail)
+            } else {
+                toast.success(localization?.deleteAccountSuccess)
+            }
 
+            // Sign Out
+            navigate(`${basePath}/${viewPaths.signOut}`)
         }
     }
 
-    const formAction = async (formData: FormData) => {
-
-    }
+    const [_, action, isSubmitting] = useActionState(formAction, null)
 
     return (
-        <Card className={cn("w-full max-w-lg overflow-hidden border-destructive", className, classNames?.base)}>
+        <Card className={cn("w-full max-w-lg overflow-hidden border-destructive/60", className, classNames?.base)}>
             <CardHeader className={classNames?.header}>
                 <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                     {localization?.deleteAccount}
@@ -64,7 +77,7 @@ export function DeleteAccountCard({
 
             <CardFooter
                 className={cn(
-                    "border-t border-destructive bg-destructive/20 py-4 md:py-3",
+                    "border-t border-destructive/40 bg-destructive/10 py-4 md:py-3",
                     classNames?.footer
                 )}
             >
@@ -80,34 +93,46 @@ export function DeleteAccountCard({
                     </DialogTrigger>
 
                     <DialogContent className="sm:max-w-md">
-                        <DialogHeader>
-                            <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                                {localization?.deleteAccount}
-                            </DialogTitle>
+                        <form action={action} className="grid gap-4">
+                            <DialogHeader>
+                                <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                                    {localization?.deleteAccount}
+                                </DialogTitle>
 
-                            <DialogDescription className={cn("text-xs md:text-sm", classNames?.description)}>
-                                {localization?.deleteAccountInstructions}
-                            </DialogDescription>
-                        </DialogHeader>
+                                <DialogDescription className={cn("text-xs md:text-sm", classNames?.description)}>
+                                    {localization?.deleteAccountInstructions}
+                                </DialogDescription>
+                            </DialogHeader>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="password">
-                                {localization?.password}
-                            </Label>
+                            <div className="grid gap-2">
+                                <Label htmlFor="password">
+                                    {localization?.password}
+                                </Label>
 
-                            <Input
-                                autoComplete="current-password"
-                                id="password"
-                                placeholder={localization?.passwordPlaceholder}
-                                type="password"
-                            />
-                        </div>
+                                <Input
+                                    autoComplete="current-password"
+                                    id="password"
+                                    name="password"
+                                    placeholder={localization?.passwordPlaceholder}
+                                    required
+                                    type="password"
+                                />
+                            </div>
 
-                        <DialogFooter>
-                            <Button className="mx-auto md:ms-auto md:mx-0" variant="destructive">
-                                {localization?.deleteAccount}
-                            </Button>
-                        </DialogFooter>
+                            <DialogFooter>
+                                <Button className="mx-auto md:ms-auto md:mx-0" disabled={isSubmitting} variant="destructive">
+                                    <span className={cn(isSubmitting && "opacity-0")}>
+                                        {localization?.deleteAccount}
+                                    </span>
+
+                                    {isSubmitting && (
+                                        <span className="absolute">
+                                            <Loader2 className="animate-spin" />
+                                        </span>
+                                    )}
+                                </Button>
+                            </DialogFooter>
+                        </form>
                     </DialogContent>
                 </Dialog>
             </CardFooter>
