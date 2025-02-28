@@ -21,7 +21,7 @@ export function ChangeEmailCard({
     localization = { ...settingsLocalization, ...localization }
 
     const { authClient } = useContext(AuthUIContext)
-    const { data: sessionData } = authClient.useSession()
+    const { data: sessionData, isPending } = authClient.useSession()
 
     useEffect(() => {
         if (!sessionData) return
@@ -60,6 +60,7 @@ export function ChangeEmailCard({
             description={localization.emailDescription}
             formAction={formAction}
             instructions={localization.emailInstructions}
+            isPending={isPending}
             localization={localization}
             name="email"
             placeholder={localization.emailPlaceholder}

@@ -20,7 +20,7 @@ export function UpdateNameCard({
     localization = { ...settingsLocalization, ...localization }
 
     const { authClient } = useContext(AuthUIContext)
-    const { data: sessionData } = authClient.useSession()
+    const { data: sessionData, isPending } = authClient.useSession()
 
     return (
         <UpdateFieldCard
@@ -30,6 +30,7 @@ export function UpdateNameCard({
             defaultValue={sessionData?.user.name}
             description={localization.nameDescription}
             instructions={localization.nameInstructions}
+            isPending={isPending}
             localization={localization}
             name="name"
             placeholder={localization.namePlaceholder}

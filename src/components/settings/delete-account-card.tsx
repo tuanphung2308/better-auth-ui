@@ -24,7 +24,8 @@ import {
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
-import type { SettingsCardClassNames } from "./settings-card"
+import { DeleteAccountCardSkeleton } from "./delete-account-card-skeleton"
+import { type SettingsCardClassNames } from "./settings-card"
 import { settingsLocalization } from "./settings-cards"
 
 export function DeleteAccountCard({
@@ -39,6 +40,8 @@ export function DeleteAccountCard({
     localization = { ...settingsLocalization, ...localization }
 
     const { authClient, basePath, deleteAccountVerification, viewPaths, navigate } = useContext(AuthUIContext)
+
+    const { isPending } = authClient.useSession()
 
     const formAction = async (_: unknown, formData: FormData) => {
         const password = formData.get("password") as string
@@ -66,6 +69,10 @@ export function DeleteAccountCard({
     }
 
     const [_, action, isSubmitting] = useActionState(formAction, null)
+
+    if (isPending) {
+        return <DeleteAccountCardSkeleton className={className} classNames={classNames} />
+    }
 
     return (
         <Card className={cn("w-full max-w-lg overflow-hidden border-destructive/60", className, classNames?.base)}>

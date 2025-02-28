@@ -20,7 +20,7 @@ export function UpdateUsernameCard({
     localization = { ...settingsLocalization, ...localization }
 
     const { authClient } = useContext(AuthUIContext)
-    const { data: sessionData } = authClient.useSession()
+    const { data: sessionData, isPending } = authClient.useSession()
 
     // @ts-expect-error Optional plugin
     const defaultValue = sessionData?.user.username
@@ -33,6 +33,7 @@ export function UpdateUsernameCard({
             defaultValue={defaultValue}
             description={localization.usernameDescription}
             instructions={localization.usernameInstructions}
+            isPending={isPending}
             localization={localization}
             name="username"
             placeholder={localization.usernamePlaceholder}

@@ -16,6 +16,7 @@ import {
 } from "../ui/card"
 import { Input } from "../ui/input"
 
+import { SettingsCardSkeleton } from "./settings-card-skeleton"
 import { settingsLocalization } from "./settings-cards"
 
 export type SettingsCardClassNames = {
@@ -36,6 +37,7 @@ export function SettingsCard({
     defaultValue,
     description,
     instructions,
+    isPending,
     localization,
     name,
     placeholder,
@@ -48,6 +50,7 @@ export function SettingsCard({
     defaultValue?: string,
     description?: string,
     instructions?: string,
+    isPending?: boolean,
     localization?: Record<string, string>,
     name: string
     placeholder?: string,
@@ -73,6 +76,10 @@ export function SettingsCard({
     }
 
     const [state, action, isSubmitting] = useActionState(performAction, {})
+
+    if (isPending) {
+        return <SettingsCardSkeleton className={className} classNames={classNames} />
+    }
 
     return (
         <Card className={cn("w-full max-w-lg overflow-hidden", className, classNames?.base)}>

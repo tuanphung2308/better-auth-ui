@@ -13,6 +13,7 @@ export function UpdateFieldCard({
     defaultValue,
     description,
     instructions,
+    isPending,
     localization,
     name,
     placeholder,
@@ -23,6 +24,7 @@ export function UpdateFieldCard({
     defaultValue?: string,
     description?: string,
     instructions?: string,
+    isPending?: boolean,
     localization?: Partial<typeof settingsLocalization>,
     name: string
     placeholder?: string,
@@ -53,6 +55,7 @@ export function UpdateFieldCard({
             description={description}
             formAction={formAction}
             instructions={instructions}
+            isPending={isPending}
             localization={localization}
             name={name}
             placeholder={placeholder}

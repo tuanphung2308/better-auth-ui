@@ -18,6 +18,7 @@ import {
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
+import { ChangePasswordCardSkeleton } from "./change-password-card-skeleton"
 import { type SettingsCardClassNames } from "./settings-card"
 import { settingsLocalization } from "./settings-cards"
 
@@ -35,6 +36,7 @@ export function ChangePasswordCard({
     const [disabled, setDisabled] = useState(true)
 
     const { authClient } = useContext(AuthUIContext)
+    const { isPending } = authClient.useSession()
 
     const formAction = async (_: unknown, formData: FormData) => {
         const currentPassword = formData.get("currentPassword") as string
@@ -54,6 +56,10 @@ export function ChangePasswordCard({
     }
 
     const [_, action, isSubmitting] = useActionState(formAction, null)
+
+    if (isPending) {
+        return <ChangePasswordCardSkeleton className={className} classNames={classNames} />
+    }
 
     return (
         <Card className={cn("w-full max-w-lg overflow-hidden", className, classNames?.base)}>
