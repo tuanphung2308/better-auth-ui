@@ -75,7 +75,7 @@ export function DeleteAccountCard({
     }
 
     return (
-        <Card className={cn("w-full max-w-lg overflow-hidden border-destructive/60", className, classNames?.base)}>
+        <Card className={cn("w-full max-w-lg overflow-hidden border-destructive/40", className, classNames?.base)}>
             <CardHeader className={classNames?.header}>
                 <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                     {localization?.deleteAccount}
@@ -88,7 +88,7 @@ export function DeleteAccountCard({
 
             <CardFooter
                 className={cn(
-                    "border-t border-destructive/40 bg-destructive/10 py-4 md:py-3",
+                    "border-t border-destructive/30 bg-destructive/10 py-4 md:py-3",
                     classNames?.footer
                 )}
             >
