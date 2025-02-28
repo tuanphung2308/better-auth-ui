@@ -34,7 +34,7 @@
   ],
   "scripts": {
     "build": "tsup --clean --dts",
-    "dev": "tsc-watch --onSuccess \"npx eslint\"",
+    "dev": "tsc-watch --onSuccess \"sh -c 'npx eslint && tsx code-sync.ts'\"",
     "prepublishOnly": "rm -rf dist && tsup --clean --dts"
   },
   "keywords": [
@@ -55,13 +55,16 @@
     "@types/node": "^22.13.6",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "axios": "^1.8.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.7",
     "esbuild-plugin-preserve-directives": "^0.0.11",
     "eslint": "^9.21.0",
     "eslint-config-next": "15.2.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-import-newlines": "^1.4.0",
+    "ignore": "^7.0.3",
     "lucide-react": "^0.477.0",
     "next": "^15.2.0",
     "react-router": "^7.2.0",
