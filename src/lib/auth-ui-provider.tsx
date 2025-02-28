@@ -31,7 +31,6 @@ export type AuthView = keyof typeof authViewPaths
 export type AuthUIContextType = {
     authClient: Omit<ReturnType<typeof createAuthClient>, "signUp">
     basePath: string
-    baseURL?: string
     colorIcons?: boolean
     credentials?: boolean
     deleteAccountVerification?: boolean
@@ -51,7 +50,6 @@ export type AuthUIContextType = {
 
 export type AuthUIProviderProps = {
     authClient: ReturnType<typeof createAuthClient>
-    baseURL: string
     viewPaths?: Partial<typeof authViewPaths>
 } & Partial<Omit<AuthUIContextType, "viewPaths">>
 
