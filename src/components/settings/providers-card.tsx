@@ -12,21 +12,25 @@ import {
     CardTitle
 } from "../ui/card"
 
+import ProvidersCardSkeleton from "./skeletons/providers-card-skeleton"
+
 export default function ProvidersCard() {
     const { authClient, colorIcons, noColorIcons, providers } = useContext(AuthUIContext)
-    const { data: sessionData } = authClient.useSession()
+    const { data: sessionData, isPending: sessionPending } = authClient.useSession()
+
     const [accounts, setAccounts] = useState<{ id: string, provider: string }[]>([])
+    const [isLoading, setIsLoading] = useState(false)
 
     const getAccounts = useCallback(async () => {
+        setIsLoading(true)
         const { data, error } = await authClient.listAccounts()
-
         if (error) {
-            return toast.error(error.message || error.statusText)
-        }
-
-        if (data) {
+            toast.error(error.message || error.statusText)
+        } else if (data) {
             setAccounts(data)
         }
+
+        setIsLoading(false)
     }, [authClient])
 
     useEffect(() => {
@@ -34,6 +38,10 @@ export default function ProvidersCard() {
 
         getAccounts()
     }, [getAccounts, sessionData])
+
+    if (sessionPending || isLoading) {
+        return <ProvidersCardSkeleton />
+    }
 
     return (
         <Card className="max-w-lg w-full">
@@ -50,7 +58,7 @@ export default function ProvidersCard() {
             <CardContent className="flex flex-col gap-3">
                 {providers?.map((provider) => {
                     const socialProvider = socialProviders.find(socialProvider => socialProvider.provider === provider)
-                    if (!socialProvider) return
+                    if (!socialProvider) return null
                     return (
                         <Card key={provider} className="flex items-center gap-3 px-4 py-3">
                             {colorIcons ? (
