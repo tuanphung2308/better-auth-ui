@@ -8,6 +8,7 @@ import { cn } from "../../lib/utils"
 import { ChangeEmailCard } from "./change-email-card"
 import { ChangePasswordCard } from "./change-password-card"
 import { DeleteAccountCard } from "./delete-account-card"
+import ProvidersCard from "./providers-card"
 import type { SettingsCardClassNames } from "./settings-card"
 import { UpdateNameCard } from "./update-name-card"
 import { UpdateUsernameCard } from "./update-username-card"
@@ -83,6 +84,8 @@ export function SettingsCards({
                     localization={localization}
                 />
             )}
+
+            <ProvidersCard />
 
             {deleteUser && (
                 <DeleteAccountCard />
