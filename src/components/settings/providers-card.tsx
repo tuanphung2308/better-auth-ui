@@ -1,8 +1,11 @@
+"use client"
+
+import { Loader2 } from "lucide-react"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { toast } from "sonner"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { socialProviders } from "../../social-providers"
+import { type SocialProvider, socialProviders } from "../../social-providers"
 import { Button } from "../ui/button"
 import {
     Card,
@@ -20,10 +23,12 @@ export default function ProvidersCard() {
 
     const [accounts, setAccounts] = useState<{ id: string, provider: string }[]>([])
     const [isLoading, setIsLoading] = useState(false)
+    const [actionLoading, setActionLoading] = useState<string | null>(null)
 
     const getAccounts = useCallback(async () => {
         setIsLoading(true)
         const { data, error } = await authClient.listAccounts()
+
         if (error) {
             toast.error(error.message || error.statusText)
         } else if (data) {
@@ -38,6 +43,31 @@ export default function ProvidersCard() {
 
         getAccounts()
     }, [getAccounts, sessionData])
+
+    const handleLink = async (provider: SocialProvider) => {
+        setActionLoading(provider)
+        const callbackURL = window.location.pathname
+        const { error } = await authClient.linkSocial({ provider, callbackURL })
+
+        if (error) {
+            toast.error(error.message || error.statusText)
+            setActionLoading(null)
+        }
+    }
+
+    const handleUnlink = async (providerId: string) => {
+        setActionLoading(providerId)
+        const { error } = await authClient.unlinkAccount({ providerId })
+
+        if (error) {
+            toast.error(error.message || error.statusText)
+        } else {
+            await getAccounts()
+            toast.success("Provider successfully unlinked")
+        }
+
+        setActionLoading(null)
+    }
 
     if (sessionPending || isLoading) {
         return <ProvidersCardSkeleton />
@@ -57,8 +87,11 @@ export default function ProvidersCard() {
 
             <CardContent className="flex flex-col gap-3">
                 {providers?.map((provider) => {
-                    const socialProvider = socialProviders.find(socialProvider => socialProvider.provider === provider)
+                    const socialProvider = socialProviders.find(sp => sp.provider === provider)
                     if (!socialProvider) return null
+                    const isLinked = accounts.some(acc => acc.provider === socialProvider.provider)
+                    const isButtonLoading = actionLoading === provider || actionLoading === accounts.find(acc => acc.provider === provider)?.id
+
                     return (
                         <Card key={provider} className="flex items-center gap-3 px-4 py-3">
                             {colorIcons ? (
@@ -77,11 +110,28 @@ export default function ProvidersCard() {
                             </span>
 
                             <Button
-                                className="ms-auto"
+                                className="ms-auto relative"
+                                disabled={isButtonLoading}
                                 size="sm"
-                                variant={accounts.find(account => account.provider === socialProvider.provider) ? "secondary" : "default"}
+                                type="button"
+                                variant={isLinked ? "secondary" : "default"}
+                                onClick={() => {
+                                    if (actionLoading) return
+
+                                    if (isLinked) {
+                                        handleUnlink(accounts.find(acc => acc.provider === provider)!.id)
+                                    } else {
+                                        handleLink(provider)
+                                    }
+                                }}
                             >
-                                {accounts.find(account => account.provider === socialProvider.provider) ? "Unlink" : "Link"}
+                                <span className={isButtonLoading ? "opacity-0" : "opacity-100"}>
+                                    {isLinked ? "Unlink" : "Link"}
+                                </span>
+
+                                {isButtonLoading && (
+                                    <Loader2 className="absolute inset-0 m-auto h-4 w-4 animate-spin" />
+                                )}
                             </Button>
                         </Card>
                     )
