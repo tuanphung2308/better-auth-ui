@@ -90,7 +90,7 @@ export default function ProvidersCard() {
                     const socialProvider = socialProviders.find(sp => sp.provider === provider)
                     if (!socialProvider) return null
                     const isLinked = accounts.some(acc => acc.provider === socialProvider.provider)
-                    const isButtonLoading = actionLoading === provider || actionLoading === accounts.find(acc => acc.provider === provider)?.id
+                    const isButtonLoading = actionLoading === provider || actionLoading === accounts.find(acc => acc.provider === provider)?.provider
 
                     return (
                         <Card key={provider} className="flex items-center gap-3 px-4 py-3">
@@ -119,7 +119,7 @@ export default function ProvidersCard() {
                                     if (actionLoading) return
 
                                     if (isLinked) {
-                                        handleUnlink(accounts.find(acc => acc.provider === provider)!.id)
+                                        handleUnlink(accounts.find(acc => acc.provider === provider)!.provider)
                                     } else {
                                         handleLink(provider)
                                     }
