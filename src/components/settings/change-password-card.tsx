@@ -18,9 +18,9 @@ import {
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
-import { ChangePasswordCardSkeleton } from "./change-password-card-skeleton"
 import { type SettingsCardClassNames } from "./settings-card"
 import { settingsLocalization } from "./settings-cards"
+import { ChangePasswordCardSkeleton } from "./skeletons/change-password-card-skeleton"
 
 export function ChangePasswordCard({
     className,

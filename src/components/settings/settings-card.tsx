@@ -16,8 +16,8 @@ import {
 } from "../ui/card"
 import { Input } from "../ui/input"
 
-import { SettingsCardSkeleton } from "./settings-card-skeleton"
 import { settingsLocalization } from "./settings-cards"
+import { SettingsCardSkeleton } from "./skeletons/settings-card-skeleton"
 
 export type SettingsCardClassNames = {
     base?: string

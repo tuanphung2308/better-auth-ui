@@ -24,9 +24,9 @@ import {
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
-import { DeleteAccountCardSkeleton } from "./delete-account-card-skeleton"
 import { type SettingsCardClassNames } from "./settings-card"
 import { settingsLocalization } from "./settings-cards"
+import { DeleteAccountCardSkeleton } from "./skeletons/delete-account-card-skeleton"
 
 export function DeleteAccountCard({
     className,

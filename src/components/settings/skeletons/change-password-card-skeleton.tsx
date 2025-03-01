@@ -1,8 +1,7 @@
-import { cn } from "../../lib/utils"
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card"
-import { Skeleton } from "../ui/skeleton"
-
-import type { SettingsCardClassNames } from "./settings-card"
+import { cn } from "../../../lib/utils"
+import { Card, CardContent, CardFooter, CardHeader } from "../../ui/card"
+import { Skeleton } from "../../ui/skeleton"
+import type { SettingsCardClassNames } from "../settings-card"
 
 export function ChangePasswordCardSkeleton({
     className,
