@@ -105,7 +105,12 @@ export function ChangePasswordCardPrimitive({
                     </CardDescription>
                 </CardHeader>
 
-                <CardFooter className={cn("border-t bg-muted dark:bg-transparent py-4 md:py-3 flex justify-end", classNames?.footer)}>
+                <CardFooter
+                    className={cn(
+                        "border-t bg-muted dark:bg-transparent py-4 md:py-3 flex justify-end",
+                        classNames?.footer
+                    )}
+                >
                     <Button disabled={isSetPasswordLoading} size="sm" onClick={handleSetPassword}>
                         <span className={cn(isSetPasswordLoading && "opacity-0")}>
                             {localization.setPassword}
@@ -169,7 +174,12 @@ export function ChangePasswordCardPrimitive({
                     </div>
                 </CardContent>
 
-                <CardFooter className={cn("border-t bg-muted dark:bg-transparent py-4 md:py-3 flex gap-4 justify-between", classNames?.footer)}>
+                <CardFooter
+                    className={cn(
+                        "border-t bg-muted dark:bg-transparent py-4 md:py-3 flex gap-4 justify-between",
+                        classNames?.footer
+                    )}
+                >
                     <CardDescription className={classNames?.instructions}>
                         {localization.changePasswordInstructions}
                     </CardDescription>

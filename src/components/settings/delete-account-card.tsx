@@ -131,7 +131,11 @@ export function DeleteAccountCard({
                             </div>
 
                             <DialogFooter>
-                                <Button className="mx-auto md:ms-auto md:mx-0" disabled={isSubmitting} variant="destructive">
+                                <Button
+                                    className="mx-auto md:ms-auto md:mx-0"
+                                    disabled={isSubmitting}
+                                    variant="destructive"
+                                >
                                     <span className={cn(isSubmitting && "opacity-0")}>
                                         {localization?.deleteAccount}
                                     </span>

@@ -78,16 +78,30 @@ export function UserButtonPrimitive({
                 disabled={isPending}
             >
                 {(isPending) ? (
-                    <Skeleton className={cn("size-8 rounded-full", className, classNames?.base, "bg-muted", classNames?.trigger?.skeleton)} {...props} />
+                    <Skeleton
+                        className={cn(
+                            "size-8 rounded-full",
+                            className, classNames?.base, "bg-muted", classNames?.trigger?.skeleton
+                        )}
+                        {...props}
+                    />
                 ) : (
-                    <UserAvatar className={cn("size-8", className, classNames?.base)} classNames={classNames?.trigger?.avatar} user={user} {...props} />
+                    <UserAvatar
+                        className={cn("size-8", className, classNames?.base)}
+                        classNames={classNames?.trigger?.avatar}
+                        user={user}
+                        {...props}
+                    />
                 )}
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent className={cn("me-3", classNames?.content?.base)} onCloseAutoFocus={(e) => e.preventDefault()}>
+            <DropdownMenuContent
+                className={cn("me-3", classNames?.content?.base)}
+                onCloseAutoFocus={(e) => e.preventDefault()}
+            >
                 {(user && !user.isAnonymous) ? (
                     <div className="flex gap-2 p-2 items-center">
-                        <UserAvatar className={cn("size-8")} classNames={classNames?.content?.avatar} user={user} />
+                        <UserAvatar classNames={classNames?.content?.avatar} user={user} />
 
                         <div className="flex flex-col">
                             {user.name && (
@@ -155,7 +169,7 @@ export function UserButtonPrimitive({
                                         onClick={() => setActiveSession?.(session.token)}
                                     >
                                         <div className="flex gap-2 items-center">
-                                            <UserAvatar className={cn("size-8")} classNames={classNames?.content?.avatar} user={user} />
+                                            <UserAvatar classNames={classNames?.content?.avatar} user={user} />
 
                                             <div className="flex flex-col">
                                                 {user.name && (

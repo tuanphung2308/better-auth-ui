@@ -103,14 +103,23 @@ export function SettingsCard({
                     />
                 </CardContent>
 
-                <CardFooter className={cn("border-t bg-muted dark:bg-transparent py-4 md:py-3 flex flex-col md:flex-row gap-4 justify-between", classNames?.footer)}>
+                <CardFooter
+                    className={cn(
+                        "border-t bg-muted dark:bg-transparent py-4 md:py-3 flex flex-col md:flex-row gap-4 justify-between",
+                        classNames?.footer
+                    )}
+                >
                     {instructions && (
                         <CardDescription className={cn("text-xs md:text-sm", classNames?.instructions)}>
                             {instructions}
                         </CardDescription>
                     )}
 
-                    <Button className={cn("md:ms-auto", classNames?.saveButton)} disabled={isSubmitting || disabled} size="sm">
+                    <Button
+                        className={cn("md:ms-auto", classNames?.saveButton)}
+                        disabled={isSubmitting || disabled}
+                        size="sm"
+                    >
                         <span className={cn(isSubmitting && "opacity-0")}>
                             {saveLabel || localization.save}
                         </span>
