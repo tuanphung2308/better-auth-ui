@@ -7,6 +7,7 @@ import { toast } from "sonner"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn } from "../../../lib/utils"
 import { type SocialProvider, socialProviders } from "../../../social-providers"
+import type { FetchError } from "../../../types/fetch-error"
 import type { SettingsCardClassNames } from "../../settings/settings-card"
 import { settingsLocalization } from "../../settings/settings-cards"
 import ProvidersCardSkeleton from "../../settings/skeletons/providers-card-skeleton"
@@ -18,13 +19,6 @@ import {
     CardHeader,
     CardTitle
 } from "../../ui/card"
-
-type Error = {
-    code?: string | undefined
-    message?: string | undefined
-    status?: number
-    statusText?: string
-}
 
 export function ProvidersCardPrimitive({
     className,
@@ -43,7 +37,7 @@ export function ProvidersCardPrimitive({
     localization?: Partial<typeof settingsLocalization>
     optimistic?: boolean
     refetch?: () => Promise<unknown>,
-    unlinkAccount: (providerId: string) => Promise<{ status?: boolean, code?: string, error?: Error | null }>
+    unlinkAccount: (providerId: string) => Promise<{ status?: boolean, code?: string, error?: FetchError | null }>
 }) {
     localization = { ...settingsLocalization, ...localization }
 
