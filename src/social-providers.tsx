@@ -9,6 +9,7 @@ import {
     LinkedInIcon,
     MicrosoftIcon,
     RedditIcon,
+    RobloxIcon,
     SpotifyIcon,
     TikTokIcon,
     TwitchIcon,
@@ -66,6 +67,11 @@ export const socialProviders = [
         "provider": "reddit",
         "name": "Reddit",
         "icon": RedditIcon
+    },
+    {
+        "provider": "roblox",
+        "name": "Roblox",
+        "icon": RobloxIcon
     },
     {
         "provider": "spotify",
