@@ -23,7 +23,7 @@ export function UpdateUsernameCard({
     const { data: sessionData, isPending } = authClient.useSession()
 
     // @ts-expect-error Optional plugin
-    const defaultValue = sessionData?.user.username
+    const defaultValue = sessionData?.user.displayUsername || sessionData?.user.username
 
     return (
         <UpdateFieldCard
