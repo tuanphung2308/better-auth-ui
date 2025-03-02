@@ -20,6 +20,9 @@ export const settingsLocalization = {
     changePasswordSuccess: "Your password has been changed.",
     currentPassword: "Current Password",
     currentPasswordPlaceholder: "Current Password",
+    setPasswordDescription: "You registered using an OAuth provider. Click below to set a password for your account.",
+    setPassword: "Set Password",
+    setPasswordEmailSent: "Check your email to set your password.",
     deleteAccount: "Delete Account",
     deleteAccountDescription: "Permanently remove your Account and all of its contents. This action is not reversible, so please continue with caution.",
     deleteAccountInstructions: "Please enter your password to confirm the deletion of your account. This action is not reversible, so please continue with caution.",
@@ -46,6 +49,13 @@ export const settingsLocalization = {
     usernameDescription: "Enter the username you want to use to log in.",
     usernameInstructions: "Please use 32 characters at maximum.",
     usernamePlaceholder: "Username",
+    providers: "Providers",
+    providersDescription: "Connect your Account with a third-party service.",
+    providerLink: "Link",
+    providerLinkSuccess: "Provider linked successfully.",
+    providerUnlink: "Unlink",
+    providerUnlinkSuccess: "Provider unlinked successfully.",
+    providersLoadingError: "Could not load account info"
 }
 
 export function SettingsCards({

@@ -1,10 +1,17 @@
 "use client"
 
 import { Loader2 } from "lucide-react"
-import { useCallback, useContext, useEffect, useState } from "react"
+import {
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
+    useState
+} from "react"
 import { toast } from "sonner"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
+import { cn } from "../../lib/utils"
 import { type SocialProvider, socialProviders } from "../../social-providers"
 import { Button } from "../ui/button"
 import {
@@ -15,27 +22,44 @@ import {
     CardTitle
 } from "../ui/card"
 
+import type { SettingsCardClassNames } from "./settings-card"
+import { settingsLocalization } from "./settings-cards"
 import ProvidersCardSkeleton from "./skeletons/providers-card-skeleton"
 
-export default function ProvidersCard() {
+export default function ProvidersCard({
+    className,
+    classNames,
+    localization
+}: {
+    className?: string
+    classNames?: SettingsCardClassNames
+    localization?: Partial<typeof settingsLocalization>
+}) {
+    localization = { ...settingsLocalization, ...localization }
+
     const { authClient, colorIcons, noColorIcons, providers } = useContext(AuthUIContext)
     const { data: sessionData, isPending: sessionPending } = authClient.useSession()
 
     const [accounts, setAccounts] = useState<{ id: string, provider: string }[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [actionLoading, setActionLoading] = useState<string | null>(null)
+    const hasShownLinkedToast = useRef(false)
 
     const getAccounts = useCallback(async () => {
-        setIsLoading(true)
+        if (!accounts) setIsLoading(true)
+
         const { data, error } = await authClient.listAccounts()
 
         if (error) {
             toast.error(error.message || error.statusText)
-        } else if (data) {
+        }
+
+        if (data) {
             setAccounts(data)
         }
 
         setIsLoading(false)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [authClient])
 
     useEffect(() => {
@@ -44,9 +68,25 @@ export default function ProvidersCard() {
         getAccounts()
     }, [getAccounts, sessionData])
 
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search)
+        if (params.get("providerLinked") && !hasShownLinkedToast.current) {
+            hasShownLinkedToast.current = true
+            setTimeout(() => {
+                toast.success(localization.providerLinkSuccess)
+
+                // Remove the parameter from URL
+                params.delete("providerLinked")
+                const query = params.toString()
+                const url = `${window.location.pathname}${query ? "?" + query : ""}`
+                window.history.replaceState(null, "", url)
+            }, 0)
+        }
+    }, [localization.providerLinkSuccess])
+
     const handleLink = async (provider: SocialProvider) => {
         setActionLoading(provider)
-        const callbackURL = window.location.pathname
+        const callbackURL = `${window.location.pathname}?providerLinked=true`
         const { error } = await authClient.linkSocial({ provider, callbackURL })
 
         if (error) {
@@ -63,34 +103,35 @@ export default function ProvidersCard() {
             toast.error(error.message || error.statusText)
         } else {
             await getAccounts()
-            toast.success("Provider successfully unlinked")
+            toast.success(localization.providerUnlinkSuccess)
         }
 
         setActionLoading(null)
     }
 
     if (sessionPending || isLoading) {
-        return <ProvidersCardSkeleton />
+        return <ProvidersCardSkeleton className={className} />
     }
 
     return (
-        <Card className="max-w-lg w-full">
-            <CardHeader>
-                <CardTitle className="text-lg md:text-xl">
-                    Providers
+        <Card className={cn("max-w-lg w-full", className, classNames?.base)}>
+            <CardHeader className={classNames?.header}>
+                <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                    {localization.providers}
                 </CardTitle>
 
-                <CardDescription className="text-xs md:text-sm">
-                    Connect your Account with a third-party service.
+                <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
+                    {localization.providersDescription}
                 </CardDescription>
             </CardHeader>
 
-            <CardContent className="flex flex-col gap-3">
+            <CardContent className={cn("flex flex-col gap-3", classNames?.content)}>
                 {providers?.map((provider) => {
-                    const socialProvider = socialProviders.find(sp => sp.provider === provider)
+                    const socialProvider = socialProviders.find((socialProvider) => socialProvider.provider === provider)
                     if (!socialProvider) return null
+
                     const isLinked = accounts.some(acc => acc.provider === socialProvider.provider)
-                    const isButtonLoading = actionLoading === provider || actionLoading === accounts.find(acc => acc.provider === provider)?.provider
+                    const isButtonLoading = actionLoading === provider || actionLoading === provider
 
                     return (
                         <Card key={provider} className="flex items-center gap-3 px-4 py-3">
@@ -110,7 +151,7 @@ export default function ProvidersCard() {
                             </span>
 
                             <Button
-                                className="ms-auto relative"
+                                className={cn("ms-auto relative", classNames?.saveButton)}
                                 disabled={isButtonLoading}
                                 size="sm"
                                 type="button"
@@ -119,14 +160,14 @@ export default function ProvidersCard() {
                                     if (actionLoading) return
 
                                     if (isLinked) {
-                                        handleUnlink(accounts.find(acc => acc.provider === provider)!.provider)
+                                        handleUnlink(provider)
                                     } else {
                                         handleLink(provider)
                                     }
                                 }}
                             >
                                 <span className={isButtonLoading ? "opacity-0" : "opacity-100"}>
-                                    {isLinked ? "Unlink" : "Link"}
+                                    {isLinked ? localization.providerUnlink : localization.providerLink}
                                 </span>
 
                                 {isButtonLoading && (

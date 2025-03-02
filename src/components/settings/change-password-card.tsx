@@ -80,7 +80,7 @@ export function ChangePasswordCard({
         if (error) {
             toast.error(error.message || error.statusText)
         } else {
-            toast.success("Check your email to set your password.")
+            toast.success(localization.setPasswordEmailSent)
         }
     }
 
@@ -117,14 +117,14 @@ export function ChangePasswordCard({
                     </CardTitle>
 
                     <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
-                        You registered using an OAuth provider. Click below to set a password for your account.
+                        {localization.setPasswordDescription}
                     </CardDescription>
                 </CardHeader>
 
                 <CardFooter className={cn("border-t bg-muted dark:bg-transparent py-4 md:py-3 flex justify-end", classNames?.footer)}>
                     <Button disabled={isSetPasswordLoading} size="sm" onClick={handleSetPassword}>
                         <span className={cn(isSetPasswordLoading && "opacity-0")}>
-                            Set Password
+                            {localization.setPassword}
                         </span>
 
                         {isSetPasswordLoading && (
