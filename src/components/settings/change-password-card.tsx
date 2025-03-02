@@ -49,7 +49,7 @@ export function ChangePasswordCard({
     const checkCredentialsLink = useCallback(async () => {
         const { data: accounts, error } = await authClient.listAccounts()
         if (!error && accounts) {
-            setCredentialsLinked(accounts.some(account => account.provider === "credentials"))
+            setCredentialsLinked(accounts.some(account => account.provider === "credential"))
         } else {
             toast.error(error?.message || error?.statusText || "Could not load account info")
         }

@@ -10,7 +10,9 @@ import {
     MicrosoftIcon,
     RedditIcon,
     SpotifyIcon,
+    TikTokIcon,
     TwitchIcon,
+    VKIcon,
     XIcon
 } from "./components/provider-icons"
 
@@ -71,9 +73,19 @@ export const socialProviders = [
         "icon": SpotifyIcon
     },
     {
+        "provider": "tiktok",
+        "name": "TikTok",
+        "icon": TikTokIcon
+    },
+    {
         "provider": "twitch",
         "name": "Twitch",
         "icon": TwitchIcon
+    },
+    {
+        "provider": "vk",
+        "name": "VK",
+        "icon": VKIcon
     },
     {
         "provider": "twitter",
