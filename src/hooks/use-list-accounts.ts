@@ -1,4 +1,10 @@
-import { useCallback, useContext, useEffect, useState } from "react"
+import {
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
+    useState
+} from "react"
 import { toast } from "sonner"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
@@ -14,6 +20,7 @@ export function useListAccounts() {
 
     const [accounts, setAccounts] = useState<Account[] | null>(null)
     const [isPending, setIsPending] = useState(true)
+    const initialized = useRef(false)
 
     const listAccounts = useCallback(async () => {
         const { data, error } = await authClient.listAccounts()
@@ -31,6 +38,9 @@ export function useListAccounts() {
             return
         }
 
+        if (initialized.current) return
+
+        initialized.current = true
         listAccounts()
     }, [listAccounts, sessionData, sessionPending])
 

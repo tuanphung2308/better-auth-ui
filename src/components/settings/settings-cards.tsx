@@ -5,10 +5,10 @@ import { useContext } from "react"
 import { useListAccounts } from "../../hooks/use-list-accounts"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
+import { ChangePasswordCardPrimitive } from "../primitives/settings/change-password-card-primitive"
 import { ProvidersCardPrimitive } from "../primitives/settings/providers-card-primitive"
 
 import { ChangeEmailCard } from "./change-email-card"
-import { ChangePasswordCard } from "./change-password-card"
 import { DeleteAccountCard } from "./delete-account-card"
 import type { SettingsCardClassNames } from "./settings-card"
 import { UpdateNameCard } from "./update-name-card"
@@ -69,7 +69,10 @@ export function SettingsCards({
     localization?: Partial<typeof settingsLocalization>
 }) {
     const { authClient, credentials, deleteUser, username } = useContext(AuthUIContext)
-    const { accounts, isPending, refetch } = useListAccounts()
+    const { data: sessionData, isPending: sessionPending } = authClient.useSession()
+    const { accounts, isPending: accountsPending, refetch } = useListAccounts()
+
+    const isPending = sessionPending || accountsPending
 
     return (
         <div className={cn("w-full flex flex-col gap-4 items-center", className)}>
@@ -91,9 +94,13 @@ export function SettingsCards({
             />
 
             {credentials && (
-                <ChangePasswordCard
+                <ChangePasswordCardPrimitive
+                    accounts={accounts}
+                    className={className}
                     classNames={classNames}
+                    isPending={isPending}
                     localization={localization}
+                    user={sessionData?.user}
                 />
             )}
 
