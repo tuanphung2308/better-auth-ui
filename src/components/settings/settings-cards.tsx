@@ -1,15 +1,15 @@
 "use client"
 
-import { useCallback, useContext, useEffect, useState } from "react"
-import { toast } from "sonner"
+import { useContext } from "react"
 
+import { useListAccounts } from "../../hooks/use-list-accounts"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
+import { ProvidersCardPrimitive } from "../primitives/settings/providers-card-primitive"
 
 import { ChangeEmailCard } from "./change-email-card"
 import { ChangePasswordCard } from "./change-password-card"
 import { DeleteAccountCard } from "./delete-account-card"
-import { ProvidersCard } from "./providers-card"
 import type { SettingsCardClassNames } from "./settings-card"
 import { UpdateNameCard } from "./update-name-card"
 import { UpdateUsernameCard } from "./update-username-card"
@@ -69,29 +69,7 @@ export function SettingsCards({
     localization?: Partial<typeof settingsLocalization>
 }) {
     const { authClient, credentials, deleteUser, username } = useContext(AuthUIContext)
-    const { data: sessionData } = authClient.useSession()
-    const [accountsPending, setAccountsPending] = useState(false)
-    const [accounts, setAccounts] = useState<{ id: string, provider: string }[] | null>(null)
-
-    const getAccounts = useCallback(async () => {
-        const { data, error } = await authClient.listAccounts()
-
-        if (error) {
-            toast.error(error.message || error.statusText)
-        }
-
-        if (data) {
-            setAccounts(data)
-        }
-
-        setAccountsPending(false)
-    }, [authClient])
-
-    useEffect(() => {
-        if (!sessionData) return
-
-        getAccounts()
-    }, [sessionData, getAccounts])
+    const { accounts, isPending, refetch } = useListAccounts()
 
     return (
         <div className={cn("w-full flex flex-col gap-4 items-center", className)}>
@@ -119,11 +97,13 @@ export function SettingsCards({
                 />
             )}
 
-            <ProvidersCard
+            <ProvidersCardPrimitive
                 accounts={accounts}
                 classNames={classNames}
-                isPending={accountsPending}
+                isPending={isPending}
                 localization={localization}
+                refetch={refetch}
+                unlinkAccount={(providerId: string) => authClient.unlinkAccount({ providerId })}
             />
 
             {deleteUser && (

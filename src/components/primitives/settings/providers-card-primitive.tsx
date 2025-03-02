@@ -19,20 +19,31 @@ import {
     CardTitle
 } from "../../ui/card"
 
+type Error = {
+    code?: string | undefined
+    message?: string | undefined
+    status?: number
+    statusText?: string
+}
+
 export function ProvidersCardPrimitive({
     className,
     classNames,
     accounts,
     isPending,
     localization,
-    refetch
+    optimistic,
+    refetch,
+    unlinkAccount
 }: {
     className?: string
     classNames?: SettingsCardClassNames
     accounts?: { id: string, provider: string }[] | null
     isPending?: boolean
     localization?: Partial<typeof settingsLocalization>
-    refetch?: () => void
+    optimistic?: boolean
+    refetch?: () => Promise<unknown>,
+    unlinkAccount: (providerId: string) => Promise<{ status?: boolean, code?: string, error?: Error | null }>
 }) {
     localization = { ...settingsLocalization, ...localization }
 
@@ -69,13 +80,14 @@ export function ProvidersCardPrimitive({
     }
 
     const handleUnlink = async (providerId: string) => {
-        setActionLoading(providerId)
-        const { error } = await authClient.unlinkAccount({ providerId })
+        if (!optimistic) setActionLoading(providerId)
+
+        const { error } = await unlinkAccount(providerId)
 
         if (error) {
             toast.error(error.message || error.statusText)
         } else {
-            refetch?.()
+            await refetch?.()
             toast.success(localization.providerUnlinkSuccess)
         }
 
@@ -144,8 +156,8 @@ export function ProvidersCardPrimitive({
                                 </span>
 
                                 {isButtonLoading && (
-                                    <span>
-                                        <Loader2 className="absolute inset-0 m-auto h-4 w-4 animate-spin" />
+                                    <span className="absolute">
+                                        <Loader2 className="animate-spin" />
                                     </span>
                                 )}
                             </Button>

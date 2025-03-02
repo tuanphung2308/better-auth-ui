@@ -1,25 +1,26 @@
 "use client"
 
+import { createAuthHooks } from "@daveyplate/better-auth-tanstack"
 import { useContext } from "react"
 
-import { useListAccounts } from "../../hooks/use-list-accounts"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { ProvidersCardPrimitive } from "../primitives/settings/providers-card-primitive"
-
-import type { SettingsCardClassNames } from "./settings-card"
-import { settingsLocalization } from "./settings-cards"
+import type { SettingsCardClassNames } from "../settings/settings-card"
+import { settingsLocalization } from "../settings/settings-cards"
 
 export function ProvidersCard({
     className,
     classNames,
     localization
 }: {
-    className?: string
-    classNames?: SettingsCardClassNames
+    className?: string,
+    classNames?: SettingsCardClassNames,
     localization?: Partial<typeof settingsLocalization>
 }) {
     const { authClient } = useContext(AuthUIContext)
-    const { accounts, isPending, refetch } = useListAccounts()
+    const { useListAccounts } = createAuthHooks(authClient)
+
+    const { accounts, isPending, unlinkAccount } = useListAccounts()
 
     return (
         <ProvidersCardPrimitive
@@ -28,8 +29,8 @@ export function ProvidersCard({
             classNames={classNames}
             isPending={isPending}
             localization={localization}
-            refetch={refetch}
-            unlinkAccount={(providerId: string) => authClient.unlinkAccount({ providerId })}
+            optimistic
+            unlinkAccount={unlinkAccount}
         />
     )
 }
