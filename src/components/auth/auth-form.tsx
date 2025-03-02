@@ -41,8 +41,7 @@ export function AuthForm({
     redirectTo,
     signUpName,
     socialLayout = "auto",
-    view,
-    onSessionChange
+    view
 }: {
     className?: string,
     classNames?: AuthFormClassNames,
@@ -52,8 +51,7 @@ export function AuthForm({
     redirectTo?: string,
     signUpName?: boolean,
     socialLayout?: "auto" | "horizontal" | "grid" | "vertical",
-    view?: AuthView,
-    onSessionChange?: () => void,
+    view?: AuthView
 }) {
     const getRedirectTo = useCallback(() => redirectTo || new URLSearchParams(window.location.search).get("redirectTo") || "/", [redirectTo])
     const getCallbackURL = useCallback(() => callbackURL || getRedirectTo(), [callbackURL, getRedirectTo])
@@ -68,9 +66,12 @@ export function AuthForm({
         magicLink,
         navigate,
         passkey,
+        persistClient,
         providers,
+        replace,
         username: usernamePlugin,
         viewPaths,
+        onSessionChange,
         LinkComponent
     } = useContext(AuthUIContext)
 
@@ -248,11 +249,11 @@ export function AuthForm({
 
         signingOut.current = true
         authClient.signOut().finally(async () => {
-            navigate(getRedirectTo())
+            replace(getRedirectTo())
             onSessionChange?.()
             signingOut.current = false
         })
-    }, [view, authClient, navigate, viewPaths.signIn, onSessionChange, getRedirectTo])
+    }, [view, authClient, replace, viewPaths.signIn, onSessionChange, getRedirectTo])
 
     useEffect(() => {
         if (view != "resetPassword" || checkingResetPasswordToken.current) return
@@ -280,7 +281,15 @@ export function AuthForm({
         }
     }, [view, viewPaths, credentials, navigate, magicLink])
 
-    if (view == "signOut") return (
+    useEffect(() => {
+        if (view != "callback") return
+
+        if (!persistClient) {
+            replace(getRedirectTo())
+        }
+    }, [view, viewPaths, replace, persistClient, getRedirectTo])
+
+    if (["signOut", "callback"].includes(view)) return (
         <Loader2 className="animate-spin" />
     )
 

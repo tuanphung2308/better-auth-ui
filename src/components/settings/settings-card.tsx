@@ -5,6 +5,7 @@ import { useActionState, useState } from "react"
 import { toast } from "sonner"
 
 import { cn } from "../../lib/utils"
+import type { FetchError } from "../../types/fetch-error"
 import { Button } from "../ui/button"
 import {
     Card,
@@ -47,7 +48,7 @@ export function SettingsCard({
 }: {
     className?: string,
     classNames?: SettingsCardClassNames,
-    defaultValue?: string,
+    defaultValue?: string | null,
     description?: string,
     instructions?: string,
     isPending?: boolean,
@@ -56,7 +57,7 @@ export function SettingsCard({
     placeholder?: string,
     saveLabel?: string,
     title?: string,
-    formAction: (formData: FormData) => Promise<{ error?: { code?: string, message?: string, status?: number, statusText?: string } | null }>,
+    formAction: (formData: FormData) => Promise<{ error?: FetchError | null }>,
 }) {
     localization = { ...settingsLocalization, ...localization }
 

@@ -29,7 +29,6 @@ export function ProvidersCard({
             classNames={classNames}
             isPending={isPending}
             localization={localization}
-            optimistic
             unlinkAccount={unlinkAccount}
         />
     )

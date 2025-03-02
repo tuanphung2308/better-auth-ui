@@ -14,13 +14,16 @@ const DefaultLink = (
 )
 
 const defaultNavigate = (href: string) => { window.location.href = href }
+const defaultReplace = (href: string) => { window.location.replace(href) }
 
 export type Link = React.ComponentType<{ href: string, to: unknown, className?: string, children: ReactNode }>
 
 export const authViewPaths = {
+    callback: "callback",
     forgotPassword: "forgot-password",
     magicLink: "magic-link",
     resetPassword: "reset-password",
+    settings: "settings",
     signIn: "sign-in",
     signOut: "sign-out",
     signUp: "sign-up",
@@ -39,12 +42,16 @@ export type AuthUIContextType = {
     magicLink?: boolean
     multiSession?: boolean
     noColorIcons?: boolean
+    optimistic?: boolean
     passkey?: boolean
+    persistClient?: boolean
     providers?: SocialProvider[]
     settingsUrl?: string
     username?: boolean
     viewPaths: typeof authViewPaths
     navigate: typeof defaultNavigate
+    onSessionChange?: () => void,
+    replace: typeof defaultReplace,
     LinkComponent: Link
 }
 
@@ -61,12 +68,16 @@ export const AuthUIProvider = ({
     credentials = true,
     forgotPassword = true,
     viewPaths,
-    navigate = defaultNavigate,
+    navigate,
+    replace,
     LinkComponent = DefaultLink,
     ...props
 }: {
     children: ReactNode
 } & AuthUIProviderProps) => {
+    replace = replace || navigate || defaultReplace
+    navigate = navigate || defaultNavigate
+
     return (
         <AuthUIContext.Provider
             value={{
@@ -74,6 +85,7 @@ export const AuthUIProvider = ({
                 credentials,
                 forgotPassword,
                 navigate,
+                replace,
                 viewPaths: { ...authViewPaths, ...viewPaths },
                 LinkComponent,
                 ...props

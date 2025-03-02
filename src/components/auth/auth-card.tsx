@@ -74,8 +74,7 @@ export function AuthCard({
     redirectTo,
     signUpName,
     socialLayout = "auto",
-    view,
-    onSessionChange
+    view
 }: {
     className?: string,
     classNames?: AuthCardClassNames,
@@ -86,7 +85,6 @@ export function AuthCard({
     signUpName?: boolean,
     socialLayout?: "auto" | "horizontal" | "grid" | "vertical",
     view?: AuthView,
-    onSessionChange?: () => void,
 }) {
     localization = { ...authLocalization, ...localization }
 
@@ -109,7 +107,6 @@ export function AuthCard({
             signUpName={signUpName}
             socialLayout={socialLayout}
             view={view}
-            onSessionChange={onSessionChange}
         />
     )
 
@@ -138,7 +135,6 @@ export function AuthCard({
                     signUpName={signUpName}
                     socialLayout={socialLayout}
                     view={view}
-                    onSessionChange={onSessionChange}
                 />
             </CardContent>
 

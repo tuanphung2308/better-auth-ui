@@ -26,7 +26,6 @@ export function ProvidersCardPrimitive({
     accounts,
     isPending,
     localization,
-    optimistic,
     refetch,
     unlinkAccount
 }: {
@@ -35,13 +34,12 @@ export function ProvidersCardPrimitive({
     accounts?: { id: string, provider: string }[] | null
     isPending?: boolean
     localization?: Partial<typeof settingsLocalization>
-    optimistic?: boolean
-    refetch?: () => Promise<unknown>,
+    refetch?: () => Promise<unknown>
     unlinkAccount: (providerId: string) => Promise<{ status?: boolean, code?: string, error?: FetchError | null }>
 }) {
     localization = { ...settingsLocalization, ...localization }
 
-    const { authClient, colorIcons, noColorIcons, providers } = useContext(AuthUIContext)
+    const { authClient, colorIcons, noColorIcons, optimistic, providers } = useContext(AuthUIContext)
 
     const [actionLoading, setActionLoading] = useState<string | null>(null)
     const hasShownLinkedToast = useRef(false)
@@ -81,8 +79,8 @@ export function ProvidersCardPrimitive({
         if (error) {
             toast.error(error.message || error.statusText)
         } else {
-            await refetch?.()
             toast.success(localization.providerUnlinkSuccess)
+            await refetch?.()
         }
 
         setActionLoading(null)
