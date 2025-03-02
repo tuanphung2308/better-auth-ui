@@ -29,10 +29,14 @@ import ProvidersCardSkeleton from "./skeletons/providers-card-skeleton"
 export default function ProvidersCard({
     className,
     classNames,
+    accounts: accountsProp,
+    isPending,
     localization
 }: {
     className?: string
     classNames?: SettingsCardClassNames
+    accounts?: { id: string, provider: string }[] | null
+    isPending?: boolean
     localization?: Partial<typeof settingsLocalization>
 }) {
     localization = { ...settingsLocalization, ...localization }
@@ -40,33 +44,27 @@ export default function ProvidersCard({
     const { authClient, colorIcons, noColorIcons, providers } = useContext(AuthUIContext)
     const { data: sessionData, isPending: sessionPending } = authClient.useSession()
 
-    const [accounts, setAccounts] = useState<{ id: string, provider: string }[]>([])
-    const [isLoading, setIsLoading] = useState(false)
+    const [accounts, setAccounts] = useState<{ id: string, provider: string }[] | null>(null)
+    const [accountsPending, setAccountsPending] = useState(false)
     const [actionLoading, setActionLoading] = useState<string | null>(null)
     const hasShownLinkedToast = useRef(false)
 
     const getAccounts = useCallback(async () => {
-        if (!accounts) setIsLoading(true)
+        if (!accounts) setAccountsPending(true)
 
         const { data, error } = await authClient.listAccounts()
 
-        if (error) {
-            toast.error(error.message || error.statusText)
-        }
+        if (error) toast.error(error.message || error.statusText)
 
-        if (data) {
-            setAccounts(data)
-        }
-
-        setIsLoading(false)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [authClient])
+        setAccounts(data)
+        setAccountsPending(false)
+    }, [authClient, accounts])
 
     useEffect(() => {
-        if (!sessionData) return
+        if (!sessionData || isPending || accountsProp) return
 
         getAccounts()
-    }, [getAccounts, sessionData])
+    }, [getAccounts, isPending, sessionData, accountsProp])
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search)
@@ -109,7 +107,7 @@ export default function ProvidersCard({
         setActionLoading(null)
     }
 
-    if (sessionPending || isLoading) {
+    if (isPending || sessionPending || accountsPending) {
         return <ProvidersCardSkeleton className={className} />
     }
 
@@ -130,7 +128,7 @@ export default function ProvidersCard({
                     const socialProvider = socialProviders.find((socialProvider) => socialProvider.provider === provider)
                     if (!socialProvider) return null
 
-                    const isLinked = accounts.some(acc => acc.provider === socialProvider.provider)
+                    const isLinked = accounts?.some(acc => acc.provider === socialProvider.provider)
                     const isButtonLoading = actionLoading === provider || actionLoading === provider
 
                     return (

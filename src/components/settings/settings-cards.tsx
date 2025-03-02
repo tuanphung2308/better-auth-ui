@@ -1,6 +1,7 @@
 "use client"
 
-import { useContext } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
+import { toast } from "sonner"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
@@ -67,7 +68,30 @@ export function SettingsCards({
     classNames?: SettingsCardClassNames,
     localization?: Partial<typeof settingsLocalization>
 }) {
-    const { credentials, deleteUser, username, } = useContext(AuthUIContext)
+    const { authClient, credentials, deleteUser, username } = useContext(AuthUIContext)
+    const { data: sessionData } = authClient.useSession()
+    const [accountsPending, setAccountsPending] = useState(false)
+    const [accounts, setAccounts] = useState<{ id: string, provider: string }[] | null>(null)
+
+    const getAccounts = useCallback(async () => {
+        const { data, error } = await authClient.listAccounts()
+
+        if (error) {
+            toast.error(error.message || error.statusText)
+        }
+
+        if (data) {
+            setAccounts(data)
+        }
+
+        setAccountsPending(false)
+    }, [authClient])
+
+    useEffect(() => {
+        if (!sessionData) return
+
+        getAccounts()
+    }, [sessionData, getAccounts])
 
     return (
         <div className={cn("w-full flex flex-col gap-4 items-center", className)}>
@@ -95,10 +119,18 @@ export function SettingsCards({
                 />
             )}
 
-            <ProvidersCard />
+            <ProvidersCard
+                accounts={accounts}
+                classNames={classNames}
+                isPending={accountsPending}
+                localization={localization}
+            />
 
             {deleteUser && (
-                <DeleteAccountCard />
+                <DeleteAccountCard
+                    classNames={classNames}
+                    localization={localization}
+                />
             )}
         </div>
     )
