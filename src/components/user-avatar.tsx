@@ -15,13 +15,13 @@ export interface UserAvatarClassNames {
 
 export function UserAvatar({
     user, classNames, className, ...props
-}: { user?: User, classNames?: UserAvatarClassNames } & ComponentProps<"div">) {
+}: { user?: User, classNames?: UserAvatarClassNames } & ComponentProps<typeof Avatar>) {
     const name = user?.name || user?.fullName || user?.firstName || user?.email
     const src = (user?.image || user?.avatar || user?.avatarUrl) as string
 
     return (
         <Avatar
-            className={cn(className, classNames?.base)}
+            className={cn("text-sm", className, classNames?.base)}
             {...props}
         >
             <AvatarImage

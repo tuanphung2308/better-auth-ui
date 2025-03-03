@@ -10,6 +10,7 @@ import { ChangePasswordCard } from "./change-password-card"
 import { DeleteAccountCard } from "./delete-account-card"
 import { ProvidersCard } from "./providers-card"
 import type { SettingsCardClassNames } from "./settings-card"
+import { UpdateAvatarCard } from "./update-avatar-card"
 import { UpdateNameCard } from "./update-name-card"
 import { UpdateUsernameCard } from "./update-username-card"
 
@@ -71,6 +72,7 @@ export function SettingsCards({
 }) {
     const {
         authClient,
+        avatar,
         credentials,
         deleteUser,
         hooks: { useSession, useListAccounts },
@@ -82,7 +84,15 @@ export function SettingsCards({
     const isPending = sessionPending || accountsPending
 
     return (
-        <div className={cn("w-full flex flex-col gap-4 items-center", className)}>
+        <div className={cn("w-full max-w-xl flex flex-col gap-4 items-center", className)}>
+            {avatar && (
+                <UpdateAvatarCard
+                    classNames={classNames}
+                    isPending={isPending}
+                    localization={localization}
+                />
+            )}
+
             {username && (
                 <UpdateUsernameCard
                     classNames={classNames}

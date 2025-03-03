@@ -101,7 +101,7 @@ export function ChangePasswordCard({
 
     if (!credentialsLinked) {
         return (
-            <Card className={cn("w-full max-w-lg overflow-hidden", className, classNames?.base)}>
+            <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
                 <CardHeader className={classNames?.header}>
                     <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                         {localization.changePassword}
@@ -135,7 +135,7 @@ export function ChangePasswordCard({
     }
 
     return (
-        <Card className={cn("w-full max-w-lg overflow-hidden", className, classNames?.base)}>
+        <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
             <form action={action}>
                 <CardHeader className={classNames?.header}>
                     <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>

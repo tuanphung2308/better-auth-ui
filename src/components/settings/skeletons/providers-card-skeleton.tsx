@@ -9,7 +9,7 @@ export default function ProvidersCardSkeleton({ className }: { className?: strin
     const { providers } = useContext(AuthUIContext)
 
     return (
-        <Card className={cn("max-w-lg w-full", className)}>
+        <Card className={cn("w-full", className)}>
             <CardHeader className="space-y-2">
                 <Skeleton className="h-5 md:h-6 w-24" />
                 <Skeleton className="h-4 w-80" />

@@ -17,12 +17,14 @@ import {
     CardTitle
 } from "../ui/card"
 import { Input } from "../ui/input"
+import type { UserAvatarClassNames } from "../user-avatar"
 
 import { settingsLocalization } from "./settings-cards"
 import { SettingsCardSkeleton } from "./skeletons/settings-card-skeleton"
 
 export type SettingsCardClassNames = {
     base?: string
+    avatar?: UserAvatarClassNames
     button?: string
     content?: string
     description?: string
@@ -92,7 +94,7 @@ export function SettingsCard({
     }
 
     return (
-        <Card className={cn("w-full max-w-lg overflow-hidden", className, classNames?.base)}>
+        <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
             <form action={action}>
                 <CardHeader className={classNames?.header}>
                     <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>

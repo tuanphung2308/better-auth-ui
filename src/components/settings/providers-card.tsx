@@ -111,7 +111,7 @@ export function ProvidersCard({
     }
 
     return (
-        <Card className={cn("max-w-lg w-full", className, classNames?.base)}>
+        <Card className={cn("w-full", className, classNames?.base)}>
             <CardHeader className={classNames?.header}>
                 <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                     {localization.providers}
