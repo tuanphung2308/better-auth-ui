@@ -48,6 +48,7 @@ export type AuthUIContextType = {
     deleteAccountVerification?: boolean
     deleteUser?: boolean
     forgotPassword?: boolean
+    freshAge: number
     magicLink?: boolean
     multiSession?: boolean
     noColorIcons?: boolean
@@ -77,6 +78,7 @@ export const AuthUIProvider = ({
     basePath = "/auth",
     credentials = true,
     forgotPassword = true,
+    freshAge = 60 * 60 * 24,
     hooks = defaultHooks,
     viewPaths,
     navigate,
@@ -95,6 +97,7 @@ export const AuthUIProvider = ({
                 basePath,
                 credentials,
                 forgotPassword,
+                freshAge,
                 hooks,
                 navigate,
                 replace,

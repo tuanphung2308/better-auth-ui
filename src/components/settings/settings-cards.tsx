@@ -24,10 +24,11 @@ export const settingsLocalization = {
     setPassword: "Set Password",
     setPasswordEmailSent: "Check your email to set your password.",
     deleteAccount: "Delete Account",
-    deleteAccountDescription: "Permanently remove your Account and all of its contents. This action is not reversible, so please continue with caution.",
-    deleteAccountInstructions: "Please enter your password to confirm the deletion of your account. This action is not reversible, so please continue with caution.",
+    deleteAccountDescription: "Permanently remove your account and all of its contents. This action is not reversible, so please continue with caution.",
+    deleteAccountInstructions: "Please confirm the deletion of your account. This action is not reversible, so please continue with caution.",
     deleteAccountEmail: "Please check your email to verify the deletion of your account.",
     deleteAccountSuccess: "Your account has been deleted.",
+    deleteAccountNotFresh: "You must be recently logged in to delete your account.",
     name: "Name",
     nameDescription: "Please enter your full name, or a display name.",
     nameInstructions: "Please use 32 characters at maximum.",
@@ -55,7 +56,8 @@ export const settingsLocalization = {
     providerLinkSuccess: "Provider linked successfully.",
     providerUnlink: "Unlink",
     providerUnlinkSuccess: "Provider unlinked successfully.",
-    providersLoadingError: "Could not load account info"
+    providersLoadingError: "Could not load account info",
+    signOut: "Sign Out",
 }
 
 export function SettingsCards({
@@ -122,6 +124,7 @@ export function SettingsCards({
 
             {deleteUser && (
                 <DeleteAccountCard
+                    accounts={accounts}
                     classNames={classNames}
                     isPending={isPending}
                     localization={localization}
