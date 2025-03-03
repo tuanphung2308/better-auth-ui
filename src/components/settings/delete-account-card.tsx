@@ -101,7 +101,7 @@ export function DeleteAccountCard({
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button
-                            className={cn("mx-auto md:ms-auto md:mx-0", classNames?.saveButton)}
+                            className={cn("mx-auto md:ms-auto md:mx-0", classNames?.button)}
                             size="sm"
                             variant="destructive"
                         >
@@ -138,7 +138,7 @@ export function DeleteAccountCard({
 
                             <DialogFooter>
                                 <Button
-                                    className="mx-auto md:ms-auto md:mx-0"
+                                    className={cn("mx-auto md:ms-auto md:mx-0", classNames?.button)}
                                     disabled={isSubmitting}
                                     variant="destructive"
                                 >

@@ -92,7 +92,7 @@ export function ProvidersCard({
     const handleUnlink = async (providerId: string) => {
         if (!unlinkAccount) return toast.error("unlinkAccount is not defined")
 
-        if (!optimistic) setActionLoading(providerId)
+        setActionLoading(providerId)
 
         const { error } = await unlinkAccount(providerId)
 
@@ -148,7 +148,7 @@ export function ProvidersCard({
                             </span>
 
                             <Button
-                                className={cn("ms-auto relative", classNames?.saveButton)}
+                                className={cn("ms-auto relative", classNames?.button)}
                                 disabled={isButtonLoading}
                                 size="sm"
                                 type="button"

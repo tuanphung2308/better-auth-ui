@@ -1,9 +1,12 @@
 "use client"
 
-import { useContext } from "react"
+import { Loader2 } from "lucide-react"
+import { useContext, useEffect } from "react"
 
 import { AuthUIContext, type AuthView } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
+import type { SettingsCardClassNames } from "../settings/settings-card"
+import { SettingsCards } from "../settings/settings-cards"
 import {
     Card,
     CardContent,
@@ -61,6 +64,7 @@ export type AuthCardClassNames = {
     footer?: string
     footerLink?: string
     form?: AuthFormClassNames
+    settings?: SettingsCardClassNames
     header?: string
     title?: string
 }
@@ -90,13 +94,19 @@ export function AuthCard({
 
     const path = pathname?.split("/").pop()
 
-    const { credentials, magicLink, viewPaths, LinkComponent } = useContext(AuthUIContext)
+    const { credentials, magicLink, replace, settingsUrl, viewPaths, LinkComponent } = useContext(AuthUIContext)
 
     if (path && !Object.values(viewPaths).includes(path)) {
         console.error(`Invalid auth view: ${path}`)
     }
 
     view = view || (Object.entries(viewPaths).find(([_, value]) => value === path)?.[0] || "signIn") as AuthView
+
+    useEffect(() => {
+        if (view == "settings" && settingsUrl) {
+            replace(settingsUrl)
+        }
+    }, [replace, settingsUrl, view])
 
     if (["signOut", "callback"].includes(view)) return (
         <AuthForm
@@ -108,6 +118,12 @@ export function AuthCard({
             socialLayout={socialLayout}
             view={view}
         />
+    )
+
+    if (view == "settings") return settingsUrl ? (
+        <Loader2 className="animate-spin" />
+    ) : (
+        <SettingsCards classNames={classNames?.settings} />
     )
 
     return (

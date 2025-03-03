@@ -142,19 +142,20 @@ export function ChangePasswordCard({
                         {localization.changePassword}
                     </CardTitle>
 
-                    <CardDescription className={classNames?.description}>
+                    <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
                         {localization.changePasswordDescription}
                     </CardDescription>
                 </CardHeader>
 
                 <CardContent className={cn("grid gap-4", classNames?.content)}>
                     <div className="grid gap-2">
-                        <Label htmlFor="currentPassword">
+                        <Label className={classNames?.label} htmlFor="currentPassword">
                             {localization.currentPassword}
                         </Label>
 
                         <Input
                             autoComplete="current-password"
+                            className={classNames?.input}
                             id="currentPassword"
                             name="currentPassword"
                             placeholder={localization.currentPasswordPlaceholder}
@@ -165,12 +166,13 @@ export function ChangePasswordCard({
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="newPassword">
+                        <Label className={classNames?.label} htmlFor="newPassword">
                             {localization.newPassword}
                         </Label>
 
                         <Input
                             autoComplete="new-password"
+                            className={classNames?.input}
                             id="newPassword"
                             name="newPassword"
                             placeholder={localization.newPasswordPlaceholder}
@@ -183,15 +185,19 @@ export function ChangePasswordCard({
 
                 <CardFooter
                     className={cn(
-                        "border-t bg-muted dark:bg-transparent py-4 md:py-3 flex gap-4 justify-between",
+                        "border-t bg-muted dark:bg-transparent py-4 md:py-3 flex flex-col md:flex-row gap-4 justify-between",
                         classNames?.footer
                     )}
                 >
-                    <CardDescription className={classNames?.instructions}>
+                    <CardDescription className={cn("text-xs md:text-sm", classNames?.instructions)}>
                         {localization.changePasswordInstructions}
                     </CardDescription>
 
-                    <Button className="relative" disabled={disabled || isSubmitting}>
+                    <Button
+                        className={classNames?.button}
+                        disabled={disabled || isSubmitting}
+                        size="sm"
+                    >
                         <span className={cn(isSubmitting && "opacity-0")}>
                             {localization.save}
                         </span>

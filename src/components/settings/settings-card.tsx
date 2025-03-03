@@ -1,9 +1,10 @@
 "use client"
 
 import { Loader2 } from "lucide-react"
-import { useActionState, useState } from "react"
+import { useActionState, useContext, useState } from "react"
 import { toast } from "sonner"
 
+import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import type { FetchError } from "../../types/fetch-error"
 import { Button } from "../ui/button"
@@ -22,13 +23,14 @@ import { SettingsCardSkeleton } from "./skeletons/settings-card-skeleton"
 
 export type SettingsCardClassNames = {
     base?: string
+    button?: string
     content?: string
     description?: string
     footer?: string
     header?: string
+    input?: string
     instructions?: string
     label?: string
-    saveButton?: string
     title?: string
 }
 
@@ -61,17 +63,24 @@ export function SettingsCard({
 }) {
     localization = { ...settingsLocalization, ...localization }
 
+    let { optimistic } = useContext(AuthUIContext)
+
+    if (name == "email" || name == "username") {
+        optimistic = false
+    }
+
     const [disabled, setDisabled] = useState(true)
 
     const performAction = async (_: Record<string, string>, formData: FormData) => {
         const formDataObject = Object.fromEntries(formData.entries())
 
         setDisabled(true)
-        const { error } = await formAction(formData)
-        if (error) {
-            toast.error(error.message || error.statusText)
-            setDisabled(false)
-        }
+        formAction(formData).then(({ error }) => {
+            if (error) {
+                toast.error(error.message || error.statusText)
+                setDisabled(false)
+            }
+        })
 
         return formDataObject as Record<string, string>
     }
@@ -97,6 +106,7 @@ export function SettingsCard({
 
                 <CardContent className={classNames?.content}>
                     <Input
+                        className={classNames?.input}
                         defaultValue={state[name] ?? defaultValue}
                         name={name}
                         placeholder={placeholder}
@@ -117,15 +127,15 @@ export function SettingsCard({
                     )}
 
                     <Button
-                        className={cn("md:ms-auto", classNames?.saveButton)}
-                        disabled={isSubmitting || disabled}
+                        className={cn("md:ms-auto", classNames?.button)}
+                        disabled={(!optimistic && isSubmitting) || disabled}
                         size="sm"
                     >
-                        <span className={cn(isSubmitting && "opacity-0")}>
+                        <span className={cn(!optimistic && isSubmitting && "opacity-0")}>
                             {saveLabel || localization.save}
                         </span>
 
-                        {isSubmitting && (
+                        {!optimistic && isSubmitting && (
                             <span className="absolute">
                                 <Loader2 className="animate-spin" />
                             </span>
