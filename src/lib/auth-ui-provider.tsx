@@ -44,6 +44,7 @@ const defaultHooks = {
 export type AuthUIContextType = {
     authClient: Omit<ReturnType<typeof createAuthClient>, "signUp">
     avatar?: boolean
+    avatarExtension: string
     avatarSize: number
     basePath: string
     colorIcons?: boolean
@@ -67,7 +68,7 @@ export type AuthUIContextType = {
     navigate: typeof defaultNavigate
     onSessionChange?: () => void,
     replace: typeof defaultReplace,
-    uploadAvatar?: (file: File) => Promise<string>
+    uploadAvatar?: (file: File) => Promise<string | undefined | null>
     LinkComponent: Link
 }
 
@@ -80,6 +81,7 @@ export const AuthUIContext = createContext<AuthUIContextType>({} as unknown as A
 
 export const AuthUIProvider = ({
     children,
+    avatarExtension = "png",
     avatarSize,
     basePath = "/auth",
     defaultRedirectTo = "/",
@@ -103,6 +105,7 @@ export const AuthUIProvider = ({
     return (
         <AuthUIContext.Provider
             value={{
+                avatarExtension,
                 avatarSize,
                 basePath: basePath == "/" ? "" : basePath,
                 defaultRedirectTo,

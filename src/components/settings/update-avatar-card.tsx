@@ -12,13 +12,14 @@ import {
     CardHeader,
     CardTitle
 } from "../ui/card"
+import { Skeleton } from "../ui/skeleton"
 import { UserAvatar } from "../user-avatar"
 
 import type { SettingsCardClassNames } from "./settings-card"
 import type { settingsLocalization } from "./settings-cards"
 import { UpdateAvatarCardSkeleton } from "./skeletons/update-avatar-card-skeleton"
 
-async function resizeAndCropImage(file: File, size: number): Promise<string> {
+async function resizeAndCropImage(file: File, name: string, size: number, avatarExtension: string): Promise<File> {
     const image = await loadImage(file)
 
     const canvas = document.createElement("canvas")
@@ -33,14 +34,13 @@ async function resizeAndCropImage(file: File, size: number): Promise<string> {
     const sWidth = minEdge
     const sHeight = minEdge
 
-    const dWidth = minEdge > size ? size : minEdge
-    const dHeight = dWidth
+    ctx.drawImage(image, sx, sy, sWidth, sHeight, 0, 0, size, size)
 
-    canvas.width = canvas.height = dWidth
+    const resizedImageBlob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, `image/${avatarExtension}`)
+    )
 
-    ctx.drawImage(image, sx, sy, sWidth, sHeight, 0, 0, dWidth, dHeight)
-
-    return canvas.toDataURL("image/png")
+    return new File([resizedImageBlob!], `${name}.${avatarExtension}`, { type: `image/${avatarExtension}` })
 }
 
 async function loadImage(file: File): Promise<HTMLImageElement> {
@@ -70,30 +70,50 @@ export function UpdateAvatarCard({
     isPending?: boolean,
     localization?: Partial<typeof settingsLocalization>
 }) {
-    const { hooks: { useSession }, avatarSize } = useContext(AuthUIContext)
+    const { hooks: { useSession }, uploadAvatar, avatarSize, avatarExtension } = useContext(AuthUIContext)
+
     const { data: sessionData, isPending: sessionPending, updateUser } = useSession()
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [loading, setLoading] = useState(false)
 
     const handleAvatarChange = async (file: File) => {
+        if (!sessionData) return
+
         setLoading(true)
         try {
-            const image = await resizeAndCropImage(file, avatarSize)
+            const resizedFile = await resizeAndCropImage(file, sessionData.user.id, avatarSize, avatarExtension)
+
+            let image: string | undefined | null
+
+            if (uploadAvatar) {
+                image = await uploadAvatar(resizedFile)
+            } else {
+                image = await fileToBase64(resizedFile)
+            }
+
+            if (!image) {
+                setLoading(false)
+                return
+            }
+
             const { error } = await updateUser({ image })
+
             if (error) {
                 toast.error(error.message || "Could not update profile image.")
             } else {
                 toast.success("Profile image updated successfully.")
             }
         } catch (err) {
-            toast.error("Failed to resize and crop image.")
+            toast.error("Failed to resize and upload image.")
         }
         setLoading(false)
     }
 
     const openFileDialog = () => fileInputRef.current?.click()
 
-    if (isPending || sessionPending) return <UpdateAvatarCardSkeleton classNames={classNames} />
+    if (isPending || sessionPending) {
+        return <UpdateAvatarCardSkeleton classNames={classNames} />
+    }
 
     return (
         <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
@@ -125,11 +145,16 @@ export function UpdateAvatarCard({
                     type="button"
                     onClick={openFileDialog}
                 >
-                    <UserAvatar
-                        className="size-18 text-2xl"
-                        classNames={classNames?.avatar}
-                        user={sessionData?.user}
-                    />
+                    {loading ? (
+                        <Skeleton className={cn("size-18 rounded-full", classNames?.avatar?.base)} />
+                    ) : (
+                        <UserAvatar
+                            className="size-18 text-2xl"
+                            classNames={classNames?.avatar}
+                            user={sessionData?.user}
+                        />
+                    )}
+
                 </button>
             </div>
 
@@ -145,4 +170,13 @@ export function UpdateAvatarCard({
             </CardFooter>
         </Card>
     )
+}
+
+async function fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onloadend = () => resolve(reader.result as string)
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+    })
 }
