@@ -46,6 +46,7 @@ export type AuthUIContextType = {
     basePath: string
     colorIcons?: boolean
     credentials?: boolean
+    defaultRedirectTo: string
     deleteAccountVerification?: boolean
     deleteUser?: boolean
     forgotPassword?: boolean
@@ -77,6 +78,7 @@ export const AuthUIContext = createContext<AuthUIContextType>({} as unknown as A
 export const AuthUIProvider = ({
     children,
     basePath = "/auth",
+    defaultRedirectTo = "/",
     credentials = true,
     forgotPassword = true,
     freshAge = 60 * 60 * 24,
@@ -96,6 +98,7 @@ export const AuthUIProvider = ({
         <AuthUIContext.Provider
             value={{
                 basePath,
+                defaultRedirectTo,
                 credentials,
                 forgotPassword,
                 freshAge,

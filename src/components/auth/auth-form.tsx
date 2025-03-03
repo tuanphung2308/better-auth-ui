@@ -53,7 +53,6 @@ export function AuthForm({
     socialLayout?: "auto" | "horizontal" | "grid" | "vertical",
     view?: AuthView
 }) {
-    const getRedirectTo = useCallback(() => redirectTo || new URLSearchParams(window.location.search).get("redirectTo") || "/", [redirectTo])
     const [isLoading, setIsLoading] = useState(false)
 
     localization = { ...authLocalization, ...localization }
@@ -61,6 +60,7 @@ export function AuthForm({
     const {
         authClient,
         basePath,
+        defaultRedirectTo,
         credentials,
         forgotPassword,
         hooks: { useIsRestoring },
@@ -90,12 +90,19 @@ export function AuthForm({
 
     view = view || (Object.entries(viewPaths).find(([_, value]) => value === path)?.[0] || "signIn") as AuthView
 
+    const getRedirectTo = useCallback(() =>
+    (redirectTo
+        || new URLSearchParams(window.location.search).get("redirectTo")
+        || defaultRedirectTo
+    ), [defaultRedirectTo, redirectTo])
+
     const getCallbackURL = useCallback(() =>
-        callbackURL ||
+    (callbackURL ||
         (persistClient ?
             `${window.location.pathname.replace(viewPaths[view], viewPaths.callback)}?redirectTo=${getRedirectTo()}`
             : getRedirectTo()
-        ), [callbackURL, persistClient, view, viewPaths, getRedirectTo])
+        )
+    ), [callbackURL, persistClient, view, viewPaths, getRedirectTo])
 
     const formAction = async (formData: FormData) => {
         const provider = formData.get("provider") as SocialProvider
