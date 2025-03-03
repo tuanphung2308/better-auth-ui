@@ -20,7 +20,7 @@ export const settingsLocalization = {
     changePasswordSuccess: "Your password has been changed.",
     currentPassword: "Current Password",
     currentPasswordPlaceholder: "Current Password",
-    setPasswordDescription: "You registered using an OAuth provider. Click below to set a password for your account.",
+    setPasswordDescription: "You registered with a third-party service. Click the button below to set a password for your account.",
     setPassword: "Set Password",
     setPasswordEmailSent: "Check your email to set your password.",
     deleteAccount: "Delete Account",

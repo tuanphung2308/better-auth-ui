@@ -54,15 +54,16 @@ export function AuthForm({
     view?: AuthView
 }) {
     const getRedirectTo = useCallback(() => redirectTo || new URLSearchParams(window.location.search).get("redirectTo") || "/", [redirectTo])
-    const getCallbackURL = useCallback(() => callbackURL || getRedirectTo(), [callbackURL, getRedirectTo])
     const [isLoading, setIsLoading] = useState(false)
 
     localization = { ...authLocalization, ...localization }
 
     const {
         authClient,
+        basePath,
         credentials,
         forgotPassword,
+        hooks: { useIsRestoring },
         magicLink,
         navigate,
         passkey,
@@ -74,6 +75,15 @@ export function AuthForm({
         onSessionChange,
         LinkComponent
     } = useContext(AuthUIContext)
+
+    const getCallbackURL = useCallback(() =>
+        callbackURL ||
+        (persistClient ?
+            `${basePath}/${viewPaths.callback}?redirectTo=${getRedirectTo()}`
+            : getRedirectTo()
+        ), [basePath, callbackURL, persistClient, viewPaths, getRedirectTo])
+
+    const isRestoring = useIsRestoring()
 
     if (socialLayout == "auto") {
         socialLayout = !credentials ? "vertical" : (providers && providers.length > 3 ? "horizontal" : "vertical")
@@ -284,8 +294,16 @@ export function AuthForm({
     useEffect(() => {
         if (view != "callback") return
 
-        if (!persistClient) replace(getRedirectTo())
-    }, [view, viewPaths, replace, persistClient, getRedirectTo])
+        if (!persistClient) {
+            replace(getRedirectTo())
+            return
+        }
+
+        if (isRestoring) return
+
+        onSessionChange?.()
+        replace(getRedirectTo())
+    }, [isRestoring, view, replace, persistClient, getRedirectTo, onSessionChange])
 
     if (["signOut", "callback"].includes(view)) return (
         <Loader2 className="animate-spin" />

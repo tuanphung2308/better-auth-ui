@@ -1,5 +1,5 @@
 import { createAuthHooks } from "@daveyplate/better-auth-tanstack"
-import { useQueryClient } from "@tanstack/react-query"
+import { useIsRestoring, useQueryClient } from "@tanstack/react-query"
 import type { ReactNode } from "react"
 
 import { AuthUIProvider, type AuthUIProviderProps } from "../../lib/auth-ui-provider"
@@ -19,7 +19,7 @@ export function AuthUIProviderTanstack({
         <AuthUIProvider
             authClient={authClient}
             // @ts-expect-error Ignore these types because they will never perfectly match
-            hooks={{ useSession, useListAccounts, useListDeviceSessions }}
+            hooks={{ useSession, useListAccounts, useListDeviceSessions, useIsRestoring }}
             onSessionChange={() => {
                 queryClient.clear()
                 onSessionChange?.()

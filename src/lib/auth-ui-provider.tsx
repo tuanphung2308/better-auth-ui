@@ -37,7 +37,8 @@ export type AuthView = keyof typeof authViewPaths
 const defaultHooks = {
     useSession,
     useListAccounts,
-    useListDeviceSessions
+    useListDeviceSessions,
+    useIsRestoring: () => false,
 }
 
 export type AuthUIContextType = {
