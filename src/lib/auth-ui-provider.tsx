@@ -97,7 +97,7 @@ export const AuthUIProvider = ({
     return (
         <AuthUIContext.Provider
             value={{
-                basePath,
+                basePath: basePath == "/" ? "" : basePath,
                 defaultRedirectTo,
                 credentials,
                 forgotPassword,

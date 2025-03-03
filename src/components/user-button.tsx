@@ -147,7 +147,7 @@ export function UserButton({
                     </>
                 ) : (
                     <>
-                        <LinkComponent href={settingsUrl || `${basePath}/settings`} to={settingsUrl || `${basePath}/settings`}>
+                        <LinkComponent href={settingsUrl || `${basePath}/${viewPaths.settings}`} to={settingsUrl || `${basePath}/settings`}>
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <SettingsIcon />
                                 {localization.settings}
