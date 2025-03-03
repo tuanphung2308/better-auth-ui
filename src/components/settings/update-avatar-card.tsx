@@ -70,7 +70,7 @@ export function UpdateAvatarCard({
     isPending?: boolean,
     localization?: Partial<typeof settingsLocalization>
 }) {
-    const { hooks: { useSession }, uploadAvatar, avatarSize, avatarExtension } = useContext(AuthUIContext)
+    const { hooks: { useSession }, optimistic, uploadAvatar, avatarSize, avatarExtension } = useContext(AuthUIContext)
 
     const { data: sessionData, isPending: sessionPending, updateUser } = useSession()
     const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -95,6 +95,8 @@ export function UpdateAvatarCard({
                 setLoading(false)
                 return
             }
+
+            if (optimistic && !uploadAvatar) setLoading(false)
 
             const { error } = await updateUser({ image })
 
