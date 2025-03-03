@@ -11,16 +11,18 @@ import { UpdateFieldCard } from "./update-field-card"
 export function UpdateUsernameCard({
     className,
     classNames,
+    isPending,
     localization
 }: {
     className?: string,
     classNames?: SettingsCardClassNames,
+    isPending?: boolean,
     localization?: Partial<typeof settingsLocalization>
 }) {
     localization = { ...settingsLocalization, ...localization }
 
-    const { authClient } = useContext(AuthUIContext)
-    const { data: sessionData, isPending } = authClient.useSession()
+    const { hooks: { useSession } } = useContext(AuthUIContext)
+    const { data: sessionData } = useSession()
 
     // @ts-expect-error Optional plugin
     const defaultValue = sessionData?.user.displayUsername || sessionData?.user.username

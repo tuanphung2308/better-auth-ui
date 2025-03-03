@@ -32,14 +32,15 @@ export function UpdateFieldCard({
 }) {
     localization = { ...settingsLocalization, ...localization }
 
-    const { authClient } = useContext(AuthUIContext)
+    const { hooks: { useSession } } = useContext(AuthUIContext)
+    const { isPending: sessionPending, updateUser } = useSession()
 
     const formAction = async (formData: FormData) => {
         const value = formData.get(name) as string || ""
 
         if (value == defaultValue) return {}
 
-        const { error } = await authClient.updateUser({
+        const { error } = await updateUser({
             [name]: value
         })
 
@@ -55,7 +56,7 @@ export function UpdateFieldCard({
             description={description}
             formAction={formAction}
             instructions={instructions}
-            isPending={isPending}
+            isPending={isPending || sessionPending}
             localization={localization}
             name={name}
             placeholder={placeholder}

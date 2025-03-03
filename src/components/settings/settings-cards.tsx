@@ -2,14 +2,13 @@
 
 import { useContext } from "react"
 
-import { useListAccounts } from "../../hooks/use-list-accounts"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
-import { ChangePasswordCardPrimitive } from "../primitives/settings/change-password-card-primitive"
-import { ProvidersCardPrimitive } from "../primitives/settings/providers-card-primitive"
 
 import { ChangeEmailCard } from "./change-email-card"
+import { ChangePasswordCard } from "./change-password-card"
 import { DeleteAccountCard } from "./delete-account-card"
+import { ProvidersCard } from "./providers-card"
 import type { SettingsCardClassNames } from "./settings-card"
 import { UpdateNameCard } from "./update-name-card"
 import { UpdateUsernameCard } from "./update-username-card"
@@ -68,8 +67,14 @@ export function SettingsCards({
     classNames?: SettingsCardClassNames,
     localization?: Partial<typeof settingsLocalization>
 }) {
-    const { authClient, credentials, deleteUser, username } = useContext(AuthUIContext)
-    const { data: sessionData, isPending: sessionPending } = authClient.useSession()
+    const {
+        authClient,
+        credentials,
+        deleteUser,
+        hooks: { useSession, useListAccounts },
+        username
+    } = useContext(AuthUIContext)
+    const { data: sessionData, isPending: sessionPending } = useSession()
     const { accounts, isPending: accountsPending, refetch } = useListAccounts()
 
     const isPending = sessionPending || accountsPending
@@ -79,32 +84,34 @@ export function SettingsCards({
             {username && (
                 <UpdateUsernameCard
                     classNames={classNames}
+                    isPending={isPending}
                     localization={localization}
                 />
             )}
 
             <UpdateNameCard
                 classNames={classNames}
+                isPending={isPending}
                 localization={localization}
             />
 
             <ChangeEmailCard
                 classNames={classNames}
+                isPending={isPending}
                 localization={localization}
             />
 
             {credentials && (
-                <ChangePasswordCardPrimitive
+                <ChangePasswordCard
                     accounts={accounts}
                     className={className}
                     classNames={classNames}
                     isPending={isPending}
                     localization={localization}
-                    user={sessionData?.user}
                 />
             )}
 
-            <ProvidersCardPrimitive
+            <ProvidersCard
                 accounts={accounts}
                 classNames={classNames}
                 isPending={isPending}
@@ -116,6 +123,7 @@ export function SettingsCards({
             {deleteUser && (
                 <DeleteAccountCard
                     classNames={classNames}
+                    isPending={isPending}
                     localization={localization}
                 />
             )}

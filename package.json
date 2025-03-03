@@ -47,6 +47,7 @@
   "author": "daveycodez",
   "license": "MIT",
   "devDependencies": {
+    "@daveyplate/better-auth-tanstack": "^1.2.26",
     "@eslint/eslintrc": "^3.3.0",
     "@radix-ui/react-dialog": "^1.1.6",
     "@radix-ui/react-label": "^2.1.2",

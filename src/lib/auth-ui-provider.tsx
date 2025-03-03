@@ -3,6 +3,9 @@
 import type { createAuthClient } from "better-auth/react"
 import { ReactNode, createContext } from "react"
 
+import { useListAccounts } from "../hooks/use-list-accounts"
+import { useListDeviceSessions } from "../hooks/use-list-device-sessions"
+import { useSession } from "../hooks/use-session"
 import type { SocialProvider } from "../social-providers"
 
 const DefaultLink = (
@@ -31,6 +34,12 @@ export const authViewPaths = {
 
 export type AuthView = keyof typeof authViewPaths
 
+const defaultHooks = {
+    useSession,
+    useListAccounts,
+    useListDeviceSessions
+}
+
 export type AuthUIContextType = {
     authClient: Omit<ReturnType<typeof createAuthClient>, "signUp">
     basePath: string
@@ -48,6 +57,7 @@ export type AuthUIContextType = {
     providers?: SocialProvider[]
     settingsUrl?: string
     username?: boolean
+    hooks: typeof defaultHooks
     viewPaths: typeof authViewPaths
     navigate: typeof defaultNavigate
     onSessionChange?: () => void,
@@ -67,6 +77,7 @@ export const AuthUIProvider = ({
     basePath = "/auth",
     credentials = true,
     forgotPassword = true,
+    hooks = defaultHooks,
     viewPaths,
     navigate,
     replace,
@@ -84,6 +95,7 @@ export const AuthUIProvider = ({
                 basePath,
                 credentials,
                 forgotPassword,
+                hooks,
                 navigate,
                 replace,
                 viewPaths: { ...authViewPaths, ...viewPaths },

@@ -284,9 +284,7 @@ export function AuthForm({
     useEffect(() => {
         if (view != "callback") return
 
-        if (!persistClient) {
-            replace(getRedirectTo())
-        }
+        if (!persistClient) replace(getRedirectTo())
     }, [view, viewPaths, replace, persistClient, getRedirectTo])
 
     if (["signOut", "callback"].includes(view)) return (

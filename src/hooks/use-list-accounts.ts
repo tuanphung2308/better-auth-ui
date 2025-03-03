@@ -9,16 +9,11 @@ import { toast } from "sonner"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
 
-type Account = {
-    id: string
-    provider: string
-}
-
 export function useListAccounts() {
     const { authClient } = useContext(AuthUIContext)
     const { data: sessionData, isPending: sessionPending } = authClient.useSession()
 
-    const [accounts, setAccounts] = useState<Account[] | null>(null)
+    const [accounts, setAccounts] = useState<{ provider: string }[] | null>(null)
     const [isPending, setIsPending] = useState(true)
     const initialized = useRef(false)
 
@@ -44,5 +39,10 @@ export function useListAccounts() {
         listAccounts()
     }, [listAccounts, sessionData, sessionPending])
 
-    return { accounts, isPending, refetch: listAccounts }
+    return {
+        accounts,
+        isPending,
+        refetch: listAccounts,
+        unlinkAccount: (providerId: string) => authClient.unlinkAccount({ providerId })
+    }
 }

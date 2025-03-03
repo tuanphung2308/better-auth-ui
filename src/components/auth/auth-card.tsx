@@ -98,7 +98,7 @@ export function AuthCard({
 
     view = view || (Object.entries(viewPaths).find(([_, value]) => value === path)?.[0] || "signIn") as AuthView
 
-    if (view == "signOut") return (
+    if (["signOut", "callback"].includes(view)) return (
         <AuthForm
             callbackURL={callbackURL}
             classNames={classNames?.form}
