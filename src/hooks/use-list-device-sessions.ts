@@ -9,6 +9,7 @@ import {
 import { toast } from "sonner"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
+import type { FetchError } from "../types/fetch-error"
 
 export function useListDeviceSessions() {
     const { authClient } = useContext(AuthUIContext)
@@ -50,7 +51,7 @@ export function useListDeviceSessions() {
 
         setActiveSessionPending(false)
 
-        return { error }
+        return { error: error as FetchError | null | undefined }
     }
 
     return {

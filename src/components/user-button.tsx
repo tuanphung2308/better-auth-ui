@@ -9,6 +9,7 @@ import {
     UserRoundPlus
 } from "lucide-react"
 import { Fragment, useContext } from "react"
+import { toast } from "sonner"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
 import { cn } from "../lib/utils"
@@ -63,7 +64,6 @@ export function UserButton({
     localization = { ...userButtonLocalization, ...localization }
 
     const {
-        authClient,
         basePath,
         hooks: { useSession, useListDeviceSessions },
         onSessionChange,
@@ -77,7 +77,7 @@ export function UserButton({
     const { data: sessionData, isPending: sessionPending } = useSession()
     const user = sessionData?.user as User
 
-    const isPending = deviceSessionsPending || sessionPending
+    const isPending = (sessionData && deviceSessionsPending) || sessionPending
 
     return (
         <DropdownMenu>
@@ -172,7 +172,14 @@ export function UserButton({
                                 <Fragment key={session.id}>
                                     <DropdownMenuItem
                                         className={classNames?.content?.menuItem}
-                                        onClick={() => setActiveSession?.(session.token)}
+                                        onClick={async () => {
+                                            const { error } = await setActiveSession?.(session.token)
+                                            if (error) {
+                                                toast.error(error.message || error.statusText)
+                                            } else {
+                                                onSessionChange?.()
+                                            }
+                                        }}
                                     >
                                         <div className="flex gap-2 items-center">
                                             <UserAvatar classNames={classNames?.content?.avatar} user={user} />
