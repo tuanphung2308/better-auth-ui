@@ -76,13 +76,6 @@ export function AuthForm({
         LinkComponent
     } = useContext(AuthUIContext)
 
-    const getCallbackURL = useCallback(() =>
-        callbackURL ||
-        (persistClient ?
-            `${basePath}/${viewPaths.callback}?redirectTo=${getRedirectTo()}`
-            : getRedirectTo()
-        ), [basePath, callbackURL, persistClient, viewPaths, getRedirectTo])
-
     const isRestoring = useIsRestoring()
 
     if (socialLayout == "auto") {
@@ -96,6 +89,13 @@ export function AuthForm({
     }
 
     view = view || (Object.entries(viewPaths).find(([_, value]) => value === path)?.[0] || "signIn") as AuthView
+
+    const getCallbackURL = useCallback(() =>
+        callbackURL ||
+        (persistClient ?
+            `${window.location.pathname.replace(viewPaths[view], viewPaths.callback)}?redirectTo=${getRedirectTo()}`
+            : getRedirectTo()
+        ), [callbackURL, persistClient, view, viewPaths, getRedirectTo])
 
     const formAction = async (formData: FormData) => {
         const provider = formData.get("provider") as SocialProvider
