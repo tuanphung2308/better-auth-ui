@@ -11,10 +11,9 @@ export default function Layout({ children }: { children: ReactNode }) {
             tree={source.pageTree}
             {...baseOptions}
             disableThemeSwitch
-            links={[]}
             sidebar={{
                 footer: (
-                    <ThemeToggle className="ms-auto" mode="light-dark-system" />
+                    <ThemeToggle className="ms-auto -mt-8" mode="light-dark-system" />
                 )
             }}
         >

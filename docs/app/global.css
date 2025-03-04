@@ -20,11 +20,16 @@ Make sure disabled buttons don't get the pointer cursor.
 }
 
 @theme {
+    --color-fd-ring: var(--color-orange-400);
+    --color-fd-primary: var(--color-orange-400);
+}
+
+.dark {
     --color-fd-ring: var(--color-orange-300);
     --color-fd-primary: var(--color-orange-300);
 }
 
-.dark {
-    --color-fd-ring: var(--color-orange-200);
-    --color-fd-primary: var(--color-orange-200);
-}
+/* article a:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a) {
+  @apply no-underline;
+  color: var(--color-fd-primary);
+} */
