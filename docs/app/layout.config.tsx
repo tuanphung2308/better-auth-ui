@@ -23,7 +23,7 @@ export const baseOptions: BaseLayoutProps = {
             external: true
         },
         {
-            url: "https://twitter.com",
+            url: "https://x.com/daveycodez",
             text: "Twitter",
             type: "icon",
             icon: <Twitter />,
