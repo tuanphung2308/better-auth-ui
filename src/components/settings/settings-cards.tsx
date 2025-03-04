@@ -2,6 +2,7 @@
 
 import { useContext } from "react"
 
+import { useAuthenticate } from "../../hooks/use-authenticate"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 
@@ -86,7 +87,7 @@ export function SettingsCards({
         hooks: { useSession, useListAccounts },
         username
     } = useContext(AuthUIContext)
-    const { data: sessionData, isPending: sessionPending } = useSession()
+    const { data: sessionData, isPending: sessionPending } = useAuthenticate()
     const { accounts, isPending: accountsPending, refetch } = useListAccounts()
 
     const isPending = sessionPending || accountsPending
