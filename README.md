@@ -26,6 +26,12 @@ content: [
 ]
 ```
 
+Or if you're in Tailwind V4:
+
+```css
+@source "./node_modules/@daveyplate/better-auth-ui/dist/**/*.{js,ts,jsx,tsx,mdx}";
+```
+
 ## Usage
 
 ```
