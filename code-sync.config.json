@@ -5,6 +5,8 @@
     "directory": ".",
     "gitignore": true,
     "extensions": [
+        "md",
+        "mdx",
         "js",
         "jsx",
         "ts",
