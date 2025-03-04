@@ -76,7 +76,6 @@ export function AuthCard({
     localization,
     pathname,
     redirectTo,
-    signUpName,
     socialLayout = "auto",
     view
 }: {
@@ -86,7 +85,6 @@ export function AuthCard({
     localization?: Partial<typeof authLocalization>,
     pathname?: string,
     redirectTo?: string,
-    signUpName?: boolean,
     socialLayout?: "auto" | "horizontal" | "grid" | "vertical",
     view?: AuthView,
 }) {
@@ -114,7 +112,6 @@ export function AuthCard({
             classNames={classNames?.form}
             localization={localization}
             redirectTo={redirectTo}
-            signUpName={signUpName}
             socialLayout={socialLayout}
             view={view}
         />
@@ -148,7 +145,6 @@ export function AuthCard({
                     classNames={classNames?.form}
                     localization={localization}
                     redirectTo={redirectTo}
-                    signUpName={signUpName}
                     socialLayout={socialLayout}
                     view={view}
                 />

@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react"
 import { useActionState, useContext, useState } from "react"
 import { toast } from "sonner"
 
-import { AuthUIContext } from "../../lib/auth-ui-provider"
+import { AuthUIContext, type FieldType } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import type { FetchError } from "../../types/fetch-error"
 import { Button } from "../ui/button"
@@ -46,8 +46,10 @@ export function SettingsCard({
     localization,
     name,
     placeholder,
+    required,
     saveLabel,
     title,
+    type = "string",
     formAction,
 }: {
     className?: string,
@@ -59,8 +61,10 @@ export function SettingsCard({
     localization?: Record<string, string>,
     name: string
     placeholder?: string,
+    required?: boolean,
     saveLabel?: string,
     title?: string,
+    type?: FieldType,
     formAction: (formData: FormData) => Promise<{ error?: FetchError | null }>,
 }) {
     localization = { ...settingsLocalization, ...localization }
@@ -112,6 +116,7 @@ export function SettingsCard({
                         defaultValue={state[name] ?? defaultValue}
                         name={name}
                         placeholder={placeholder}
+                        required={required}
                         onChange={() => setDisabled(false)}
                     />
                 </CardContent>

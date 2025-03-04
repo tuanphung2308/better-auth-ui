@@ -12,7 +12,7 @@ import type { SocialProvider } from "../social-providers"
 const DefaultLink = (
     { href, className, children }: { href: string, className?: string, children: ReactNode }
 ) => (
-    <a className={className} href={href} >
+    <a className={className} href={href}>
         {children}
     </a>
 )
@@ -32,6 +32,17 @@ export const authViewPaths = {
     signOut: "sign-out",
     signUp: "sign-up",
 }
+
+export type FieldType = "string" | "number"
+
+type AdditionalFields = Record<string, {
+    description?: string,
+    instructions?: string,
+    label: string,
+    placeholder?: string,
+    required?: boolean,
+    type: FieldType,
+}>
 
 export type AuthView = keyof typeof authViewPaths
 
@@ -58,18 +69,21 @@ export type AuthUIContextType = {
     freshAge: number
     magicLink?: boolean
     multiSession?: boolean
+    nameRequired?: boolean
     noColorIcons?: boolean
     optimistic?: boolean
     passkey?: boolean
     persistClient?: boolean
     providers?: SocialProvider[]
     settingsUrl?: string
+    signUpFields?: string[]
     username?: boolean
+    additionalFields?: AdditionalFields
     hooks: typeof defaultHooks
     viewPaths: typeof authViewPaths
     navigate: typeof defaultNavigate
-    onSessionChange?: () => void,
-    replace: typeof defaultReplace,
+    onSessionChange?: () => void
+    replace: typeof defaultReplace
     uploadAvatar?: (file: File) => Promise<string | undefined | null>
     LinkComponent: Link
 }
@@ -102,6 +116,7 @@ export const AuthUIProvider = ({
 } & AuthUIProviderProps) => {
     replace = replace || navigate || defaultReplace
     navigate = navigate || defaultNavigate
+
     avatarSize = uploadAvatar ? 256 : 128
 
     return (

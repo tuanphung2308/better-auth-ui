@@ -13,6 +13,7 @@ import { ProvidersCard } from "./providers-card"
 import { SessionsCard } from "./sessions-card"
 import type { SettingsCardClassNames } from "./settings-card"
 import { UpdateAvatarCard } from "./update-avatar-card"
+import { UpdateFieldCard } from "./update-field-card"
 import { UpdateNameCard } from "./update-name-card"
 import { UpdateUsernameCard } from "./update-username-card"
 
@@ -80,6 +81,7 @@ export function SettingsCards({
     localization?: Partial<typeof settingsLocalization>
 }) {
     const {
+        additionalFields,
         authClient,
         avatar,
         credentials,
@@ -121,6 +123,28 @@ export function SettingsCards({
                 isPending={isPending}
                 localization={localization}
             />
+
+            {Object.entries(additionalFields || {}).map(([key, { description, instructions, label, placeholder, type, required }]) => {
+                // @ts-expect-error Custom fields are not typed
+                const defaultValue = sessionData?.user[key] as string
+
+                return (
+                    <UpdateFieldCard
+                        key={key}
+                        classNames={classNames}
+                        defaultValue={defaultValue}
+                        description={description}
+                        instructions={instructions}
+                        isPending={isPending}
+                        localization={localization}
+                        name={key}
+                        placeholder={placeholder || label}
+                        required={required}
+                        title={label}
+                        type={type}
+                    />
+                )
+            })}
 
             {credentials && (
                 <ChangePasswordCard

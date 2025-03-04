@@ -39,7 +39,6 @@ export function AuthForm({
     localization,
     pathname,
     redirectTo,
-    signUpName,
     socialLayout = "auto",
     view
 }: {
@@ -49,7 +48,6 @@ export function AuthForm({
     localization?: Partial<typeof authLocalization>,
     pathname?: string,
     redirectTo?: string,
-    signUpName?: boolean,
     socialLayout?: "auto" | "horizontal" | "grid" | "vertical",
     view?: AuthView
 }) {
@@ -58,6 +56,7 @@ export function AuthForm({
     localization = { ...authLocalization, ...localization }
 
     const {
+        additionalFields,
         authClient,
         basePath,
         defaultRedirectTo,
@@ -65,11 +64,13 @@ export function AuthForm({
         forgotPassword,
         hooks: { useIsRestoring },
         magicLink,
+        nameRequired,
         navigate,
         passkey,
         persistClient,
         providers,
         replace,
+        signUpFields,
         username: usernamePlugin,
         viewPaths,
         onSessionChange,
@@ -121,11 +122,13 @@ export function AuthForm({
         if (formData.get("passkey")) {
             // @ts-expect-error Optional plugin
             const { error } = await authClient.signIn.passkey({ callbackURL: getCallbackURL() })
+
             if (error) {
                 toast.error(error.message || error.statusText)
             } else {
                 setIsLoading(true)
             }
+
             return
         }
 
@@ -203,6 +206,19 @@ export function AuthForm({
                 if (usernamePlugin) {
                     params.username = formData.get("username")
                 }
+
+                signUpFields?.forEach((field) => {
+                    if (field == "name") return
+
+                    const additionalField = additionalFields?.[field]
+                    if (!additionalField) return
+
+                    const value = formData.get(field) as string
+
+                    if (value) {
+                        params[field] = additionalField.type == "number" ? parseFloat(value) : value
+                    }
+                })
 
                 // @ts-expect-error We omit signUp from the authClient type to support additional fields
                 const { data, error } = await authClient.signUp.email(params)
@@ -321,7 +337,7 @@ export function AuthForm({
             action={formAction}
             className={cn("grid gap-4 w-full", className, classNames?.base)}
         >
-            {credentials && view == "signUp" && signUpName && (
+            {credentials && view == "signUp" && signUpFields?.includes("name") && (
                 <div className="grid gap-2">
                     <Label className={classNames?.label} htmlFor="name">
                         {localization.name}
@@ -332,6 +348,7 @@ export function AuthForm({
                         id="name"
                         name="name"
                         placeholder={localization.namePlaceholder}
+                        required={nameRequired}
                     />
                 </div>
             )}
@@ -400,6 +417,31 @@ export function AuthForm({
                     />
                 </div>
             )}
+
+            {view == "signUp" && signUpFields?.filter((field) => field != "name").map((field) => {
+                const additionalField = additionalFields?.[field]
+
+                if (!additionalField) {
+                    console.error(`Invalid additional field: ${field}`)
+                    return null
+                }
+
+                return (
+                    <div key={field} className="grid gap-2">
+                        <Label className={classNames?.label} htmlFor={field}>
+                            {additionalField?.label}
+                        </Label>
+
+                        <Input
+                            className={classNames?.input}
+                            id={field}
+                            name={field}
+                            placeholder={additionalField?.placeholder || additionalField?.label}
+                            required={additionalField?.required}
+                        />
+                    </div>
+                )
+            })}
 
             {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) && (
                 <ActionButton

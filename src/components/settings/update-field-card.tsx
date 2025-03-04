@@ -2,7 +2,7 @@
 
 import { useContext } from "react"
 
-import { AuthUIContext } from "../../lib/auth-ui-provider"
+import { AuthUIContext, type FieldType } from "../../lib/auth-ui-provider"
 
 import { SettingsCard, type SettingsCardClassNames } from "./settings-card"
 import { settingsLocalization } from "./settings-cards"
@@ -17,7 +17,9 @@ export function UpdateFieldCard({
     localization,
     name,
     placeholder,
+    required,
     title,
+    type
 }: {
     className?: string,
     classNames?: SettingsCardClassNames,
@@ -28,7 +30,9 @@ export function UpdateFieldCard({
     localization?: Partial<typeof settingsLocalization>,
     name: string
     placeholder?: string,
+    required?: boolean,
     title?: string,
+    type?: FieldType
 }) {
     localization = { ...settingsLocalization, ...localization }
 
@@ -41,7 +45,7 @@ export function UpdateFieldCard({
         if (value == defaultValue) return {}
 
         const { error } = await updateUser({
-            [name]: value
+            [name]: type == "number" ? parseFloat(value) : value
         })
 
         return { error }
@@ -60,7 +64,9 @@ export function UpdateFieldCard({
             localization={localization}
             name={name}
             placeholder={placeholder}
+            required={required}
             title={title}
+            type={type}
         />
     )
 }
