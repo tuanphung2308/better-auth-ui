@@ -29,7 +29,7 @@ export function UpdateAvatarCardSkeleton({
 
             <CardFooter
                 className={cn(
-                    "border-t bg-muted dark:bg-transparent py-4",
+                    "border-t bg-muted dark:bg-transparent py-4.5",
                     classNames?.footer
                 )}
             >
