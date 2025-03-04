@@ -1,3 +1,4 @@
+import { Tab, Tabs } from "fumadocs-ui/components/tabs"
 import defaultMdxComponents from "fumadocs-ui/mdx"
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/page"
 import { notFound } from "next/navigation"
@@ -25,7 +26,13 @@ export default async function Page(props: {
             </DocsDescription>
 
             <DocsBody>
-                <MDX components={{ ...defaultMdxComponents }} />
+                <MDX
+                    components={{
+                        Tab,
+                        Tabs,
+                        ...defaultMdxComponents
+                    }}
+                />
             </DocsBody>
         </DocsPage>
     )

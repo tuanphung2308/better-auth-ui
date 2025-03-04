@@ -1,4 +1,8 @@
 {
     "icon": "Play",
-    "defaultOpen": true
+    "defaultOpen": true,
+    "pages": [
+        "requirements",
+        "installation"
+    ]
 }
