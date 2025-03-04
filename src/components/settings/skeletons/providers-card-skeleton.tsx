@@ -5,7 +5,7 @@ import { cn } from "../../../lib/utils"
 import { Card, CardContent, CardHeader } from "../../ui/card"
 import { Skeleton } from "../../ui/skeleton"
 
-export default function ProvidersCardSkeleton({ className }: { className?: string }) {
+export function ProvidersCardSkeleton({ className }: { className?: string }) {
     const { providers } = useContext(AuthUIContext)
 
     return (

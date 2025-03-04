@@ -9,18 +9,26 @@ import { ChangeEmailCard } from "./change-email-card"
 import { ChangePasswordCard } from "./change-password-card"
 import { DeleteAccountCard } from "./delete-account-card"
 import { ProvidersCard } from "./providers-card"
+import { SessionsCard } from "./sessions-card"
 import type { SettingsCardClassNames } from "./settings-card"
 import { UpdateAvatarCard } from "./update-avatar-card"
 import { UpdateNameCard } from "./update-name-card"
 import { UpdateUsernameCard } from "./update-username-card"
 
 export const settingsLocalization = {
+    avatar: "Avatar",
+    avatarDescription: "Click on the avatar to upload a custom one from your files.",
+    avatarInstructions: "An avatar is optional but strongly recommended.",
     changePassword: "Change Password",
     changePasswordDescription: "Enter your current password and a new password.",
     changePasswordInstructions: "Please use 8 characters at minimum.",
     changePasswordSuccess: "Your password has been changed.",
     currentPassword: "Current Password",
     currentPasswordPlaceholder: "Current Password",
+    currentSession: "Current Session",
+    sessions: "Sessions",
+    sessionsDescription: "Manage your active sessions and revoke access.",
+    sessionRevoke: "Revoke",
     setPasswordDescription: "You registered with a third-party service. Click the button below to set a password for your account.",
     setPassword: "Set Password",
     setPasswordEmailSent: "Check your email to set your password.",
@@ -130,6 +138,12 @@ export function SettingsCards({
                 localization={localization}
                 refetch={refetch}
                 unlinkAccount={(providerId: string) => authClient.unlinkAccount({ providerId })}
+            />
+
+            <SessionsCard
+                classNames={classNames}
+                isPending={isPending}
+                localization={localization}
             />
 
             {deleteUser && (

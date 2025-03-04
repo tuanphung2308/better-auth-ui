@@ -107,7 +107,7 @@ export function ChangePasswordCard({
                         {localization.changePassword}
                     </CardTitle>
 
-                    <CardDescription className={classNames?.description}>
+                    <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
                         {localization.setPasswordDescription}
                     </CardDescription>
                 </CardHeader>

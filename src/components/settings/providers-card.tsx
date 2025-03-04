@@ -20,7 +20,7 @@ import {
 
 import type { SettingsCardClassNames } from "./settings-card"
 import { settingsLocalization } from "./settings-cards"
-import ProvidersCardSkeleton from "./skeletons/providers-card-skeleton"
+import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
 
 export function ProvidersCard({
     className,
@@ -152,7 +152,7 @@ export function ProvidersCard({
                                 disabled={isButtonLoading}
                                 size="sm"
                                 type="button"
-                                variant={isLinked ? "secondary" : "default"}
+                                variant={isLinked ? "outline" : "default"}
                                 onClick={() => {
                                     if (actionLoading) return
 

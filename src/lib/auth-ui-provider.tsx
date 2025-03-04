@@ -5,6 +5,7 @@ import { ReactNode, createContext } from "react"
 
 import { useListAccounts } from "../hooks/use-list-accounts"
 import { useListDeviceSessions } from "../hooks/use-list-device-sessions"
+import { useListSessions } from "../hooks/use-list-sessions"
 import { useSession } from "../hooks/use-session"
 import type { SocialProvider } from "../social-providers"
 
@@ -38,6 +39,7 @@ const defaultHooks = {
     useSession,
     useListAccounts,
     useListDeviceSessions,
+    useListSessions,
     useIsRestoring: () => false,
 }
 

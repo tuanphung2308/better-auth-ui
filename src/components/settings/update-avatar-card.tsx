@@ -16,7 +16,7 @@ import { Skeleton } from "../ui/skeleton"
 import { UserAvatar } from "../user-avatar"
 
 import type { SettingsCardClassNames } from "./settings-card"
-import type { settingsLocalization } from "./settings-cards"
+import { settingsLocalization } from "./settings-cards"
 import { UpdateAvatarCardSkeleton } from "./skeletons/update-avatar-card-skeleton"
 
 async function resizeAndCropImage(file: File, name: string, size: number, avatarExtension: string): Promise<File> {
@@ -70,6 +70,8 @@ export function UpdateAvatarCard({
     isPending?: boolean,
     localization?: Partial<typeof settingsLocalization>
 }) {
+    localization = { ...settingsLocalization, ...localization }
+
     const { hooks: { useSession }, optimistic, uploadAvatar, avatarSize, avatarExtension } = useContext(AuthUIContext)
 
     const { data: sessionData, isPending: sessionPending, updateUser } = useSession()
@@ -80,34 +82,29 @@ export function UpdateAvatarCard({
         if (!sessionData) return
 
         setLoading(true)
-        try {
-            const resizedFile = await resizeAndCropImage(file, sessionData.user.id, avatarSize, avatarExtension)
+        const resizedFile = await resizeAndCropImage(file, sessionData.user.id, avatarSize, avatarExtension)
 
-            let image: string | undefined | null
+        let image: string | undefined | null
 
-            if (uploadAvatar) {
-                image = await uploadAvatar(resizedFile)
-            } else {
-                image = await fileToBase64(resizedFile)
-            }
-
-            if (!image) {
-                setLoading(false)
-                return
-            }
-
-            if (optimistic && !uploadAvatar) setLoading(false)
-
-            const { error } = await updateUser({ image })
-
-            if (error) {
-                toast.error(error.message || "Could not update profile image.")
-            } else {
-                toast.success("Profile image updated successfully.")
-            }
-        } catch (err) {
-            toast.error("Failed to resize and upload image.")
+        if (uploadAvatar) {
+            image = await uploadAvatar(resizedFile)
+        } else {
+            image = await fileToBase64(resizedFile)
         }
+
+        if (!image) {
+            setLoading(false)
+            return
+        }
+
+        if (optimistic && !uploadAvatar) setLoading(false)
+
+        const { error } = await updateUser({ image })
+
+        if (error) {
+            toast.error(error.message || error.statusText)
+        }
+
         setLoading(false)
     }
 
@@ -134,11 +131,11 @@ export function UpdateAvatarCard({
             <div className="flex justify-between">
                 <CardHeader className={cn(classNames?.header)}>
                     <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        Avatar
+                        {localization.avatar}
                     </CardTitle>
 
                     <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
-                        Click on the avatar to upload a custom one from your files.
+                        {localization.avatarDescription}
                     </CardDescription>
                 </CardHeader>
 
@@ -166,8 +163,13 @@ export function UpdateAvatarCard({
                     classNames?.footer
                 )}
             >
-                <CardDescription className={cn("text-xs text-center mx-auto md:text-sm md:mx-0 md:text-left", classNames?.instructions)}>
-                    An avatar is optional but strongly recommended.
+                <CardDescription
+                    className={cn(
+                        "text-xs text-center mx-auto md:text-sm md:mx-0 md:text-left",
+                        classNames?.instructions
+                    )}
+                >
+                    {localization.avatarInstructions}
                 </CardDescription>
             </CardFooter>
         </Card>

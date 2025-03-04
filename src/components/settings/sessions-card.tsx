@@ -1,0 +1,134 @@
+"use client"
+
+import { LaptopIcon, Loader2, SmartphoneIcon } from "lucide-react"
+import { useContext, useState } from "react"
+import { toast } from "sonner"
+import { UAParser } from "ua-parser-js"
+
+import { AuthUIContext } from "../../lib/auth-ui-provider"
+import { cn } from "../../lib/utils"
+import { Button } from "../ui/button"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle
+} from "../ui/card"
+
+import type { SettingsCardClassNames } from "./settings-card"
+import { settingsLocalization } from "./settings-cards"
+import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
+
+export function SessionsCard({
+    className,
+    classNames,
+    isPending,
+    localization,
+}: {
+    className?: string,
+    classNames?: SettingsCardClassNames,
+    isPending?: boolean,
+    localization?: Partial<typeof settingsLocalization>
+}) {
+    localization = { ...settingsLocalization, ...localization }
+
+    const {
+        hooks: { useListSessions, useSession },
+        optimistic,
+        navigate,
+        basePath,
+        viewPaths
+    } = useContext(AuthUIContext)
+
+    const { sessions, isPending: sessionsPending, refetch, revokeSession } = useListSessions()
+    const { data: sessionData } = useSession()
+
+    const [actionLoading, setActionLoading] = useState<string | null>(null)
+
+    const handleRevoke = async (token: string) => {
+        if (token == sessionData?.session?.token) {
+            navigate(`${basePath}/${viewPaths.signOut}`)
+            return
+        }
+
+        if (!optimistic) setActionLoading(token)
+
+        const { error } = await revokeSession(token)
+
+        if (error) {
+            toast.error(error.message || error.statusText)
+        } else if (!optimistic) {
+            await refetch?.()
+        }
+
+        setActionLoading(null)
+    }
+
+    if (isPending || sessionsPending) {
+        return <ProvidersCardSkeleton className={className} />
+    }
+
+    return (
+        <Card className={cn("w-full", className, classNames?.base)}>
+            <CardHeader className={classNames?.header}>
+                <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                    {localization.sessions}
+                </CardTitle>
+
+                <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
+                    {localization.sessionsDescription}
+                </CardDescription>
+            </CardHeader>
+
+            <CardContent className={cn("flex flex-col gap-3", classNames?.content)}>
+                {sessions?.map((session) => {
+                    const parser = UAParser(session.userAgent!)
+
+                    const isButtonLoading = actionLoading == session.token
+
+                    return (
+                        <Card key={session.id} className="flex items-center gap-3 px-4 py-3">
+                            {parser.device.type === "mobile" ? (
+                                <SmartphoneIcon className="size-4" />
+                            ) : (
+                                <LaptopIcon className="size-4" />
+                            )}
+
+                            <span className="text-sm">
+                                {session.id == sessionData?.session?.id ? localization.currentSession : (
+                                    <>
+                                        {parser.os.name}
+                                        ,
+                                        {" "}
+                                        {parser.browser.name}
+                                    </>
+                                )}
+                            </span>
+
+                            <Button
+                                className={cn("ms-auto relative", classNames?.button)}
+                                disabled={isButtonLoading}
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                    handleRevoke(session.token)
+                                }}
+                            >
+                                <span className={isButtonLoading ? "opacity-0" : "opacity-100"}>
+                                    {session.id == sessionData?.session?.id ? localization.signOut : localization.sessionRevoke}
+                                </span>
+
+                                {isButtonLoading && (
+                                    <span className="absolute">
+                                        <Loader2 className="animate-spin" />
+                                    </span>
+                                )}
+                            </Button>
+                        </Card>
+                    )
+                })}
+            </CardContent>
+        </Card>
+    )
+}
