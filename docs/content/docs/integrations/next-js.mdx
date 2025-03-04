@@ -35,12 +35,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
       LinkComponent={Link}
     >
       {children}
-    </AuthUIProviderTanstack>
+    </AuthUIProvider>
   )
 }
 ```
 
-*Note*: Since the Next.js **App Router** caches routes by default, navigation to protected routes may fail until you perform a `router.refresh()` to clear the cache. To prevent this issue, you must use `router.refresh()` in the provided `onSessionChange` function. This call forces Next.js to clear the router cache and reload middleware-protected content, ensuring the middleware accurately reflects the current auth state.
+<small>
+**Note**: Since the Next.js **App Router** caches routes by default, navigation to protected routes may fail until you perform a `router.refresh()` to clear the cache. To prevent this issue, you must use `router.refresh()` in the provided `onSessionChange` function. This call forces Next.js to clear the router cache and reload middleware-protected content, ensuring the middleware accurately reflects the current auth state.
+</small>
 
 Once configured, place the Providers component in your root layout:
 
