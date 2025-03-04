@@ -8,8 +8,15 @@ Follow the steps below to install the `@daveyplate/better-auth-ui` library.
 ## Prerequisites
 
 - You must have [shadcn/ui](https://ui.shadcn.com/docs) installed with CSS variables enabled.
-- Configure a [Sonner](https://ui.shadcn.com/docs/components/sonner) `Toaster` for toast notifications.
-- Ensure you have [TailwindCSS](https://tailwindcss.com) configured correctly. 
+- Configure a [Sonner](https://ui.shadcn.com/docs/components/sonner) `Toaster` component for toast notifications.
+- Ensure you have [TailwindCSS](https://tailwindcss.com) set up and configured correctly. 
+- You must have [better-auth](https://better-auth.com) `v1.2.0` or greater installed and configured.
+
+For `TailwindCSS` **v4**, add the following `@source` to your global css:
+
+```css
+@source "./node_modules/@daveyplate/better-auth-ui/dist/**/*.{js,ts,jsx,tsx,mdx}";
+```
 
 For `TailwindCSS` **v3**, add the following `content` to your Tailwind config:
 
@@ -17,12 +24,6 @@ For `TailwindCSS` **v3**, add the following `content` to your Tailwind config:
 content: [
     "./node_modules/@daveyplate/better-auth-ui/dist/**/*.{js,ts,jsx,tsx,mdx}"
 ]
-```
-
-For `TailwindCSS` **v4**, add the following `@source` to your global css:
-
-```css
-@source "./node_modules/@daveyplate/better-auth-ui/dist/**/*.{js,ts,jsx,tsx,mdx}";
 ```
 
 ## Installation
