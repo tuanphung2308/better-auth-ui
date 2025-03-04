@@ -25,7 +25,6 @@
         "jsconfig.json",
         "next-i18next.config.js",
         ".github",
-        "/docs",
         "/src/components/ui",
         "/messages",
         "/ios/App/App/Assets.xcassets",

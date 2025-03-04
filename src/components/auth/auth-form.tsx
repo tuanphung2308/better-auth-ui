@@ -283,7 +283,7 @@ export function AuthForm({
 
         signingOut.current = true
         authClient.signOut().finally(async () => {
-            replace(getRedirectTo())
+            replace(viewPaths.signIn)
             onSessionChange?.()
             signingOut.current = false
         })
