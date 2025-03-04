@@ -12,7 +12,7 @@ export const baseOptions: BaseLayoutProps = {
     githubUrl: "https://github.com/daveyplate/better-auth-ui",
     nav: {
         // can be JSX too!
-        title: "@daveyplate/better-auth-ui",
+        title: "better-auth-ui",
     },
     links: [
         {
