@@ -1,6 +1,7 @@
 export * from "./components/auth/auth-card"
 export * from "./components/auth/auth-form"
 export * from "./components/auth-loading"
+export * from "./components/email/email-template"
 export * from "./components/provider-icons"
 export * from "./components/redirect-to-sign-in"
 export * from "./components/redirect-to-sign-up"
