@@ -48,7 +48,7 @@ export const authLocalization = {
     passwordInstructions: "Please use 8 characters at minimum.",
     passwordPlaceholder: "Password",
     providers: "Providers",
-    providersDescription: "Connect your Account with a third-party service.",
+    providersDescription: "Connect your account with a third-party service.",
     providerLinkSuccess: "Provider linked successfully.",
     providerUnlinkSuccess: "Provider unlinked successfully.",
     providersLoadingError: "Could not load account info",

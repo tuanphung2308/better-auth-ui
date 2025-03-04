@@ -469,7 +469,8 @@ export function AuthForm({
                             "w-full gap-2 flex items-center",
                             "justify-between",
                             socialLayout == "horizontal" && "flex-wrap",
-                            socialLayout == "vertical" && "flex-col"
+                            socialLayout == "vertical" && "flex-col",
+                            socialLayout == "grid" && "grid grid-cols-2"
                         )}
                     >
                         {providers?.map((provider) => {

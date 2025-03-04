@@ -43,11 +43,16 @@ export function ProviderButton({
                 </>
             )}
 
+            {socialLayout == "grid" && (
+                <>
+                    {socialProvider.name}
+                </>
+            )}
+
             {socialLayout == "vertical" && (
                 <>
                     {localization.signInWith}
                     {" "}
-                    {socialProvider.name}
                 </>
             )}
         </Button>
