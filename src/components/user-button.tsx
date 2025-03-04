@@ -110,15 +110,15 @@ export function UserButton({
                         <UserAvatar classNames={classNames?.content?.avatar} user={user} />
 
                         <div className="flex flex-col">
+                            <div className="font-medium text-sm">
+                                {user.name || user.email}
+                            </div>
+
                             {user.name && (
-                                <div className="font-medium text-sm">
-                                    {user.name}
+                                <div className="text-muted-foreground !font-light text-xs">
+                                    {user.email}
                                 </div>
                             )}
-
-                            <div className="text-muted-foreground !font-light text-xs">
-                                {user.email}
-                            </div>
                         </div>
                     </div>
                 ) : (
@@ -185,15 +185,15 @@ export function UserButton({
                                             <UserAvatar classNames={classNames?.content?.avatar} user={user} />
 
                                             <div className="flex flex-col">
+                                                <div className="font-medium text-sm">
+                                                    {user.name || user.email}
+                                                </div>
+
                                                 {user.name && (
-                                                    <div className="font-medium text-sm">
-                                                        {user.name}
+                                                    <div className="text-muted-foreground !font-light text-xs">
+                                                        {user.email}
                                                     </div>
                                                 )}
-
-                                                <div className="text-muted-foreground !font-light text-xs">
-                                                    {user.email}
-                                                </div>
                                             </div>
                                         </div>
                                     </DropdownMenuItem>

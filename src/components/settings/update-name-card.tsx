@@ -21,7 +21,7 @@ export function UpdateNameCard({
 }) {
     localization = { ...settingsLocalization, ...localization }
 
-    const { hooks: { useSession } } = useContext(AuthUIContext)
+    const { hooks: { useSession }, nameRequired } = useContext(AuthUIContext)
     const { data: sessionData } = useSession()
 
     return (
@@ -36,6 +36,7 @@ export function UpdateNameCard({
             localization={localization}
             name="name"
             placeholder={localization.namePlaceholder}
+            required={nameRequired}
             title={localization.name}
         />
     )
