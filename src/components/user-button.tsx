@@ -107,7 +107,10 @@ export function UserButton({
             >
                 {(user && !user.isAnonymous) ? (
                     <div className="flex gap-2 p-2 items-center">
-                        <UserAvatar classNames={classNames?.content?.avatar} user={user} />
+                        <UserAvatar
+                            classNames={classNames?.content?.avatar}
+                            user={user}
+                        />
 
                         <div className="flex flex-col">
                             <div className="font-medium text-sm">
@@ -131,14 +134,22 @@ export function UserButton({
 
                 {!user || user.isAnonymous ? (
                     <>
-                        <LinkComponent href={`${basePath}/${viewPaths.signIn}`} to={`${basePath}/${viewPaths.signIn}`}>
-                            <DropdownMenuItem className={classNames?.content?.menuItem}>
+                        <LinkComponent
+                            href={`${basePath}/${viewPaths.signIn}`}
+                            to={`${basePath}/${viewPaths.signIn}`}
+                        >
+                            <DropdownMenuItem
+                                className={classNames?.content?.menuItem}
+                            >
                                 <LogInIcon />
                                 {localization.signIn}
                             </DropdownMenuItem>
                         </LinkComponent>
 
-                        <LinkComponent href={`${basePath}/${viewPaths.signUp}`} to={`${basePath}/${viewPaths.signUp}`}>
+                        <LinkComponent
+                            href={`${basePath}/${viewPaths.signUp}`}
+                            to={`${basePath}/${viewPaths.signUp}`}
+                        >
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <UserRoundPlus />
                                 {localization.signUp}
@@ -147,14 +158,20 @@ export function UserButton({
                     </>
                 ) : (
                     <>
-                        <LinkComponent href={settingsUrl || `${basePath}/${viewPaths.settings}`} to={settingsUrl || `${basePath}/settings`}>
+                        <LinkComponent
+                            href={settingsUrl || `${basePath}/${viewPaths.settings}`}
+                            to={settingsUrl || `${basePath}/settings`}
+                        >
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <SettingsIcon />
                                 {localization.settings}
                             </DropdownMenuItem>
                         </LinkComponent>
 
-                        <LinkComponent href={`${basePath}/${viewPaths.signOut}`} to={`${basePath}/${viewPaths.signOut}`}>
+                        <LinkComponent
+                            href={`${basePath}/${viewPaths.signOut}`}
+                            to={`${basePath}/${viewPaths.signOut}`}
+                        >
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <LogOutIcon />
                                 {localization.signOut}
@@ -182,7 +199,10 @@ export function UserButton({
                                         }}
                                     >
                                         <div className="flex gap-2 items-center">
-                                            <UserAvatar classNames={classNames?.content?.avatar} user={user} />
+                                            <UserAvatar
+                                                classNames={classNames?.content?.avatar}
+                                                user={user}
+                                            />
 
                                             <div className="flex flex-col">
                                                 <div className="font-medium text-sm">
@@ -202,7 +222,10 @@ export function UserButton({
                                 </Fragment>
                             ))}
 
-                        <LinkComponent href={`${basePath}/${viewPaths.signIn}`} to={`${basePath}/${viewPaths.signIn}`}>
+                        <LinkComponent
+                            href={`${basePath}/${viewPaths.signIn}`}
+                            to={`${basePath}/${viewPaths.signIn}`}
+                        >
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <PlusCircleIcon />
                                 {localization.addAccount}
