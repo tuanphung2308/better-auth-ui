@@ -1,4 +1,8 @@
 {
     "icon": "LayoutGrid",
-    "defaultOpen": true
+    "defaultOpen": true,
+    "pages": [
+        "next-js",
+        "better-auth-tanstack"
+    ]
 }

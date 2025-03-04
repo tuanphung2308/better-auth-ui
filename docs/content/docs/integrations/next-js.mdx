@@ -2,3 +2,60 @@
 title: Next.js
 icon: NextMark
 ---
+
+This guide covers integrating `@daveyplate/better-auth-ui` into your Next.js project.
+
+## App Router
+
+Follow these steps to set up Better Auth UI in your [Next.js](https://nextjs.org) project using the **App Router**:
+
+### Setting up `AuthUIProvider`
+
+The first step is to set up the `AuthUIProvider` provider as a client component wrapping your root layout. It provides the context & hooks to your authentication components across your application.
+
+`/app/providers.tsx`
+
+```tsx
+"use client"
+
+import { AuthUIProvider } from "@daveyplate/better-auth-ui"
+import { useRouter } from "next/navigation"
+
+import { authClient } from "@/lib/auth-client"
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
+
+  return (
+    <AuthUIProvider
+      authClient={authClient}
+      navigate={router.push}
+      replace={router.replace}
+      onSessionChange={() => router.refresh()}
+      LinkComponent={Link}
+    >
+      {children}
+    </AuthUIProviderTanstack>
+  )
+}
+```
+
+*Note*: Since the Next.js **App Router** caches routes by default, navigation to protected routes may fail until you perform a `router.refresh()` to clear the cache. To prevent this issue, you must use `router.refresh()` in the provided `onSessionChange` function. This call forces Next.js to clear the router cache and reload middleware-protected content, ensuring the middleware accurately reflects the current auth state.
+
+Once configured, place the Providers component in your root layout:
+
+`/app/layout.tsx`
+
+```tsx
+import { Providers } from "./providers"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  )
+}
+```
