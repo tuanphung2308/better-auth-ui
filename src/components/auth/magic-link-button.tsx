@@ -2,11 +2,10 @@ import { LockIcon, MailIcon } from "lucide-react"
 import { useContext } from "react"
 import { useFormStatus } from "react-dom"
 
+import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext, type AuthView } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
-
-import type { authLocalization } from "./auth-card"
 
 export function MagicLinkButton({
     className,
@@ -16,7 +15,7 @@ export function MagicLinkButton({
 }: {
     className?: string,
     isLoading?: boolean,
-    localization: Partial<typeof authLocalization>,
+    localization: Partial<AuthLocalization>,
     view: AuthView
 }) {
     const { pending } = useFormStatus()

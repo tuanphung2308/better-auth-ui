@@ -1,10 +1,9 @@
 import { Loader2 } from "lucide-react"
 import { useFormStatus } from "react-dom"
 
+import type { AuthLocalization } from "../../lib/auth-localization"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
-
-import type { authLocalization } from "./auth-card"
 
 export function ActionButton({
     className,
@@ -14,7 +13,7 @@ export function ActionButton({
 }: {
     className?: string,
     isLoading?: boolean,
-    localization: Partial<typeof authLocalization>,
+    localization: Partial<AuthLocalization>,
     authView: string
 }) {
     const { pending } = useFormStatus()

@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react"
 import { useActionState, useContext, useState } from "react"
 import { toast } from "sonner"
 
+import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
@@ -19,7 +20,6 @@ import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
 import type { SettingsCardClassNames } from "./settings-card"
-import { settingsLocalization } from "./settings-cards"
 import { ChangePasswordCardSkeleton } from "./skeletons/change-password-card-skeleton"
 
 export function ChangePasswordCard({
@@ -33,11 +33,18 @@ export function ChangePasswordCard({
     classNames?: SettingsCardClassNames,
     accounts?: { provider: string }[] | null,
     isPending?: boolean,
-    localization?: Partial<typeof settingsLocalization>
+    localization?: Partial<AuthLocalization>
 }) {
-    localization = { ...settingsLocalization, ...localization }
+    const {
+        authClient,
+        basePath,
+        hooks: { useSession, useListAccounts },
+        localization: authLocalization,
+        viewPaths
+    } = useContext(AuthUIContext)
 
-    const { authClient, basePath, hooks: { useSession, useListAccounts }, viewPaths } = useContext(AuthUIContext)
+    localization = { ...authLocalization, ...localization }
+
     const { data: sessionData, isPending: sessionPending } = useSession()
 
     if (isPending === undefined && accounts === undefined) {

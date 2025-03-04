@@ -3,6 +3,7 @@
 import { useContext, useRef, useState } from "react"
 import { toast } from "sonner"
 
+import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import {
@@ -16,7 +17,6 @@ import { Skeleton } from "../ui/skeleton"
 import { UserAvatar } from "../user-avatar"
 
 import type { SettingsCardClassNames } from "./settings-card"
-import { settingsLocalization } from "./settings-cards"
 import { UpdateAvatarCardSkeleton } from "./skeletons/update-avatar-card-skeleton"
 
 async function resizeAndCropImage(file: File, name: string, size: number, avatarExtension: string): Promise<File> {
@@ -68,11 +68,18 @@ export function UpdateAvatarCard({
     className?: string,
     classNames?: SettingsCardClassNames,
     isPending?: boolean,
-    localization?: Partial<typeof settingsLocalization>
+    localization?: Partial<AuthLocalization>
 }) {
-    localization = { ...settingsLocalization, ...localization }
+    const {
+        hooks: { useSession },
+        localization: authLocalization,
+        optimistic,
+        uploadAvatar,
+        avatarSize,
+        avatarExtension
+    } = useContext(AuthUIContext)
 
-    const { hooks: { useSession }, optimistic, uploadAvatar, avatarSize, avatarExtension } = useContext(AuthUIContext)
+    localization = { ...authLocalization, ...localization }
 
     const { data: sessionData, isPending: sessionPending, updateUser } = useSession()
     const fileInputRef = useRef<HTMLInputElement | null>(null)

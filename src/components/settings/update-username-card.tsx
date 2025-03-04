@@ -2,10 +2,10 @@
 
 import { useContext } from "react"
 
+import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 
 import { type SettingsCardClassNames } from "./settings-card"
-import { settingsLocalization } from "./settings-cards"
 import { UpdateFieldCard } from "./update-field-card"
 
 export function UpdateUsernameCard({
@@ -17,11 +17,11 @@ export function UpdateUsernameCard({
     className?: string,
     classNames?: SettingsCardClassNames,
     isPending?: boolean,
-    localization?: Partial<typeof settingsLocalization>
+    localization?: Partial<AuthLocalization>
 }) {
-    localization = { ...settingsLocalization, ...localization }
+    const { hooks: { useSession }, localization: authLocalization } = useContext(AuthUIContext)
+    localization = { ...authLocalization, ...localization }
 
-    const { hooks: { useSession } } = useContext(AuthUIContext)
     const { data: sessionData } = useSession()
 
     // @ts-expect-error Optional plugin

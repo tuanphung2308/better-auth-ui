@@ -1,10 +1,9 @@
 import { KeyIcon } from "lucide-react"
 import { useFormStatus } from "react-dom"
 
+import type { AuthLocalization } from "../../lib/auth-localization"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
-
-import type { authLocalization } from "./auth-card"
 
 export function PasskeyButton({
     className,
@@ -13,7 +12,7 @@ export function PasskeyButton({
 }: {
     className?: string,
     isLoading?: boolean,
-    localization: Partial<typeof authLocalization>,
+    localization: Partial<AuthLocalization>,
 }) {
     const { pending } = useFormStatus()
 

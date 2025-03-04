@@ -5,6 +5,7 @@ import { useContext, useState } from "react"
 import { toast } from "sonner"
 import { UAParser } from "ua-parser-js"
 
+import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
@@ -17,7 +18,6 @@ import {
 } from "../ui/card"
 
 import type { SettingsCardClassNames } from "./settings-card"
-import { settingsLocalization } from "./settings-cards"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
 
 export function SessionsCard({
@@ -29,17 +29,18 @@ export function SessionsCard({
     className?: string,
     classNames?: SettingsCardClassNames,
     isPending?: boolean,
-    localization?: Partial<typeof settingsLocalization>
+    localization?: Partial<AuthLocalization>
 }) {
-    localization = { ...settingsLocalization, ...localization }
-
     const {
         hooks: { useListSessions, useSession },
+        localization: authLocalization,
         optimistic,
         navigate,
         basePath,
         viewPaths
     } = useContext(AuthUIContext)
+
+    localization = { ...authLocalization, ...localization }
 
     const { sessions, isPending: sessionsPending, refetch, revokeSession } = useListSessions()
     const { data: sessionData } = useSession()
@@ -116,7 +117,7 @@ export function SessionsCard({
                                 }}
                             >
                                 <span className={isButtonLoading ? "opacity-0" : "opacity-100"}>
-                                    {session.id == sessionData?.session?.id ? localization.signOut : localization.sessionRevoke}
+                                    {session.id == sessionData?.session?.id ? localization.signOut : localization.revoke}
                                 </span>
 
                                 {isButtonLoading && (

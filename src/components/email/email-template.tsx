@@ -138,7 +138,7 @@ export const EmailTemplate = ({
                             {" "}
 
                             <Link className="no-underline" href={baseUrl}>
-                                {baseUrl.replace("https://", "")}
+                                {baseUrl.replace("https://", "").replace("http://", "")}
                             </Link>
                         </Text>
                     </Container>

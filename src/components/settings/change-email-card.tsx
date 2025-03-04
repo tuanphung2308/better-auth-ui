@@ -3,10 +3,10 @@
 import { useContext, useEffect, useRef } from "react"
 import { toast } from "sonner"
 
+import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 
 import { SettingsCard, type SettingsCardClassNames } from "./settings-card"
-import { settingsLocalization } from "./settings-cards"
 
 export function ChangeEmailCard({
     className,
@@ -17,13 +17,13 @@ export function ChangeEmailCard({
     className?: string,
     classNames?: SettingsCardClassNames,
     isPending?: boolean,
-    localization?: Partial<typeof settingsLocalization>
+    localization?: Partial<AuthLocalization>
 }) {
-    localization = { ...settingsLocalization, ...localization }
-
     const shownVerifyEmailToast = useRef(false)
 
-    const { authClient, hooks: { useSession } } = useContext(AuthUIContext)
+    const { authClient, hooks: { useSession }, localization: authLocalization } = useContext(AuthUIContext)
+    localization = { ...authLocalization, ...localization }
+
     const { data: sessionData, isPending: sessionPending, refetch } = useSession()
 
     useEffect(() => {

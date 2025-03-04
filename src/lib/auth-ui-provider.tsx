@@ -7,7 +7,9 @@ import { useListAccounts } from "../hooks/use-list-accounts"
 import { useListDeviceSessions } from "../hooks/use-list-device-sessions"
 import { useListSessions } from "../hooks/use-list-sessions"
 import { useSession } from "../hooks/use-session"
-import type { SocialProvider } from "../social-providers"
+
+import { type AuthLocalization, authLocalization } from "./auth-localization"
+import type { SocialProvider } from "./social-providers"
 
 const DefaultLink = (
     { href, className, children }: { href: string, className?: string, children: ReactNode }
@@ -67,6 +69,7 @@ export type AuthUIContextType = {
     deleteUser?: boolean
     forgotPassword?: boolean
     freshAge: number
+    localization: AuthLocalization
     magicLink?: boolean
     multiSession?: boolean
     nameRequired?: boolean
@@ -91,7 +94,8 @@ export type AuthUIContextType = {
 export type AuthUIProviderProps = {
     authClient: ReturnType<typeof createAuthClient>
     viewPaths?: Partial<typeof authViewPaths>
-} & Partial<Omit<AuthUIContextType, "viewPaths">>
+    localization?: Partial<AuthLocalization>
+} & Partial<Omit<AuthUIContextType, "viewPaths" | "localization">>
 
 export const AuthUIContext = createContext<AuthUIContextType>({} as unknown as AuthUIContextType)
 
@@ -105,6 +109,7 @@ export const AuthUIProvider = ({
     forgotPassword = true,
     freshAge = 60 * 60 * 24,
     hooks = defaultHooks,
+    localization,
     viewPaths,
     navigate,
     replace,
@@ -130,6 +135,7 @@ export const AuthUIProvider = ({
                 forgotPassword,
                 freshAge,
                 hooks,
+                localization: { ...authLocalization, ...localization },
                 navigate,
                 replace,
                 viewPaths: { ...authViewPaths, ...viewPaths },

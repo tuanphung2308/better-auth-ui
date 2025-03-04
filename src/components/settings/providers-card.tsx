@@ -5,9 +5,10 @@ import { Loader2 } from "lucide-react"
 import { useContext, useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 
+import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
+import { socialProviders } from "../../lib/social-providers"
 import { cn } from "../../lib/utils"
-import { socialProviders } from "../../social-providers"
 import { FetchError } from "../../types/fetch-error"
 import { Button } from "../ui/button"
 import {
@@ -19,7 +20,6 @@ import {
 } from "../ui/card"
 
 import type { SettingsCardClassNames } from "./settings-card"
-import { settingsLocalization } from "./settings-cards"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
 
 export function ProvidersCard({
@@ -35,20 +35,21 @@ export function ProvidersCard({
     classNames?: SettingsCardClassNames,
     accounts?: { provider: string }[] | null,
     isPending?: boolean,
-    localization?: Partial<typeof settingsLocalization>,
+    localization?: Partial<AuthLocalization>,
     refetch?: () => Promise<void>,
     unlinkAccount?: (providerId: string) => Promise<{ status?: boolean, code?: string, error?: FetchError | null }>
 }) {
-    localization = { ...settingsLocalization, ...localization }
-
     const {
         authClient,
         colorIcons,
         hooks: { useListAccounts },
+        localization: authLocalization,
         noColorIcons,
         optimistic,
         providers
     } = useContext(AuthUIContext)
+
+    localization = { ...authLocalization, ...localization }
 
     if (isPending === undefined && accounts === undefined) {
         // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -164,7 +165,7 @@ export function ProvidersCard({
                                 }}
                             >
                                 <span className={isButtonLoading ? "opacity-0" : "opacity-100"}>
-                                    {isLinked ? localization.providerUnlink : localization.providerLink}
+                                    {isLinked ? localization.unlink : localization.link}
                                 </span>
 
                                 {isButtonLoading && (

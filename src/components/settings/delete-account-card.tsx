@@ -2,6 +2,7 @@ import { Loader2 } from "lucide-react"
 import { useActionState, useContext } from "react"
 import { toast } from "sonner"
 
+import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
@@ -25,7 +26,6 @@ import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
 import { type SettingsCardClassNames } from "./settings-card"
-import { settingsLocalization } from "./settings-cards"
 import { DeleteAccountCardSkeleton } from "./skeletons/delete-account-card-skeleton"
 
 export function DeleteAccountCard({
@@ -39,19 +39,20 @@ export function DeleteAccountCard({
     classNames?: SettingsCardClassNames,
     accounts?: { provider: string }[] | null,
     isPending?: boolean,
-    localization?: Partial<typeof settingsLocalization>
+    localization?: Partial<AuthLocalization>
 }) {
-    localization = { ...settingsLocalization, ...localization }
-
     const {
         authClient,
         basePath,
         deleteAccountVerification,
         freshAge,
         hooks: { useSession, useListAccounts },
+        localization: authLocalization,
         navigate,
         viewPaths
     } = useContext(AuthUIContext)
+
+    localization = { ...authLocalization, ...localization }
 
     if (isPending === undefined && accounts === undefined) {
         // eslint-disable-next-line react-hooks/rules-of-hooks

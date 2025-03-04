@@ -2,10 +2,10 @@
 
 import { useContext } from "react"
 
+import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext, type FieldType } from "../../lib/auth-ui-provider"
 
 import { SettingsCard, type SettingsCardClassNames } from "./settings-card"
-import { settingsLocalization } from "./settings-cards"
 
 export function UpdateFieldCard({
     className,
@@ -27,16 +27,17 @@ export function UpdateFieldCard({
     description?: string,
     instructions?: string,
     isPending?: boolean,
-    localization?: Partial<typeof settingsLocalization>,
+    localization?: Partial<AuthLocalization>,
     name: string
     placeholder?: string,
     required?: boolean,
     title?: string,
     type?: FieldType
 }) {
-    localization = { ...settingsLocalization, ...localization }
+    const { hooks: { useSession }, localization: authLocalization } = useContext(AuthUIContext)
 
-    const { hooks: { useSession } } = useContext(AuthUIContext)
+    localization = { ...authLocalization, ...localization }
+
     const { isPending: sessionPending, updateUser } = useSession()
 
     const formAction = async (formData: FormData) => {

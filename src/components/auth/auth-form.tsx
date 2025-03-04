@@ -10,14 +10,14 @@ import {
 } from "react"
 import { toast } from "sonner"
 
+import { type AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext, type AuthView } from "../../lib/auth-ui-provider"
+import { type SocialProvider, socialProviders } from "../../lib/social-providers"
 import { cn, isValidEmail } from "../../lib/utils"
-import { type SocialProvider, socialProviders } from "../../social-providers"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
 import { ActionButton } from "./action-button"
-import { authLocalization } from "./auth-card"
 import { MagicLinkButton } from "./magic-link-button"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
@@ -45,15 +45,13 @@ export function AuthForm({
     className?: string,
     classNames?: AuthFormClassNames,
     callbackURL?: string,
-    localization?: Partial<typeof authLocalization>,
+    localization?: Partial<AuthLocalization>,
     pathname?: string,
     redirectTo?: string,
     socialLayout?: "auto" | "horizontal" | "grid" | "vertical",
     view?: AuthView
 }) {
     const [isLoading, setIsLoading] = useState(false)
-
-    localization = { ...authLocalization, ...localization }
 
     const {
         additionalFields,
@@ -63,6 +61,7 @@ export function AuthForm({
         credentials,
         forgotPassword,
         hooks: { useIsRestoring },
+        localization: authLocalization,
         magicLink,
         nameRequired,
         navigate,
@@ -76,6 +75,8 @@ export function AuthForm({
         onSessionChange,
         LinkComponent
     } = useContext(AuthUIContext)
+
+    localization = { ...authLocalization, ...localization }
 
     const isRestoring = useIsRestoring()
 
@@ -337,7 +338,7 @@ export function AuthForm({
             action={formAction}
             className={cn("grid gap-4 w-full", className, classNames?.base)}
         >
-            {credentials && view == "signUp" && signUpFields?.includes("name") && (
+            {credentials && view == "signUp" && (nameRequired || signUpFields?.includes("name")) && (
                 <div className="grid gap-2">
                     <Label className={classNames?.label} htmlFor="name">
                         {localization.name}
@@ -363,7 +364,7 @@ export function AuthForm({
                         className={classNames?.input}
                         id="username"
                         name="username"
-                        placeholder={view == "signIn" ? localization.usernameSignInPlaceholder : localization.usernameSignUpPlaceholder}
+                        placeholder={view == "signIn" ? localization.usernameSignInPlaceholder : localization.usernamePlaceholder}
                         required
                     />
                 </div>

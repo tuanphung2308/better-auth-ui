@@ -11,6 +11,7 @@ import {
 import { Fragment, useContext } from "react"
 import { toast } from "sonner"
 
+import { type AuthLocalization } from "../lib/auth-localization"
 import { AuthUIContext } from "../lib/auth-ui-provider"
 import { cn } from "../lib/utils"
 import type { User } from "../types/user"
@@ -24,15 +25,6 @@ import {
 } from "./ui/dropdown-menu"
 import { Skeleton } from "./ui/skeleton"
 import { UserAvatar, type UserAvatarClassNames } from "./user-avatar"
-
-export const userButtonLocalization = {
-    account: "Account",
-    addAccount: "Add Account",
-    settings: "Settings",
-    signIn: "Sign In",
-    signOut: "Sign Out",
-    signUp: "Sign Up"
-}
 
 export type UserButtonClassNames = {
     base?: string
@@ -59,19 +51,20 @@ export function UserButton({
 }: {
     className?: string,
     classNames?: UserButtonClassNames,
-    localization?: Partial<typeof userButtonLocalization>
+    localization?: Partial<AuthLocalization>
 }) {
-    localization = { ...userButtonLocalization, ...localization }
-
     const {
         basePath,
         hooks: { useSession, useListDeviceSessions },
-        onSessionChange,
+        localization: authLocalization,
         multiSession,
         settingsUrl,
         viewPaths,
+        onSessionChange,
         LinkComponent
     } = useContext(AuthUIContext)
+
+    localization = { ...authLocalization, ...localization }
 
     const { deviceSessions, isPending: deviceSessionsPending, setActiveSession } = useListDeviceSessions()
     const { data: sessionData, isPending: sessionPending } = useSession()

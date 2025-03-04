@@ -19,7 +19,6 @@ import {
 import { Input } from "../ui/input"
 import type { UserAvatarClassNames } from "../user-avatar"
 
-import { settingsLocalization } from "./settings-cards"
 import { SettingsCardSkeleton } from "./skeletons/settings-card-skeleton"
 
 export type SettingsCardClassNames = {
@@ -67,9 +66,10 @@ export function SettingsCard({
     type?: FieldType,
     formAction: (formData: FormData) => Promise<{ error?: FetchError | null }>,
 }) {
-    localization = { ...settingsLocalization, ...localization }
-
     let { optimistic } = useContext(AuthUIContext)
+    const { localization: authLocalization } = useContext(AuthUIContext)
+
+    localization = { ...authLocalization, ...localization }
 
     if (name == "email" || name == "username") {
         optimistic = false

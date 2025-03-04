@@ -1,12 +1,11 @@
 import { useContext } from "react"
 import { useFormStatus } from "react-dom"
 
+import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
+import type { socialProviders } from "../../lib/social-providers"
 import { cn } from "../../lib/utils"
-import type { socialProviders } from "../../social-providers"
 import { Button } from "../ui/button"
-
-import type { authLocalization } from "./auth-card"
 
 export function ProviderButton({
     className,
@@ -17,7 +16,7 @@ export function ProviderButton({
 }: {
     className?: string,
     isLoading?: boolean,
-    localization: Partial<typeof authLocalization>,
+    localization: Partial<AuthLocalization>,
     socialLayout: "auto" | "horizontal" | "grid" | "vertical",
     socialProvider: typeof socialProviders[number]
 }) {

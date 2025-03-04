@@ -15,7 +15,7 @@ import {
     TwitchIcon,
     VKIcon,
     XIcon
-} from "./components/provider-icons"
+} from "../components/provider-icons"
 
 export const socialProviders = [
     {
