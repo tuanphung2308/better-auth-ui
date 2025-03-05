@@ -37,38 +37,38 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
 The following props can be passed to the `<AuthUIProvider>` component:
 
-| Prop | Default | Example & Type | Required |
-|------|---------|---------------|----------|
-| `authClient` | - | `ReturnType<typeof createAuthClient>` | Yes |
-| `avatar` | `avatar={false}` | `boolean` | - |
-| `avatarExtension` | `avatarExtension="png"` | `"png" \| "webp"` | - |
-| `avatarSize` | `avatarSize={128}` | `number` | - |
+| Prop | Example | Type | Required |
+|------|---------|------|----------|
+| `authClient` | `authClient={authClient}` | `AuthClient` | Yes |
+| `avatar` | `avatar={true}` | `boolean` | - |
+| `avatarExtension` | `avatarExtension="png"` | `string` | - |
+| `avatarSize` | `avatarSize={256}` | `number` | - |
 | `basePath` | `basePath="/auth"` | `string` | - |
-| `colorIcons` | `colorIcons={false}` | `boolean` | - |
+| `colorIcons` | `colorIcons={true}` | `boolean` | - |
 | `credentials` | `credentials={true}` | `boolean` | - |
 | `defaultRedirectTo` | `defaultRedirectTo="/"` | `string` | - |
-| `deleteAccountVerification` | `deleteAccountVerification={false}` | `boolean` | - |
-| `deleteUser` | `deleteUser={false}` | `boolean` | - |
+| `deleteAccountVerification` | `deleteAccountVerification={true}` | `boolean` | - |
+| `deleteUser` | `deleteUser={true}` | `boolean` | - |
 | `forgotPassword` | `forgotPassword={true}` | `boolean` | - |
 | `freshAge` | `freshAge={86400}` | `number` | - |
-| `localization` | `localization={{...}}` | `Partial<AuthLocalization>` | - |
-| `magicLink` | `magicLink={false}` | `boolean` | - |
-| `multiSession` | `multiSession={false}` | `boolean` | - |
-| `nameRequired` | `nameRequired={false}` | `boolean` | - |
-| `noColorIcons` | `noColorIcons={false}` | `boolean` | - |
-| `optimistic` | `optimistic={false}` | `boolean` | - |
-| `passkey` | `passkey={false}` | `boolean` | - |
+| `localization` | `localization={{ signIn: "Sign In" }}` | `AuthLocalization` | - |
+| `magicLink` | `magicLink={true}` | `boolean` | - |
+| `multiSession` | `multiSession={true}` | `boolean` | - |
+| `nameRequired` | `nameRequired={true}` | `boolean` | - |
+| `noColorIcons` | `noColorIcons={true}` | `boolean` | - |
+| `optimistic` | `optimistic={true}` | `boolean` | - |
+| `passkey` | `passkey={true}` | `boolean` | - |
 | `providers` | `providers={["github", "google"]}` | `SocialProvider[]` | - |
-| `settingsUrl` | `settingsUrl="/settings"` | `string` | - |
-| `viewPaths` | `viewPaths={{ signIn: "login" }}` | `Partial<typeof authViewPaths>` | - |
-| `localization` | `localization={{ signIn: "Login" }}` | `Partial<AuthLocalization>` | - |
-| `navigate` | `navigate={(url) => router.push(url)}` | `(url: string) => void` | - |
-| `replace` | `replace={(url) => router.replace(url)}` | `(url: string) => void` | - |
-| `LinkComponent` | `LinkComponent={Link}` | `React.ComponentType<{ href: string, to: unknown, className?: string, children: ReactNode }>` | - |
+| `settingsUrl` | `settingsUrl="/user/settings"` | `string` | - |
+| `signUpFields` | `signUpFields={["name", "age", "company"]}` | `string[]` | - |
+| `username` | `username={true}` | `boolean` | - |
+| `additionalFields` | `additionalFields={{ age: { label: "Age", type: "number" } }}` | `Record<string, { label, type, placeholder?, required?, description?, instructions? }>` | - |
+| `viewPaths` | `viewPaths={{ signIn: "login" }}` | `{callback, forgotPassword, magicLink, resetPassword, settings, signIn, signOut, signUp}` | - |
+| `navigate` | `navigate={(url) => router.push(url)}` | `(href: string) => void` | - |
 | `onSessionChange` | `onSessionChange={() => router.refresh()}` | `() => void` | - |
-| `uploadAvatar` | `uploadAvatar={(file) => Promise.resolve(url)}` | `(file: File) => Promise<string \| undefined \| null>` | - |
-| `hooks` | `hooks={{ useSession, useListAccounts, useListDeviceSessions, useListSessions, useIsRestoring }}` | `typeof defaultHooks` | - |
-| `authClient` | - | `ReturnType<typeof createAuthClient>` | Yes |
+| `replace` | `replace={(url) => router.replace(url)}` | `(href: string) => void` | - |
+| `uploadAvatar` | `uploadAvatar={async (file) => await uploadAvatar(file)}` | `(file: File) => Promise<string \| undefined \| null>` | - |
+| `LinkComponent` | `LinkComponent={Link}` | `React.ComponentType<{ href: string, to: unknown, className?: string, children: ReactNode }>` | - |
 
 ---
 
@@ -95,21 +95,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           navigate={router.push}
           replace={router.replace}
           onSessionChange={() => router.refresh()}
-          providers={["google", "github"]} // multiple providers supported
-          credentials={true}
-          multiSession={true} // enable multiple sessions per device
-          username={true} // enable username sign-in
-          magicLink={true}
-          passkey={true}
-          avatar={true}
+          providers={["github", "google", "facebook", "apple"]}
+          multiSession
+          magicLink
+          passkey
+          avatar
           uploadAvatar={(file) => {
             const formData = new FormData()
             formData.append("avatar", file)
-            return fetch("/api/uploadAvatar", { method: "POST", body: formData })
-              .then((res) => res.json())
-              .then((data) => data.avatarUrl)
+
+            const res = await fetch("/api/uploadAvatar", { method: "POST", body: formData })
+            const { data } = await res.json()
+
+            return data.url
           }}
-          settingsUrl="/user/settings"
+          settingsUrl="/dashboard/settings"
           LinkComponent={Link}
         >
           {children}
