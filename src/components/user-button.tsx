@@ -27,7 +27,7 @@ import {
 import { Skeleton } from "./ui/skeleton"
 import { UserAvatar, type UserAvatarClassNames } from "./user-avatar"
 
-export type UserButtonClassNames = {
+export interface UserButtonClassNames {
     base?: string
     trigger?: {
         base?: string
@@ -42,17 +42,26 @@ export type UserButtonClassNames = {
     }
 }
 
+export interface UserButtonProps {
+    className?: string
+    classNames?: UserButtonClassNames
+    /** 
+     * @default authLocalization
+     * @remarks `AuthLocalization`
+     */
+    localization?: AuthLocalization
+    /**
+     * @default "icon"
+     */
+    size?: "icon" | "full"
+}
+
 export function UserButton({
     className,
     classNames,
     localization,
     size = "icon"
-}: {
-    className?: string,
-    classNames?: UserButtonClassNames,
-    localization?: Partial<AuthLocalization>,
-    size?: "icon" | "full"
-}) {
+}: UserButtonProps) {
     const {
         basePath,
         hooks: { useSession, useListDeviceSessions },

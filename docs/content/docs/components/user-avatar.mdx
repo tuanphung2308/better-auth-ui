@@ -6,6 +6,12 @@ The `<UserAvatar />` component renders a user's avatar image based on the provid
 
 Basic usage:
 
+<div className="flex gap-2 -mt-8 -mb-8">
+<img alt="Seto" src="/avatars/seto.png" className="size-8 rounded-full" />
+<img alt="Seto" src="/avatars/dark.png" className="size-8 rounded-full hidden dark:block" />
+<img alt="Seto" src="/avatars/light.png" className="size-8 rounded-full dark:hidden" />
+</div>
+
 ```tsx
 import { UserAvatar } from "@daveyplate/better-auth-ui"
 
