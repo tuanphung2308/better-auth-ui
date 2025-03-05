@@ -27,15 +27,19 @@ export type Link = React.ComponentType<{ href: string, to: unknown, className?: 
 
 export type FieldType = "string" | "number" | "boolean"
 
-export type AdditionalFields = Record<string, {
-    description?: ReactNode,
-    instructions?: ReactNode,
-    label: ReactNode,
-    placeholder?: string,
-    required?: boolean,
-    type: FieldType,
-    validate?: (value: string) => boolean | Promise<boolean>
-}>
+export interface AdditionalField {
+    description?: ReactNode
+    instructions?: ReactNode
+    label: ReactNode
+    placeholder?: string
+    required?: boolean
+    type: FieldType
+    validate?: (value: string) => Promise<boolean>
+}
+
+export interface AdditionalFields {
+    [key: string]: AdditionalField
+}
 
 const defaultHooks = {
     useSession,
@@ -169,7 +173,6 @@ export type AuthUIContextType = {
     username?: boolean
     /**
      * Additional fields for users
-     * @remarks `AdditionalFields`
      */
     additionalFields?: AdditionalFields
     /**
@@ -221,7 +224,7 @@ export type AuthUIProviderProps = {
      * @default authLocalization
      * @remarks `AuthLocalization`
      */
-    localization?: Partial<AuthLocalization>
+    localization?: AuthLocalization
 } & Partial<Omit<AuthUIContextType, "viewPaths" | "localization">>
 
 export const AuthUIContext = createContext<AuthUIContextType>({} as unknown as AuthUIContextType)

@@ -13,9 +13,14 @@ export interface UserAvatarClassNames {
     fallbackIcon?: string
 }
 
+export interface UserAvatarProps {
+    user?: User,
+    classNames?: UserAvatarClassNames,
+}
+
 export function UserAvatar({
     user, classNames, className, ...props
-}: { user?: User, classNames?: UserAvatarClassNames } & ComponentProps<typeof Avatar>) {
+}: UserAvatarProps & ComponentProps<typeof Avatar>) {
     const name = user?.name || user?.fullName || user?.firstName || user?.email
     const src = (user?.image || user?.avatar || user?.avatarUrl) as string
 

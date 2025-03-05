@@ -2,4 +2,58 @@
 title: <UserAvatar />
 ---
 
-<AutoTypeTable path="../src/components/user-avatar.tsx" name="UserAvatarClassNames" />
+The `<UserAvatar />` component renders a user's avatar image based on the provided user object. If the user does not have an avatar image, a fallback with the first 2 letters of their name or email will be displayed.
+
+Basic usage:
+
+```tsx
+import { UserAvatar } from "@daveyplate/better-auth-ui"
+
+export default function Example() {
+    const user = {
+        name: "Seto",
+        email: "seto@better-auth.dev",
+        image: "https://better-auth-ui.com/avatars/seto.png"
+    }
+
+    return <UserAvatar user={user} />
+}
+```
+
+---
+
+## Reference
+
+The following props can be passed to the `<UserAvatar />` component:
+
+<AutoTypeTable path="../src/components/user-avatar.tsx" name="UserAvatarProps" />
+
+---
+
+## Example
+
+Here is a practical example demonstrating customized styles and fallback customization:
+
+```tsx
+import { UserAvatar } from "@daveyplate/better-auth-ui"
+
+export default function Example() {
+    const user = {
+        name: "Seto",
+        email: "seto@better-auth.dev",
+        image: "https://better-auth-ui.com/avatars/seto.png"
+    }
+
+    return (
+        <UserAvatar
+            user={user}
+            className="size-12 border-2 border-destructive"
+            classNames={{
+                fallback: "bg-black text-white",
+            }}
+        />
+    )
+}
+```
+
+---
