@@ -53,6 +53,7 @@ export function ProviderButton({
                 <>
                     {localization.signInWith}
                     {" "}
+                    {socialProvider.name}
                 </>
             )}
         </Button>
