@@ -3,7 +3,8 @@ import { useContext } from "react"
 import { useFormStatus } from "react-dom"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext, type AuthView } from "../../lib/auth-ui-provider"
+import { AuthUIContext } from "../../lib/auth-ui-provider"
+import type { AuthView } from "../../lib/auth-view-paths"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
 

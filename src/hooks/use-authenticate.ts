@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react"
 
-import { AuthUIContext, type AuthView } from "../lib/auth-ui-provider"
+import { AuthUIContext } from "../lib/auth-ui-provider"
+import type { AuthView } from "../lib/auth-view-paths"
 
 export function useAuthenticate(authView: AuthView = "signIn", enabled = true) {
     const { hooks: { useSession }, basePath, viewPaths, replace } = useContext(AuthUIContext)

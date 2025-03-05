@@ -11,7 +11,8 @@ import {
 import { toast } from "sonner"
 
 import { type AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext, type AuthView } from "../../lib/auth-ui-provider"
+import { AuthUIContext } from "../../lib/auth-ui-provider"
+import type { AuthView } from "../../lib/auth-view-paths"
 import { type SocialProvider, socialProviders } from "../../lib/social-providers"
 import { cn, isValidEmail } from "../../lib/utils"
 import { Input } from "../ui/input"

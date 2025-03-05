@@ -9,6 +9,7 @@ import { useListSessions } from "../hooks/use-list-sessions"
 import { useSession } from "../hooks/use-session"
 
 import { type AuthLocalization, authLocalization } from "./auth-localization"
+import { authViewPaths } from "./auth-view-paths"
 import type { SocialProvider } from "./social-providers"
 
 const DefaultLink = (
@@ -24,17 +25,6 @@ const defaultReplace = (href: string) => { window.location.replace(href) }
 
 export type Link = React.ComponentType<{ href: string, to: unknown, className?: string, children: ReactNode }>
 
-export const authViewPaths = {
-    callback: "callback",
-    forgotPassword: "forgot-password",
-    magicLink: "magic-link",
-    resetPassword: "reset-password",
-    settings: "settings",
-    signIn: "sign-in",
-    signOut: "sign-out",
-    signUp: "sign-up",
-}
-
 export type FieldType = "string" | "number"
 
 type AdditionalFields = Record<string, {
@@ -45,8 +35,6 @@ type AdditionalFields = Record<string, {
     required?: boolean,
     type: FieldType,
 }>
-
-export type AuthView = keyof typeof authViewPaths
 
 const defaultHooks = {
     useSession,
