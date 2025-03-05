@@ -2,6 +2,7 @@
 
 import { type createAuthClient } from "better-auth/react"
 import {
+    ChevronsUpDown,
     LogInIcon,
     LogOutIcon,
     PlusCircleIcon,
@@ -16,6 +17,7 @@ import { AuthUIContext } from "../lib/auth-ui-provider"
 import { cn } from "../lib/utils"
 import type { User } from "../types/user"
 
+import { Button } from "./ui/button"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -47,11 +49,13 @@ type SessionData = AuthClient["$Infer"]["Session"]
 export function UserButton({
     className,
     classNames,
-    localization
+    localization,
+    size = "icon"
 }: {
     className?: string,
     classNames?: UserButtonClassNames,
-    localization?: Partial<AuthLocalization>
+    localization?: Partial<AuthLocalization>,
+    size?: "icon" | "full"
 }) {
     const {
         basePath,
@@ -75,27 +79,67 @@ export function UserButton({
     return (
         <DropdownMenu>
             <DropdownMenuTrigger
-                className={cn("rounded-full", classNames?.trigger?.base)}
+                asChild={size == "full"}
+                className={cn(size == "icon" && "rounded-full", classNames?.trigger?.base)}
                 disabled={isPending}
             >
-                {(isPending) ? (
-                    <Skeleton
-                        className={cn(
-                            "size-8 rounded-full",
-                            className, classNames?.base, "bg-muted", classNames?.trigger?.skeleton
-                        )}
-                    />
+                {size == "icon" ? (
+                    (isPending) ? (
+                        <Skeleton
+                            className={cn(
+                                "size-8 rounded-full",
+                                className, classNames?.base, classNames?.trigger?.skeleton
+                            )}
+                        />
+                    ) : (
+                        <UserAvatar
+                            className={cn("size-8", className, classNames?.base)}
+                            classNames={classNames?.trigger?.avatar}
+                            user={user}
+                        />
+                    )
                 ) : (
-                    <UserAvatar
-                        className={cn("size-8", className, classNames?.base)}
-                        classNames={classNames?.trigger?.avatar}
-                        user={user}
-                    />
+                    <Button className={cn("h-12 !px-3", className)} variant="outline">
+                        <>
+                            {isPending ? (
+                                <Skeleton
+                                    className={cn(
+                                        "size-8 rounded-full",
+                                        classNames?.trigger?.skeleton
+                                    )}
+                                />
+                            ) : (
+                                <UserAvatar
+                                    classNames={classNames?.content?.avatar}
+                                    user={user}
+                                />
+                            )}
+
+                            <div className="flex flex-col grow text-left truncate">
+                                <div className="font-medium text-sm truncate">
+                                    {isPending ? (
+                                        <Skeleton className="h-3 w-20" />
+                                    ) : (user?.name || user?.email || localization.account)}
+                                </div>
+
+                                {isPending ? (
+                                    <Skeleton className="h-3 w-32 mt-1" />
+                                ) : user?.name && (
+                                    <div className="text-muted-foreground !font-light text-xs truncate">
+                                        {user?.email}
+                                    </div>
+                                )}
+                            </div>
+
+                            <ChevronsUpDown className="ml-auto size-4" />
+                        </>
+                    </Button>
                 )}
+
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
-                className={cn("me-3", classNames?.content?.base)}
+                className={cn("me-3", size == "full" && "w-48", classNames?.content?.base)}
                 onCloseAutoFocus={(e) => e.preventDefault()}
             >
                 {(user && !user.isAnonymous) ? (
