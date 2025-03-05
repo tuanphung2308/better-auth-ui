@@ -139,7 +139,7 @@ export function UserButton({
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
-                className={cn("me-3", size == "full" && "w-48", classNames?.content?.base)}
+                className={cn("me-3", size == "full" && "min-w-48", classNames?.content?.base)}
                 onCloseAutoFocus={(e) => e.preventDefault()}
             >
                 {(user && !user.isAnonymous) ? (
