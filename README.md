@@ -16,7 +16,7 @@ Plug & play shadcn/ui auth components for better-auth.
 
 <img src="docs/public/screenshots/sign-up-dark.png" alt="Sign Up Dark" width="384" /><img src="docs/public/screenshots/sign-up-light.png" alt="Sign Up Light" width="384" />
 
-### Sign Up
+### Forgot Password
 
 <img src="docs/public/screenshots/forgot-password-dark.png" alt="Forgot Password Dark" width="384" /><img src="docs/public/screenshots/forgot-password-light.png" alt="Forgot Password Light" width="384" />
 
