@@ -27,7 +27,10 @@ export type AuthCardClassNames = {
     footer?: string
     footerLink?: string
     form?: AuthFormClassNames
-    settings?: SettingsCardClassNames
+    settings?: {
+        base?: string
+        card?: SettingsCardClassNames
+    }
     header?: string
     title?: string
 }
@@ -91,7 +94,7 @@ export function AuthCard({
     if (view == "settings") return settingsUrl ? (
         <Loader2 className="animate-spin" />
     ) : (
-        <SettingsCards classNames={classNames?.settings} />
+        <SettingsCards className={className} classNames={classNames?.settings} />
     )
 
     return (
