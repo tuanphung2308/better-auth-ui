@@ -36,10 +36,10 @@ export function UpdateUsernameCard({
             description={localization.usernameDescription}
             instructions={localization.usernameInstructions}
             isPending={isPending}
+            label={localization.username}
             localization={localization}
             name="username"
             placeholder={localization.usernamePlaceholder}
-            title={localization.username}
         />
     )
 }

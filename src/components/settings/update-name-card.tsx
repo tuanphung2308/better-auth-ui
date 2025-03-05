@@ -33,11 +33,11 @@ export function UpdateNameCard({
             description={localization.nameDescription}
             instructions={localization.nameInstructions}
             isPending={isPending}
+            label={localization.name}
             localization={localization}
             name="name"
             placeholder={localization.namePlaceholder}
             required={nameRequired}
-            title={localization.name}
         />
     )
 }

@@ -1,7 +1,7 @@
 "use client"
 
 import type { createAuthClient } from "better-auth/react"
-import { ReactNode, createContext } from "react"
+import React, { ReactNode, createContext } from "react"
 
 import { useListAccounts } from "../hooks/use-list-accounts"
 import { useListDeviceSessions } from "../hooks/use-list-device-sessions"
@@ -25,15 +25,16 @@ const defaultReplace = (href: string) => { window.location.replace(href) }
 
 export type Link = React.ComponentType<{ href: string, to: unknown, className?: string, children: ReactNode }>
 
-export type FieldType = "string" | "number"
+export type FieldType = "string" | "number" | "boolean" | "date"
 
-type AdditionalFields = Record<string, {
-    description?: string,
-    instructions?: string,
-    label: string,
+export type AdditionalFields = Record<string, {
+    description?: ReactNode,
+    instructions?: ReactNode,
+    label: ReactNode,
     placeholder?: string,
     required?: boolean,
     type: FieldType,
+    validate?: (value: string) => boolean | Promise<boolean>
 }>
 
 const defaultHooks = {
@@ -66,6 +67,8 @@ export type AuthUIContextType = {
     passkey?: boolean
     persistClient?: boolean
     providers?: SocialProvider[]
+    rememberMe?: boolean
+    settingsFields?: string[]
     settingsUrl?: string
     signUpFields?: string[]
     username?: boolean
@@ -98,6 +101,9 @@ export const AuthUIProvider = ({
     freshAge = 60 * 60 * 24,
     hooks = defaultHooks,
     localization,
+    nameRequired = true,
+    settingsFields = ["name"],
+    signUpFields = ["name"],
     viewPaths,
     navigate,
     replace,
@@ -124,6 +130,9 @@ export const AuthUIProvider = ({
                 freshAge,
                 hooks,
                 localization: { ...authLocalization, ...localization },
+                nameRequired,
+                settingsFields,
+                signUpFields,
                 navigate,
                 replace,
                 viewPaths: { ...authViewPaths, ...viewPaths },

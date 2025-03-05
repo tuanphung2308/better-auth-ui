@@ -52,6 +52,7 @@ export const authLocalization = {
     providerLinkSuccess: "Provider linked successfully.",
     providerUnlinkSuccess: "Provider unlinked successfully.",
     providersLoadingError: "Could not load account info",
+    rememberMe: "Remember me",
     resetPassword: "Reset Password",
     resetPasswordAction: "Save new password",
     resetPasswordDescription: "Enter your new password below",

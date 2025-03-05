@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext } from "react"
+import { type ReactNode, useContext } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext, type FieldType } from "../../lib/auth-ui-provider"
@@ -18,20 +18,20 @@ export function UpdateFieldCard({
     name,
     placeholder,
     required,
-    title,
+    label,
     type
 }: {
     className?: string,
     classNames?: SettingsCardClassNames,
     defaultValue?: string,
-    description?: string,
-    instructions?: string,
+    description?: ReactNode,
+    instructions?: ReactNode,
     isPending?: boolean,
     localization?: Partial<AuthLocalization>,
     name: string
     placeholder?: string,
     required?: boolean,
-    title?: string,
+    label?: ReactNode,
     type?: FieldType
 }) {
     const { hooks: { useSession }, localization: authLocalization } = useContext(AuthUIContext)
@@ -62,11 +62,11 @@ export function UpdateFieldCard({
             formAction={formAction}
             instructions={instructions}
             isPending={isPending || sessionPending}
+            label={label}
             localization={localization}
             name={name}
             placeholder={placeholder}
             required={required}
-            title={title}
             type={type}
         />
     )

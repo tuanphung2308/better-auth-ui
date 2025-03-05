@@ -40,6 +40,7 @@ export function SettingsCards({
         deleteUser,
         hooks: { useSession, useListAccounts },
         providers,
+        settingsFields,
         username
     } = useContext(AuthUIContext)
     const { data: sessionData, isPending: sessionPending } = useAuthenticate()
@@ -77,23 +78,28 @@ export function SettingsCards({
                 localization={localization}
             />
 
-            {Object.entries(additionalFields || {}).map(([key, { description, instructions, label, placeholder, type, required }]) => {
+            {settingsFields?.map((field) => {
+                const additionalField = additionalFields?.[field]
+                if (!additionalField) return null
+
+                const { label, description, instructions, placeholder, required, type } = additionalField
+
                 // @ts-expect-error Custom fields are not typed
-                const defaultValue = sessionData?.user[key] as string
+                const defaultValue = sessionData?.user[field] as string
 
                 return (
                     <UpdateFieldCard
-                        key={key}
+                        key={field}
                         classNames={classNames?.card}
                         defaultValue={defaultValue}
                         description={description}
                         instructions={instructions}
                         isPending={isPending}
+                        label={label}
                         localization={localization}
-                        name={key}
-                        placeholder={placeholder || label}
+                        name={field}
+                        placeholder={placeholder}
                         required={required}
-                        title={label}
                         type={type}
                     />
                 )

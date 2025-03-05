@@ -15,6 +15,7 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { type SocialProvider, socialProviders } from "../../lib/social-providers"
 import { cn, isValidEmail } from "../../lib/utils"
+import { Checkbox } from "../ui/checkbox"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
@@ -29,6 +30,7 @@ export type AuthFormClassNames = {
     forgotPasswordLink?: string
     input?: string
     label?: string
+    description?: string
     providerButton?: string
     secondaryButton?: string
 }
@@ -69,6 +71,7 @@ export function AuthForm({
         passkey,
         persistClient,
         providers,
+        rememberMe,
         replace,
         signUpFields,
         username: usernamePlugin,
@@ -153,6 +156,8 @@ export function AuthForm({
                     return
                 }
 
+                const params = { password, rememberMe: !rememberMe || formData.has("rememberMe") }
+
                 if (usernamePlugin) {
                     const username = formData.get("username") as string
 
@@ -160,7 +165,7 @@ export function AuthForm({
                         // @ts-expect-error Optional plugin
                         const { error } = await authClient.signIn.username({
                             username,
-                            password
+                            ...params
                         })
 
                         if (error) {
@@ -177,7 +182,7 @@ export function AuthForm({
                     }
                 }
 
-                const { error } = await authClient.signIn.email({ email, password })
+                const { error } = await authClient.signIn.email({ email, ...params })
                 if (error) {
                     toast.error(error.message || error.statusText)
                 } else {
@@ -215,10 +220,9 @@ export function AuthForm({
                     const additionalField = additionalFields?.[field]
                     if (!additionalField) return
 
-                    const value = formData.get(field) as string
-
-                    if (value) {
-                        params[field] = additionalField.type == "number" ? parseFloat(value) : value
+                    if (formData.has(field)) {
+                        const value = formData.get(field) as string
+                        params[field] = additionalField.type == "number" ? parseFloat(value) : additionalField.type == "boolean" ? value == "on" : value
                     }
                 })
 
@@ -420,6 +424,19 @@ export function AuthForm({
                 </div>
             )}
 
+            {view == "signIn" && rememberMe && (
+                <div className="flex items-center gap-2">
+                    <Checkbox
+                        id="rememberMe"
+                        name="rememberMe"
+                    />
+
+                    <Label htmlFor="rememberMe">
+                        {localization.rememberMe}
+                    </Label>
+                </div>
+            )}
+
             {view == "signUp" && signUpFields?.filter((field) => field != "name").map((field) => {
                 const additionalField = additionalFields?.[field]
 
@@ -428,7 +445,15 @@ export function AuthForm({
                     return null
                 }
 
-                return (
+                return additionalField.type == "boolean" ? (
+                    <div key={field} className="flex items-center gap-2">
+                        <Checkbox id={field} name={field} required={additionalField.required} />
+
+                        <Label className={cn(classNames?.label)} htmlFor={field}>
+                            {additionalField?.label}
+                        </Label>
+                    </div>
+                ) : (
                     <div key={field} className="grid gap-2">
                         <Label className={classNames?.label} htmlFor={field}>
                             {additionalField?.label}
@@ -438,8 +463,9 @@ export function AuthForm({
                             className={classNames?.input}
                             id={field}
                             name={field}
-                            placeholder={additionalField?.placeholder || additionalField?.label}
+                            placeholder={additionalField?.placeholder || (typeof additionalField?.label == "string" ? additionalField?.label : "")}
                             required={additionalField?.required}
+                            type={additionalField?.type == "number" ? "number" : "text"}
                         />
                     </div>
                 )

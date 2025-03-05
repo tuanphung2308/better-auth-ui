@@ -1,7 +1,7 @@
 "use client"
 
 import { Loader2 } from "lucide-react"
-import { useActionState, useContext, useState } from "react"
+import { type ReactNode, useActionState, useContext, useState } from "react"
 import { toast } from "sonner"
 
 import { AuthUIContext, type FieldType } from "../../lib/auth-ui-provider"
@@ -47,22 +47,22 @@ export function SettingsCard({
     placeholder,
     required,
     saveLabel,
-    title,
+    label,
     type = "string",
     formAction,
 }: {
     className?: string,
     classNames?: SettingsCardClassNames,
     defaultValue?: string | null,
-    description?: string,
-    instructions?: string,
+    description?: ReactNode,
+    instructions?: ReactNode,
     isPending?: boolean,
     localization?: Record<string, string>,
-    name: string
+    name: string,
     placeholder?: string,
     required?: boolean,
-    saveLabel?: string,
-    title?: string,
+    saveLabel?: ReactNode,
+    label?: ReactNode,
     type?: FieldType,
     formAction: (formData: FormData) => Promise<{ error?: FetchError | null }>,
 }) {
@@ -102,7 +102,7 @@ export function SettingsCard({
             <form action={action}>
                 <CardHeader className={classNames?.header}>
                     <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {title}
+                        {label}
                     </CardTitle>
 
                     <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
@@ -115,7 +115,7 @@ export function SettingsCard({
                         className={classNames?.input}
                         defaultValue={state[name] ?? defaultValue}
                         name={name}
-                        placeholder={placeholder}
+                        placeholder={placeholder || (typeof label == "string" ? label : "")}
                         required={required}
                         onChange={() => setDisabled(false)}
                     />

@@ -66,10 +66,10 @@ export function ChangeEmailCard({
             formAction={formAction}
             instructions={localization.emailInstructions}
             isPending={isPending || sessionPending}
+            label={localization.email}
             localization={localization}
             name="email"
             placeholder={localization.emailPlaceholder}
-            title={localization.email}
         />
     )
 }
