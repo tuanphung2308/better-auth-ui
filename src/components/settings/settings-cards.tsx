@@ -85,7 +85,7 @@ export function SettingsCards({
                 const additionalField = additionalFields?.[field]
                 if (!additionalField) return null
 
-                const { label, description, instructions, placeholder, required, type } = additionalField
+                const { label, description, instructions, placeholder, required, type, validate } = additionalField
 
                 // @ts-expect-error Custom fields are not typed
                 const defaultValue = sessionData?.user[field] as unknown
@@ -104,6 +104,7 @@ export function SettingsCards({
                         placeholder={placeholder}
                         required={required}
                         type={type}
+                        validate={validate}
                     />
                 )
             })}

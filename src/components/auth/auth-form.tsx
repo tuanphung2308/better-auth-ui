@@ -222,6 +222,12 @@ export function AuthForm({
 
                     if (formData.has(field)) {
                         const value = formData.get(field) as string
+
+                        if (additionalField.validate && !additionalField.validate(value)) {
+                            toast.error(`${localization.failedToValidate} ${field}`)
+                            return
+                        }
+
                         params[field] = additionalField.type == "number" ? parseFloat(value) : additionalField.type == "boolean" ? value == "on" : value
                     }
                 })

@@ -26,6 +26,7 @@ export const authLocalization = {
     emailPlaceholder: "m@example.com",
     emailVerifyChange: "Please check your email to verify the change.",
     emailVerification: "Please check your email for the verification link.",
+    failedToValidate: "Failed to validate",
     forgotPassword: "Forgot Password",
     forgotPasswordAction: "Send reset link",
     forgotPasswordDescription: "Enter your email to reset your password",

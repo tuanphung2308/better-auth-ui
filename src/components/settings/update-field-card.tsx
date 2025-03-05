@@ -19,7 +19,8 @@ export function UpdateFieldCard({
     placeholder,
     required,
     label,
-    type
+    type,
+    validate
 }: {
     className?: string,
     classNames?: SettingsCardClassNames,
@@ -32,7 +33,8 @@ export function UpdateFieldCard({
     placeholder?: string,
     required?: boolean,
     label?: ReactNode,
-    type?: FieldType
+    type?: FieldType,
+    validate?: (value: string) => boolean | Promise<boolean>
 }) {
     const { hooks: { useSession }, localization: authLocalization } = useContext(AuthUIContext)
 
@@ -44,6 +46,10 @@ export function UpdateFieldCard({
         const value = formData.get(field) as string || ""
 
         if (value == defaultValue) return {}
+
+        if (validate && !validate(value)) {
+            return { error: { message: `${localization.failedToValidate} ${field}` } }
+        }
 
         const { error } = await updateUser({
             [field]: type == "number" ? parseFloat(value) : type == "boolean" ? value == "on" : value
