@@ -63,12 +63,12 @@ export function ChangeEmailCard({
             classNames={classNames}
             defaultValue={sessionData?.user?.email}
             description={localization.emailDescription}
+            field="email"
             formAction={formAction}
             instructions={localization.emailInstructions}
             isPending={isPending || sessionPending}
             label={localization.email}
             localization={localization}
-            name="email"
             placeholder={localization.emailPlaceholder}
         />
     )

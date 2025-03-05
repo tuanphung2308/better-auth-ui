@@ -39,6 +39,7 @@ export function SettingsCards({
         credentials,
         deleteUser,
         hooks: { useSession, useListAccounts },
+        nameRequired,
         providers,
         settingsFields,
         username
@@ -66,11 +67,13 @@ export function SettingsCards({
                 />
             )}
 
-            <UpdateNameCard
-                classNames={classNames?.card}
-                isPending={isPending}
-                localization={localization}
-            />
+            {(settingsFields?.includes("name") || nameRequired) && (
+                <UpdateNameCard
+                    classNames={classNames?.card}
+                    isPending={isPending}
+                    localization={localization}
+                />
+            )}
 
             <ChangeEmailCard
                 classNames={classNames?.card}
@@ -85,7 +88,7 @@ export function SettingsCards({
                 const { label, description, instructions, placeholder, required, type } = additionalField
 
                 // @ts-expect-error Custom fields are not typed
-                const defaultValue = sessionData?.user[field] as string
+                const defaultValue = sessionData?.user[field] as unknown
 
                 return (
                     <UpdateFieldCard
@@ -93,11 +96,11 @@ export function SettingsCards({
                         classNames={classNames?.card}
                         defaultValue={defaultValue}
                         description={description}
+                        field={field}
                         instructions={instructions}
                         isPending={isPending}
                         label={label}
                         localization={localization}
-                        name={field}
                         placeholder={placeholder}
                         required={required}
                         type={type}

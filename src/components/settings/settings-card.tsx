@@ -16,6 +16,7 @@ import {
     CardHeader,
     CardTitle
 } from "../ui/card"
+import { Checkbox } from "../ui/checkbox"
 import { Input } from "../ui/input"
 import type { UserAvatarClassNames } from "../user-avatar"
 
@@ -43,7 +44,7 @@ export function SettingsCard({
     instructions,
     isPending,
     localization,
-    name,
+    field,
     placeholder,
     required,
     saveLabel,
@@ -53,12 +54,12 @@ export function SettingsCard({
 }: {
     className?: string,
     classNames?: SettingsCardClassNames,
-    defaultValue?: string | null,
+    defaultValue?: unknown | null,
     description?: ReactNode,
     instructions?: ReactNode,
     isPending?: boolean,
     localization?: Record<string, string>,
-    name: string,
+    field: string,
     placeholder?: string,
     required?: boolean,
     saveLabel?: ReactNode,
@@ -71,7 +72,7 @@ export function SettingsCard({
 
     localization = { ...authLocalization, ...localization }
 
-    if (name == "email" || name == "username") {
+    if (field == "email" || field == "username") {
         optimistic = false
     }
 
@@ -100,26 +101,52 @@ export function SettingsCard({
     return (
         <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
             <form action={action}>
-                <CardHeader className={classNames?.header}>
-                    <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {label}
-                    </CardTitle>
+                {type == "boolean" ? (
+                    <CardHeader className={classNames?.header}>
+                        <div className={cn("flex gap-3 items-center")}>
+                            <Checkbox
+                                defaultChecked={state[field] == "on" || !!defaultValue}
+                                id={field}
+                                name={field}
+                                onCheckedChange={() => setDisabled(false)}
+                            />
 
-                    <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
-                        {description}
-                    </CardDescription>
-                </CardHeader>
+                            <CardTitle
+                                className={cn("text-lg md:text-xl", classNames?.title)}
+                            >
+                                {label}
+                            </CardTitle>
+                        </div>
 
-                <CardContent className={classNames?.content}>
-                    <Input
-                        className={classNames?.input}
-                        defaultValue={state[name] ?? defaultValue}
-                        name={name}
-                        placeholder={placeholder || (typeof label == "string" ? label : "")}
-                        required={required}
-                        onChange={() => setDisabled(false)}
-                    />
-                </CardContent>
+                        <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
+                            {description}
+                        </CardDescription>
+                    </CardHeader>
+                ) : (
+                    <>
+                        <CardHeader className={classNames?.header}>
+                            <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                                {label}
+                            </CardTitle>
+
+                            <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
+                                {description}
+                            </CardDescription>
+                        </CardHeader>
+
+                        <CardContent className={classNames?.content}>
+                            <Input
+                                className={classNames?.input}
+                                defaultValue={state[field] ?? defaultValue}
+                                name={field}
+                                placeholder={placeholder || (typeof label == "string" ? label : "")}
+                                required={required}
+                                type={type == "number" ? "number" : "text"}
+                                onChange={() => setDisabled(false)}
+                            />
+                        </CardContent>
+                    </>
+                )}
 
                 <CardFooter
                     className={cn(

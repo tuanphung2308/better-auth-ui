@@ -34,12 +34,13 @@ export function UpdateUsernameCard({
             classNames={classNames}
             defaultValue={defaultValue}
             description={localization.usernameDescription}
+            field="username"
             instructions={localization.usernameInstructions}
             isPending={isPending}
             label={localization.username}
             localization={localization}
-            name="username"
             placeholder={localization.usernamePlaceholder}
+            required={true}
         />
     )
 }

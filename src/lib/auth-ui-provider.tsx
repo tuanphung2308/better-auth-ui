@@ -25,7 +25,7 @@ const defaultReplace = (href: string) => { window.location.replace(href) }
 
 export type Link = React.ComponentType<{ href: string, to: unknown, className?: string, children: ReactNode }>
 
-export type FieldType = "string" | "number" | "boolean" | "date"
+export type FieldType = "string" | "number" | "boolean"
 
 export type AdditionalFields = Record<string, {
     description?: ReactNode,

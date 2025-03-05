@@ -15,7 +15,7 @@ export function UpdateFieldCard({
     instructions,
     isPending,
     localization,
-    name,
+    field,
     placeholder,
     required,
     label,
@@ -23,12 +23,12 @@ export function UpdateFieldCard({
 }: {
     className?: string,
     classNames?: SettingsCardClassNames,
-    defaultValue?: string,
+    defaultValue?: unknown,
     description?: ReactNode,
     instructions?: ReactNode,
     isPending?: boolean,
     localization?: Partial<AuthLocalization>,
-    name: string
+    field: string
     placeholder?: string,
     required?: boolean,
     label?: ReactNode,
@@ -41,12 +41,12 @@ export function UpdateFieldCard({
     const { isPending: sessionPending, updateUser } = useSession()
 
     const formAction = async (formData: FormData) => {
-        const value = formData.get(name) as string || ""
+        const value = formData.get(field) as string || ""
 
         if (value == defaultValue) return {}
 
         const { error } = await updateUser({
-            [name]: type == "number" ? parseFloat(value) : value
+            [field]: type == "number" ? parseFloat(value) : type == "boolean" ? value == "on" : value
         })
 
         return { error }
@@ -54,17 +54,17 @@ export function UpdateFieldCard({
 
     return (
         <SettingsCard
-            key={defaultValue}
+            key={`${defaultValue}`}
             className={className}
             classNames={classNames}
             defaultValue={defaultValue}
             description={description}
+            field={field}
             formAction={formAction}
             instructions={instructions}
             isPending={isPending || sessionPending}
             label={label}
             localization={localization}
-            name={name}
             placeholder={placeholder}
             required={required}
             type={type}
