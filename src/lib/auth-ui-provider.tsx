@@ -58,8 +58,8 @@ export type AuthUIContextType = {
      */
     avatarExtension: string
     /**
-     * Avatars are resized to this size before uploading
-     * @default 128
+     * Avatars are resized to 128px unless uploadAvatar is provided, then 256px
+     * @default 128 | 256
      */
     avatarSize: number
     /**
