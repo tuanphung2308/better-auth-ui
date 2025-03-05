@@ -7,8 +7,7 @@ import { type AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { cn } from "../../lib/utils"
-import type { SettingsCardClassNames } from "../settings/settings-card"
-import { SettingsCards } from "../settings/settings-cards"
+import { SettingsCards, type SettingsCardsClassNames } from "../settings/settings-cards"
 import {
     Card,
     CardContent,
@@ -27,10 +26,7 @@ export type AuthCardClassNames = {
     footer?: string
     footerLink?: string
     form?: AuthFormClassNames
-    settings?: {
-        base?: string
-        card?: SettingsCardClassNames
-    }
+    settings?: SettingsCardsClassNames
     header?: string
     title?: string
 }
@@ -94,7 +90,7 @@ export function AuthCard({
     if (view == "settings") return settingsUrl ? (
         <Loader2 className="animate-spin" />
     ) : (
-        <SettingsCards className={className} classNames={classNames?.settings} />
+        <SettingsCards className={cn(className)} classNames={classNames?.settings} />
     )
 
     return (

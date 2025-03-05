@@ -18,13 +18,18 @@ import { UpdateFieldCard } from "./update-field-card"
 import { UpdateNameCard } from "./update-name-card"
 import { UpdateUsernameCard } from "./update-username-card"
 
+export type SettingsCardsClassNames = {
+    base?: string
+    card?: SettingsCardClassNames
+}
+
 export function SettingsCards({
     className,
     classNames,
     localization
 }: {
     className?: string,
-    classNames?: SettingsCardClassNames,
+    classNames?: SettingsCardsClassNames,
     localization?: Partial<AuthLocalization>
 }) {
     const {
@@ -43,10 +48,10 @@ export function SettingsCards({
     const isPending = sessionPending || accountsPending
 
     return (
-        <div className={cn("w-full max-w-xl flex flex-col gap-4 items-center", className)}>
+        <div className={cn("w-full max-w-xl flex flex-col gap-4 items-center", className, classNames?.base)}>
             {avatar && (
                 <UpdateAvatarCard
-                    classNames={classNames}
+                    classNames={classNames?.card}
                     isPending={isPending}
                     localization={localization}
                 />
@@ -54,20 +59,20 @@ export function SettingsCards({
 
             {username && (
                 <UpdateUsernameCard
-                    classNames={classNames}
+                    classNames={classNames?.card}
                     isPending={isPending}
                     localization={localization}
                 />
             )}
 
             <UpdateNameCard
-                classNames={classNames}
+                classNames={classNames?.card}
                 isPending={isPending}
                 localization={localization}
             />
 
             <ChangeEmailCard
-                classNames={classNames}
+                classNames={classNames?.card}
                 isPending={isPending}
                 localization={localization}
             />
@@ -79,7 +84,7 @@ export function SettingsCards({
                 return (
                     <UpdateFieldCard
                         key={key}
-                        classNames={classNames}
+                        classNames={classNames?.card}
                         defaultValue={defaultValue}
                         description={description}
                         instructions={instructions}
@@ -97,8 +102,7 @@ export function SettingsCards({
             {credentials && (
                 <ChangePasswordCard
                     accounts={accounts}
-                    className={className}
-                    classNames={classNames}
+                    classNames={classNames?.card}
                     isPending={isPending}
                     localization={localization}
                 />
@@ -107,7 +111,7 @@ export function SettingsCards({
             {providers?.length && (
                 <ProvidersCard
                     accounts={accounts}
-                    classNames={classNames}
+                    classNames={classNames?.card}
                     isPending={isPending}
                     localization={localization}
                     refetch={refetch}
@@ -116,7 +120,7 @@ export function SettingsCards({
             )}
 
             <SessionsCard
-                classNames={classNames}
+                classNames={classNames?.card}
                 isPending={isPending}
                 localization={localization}
             />
@@ -124,7 +128,7 @@ export function SettingsCards({
             {deleteUser && (
                 <DeleteAccountCard
                     accounts={accounts}
-                    classNames={classNames}
+                    classNames={classNames?.card}
                     isPending={isPending}
                     localization={localization}
                 />
