@@ -68,7 +68,8 @@ The [`<AuthUIProvider>`](/components/auth-ui-provider) can be fully customized w
 Create dynamic route segments for authentication views in `app/auth/[pathname]/page.tsx`.
 
 ```tsx title="app/auth/[pathname]/page.tsx"
-import { AuthCard, authViewPaths } from "@daveyplate/better-auth-ui"
+import { AuthCard } from "@daveyplate/better-auth-ui"
+import { authViewPaths } from "@daveyplate/better-auth-ui/server"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 
