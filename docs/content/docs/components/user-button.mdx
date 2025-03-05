@@ -40,7 +40,7 @@ import { UserButton } from "@daveyplate/better-auth-ui";
 export default function Example() {
   return (
     <UserButton />
-  );
+  )
 }
 ```
 
@@ -55,7 +55,7 @@ The `size="full"` prop turns the UserButton into a wide button, showing the user
 import { UserButton } from "@daveyplate/better-auth-ui";
 
 export default function Example() {
-  return <UserButton size="full" />;
+  return <UserButton size="full" />
 }
 ```
 
@@ -65,29 +65,26 @@ You can fully customize the appearance of the UserButton component with [`UserBu
 
 Here's an example that drastically customizes the styling:
 
+<img alt="Seto" src="/screenshots/custom-user-button-dark.png" className="rounded-lg hidden dark:block w-64" />
+<img alt="Seto" src="/screenshots/custom-user-button-light.png" className="rounded-lg dark:hidden w-64" />
+
 ```tsx
 import { UserButton } from "@daveyplate/better-auth-ui";
 
 export default function Example() {
   return (
     <UserButton
-      size="full"
+      className="border-destructive w-64 bg-destructive/30"
       classNames={{
-        trigger: {
-          base: "bg-primary hover:bg-primary/90 text-white rounded-lg py-2 px-4 gap-2",
-          skeleton: "bg-primary/20",
-        },
         content: {
-          base: "min-w-56",
-          menuItem: "text-gray-900 dark:text-gray-300 hover:bg-primary/10",
-          separator: "bg-gray-300 dark:bg-gray-700",
           avatar: {
-            fallback: "bg-primary text-white",
-          },
-        },
+            fallback: "bg-destructive text-white"
+          }
+        }
       }}
+      size="full"
     />
-  );
+  )
 }
 ```
 
