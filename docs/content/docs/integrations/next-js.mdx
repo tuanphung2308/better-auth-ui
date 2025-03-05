@@ -9,9 +9,9 @@ This guide covers integrating `@daveyplate/better-auth-ui` into your Next.js pro
 
 ## App Router
 
-Follow these steps to set up Better Auth UI in your [Next.js](https://nextjs.org) project using the **App Router**:
+Follow these steps to set up `@daveyplate/better-auth-ui` in your [Next.js](https://nextjs.org) project using the **App Router**:
 
-### 1. Setting up `AuthUIProvider`
+### 1. Setting up AuthUIProvider
 
 The first step is to set up the [`<AuthUIProvider>`](/components/auth-ui-provider) client component with your [`authClient`](https://www.better-auth.com/docs/installation#create-client-instance), wrapping your layout. This is required to provide the context & hooks to your authentication components across your application.
 
@@ -64,9 +64,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 The [`<AuthUIProvider>`](/components/auth-ui-provider) can be fully customized with plugins, styles, localization and more. For more information and all available props, see the [`<AuthUIProvider>`](/components/auth-ui-provider) component documentation.
 
-### 2. Setting up `AuthCard`
+### 2. Creating Auth Pages
 
-Create dynamic route segments for authentication views in `app/auth/[pathname]/page.tsx`.
+Create a dynamic route segment for authentication views in `app/auth/[pathname]/page.tsx`.
 
 ```tsx title="app/auth/[pathname]/page.tsx"
 import { AuthCard } from "@daveyplate/better-auth-ui"
@@ -102,22 +102,82 @@ The newly created dynamic route covers the following paths by default:
 
 Ensure that any links to the authentication process utilize these routes accordingly. All routes will render the `<AuthCard />` component and automatically handle navigation and authentication flow.
 
-### 3. Setting up `UserButton`
-
-Create a `UserButton` component to display the user's profile and authentication actions.
-
-```tsx
-import { UserButton } from "@daveyplate/better-auth-ui"
-
-export default function UserButtonComponent() {
-    return (
-        <UserButton />
-    )
-}
-```
-
 ---
 
 ## Pages Router
 
----
+Follow these steps to set up `@daveyplate/better-auth-ui` in your [Next.js](https://nextjs.org) project using the **Pages Router**:
+
+### 1. Setting up AuthUIProvider
+
+First set up the [`<AuthUIProvider>`](/components/auth-ui-provider) within your custom App component in `_app.tsx`.
+
+```tsx title="pages/_app.tsx"
+import type { AppProps } from 'next/app'
+import { AuthUIProvider } from '@daveyplate/better-auth-ui'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+
+import { authClient } from '@/lib/auth-client'
+
+export default function App({ Component, pageProps }: { Component: any, pageProps: any }) {
+    const router = useRouter()
+
+    return (
+        <AuthUIProvider
+            authClient={authClient}
+            navigate={router.push}
+            replace={router.replace}
+            onSessionChange={() => router.reload()}
+            LinkComponent={Link}
+        >
+            <Component {...pageProps} />
+        </AuthUIProvider>
+    )
+}
+```
+
+Now the authentication context is available across your entire application.
+
+### 2. Creating Auth Pages
+
+Create a page with a dynamic segment in your Pages directory in `pages/auth/[pathname].tsx`
+
+```tsx title="pages/auth/[pathname].tsx"
+import { AuthCard } from '@daveyplate/better-auth-ui'
+import { authViewPaths } from "@daveyplate/better-auth-ui/server"
+import { GetStaticPaths } from 'next'
+
+export default function AuthPage({
+    params: { pathname }
+}: {
+    params: { pathname: string }
+}) {
+    return (
+        <div className="flex flex-col items-center justify-center min-h-screen">
+            <AuthCard pathname={pathname} />
+        </div>
+    )
+}
+
+export async function getStaticPaths() {
+    return {
+        paths: Object.values(authViewPaths).map((pathname) => ({ params: { pathname } })),
+        fallback: false
+    }
+}
+
+export async function getStaticProps({ params }: { params: { pathname: string } }) {
+    return { props: { pathname: params.pathname } }
+}
+```
+
+With this setup, the following routes will automatically handle their associated views:
+
+- `/auth/sign-in` – Sign in via email/password and social providers
+- `/auth/sign-up` – New user registration
+- `/auth/magic-link` – Magic link email login
+- `/auth/forgot-password` – Initiate forgotten password reset
+- `/auth/reset-password` – Reset password after receiving email
+- `/auth/sign-out` – Log user out of account
+- `/auth/callback` – Internal route to handle OAuth callbacks (do not navigate to this route directly)
