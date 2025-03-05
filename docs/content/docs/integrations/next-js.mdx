@@ -9,13 +9,11 @@ This guide covers integrating `@daveyplate/better-auth-ui` into your Next.js pro
 
 Follow these steps to set up Better Auth UI in your [Next.js](https://nextjs.org) project using the **App Router**:
 
-### Setting up `AuthUIProvider`
+### 1. Setting up `AuthUIProvider`
 
-The first step is to set up the `AuthUIProvider` provider as a client component wrapping your root layout. It provides the context & hooks to your authentication components across your application.
+The first step is to set up the [`<AuthUIProvider>`](/components/auth-ui-provider) client component with your [`authClient`](https://www.better-auth.com/docs/installation#create-client-instance), wrapping your layout. This is required to provide the context & hooks to your authentication components across your application.
 
-`/app/providers.tsx`
-
-```tsx
+```tsx title="app/providers.tsx"
 "use client"
 
 import { AuthUIProvider } from "@daveyplate/better-auth-ui"
@@ -41,14 +39,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
 ```
 
 <small>
-**Note**: Since the Next.js **App Router** caches routes by default, navigation to protected routes may fail until you perform a `router.refresh()` to clear the cache. To prevent this issue, you must use `router.refresh()` in the provided `onSessionChange` function. This call forces Next.js to clear the router cache and reload middleware-protected content, ensuring the middleware accurately reflects the current auth state.
+**Note**: Since the Next.js **App Router** caches routes by default, navigation to protected routes may fail until you perform a `router.refresh()` to clear the cache. To prevent this issue, you must use `router.refresh()` in the provided `onSessionChange` callback. This forces Next.js to clear the router cache and reload middleware-protected content, ensuring subsequent navigations accurately reflect the current auth state.
 </small>
 
-Once configured, place the Providers component in your root layout:
+Once configured, wrap your layout component with the `Providers` component:
 
-`/app/layout.tsx`
 
-```tsx
+```tsx title="app/layout.tsx"
 import { Providers } from "./providers"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -61,3 +58,44 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   )
 }
 ```
+
+The [`<AuthUIProvider>`](/components/auth-ui-provider) can be fully customized with plugins, styles, localization and more. For more information and all available props, see the [`<AuthUIProvider>`](/components/auth-ui-provider) component documentation.
+
+### 2. Setting up `AuthCard`
+
+Create dynamic route segments for authentication views in `app/auth/[pathname]/page.tsx`.
+
+```tsx title="app/auth/[pathname]/page.tsx"
+import { AuthCard, authViewPaths } from "@daveyplate/better-auth-ui"
+import Link from "next/link"
+import { cn } from "@/lib/utils"
+
+export function generateStaticParams() {
+    return Object.values(authViewPaths).map((pathname) => ({ pathname }))
+}
+
+export default async function AuthPage(
+    { params }: { params: { pathname: string } }
+) {
+    const { pathname } = params
+
+    return (
+        <div className="flex flex-col items-center my-auto">
+            <AuthCard pathname={pathname} />
+        </div>
+    )
+}
+```
+
+The newly created dynamic route covers the following paths by default:
+
+- `/auth/sign-in` – Sign in via email/password and social providers
+- `/auth/sign-up` – New account registration
+- `/auth/magic-link` – Email login without a password
+- `/auth/forgot-password` – Trigger email to reset forgotten password
+- `/auth/reset-password` – Set new password after receiving reset link
+- `/auth/sign-out` – Log the user out of the application
+- `/auth/settings` – User account management page (requires authentication)
+- `/auth/callback` – Internal route to handle Auth callbacks (do not use directly)
+
+Ensure that any links to the authentication process utilize these routes accordingly. All routes will render the `<AuthCard />` component and automatically handle navigation and authentication flow.
