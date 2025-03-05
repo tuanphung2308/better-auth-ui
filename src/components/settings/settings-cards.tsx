@@ -34,6 +34,7 @@ export function SettingsCards({
         credentials,
         deleteUser,
         hooks: { useSession, useListAccounts },
+        providers,
         username
     } = useContext(AuthUIContext)
     const { data: sessionData, isPending: sessionPending } = useAuthenticate()
@@ -103,14 +104,16 @@ export function SettingsCards({
                 />
             )}
 
-            <ProvidersCard
-                accounts={accounts}
-                classNames={classNames}
-                isPending={isPending}
-                localization={localization}
-                refetch={refetch}
-                unlinkAccount={(providerId: string) => authClient.unlinkAccount({ providerId })}
-            />
+            {providers?.length && (
+                <ProvidersCard
+                    accounts={accounts}
+                    classNames={classNames}
+                    isPending={isPending}
+                    localization={localization}
+                    refetch={refetch}
+                    unlinkAccount={(providerId: string) => authClient.unlinkAccount({ providerId })}
+                />
+            )}
 
             <SessionsCard
                 classNames={classNames}
