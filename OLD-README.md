@@ -17,7 +17,7 @@ Coming Soon: Settings Cards, Email Templates, NextUI Port
 To install the package, run:
 
 ```bash
-npm install @daveyplate/better-auth-ui
+npm install @daveyplate/better-auth-ui@latest
 ```
 
 Add the following to tailwind.config.ts:

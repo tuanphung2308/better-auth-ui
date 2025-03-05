@@ -19,6 +19,7 @@ The first step is to set up the [`<AuthUIProvider>`](/components/auth-ui-provide
 "use client"
 
 import { AuthUIProvider } from "@daveyplate/better-auth-ui"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 import { authClient } from "@/lib/auth-client"
@@ -70,8 +71,6 @@ Create dynamic route segments for authentication views in `app/auth/[pathname]/p
 ```tsx title="app/auth/[pathname]/page.tsx"
 import { AuthCard } from "@daveyplate/better-auth-ui"
 import { authViewPaths } from "@daveyplate/better-auth-ui/server"
-import Link from "next/link"
-import { cn } from "@/lib/utils"
 
 export function generateStaticParams() {
     return Object.values(authViewPaths).map((pathname) => ({ pathname }))
