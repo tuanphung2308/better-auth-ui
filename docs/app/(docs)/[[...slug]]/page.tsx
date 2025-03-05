@@ -1,9 +1,12 @@
+import { createTypeTable } from "fumadocs-typescript/ui"
 import { Tab, Tabs } from "fumadocs-ui/components/tabs"
 import defaultMdxComponents from "fumadocs-ui/mdx"
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/page"
 import { notFound } from "next/navigation"
 
 import { source } from "@/lib/source"
+
+const { AutoTypeTable } = createTypeTable()
 
 export default async function Page(props: {
     params: Promise<{ slug?: string[] }>
@@ -28,6 +31,7 @@ export default async function Page(props: {
             <DocsBody>
                 <MDX
                     components={{
+                        AutoTypeTable,
                         Tab,
                         Tabs,
                         ...defaultMdxComponents

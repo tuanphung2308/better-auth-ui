@@ -37,38 +37,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
 The following props can be passed to the `<AuthUIProvider>` component:
 
-| Prop | Example | Type | Required |
-|------|---------|------|----------|
-| `authClient` | `authClient={authClient}` | `AuthClient` | Yes |
-| `avatar` | `avatar={true}` | `boolean` | - |
-| `avatarExtension` | `avatarExtension="png"` | `string` | - |
-| `avatarSize` | `avatarSize={256}` | `number` | - |
-| `basePath` | `basePath="/auth"` | `string` | - |
-| `colorIcons` | `colorIcons={true}` | `boolean` | - |
-| `credentials` | `credentials={true}` | `boolean` | - |
-| `defaultRedirectTo` | `defaultRedirectTo="/"` | `string` | - |
-| `deleteAccountVerification` | `deleteAccountVerification={true}` | `boolean` | - |
-| `deleteUser` | `deleteUser={true}` | `boolean` | - |
-| `forgotPassword` | `forgotPassword={true}` | `boolean` | - |
-| `freshAge` | `freshAge={86400}` | `number` | - |
-| `localization` | `localization={{ signIn: "Sign In" }}` | `AuthLocalization` | - |
-| `magicLink` | `magicLink={true}` | `boolean` | - |
-| `multiSession` | `multiSession={true}` | `boolean` | - |
-| `nameRequired` | `nameRequired={true}` | `boolean` | - |
-| `noColorIcons` | `noColorIcons={true}` | `boolean` | - |
-| `optimistic` | `optimistic={true}` | `boolean` | - |
-| `passkey` | `passkey={true}` | `boolean` | - |
-| `providers` | `providers={["github", "google"]}` | `SocialProvider[]` | - |
-| `settingsUrl` | `settingsUrl="/user/settings"` | `string` | - |
-| `signUpFields` | `signUpFields={["name", "age", "company"]}` | `string[]` | - |
-| `username` | `username={true}` | `boolean` | - |
-| `additionalFields` | `additionalFields={{ age: { label: "Age", type: "number" } }}` | `Record<string, { label, type, placeholder?, required?, description?, instructions? }>` | - |
-| `viewPaths` | `viewPaths={{ signIn: "login" }}` | `{callback, forgotPassword, magicLink, resetPassword, settings, signIn, signOut, signUp}` | - |
-| `navigate` | `navigate={(url) => router.push(url)}` | `(href: string) => void` | - |
-| `onSessionChange` | `onSessionChange={() => router.refresh()}` | `() => void` | - |
-| `replace` | `replace={(url) => router.replace(url)}` | `(href: string) => void` | - |
-| `uploadAvatar` | `uploadAvatar={async (file) => await uploadAvatar(file)}` | `(file: File) => Promise<string \| undefined \| null>` | - |
-| `LinkComponent` | `LinkComponent={Link}` | `React.ComponentType<{ href: string, to: unknown, className?: string, children: ReactNode }>` | - |
+<AutoTypeTable path="../src/lib/auth-ui-provider.tsx" name="AuthUIProviderProps" />
 
 ---
 

@@ -9,4 +9,6 @@ export const authViewPaths = {
     signUp: "sign-up",
 }
 
+export type AuthViewPaths = typeof authViewPaths
+
 export type AuthView = keyof typeof authViewPaths

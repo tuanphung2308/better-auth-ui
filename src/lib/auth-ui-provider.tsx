@@ -9,7 +9,7 @@ import { useListSessions } from "../hooks/use-list-sessions"
 import { useSession } from "../hooks/use-session"
 
 import { type AuthLocalization, authLocalization } from "./auth-localization"
-import { authViewPaths } from "./auth-view-paths"
+import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
 import type { SocialProvider } from "./social-providers"
 
 const DefaultLink = (
@@ -47,44 +47,180 @@ const defaultHooks = {
 
 export type AuthUIContextType = {
     authClient: Omit<ReturnType<typeof createAuthClient>, "signUp">
+    /**
+     * Enable or disable avatar support
+     * @default false
+     */
     avatar?: boolean
+    /**
+     * File extension for avatar uploads
+     * @default "png"
+     */
     avatarExtension: string
+    /**
+     * Avatars are resized to this size before uploading
+     * @default 128
+     */
     avatarSize: number
+    /**
+     * Base path for the auth views
+     * @default "/auth"
+     */
     basePath: string
+    /**
+     * Force color icons for both light and dark themes
+     * @default false
+     */
     colorIcons?: boolean
+    /**
+     * Enable or disable credentials support
+     * @default true
+     */
     credentials?: boolean
+    /**
+     * Default redirect path after sign in
+     * @default "/"
+     */
     defaultRedirectTo: string
+    /**
+     * Enable or disable email verification for account deletion
+     * @default false
+     */
     deleteAccountVerification?: boolean
+    /**
+     * Enable or disable user account deletion
+     * @default false
+     */
     deleteUser?: boolean
+    /**
+     * Enable or disable forgot password support
+     * @default false
+     */
     forgotPassword?: boolean
+    /**
+     * Freshness age for session data
+     * @default 60 * 60 * 24
+     */
     freshAge: number
     localization: AuthLocalization
+    /**
+     * Enable or disable magic link support
+     * @default false
+     */
     magicLink?: boolean
+    /**
+     * Enable or disable multi-session support
+     * @default false
+     */
     multiSession?: boolean
+    /**
+     * Enable or disable name requirement for sign up
+     * @default true
+     */
     nameRequired?: boolean
+    /**
+     * Force black & white icons for both light and dark themes
+     * @default false
+     */
     noColorIcons?: boolean
+    /**
+     * Perform some user updates optimistically
+     * @default false
+     */
     optimistic?: boolean
+    /**
+     * Enable or disable passkey support
+     * @default false
+     */
     passkey?: boolean
+    /**
+     * Enable or disable persisting the client with better-auth-tanstack
+     * @default false
+     */
     persistClient?: boolean
+    /**
+     * Array of social providers to enable
+     * @remarks `SocialProvider[]`
+     */
     providers?: SocialProvider[]
+    /**
+     * Enable or disable remember me support
+     * @default false
+     */
     rememberMe?: boolean
+    /**
+     * Array of fields to show in `<SettingsCards />`
+     * @default ["name"]
+     */
     settingsFields?: string[]
+    /**
+     * Custom settings URL
+     */
     settingsUrl?: string
+    /**
+     * Array of fields to show in Sign Up form
+     * @default ["name"]
+     */
     signUpFields?: string[]
+    /**
+     * Enable or disable username support
+     * @default false
+     */
     username?: boolean
+    /**
+     * Additional fields for users
+     * @remarks `AdditionalFields`
+     */
     additionalFields?: AdditionalFields
+    /**
+     * @internal
+     */
     hooks: typeof defaultHooks
-    viewPaths: typeof authViewPaths
+    viewPaths: AuthViewPaths
+    /**
+     * Navigate to a new URL
+     * @default window.location.href
+     */
     navigate: typeof defaultNavigate
+    /**
+     * Called whenever the session changes
+     */
     onSessionChange?: () => void
+    /**
+     * Replace the current URL
+     * @default navigate
+     */
     replace: typeof defaultReplace
+    /**
+     * Upload an avatar image and return the URL string
+     * @remarks `(file: File) => Promise<string>`
+     */
     uploadAvatar?: (file: File) => Promise<string | undefined | null>
+    /**
+     * Custom link component for navigation
+     * @default <a>
+     */
     LinkComponent: Link
 }
 
 export type AuthUIProviderProps = {
+    /**
+     * Your better-auth createAuthClient
+     * @default Required
+     * @remarks `AuthClient`
+     */
     authClient: ReturnType<typeof createAuthClient>
-    viewPaths?: Partial<typeof authViewPaths>
+    /**
+     * Customize the paths for the auth views
+     * @default authViewPaths
+     * @remarks `AuthViewPaths`
+     */
+    viewPaths?: Partial<AuthViewPaths>
+    /**
+     * Customize the localization strings
+     * @default authLocalization
+     * @remarks `AuthLocalization`
+     */
     localization?: Partial<AuthLocalization>
 } & Partial<Omit<AuthUIContextType, "viewPaths" | "localization">>
 
