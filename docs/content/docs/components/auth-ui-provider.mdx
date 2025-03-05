@@ -1,17 +1,126 @@
 ---
 title: <AuthUIProvider>
-description: Components
 ---
 
-## Code Block
+The `<AuthUIProvider>` wraps your application with authentication context, providing essential hooks, settings, and methods required by authentication-related components and hooks throughout your app.
 
-```js
-console.log('Hello World');
+Basic usage:
+
+```tsx title="providers.tsx"
+"use client"
+
+import { AuthUIProvider } from '@daveyplate/better-auth-ui'
+import { authClient } from '@/lib/auth-client'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
+
+  return (
+    <AuthUIProvider
+      authClient={authClient}
+      navigate={router.push}
+      replace={router.replace}
+      onSessionChange={() => router.refresh()}
+      LinkComponent={Link}
+    >
+      {children}
+    </AuthUIProvider>
+  )
+}
 ```
 
-## Cards
+---
 
-<Cards>
-    <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-    <Card title="Learn more about Fumadocs" href="https://fumadocs.vercel.app" />
-</Cards>
+## Reference
+
+The following props can be passed to the `<AuthUIProvider>` component:
+
+| Prop | Default | Example & Type | Required |
+|------|---------|---------------|----------|
+| `authClient` | - | `ReturnType<typeof createAuthClient>` | Yes |
+| `avatar` | `avatar={false}` | `boolean` | - |
+| `avatarExtension` | `avatarExtension="png"` | `"png" \| "webp"` | - |
+| `avatarSize` | `avatarSize={128}` | `number` | - |
+| `basePath` | `basePath="/auth"` | `string` | - |
+| `colorIcons` | `colorIcons={false}` | `boolean` | - |
+| `credentials` | `credentials={true}` | `boolean` | - |
+| `defaultRedirectTo` | `defaultRedirectTo="/"` | `string` | - |
+| `deleteAccountVerification` | `deleteAccountVerification={false}` | `boolean` | - |
+| `deleteUser` | `deleteUser={false}` | `boolean` | - |
+| `forgotPassword` | `forgotPassword={true}` | `boolean` | - |
+| `freshAge` | `freshAge={86400}` | `number` | - |
+| `localization` | `localization={{...}}` | `Partial<AuthLocalization>` | - |
+| `magicLink` | `magicLink={false}` | `boolean` | - |
+| `multiSession` | `multiSession={false}` | `boolean` | - |
+| `nameRequired` | `nameRequired={false}` | `boolean` | - |
+| `noColorIcons` | `noColorIcons={false}` | `boolean` | - |
+| `optimistic` | `optimistic={false}` | `boolean` | - |
+| `passkey` | `passkey={false}` | `boolean` | - |
+| `providers` | `providers={["github", "google"]}` | `SocialProvider[]` | - |
+| `settingsUrl` | `settingsUrl="/settings"` | `string` | - |
+| `viewPaths` | `viewPaths={{ signIn: "login" }}` | `Partial<typeof authViewPaths>` | - |
+| `localization` | `localization={{ signIn: "Login" }}` | `Partial<AuthLocalization>` | - |
+| `navigate` | `navigate={(url) => router.push(url)}` | `(url: string) => void` | - |
+| `replace` | `replace={(url) => router.replace(url)}` | `(url: string) => void` | - |
+| `LinkComponent` | `LinkComponent={Link}` | `React.ComponentType<{ href: string, to: unknown, className?: string, children: ReactNode }>` | - |
+| `onSessionChange` | `onSessionChange={() => router.refresh()}` | `() => void` | - |
+| `uploadAvatar` | `uploadAvatar={(file) => Promise.resolve(url)}` | `(file: File) => Promise<string \| undefined \| null>` | - |
+| `hooks` | `hooks={{ useSession, useListAccounts, useListDeviceSessions, useListSessions, useIsRestoring }}` | `typeof defaultHooks` | - |
+| `authClient` | - | `ReturnType<typeof createAuthClient>` | Yes |
+
+---
+
+## Example
+
+A minimal Next.js layout file using the `AuthUIProvider`:
+
+```tsx
+"use client"
+
+import { AuthUIProvider } from "@daveyplate/better-auth-ui"
+import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
+
+  return (
+    <html lang="en">
+      <body>
+        <AuthUIProvider
+          authClient={authClient}
+          navigate={router.push}
+          replace={router.replace}
+          onSessionChange={() => router.refresh()}
+          providers={["google", "github"]} // multiple providers supported
+          credentials={true}
+          multiSession={true} // enable multiple sessions per device
+          username={true} // enable username sign-in
+          magicLink={true}
+          passkey={true}
+          avatar={true}
+          uploadAvatar={(file) => {
+            const formData = new FormData()
+            formData.append("avatar", file)
+            return fetch("/api/uploadAvatar", { method: "POST", body: formData })
+              .then((res) => res.json())
+              .then((data) => data.avatarUrl)
+          }}
+          settingsUrl="/user/settings"
+          LinkComponent={Link}
+        >
+          {children}
+        </AuthUIProvider>
+      </body>
+    </html>
+  )
+}
+```
+
+
+This comprehensive setup covers all possible features—use only what you need!
+
+---

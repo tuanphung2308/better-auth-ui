@@ -6,7 +6,7 @@ const withMDX = createMDX()
 const config = {
     reactStrictMode: true,
     output: "export",
-    basePath: process.env.NODE_ENV == "production" ? "/better-auth-ui" : "",
+    // basePath: process.env.NODE_ENV == "production" ? "/better-auth-ui" : "",
     images: { unoptimized: true }
 }
 

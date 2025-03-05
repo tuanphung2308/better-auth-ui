@@ -99,3 +99,17 @@ The newly created dynamic route covers the following paths by default:
 - `/auth/callback` – Internal route to handle Auth callbacks (do not use directly)
 
 Ensure that any links to the authentication process utilize these routes accordingly. All routes will render the `<AuthCard />` component and automatically handle navigation and authentication flow.
+
+### 3. Setting up `UserButton`
+
+Create a `UserButton` component to display the user's profile and authentication actions.
+
+```tsx
+import { UserButton } from "@daveyplate/better-auth-ui"
+
+export default function UserButtonComponent() {
+    return (
+        <UserButton />
+    )
+}
+```

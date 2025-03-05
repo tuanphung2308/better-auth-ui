@@ -1,0 +1,33 @@
+---
+title: WIP
+---
+
+## Advanced Configuration
+
+### Create Custom Authentication Flow
+
+You may use `additionalFields` to define extra fields required during signup or settings:
+
+```tsx
+<AuthUIProvider
+  authClient={authClient}
+  additionalFields={{
+    company: {
+      label: "Company",
+      placeholder: "Your company name",
+      description: "Enter your company name",
+      required: true,
+      type: "string"
+    },
+    age: {
+      label: "Age",
+      placeholder: "Your age",
+      description: "Enter your age",
+      required: false,
+      type: "number"
+    }
+  }}
+>
+  {children}
+</AuthUIProvider>
+```
