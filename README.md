@@ -2,9 +2,7 @@
 
 Plug & play shadcn/ui auth components for better-auth.
 
-<img src="docs/public/screenshots/sign-in-dark.png" alt="Description" width="100" />
-
-![better-auth-ui](docs/public/screenshots/sign-in-dark.png){width=100}![better-auth-ui](docs/public/screenshots/sign-in-light.png){width=100}
+<img src="docs/public/screenshots/sign-in-dark.png" alt="Sign In Dark" width="50%" /><img src="docs/public/screenshots/sign-in-light.png" alt="Sign In Light" width="50%" />
 
 Fully customizable!
 
