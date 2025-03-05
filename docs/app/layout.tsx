@@ -19,7 +19,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                         },
                     }}
                     theme={{
-
+                        attribute: "class"
                     }}
                 >
                     {children}
