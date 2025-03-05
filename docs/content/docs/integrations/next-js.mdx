@@ -77,9 +77,9 @@ export function generateStaticParams() {
 }
 
 export default async function AuthPage(
-    { params }: { params: { pathname: string } }
+    { params }: { params: Promise<{ pathname: string }> }
 ) {
-    const { pathname } = params
+    const { pathname } = await params
 
     return (
         <div className="flex flex-col items-center my-auto">
