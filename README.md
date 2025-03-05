@@ -1,6 +1,6 @@
 # @daveyplate/better-auth-ui
 
-Plug & play shadcn/ui auth components for better-auth.
+Plug & play shadcn/ui auth components for [better-auth](https://better-auth.com).
 
 *Own your auth.*
 
