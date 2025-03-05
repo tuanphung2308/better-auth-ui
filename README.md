@@ -2,6 +2,8 @@
 
 Plug & play shadcn/ui auth components for better-auth.
 
+*Own your auth.*
+
 [Demo](https://newtech.dev/auth/login) - [Documentation](https://better-auth-ui.com)
 
 ---
