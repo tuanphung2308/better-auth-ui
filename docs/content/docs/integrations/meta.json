@@ -3,6 +3,7 @@
     "defaultOpen": true,
     "pages": [
         "next-js",
+        "react",
         "better-auth-tanstack"
     ]
 }
