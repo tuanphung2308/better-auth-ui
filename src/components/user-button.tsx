@@ -1,6 +1,5 @@
 "use client"
 
-import { type createAuthClient } from "better-auth/react"
 import {
     ChevronsUpDown,
     LogInIcon,
@@ -42,9 +41,6 @@ export type UserButtonClassNames = {
         separator?: string
     }
 }
-
-type AuthClient = ReturnType<typeof createAuthClient>
-type SessionData = AuthClient["$Infer"]["Session"]
 
 export function UserButton({
     className,
@@ -135,7 +131,6 @@ export function UserButton({
                         </>
                     </Button>
                 )}
-
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
