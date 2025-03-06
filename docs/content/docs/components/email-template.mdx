@@ -1,0 +1,52 @@
+---
+title: <EmailTemplate />
+---
+
+The `<EmailTemplate />` component lets you easily build responsive HTML emails with consistent styling for your authentication flows. It's specifically designed to integrate seamlessly with Better Auth.
+
+Here's how you can quickly create an email verification template:
+
+## Usage Example for Email Verification
+
+This example demonstrates implementing the email verification notification with the `<EmailTemplate />`:
+
+```tsx title="lib/auth.ts"
+import { Resend } from "resend"
+import { EmailTemplate } from "@daveyplate/better-auth-ui/server"
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+
+export const auth = betterAuth({
+    emailAndPassword: {
+        enabled: true,
+        requireEmailVerification: true,
+    },
+    emailVerification: {
+        sendVerificationEmail: async ({ user, url, token }, request) => {
+            await resend.emails.send({
+                from: fromEmail,
+                to: user.email,
+                subject: "Verify your email address",
+                react: EmailTemplate({
+                    preview: "Verify Email",
+                    content: "Click the button below to verify your email.",
+                    action: "Verify Email",
+                    url
+                })
+            })
+        },
+        autoSignInAfterVerification: true,
+        sendOnSignUp: true
+    }
+})
+```
+
+This example demonstrates using the component specifically to send email verification messages. You can easily adapt it to suit other use cases like password reset, magic links, and more, by adjusting the `content`, `action`, and `preview`.
+
+## Reference
+
+The following props can be passed to the `<EmailTemplate />` component:
+
+<AutoTypeTable path="../src/components/email/email-template.tsx" name="EmailTemplateProps" />
+
+---

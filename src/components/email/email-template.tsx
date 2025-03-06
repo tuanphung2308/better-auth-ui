@@ -14,25 +14,30 @@ import {
     Text
 } from "@react-email/components"
 
+export interface EmailTemplateProps {
+    action: string
+    /** @default process.env.BASE_URL || process.env.NEXT_PUBLIC_BASE_URL */
+    baseUrl?: string
+    content: string
+    preview?: string
+    /** @default process.env.SITE_NAME || process.env.NEXT_PUBLIC_SITE_NAME */
+    siteName?: string
+    url: string
+    /** @default "vercel" */
+    variant?: "vercel"
+}
+
 export const EmailTemplate = ({
     action,
     baseUrl,
-    url,
     content,
     preview,
     siteName,
-    variant = "vercel"
-}: {
-    action: string
-    baseUrl?: string
-    content: string
-    url: string
-    preview?: string
-    siteName?: string
-    variant?: "vercel"
-}) => {
-    baseUrl = baseUrl || process.env.BASE_URL || process.env.NEXT_PUBLIC_BASE_URL!
-    siteName = siteName || process.env.SITE_NAME || process.env.NEXT_PUBLIC_SITE_NAME!
+    variant = "vercel",
+    url
+}: EmailTemplateProps) => {
+    baseUrl = baseUrl || process.env.BASE_URL || process.env.NEXT_PUBLIC_BASE_URL
+    siteName = siteName || process.env.SITE_NAME || process.env.NEXT_PUBLIC_SITE_NAME
 
     return (
         <Html>
@@ -138,7 +143,7 @@ export const EmailTemplate = ({
                             {" "}
 
                             <Link className="no-underline" href={baseUrl}>
-                                {baseUrl.replace("https://", "").replace("http://", "")}
+                                {baseUrl?.replace("https://", "").replace("http://", "")}
                             </Link>
                         </Text>
                     </Container>
