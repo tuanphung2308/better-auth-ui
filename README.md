@@ -24,6 +24,10 @@ Plug & play shadcn/ui auth components for [better-auth](https://better-auth.com)
 
 <img src="docs/public/screenshots/user-dropdown-dark.png" alt="User Dropdown Dark" width="182" /><img src="docs/public/screenshots/user-dropdown-light.png" alt="User Dropdown Light" width="182" />
 
+### Email Template
+
+<img src="docs/public/screenshots/email-template-dark.png" alt="Email Template Dark" width="384" /><img src="docs/public/screenshots/email-template-light.png" alt="Email Template Light" width="384" />
+
 ### Settings Cards
 
 <img src="docs/public/screenshots/settings-cards-dark.png" alt="Settings Cards Dark" width="384" /><img src="docs/public/screenshots/settings-cards-light.png" alt="Settings Cards Light" width="384" />
