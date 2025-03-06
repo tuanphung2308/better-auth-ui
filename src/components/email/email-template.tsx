@@ -67,7 +67,7 @@ export const EmailTemplate = ({
 
                         .action-button {
                             background-color: #000000 !important;
-                            color: #ffffff;
+                            color: #ffffff !important;
                         }
 
                         @media (prefers-color-scheme: dark) {
