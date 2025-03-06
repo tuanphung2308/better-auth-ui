@@ -1,5 +1,7 @@
 # @daveyplate/better-auth-ui
 
+<img src="docs/public/better-auth-ui-promo.png" alt="better-auth-ui" />
+
 Plug & play shadcn/ui auth components for [better-auth](https://better-auth.com).
 
 *Own your auth.*
