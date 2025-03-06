@@ -36,13 +36,8 @@ const eslintConfig = [
       "@stylistic/no-multiple-empty-lines": ["warn", { max: 1, maxEOF: 0, maxBOF: 0 }],
       "@stylistic/padding-line-between-statements": ["warn",
         { blankLine: "always", prev: "if", next: "*" },
-        { blankLine: "any", prev: "if", next: "return" },
-        { blankLine: "any", prev: "if", next: "if" },
-        { blankLine: "any", prev: "*", next: "if" },
-        { blankLine: "any", prev: ["const", "let", "var"], next: "*" },
-        { blankLine: "any", prev: ["*"], next: ["const", "let", "var"] },
-        { blankLine: "any", prev: ["const", "let", "var"], next: ["const", "let", "var"] },
-        { blankLine: "always", prev: "directive", next: "*" }, { blankLine: "any", prev: "directive", next: "directive" },
+        { blankLine: "always", prev: "directive", next: "*" },
+        { blankLine: "any", prev: "directive", next: "directive" },
         { blankLine: "always", prev: ["case", "default"], next: "*" }
       ],
       "@stylistic/jsx-sort-props": ["warn", {
