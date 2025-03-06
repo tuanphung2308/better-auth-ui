@@ -18,7 +18,7 @@ First, set up [`<AuthUIProvider>`](/components/auth-ui-provider) as it provides 
 ```tsx title="src/providers.tsx"
 import { AuthUIProvider } from "@daveyplate/better-auth-ui"
 import { authClient } from "@/lib/auth-client"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, NavLink } from "react-router-dom"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate()
