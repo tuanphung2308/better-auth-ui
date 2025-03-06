@@ -10,6 +10,9 @@ Here's how you can quickly create an email verification template:
 
 This example demonstrates implementing the email verification notification with the `<EmailTemplate />`:
 
+<img alt="Email Template Dark" src="/screenshots/email-template-dark.png" className="rounded-xl hidden dark:block w-sm" />
+<img alt="Email Template Light" src="/screenshots/email-template-light.png" className="rounded-xl dark:hidden w-sm" />
+
 ```tsx title="lib/auth.ts"
 import { Resend } from "resend"
 import { EmailTemplate } from "@daveyplate/better-auth-ui/server"
@@ -28,9 +31,11 @@ export const auth = betterAuth({
                 to: user.email,
                 subject: "Verify your email address",
                 react: EmailTemplate({
-                    preview: "Verify Email",
-                    content: "Click the button below to verify your email.",
                     action: "Verify Email",
+                    content: "Click the button below to verify your email.",
+                    preview: "Verify Email",
+                    siteName: "NEW-TECH",
+                    baseUrl: "https://newtech.dev"
                     url
                 })
             })
