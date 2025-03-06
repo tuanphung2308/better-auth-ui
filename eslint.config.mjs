@@ -28,7 +28,7 @@ const eslintConfig = [
       "@stylistic/quotes": "warn",
       "@stylistic/jsx-newline": ["warn", { prevent: true, allowMultilines: true }],
       "@stylistic/jsx-max-props-per-line": ["warn", { maximum: 1, when: "multiline" }],
-      "@stylistic/jsx-one-expression-per-line": "warn",
+      "@stylistic/jsx-one-expression-per-line": ["warn", { allow: "single-line" }],
       "@stylistic/jsx-first-prop-new-line": ["warn", "multiline"],
       "@stylistic/jsx-closing-bracket-location": ["warn"],
       "@stylistic/jsx-closing-tag-location": ["warn"],
