@@ -19,6 +19,8 @@ export interface EmailTemplateProps {
     /** @default process.env.BASE_URL || process.env.NEXT_PUBLIC_BASE_URL */
     baseUrl?: string
     content: string
+    /** @default `${baseUrl}/apple-touch-icon.png` */
+    imageUrl?: string
     preview?: string
     /** @default process.env.SITE_NAME || process.env.NEXT_PUBLIC_SITE_NAME */
     siteName?: string
@@ -31,12 +33,14 @@ export const EmailTemplate = ({
     action,
     baseUrl,
     content,
+    imageUrl,
     preview,
     siteName,
     variant = "vercel",
     url
 }: EmailTemplateProps) => {
     baseUrl = baseUrl || process.env.BASE_URL || process.env.NEXT_PUBLIC_BASE_URL
+    imageUrl = imageUrl || `${baseUrl}/apple-touch-icon.png`
     siteName = siteName || process.env.SITE_NAME || process.env.NEXT_PUBLIC_SITE_NAME
 
     return (
@@ -112,7 +116,7 @@ export const EmailTemplate = ({
                                 alt={siteName}
                                 className="my-0 mx-auto rounded-full"
                                 height="40"
-                                src={`${baseUrl}/apple-touch-icon.png`}
+                                src={imageUrl}
                                 width="40"
                             />
                         </Section>
