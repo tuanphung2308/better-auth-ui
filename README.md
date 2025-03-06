@@ -1,8 +1,6 @@
-# @daveyplate/better-auth-ui
+# @daveyplate/better-auth-ui - https://better-auth-ui.com
 
 <img src="docs/public/better-auth-ui-promo.png?v=1" alt="better-auth-ui" />
-
-https://better-auth-ui.com
 
 Plug & play shadcn/ui auth components for [better-auth](https://better-auth.com).
 
