@@ -1,6 +1,10 @@
 # @daveyplate/better-auth-ui
 
-<img src="docs/public/better-auth-ui-promo-dark.png" alt="better-auth-ui" />
+<picture>
+    <source srcset="docs/public/better-auth-ui-promo-dark.png" media="(prefers-color-scheme: dark)">
+    <source srcset="docs/public/better-auth-ui-promo-light.png" media="(prefers-color-scheme: light)">
+    <img src="docs/public/better-auth-ui-promo-dark.png" alt="Better Auth UI Logo">
+</picture>
 
 ## [better-auth-ui.com](https://better-auth-ui.com)
 
