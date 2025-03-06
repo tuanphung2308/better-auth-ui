@@ -8,16 +8,7 @@ The `<AuthCard />` component provides an interactive and customizable authentica
 
 Here's a basic example on how to use the `<AuthCard />` component within your application:
 
-```tsx
-import { AuthCard } from "@daveyplate/better-auth-ui"
-
-export default function AuthPage({ params }: { params: { pathname: string } }) {
-  return (
-    <div className="flex justify-center my-auto">
-      <AuthCard pathname={params.pathname} />
-    </div>
-  )
-}
+```tsx file=./auth-card/auth-page.example.tsx
 ```
 
 ---
@@ -81,7 +72,7 @@ You can thoroughly customize `<AuthCard />` components using TailwindCSS utility
 
 ### Full Example – Full Feature Usage
 
-This example uses most available options in a fully-featured setup:
+  This example uses most available options in a fully-featured setup:
 
 ```tsx
 import { AuthCard } from "@daveyplate/better-auth-ui"
