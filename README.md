@@ -2,9 +2,11 @@
 
 <img src="docs/public/better-auth-ui-promo.png?v=1" alt="better-auth-ui" />
 
+https://better-auth-ui.com
+
 Plug & play shadcn/ui auth components for [better-auth](https://better-auth.com).
 
-*Own your auth.*
+- *Own your auth.*
 
 [Demo](https://newtech.dev/auth/login) - [Documentation](https://better-auth-ui.com)
 
