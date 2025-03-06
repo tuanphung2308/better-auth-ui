@@ -6,7 +6,7 @@ import { AuthUIContext } from "../lib/auth-ui-provider"
 
 export function useListSessions() {
     const { authClient } = useContext(AuthUIContext)
-    const { data: sessionData, isPending: sessionPending } = authClient.useSession()
+    const { data: sessionData } = authClient.useSession()
 
     const [sessions, setSessions] = useState<Session[] | null>(null)
     const [isPending, setIsPending] = useState(true)

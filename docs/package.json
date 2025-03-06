@@ -24,6 +24,7 @@
         "ts-morph": "^25.0.1"
     },
     "devDependencies": {
+        "@biomejs/biome": "1.9.4",
         "@tailwindcss/postcss": "^4.0.10",
         "@types/mdx": "^2.0.13",
         "@types/node": "22.13.9",

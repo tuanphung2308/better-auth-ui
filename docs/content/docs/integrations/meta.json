@@ -1,9 +1,5 @@
 {
     "icon": "LayoutGrid",
     "defaultOpen": true,
-    "pages": [
-        "next-js",
-        "react",
-        "better-auth-tanstack"
-    ]
+    "pages": ["next-js", "react", "better-auth-tanstack"]
 }

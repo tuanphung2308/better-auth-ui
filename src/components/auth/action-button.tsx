@@ -19,7 +19,10 @@ export function ActionButton({
     const { pending } = useFormStatus()
 
     return (
-        <Button className={cn("w-full", className)} disabled={pending || isLoading}>
+        <Button
+            className={cn("w-full", className)}
+            disabled={pending || isLoading}
+        >
             {pending || isLoading ? (
                 <Loader2 className="animate-spin" />
             ) : (

@@ -3,6 +3,11 @@
     "homepage": "https://better-auth-ui.com",
     "version": "1.2.14",
     "description": "Plug & play shadcn/ui components for better-auth",
+    "scripts": {
+        "build": "tsup --clean --dts",
+        "dev": "tsc-watch --onSuccess 'biome check' & nodemon --watch . -e '*' --exec 'tsx code-sync.ts' -q",
+        "prepublishOnly": "rm -rf dist && tsup --clean --dts"
+    },
     "type": "module",
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",
@@ -39,11 +44,6 @@
         }
     },
     "files": ["src", "dist"],
-    "scripts": {
-        "build": "tsup --clean --dts",
-        "dev": "tsc-watch --onSuccess \"sh -c 'npx biome check && tsx code-sync.ts'\"",
-        "prepublishOnly": "rm -rf dist && tsup --clean --dts"
-    },
     "keywords": ["typescript", "react", "better-auth", "shadcn", "nextjs"],
     "author": "daveycodez",
     "license": "MIT",
@@ -68,6 +68,7 @@
         "ignore": "^7.0.3",
         "lucide-react": "^0.477.0",
         "next": "^15.2.1",
+        "nodemon": "^3.1.9",
         "react-router": "^7.2.0",
         "tailwind-merge": "^3.0.2",
         "tailwindcss-animate": "^1.0.7",

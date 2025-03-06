@@ -18,8 +18,8 @@ export default defineConfig((env) => {
             preserveDirectivesPlugin({
                 directives: ["use client", "use strict"],
                 include: /\.(js|ts|jsx|tsx)$/,
-                exclude: /node_modules/,
-            }),
-        ],
+                exclude: /node_modules/
+            })
+        ]
     }
 })

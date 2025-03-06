@@ -25,8 +25,9 @@ export function UpdateUsernameCard({
 
     const { data: sessionData } = useSession()
 
-    // @ts-expect-error Optional plugin
-    const defaultValue = sessionData?.user.displayUsername || sessionData?.user.username
+    const defaultValue =
+        // @ts-expect-error Optional plugin
+        sessionData?.user.displayUsername || sessionData?.user.username
 
     return (
         <UpdateFieldCard

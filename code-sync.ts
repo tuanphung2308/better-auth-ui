@@ -37,7 +37,7 @@ async function getIgnoredFiles(ig: Ignore, cwd: string) {
     if (fs.existsSync(gitignorePath)) {
         const gitignoreContent = await fs.promises.readFile(
             gitignorePath,
-            "utf8",
+            "utf8"
         )
         ig.add(gitignoreContent)
     }
@@ -49,7 +49,7 @@ async function getIgnoredFiles(ig: Ignore, cwd: string) {
 async function appendFilesRecursively(
     dir: string,
     config: CodeSyncConfig,
-    ig: Ignore,
+    ig: Ignore
 ) {
     let largeString = ""
 
@@ -102,20 +102,30 @@ const codeSync = async () => {
         let instructions = `${config.instructions}\n\nContext:`
         instructions += await appendFilesRecursively(currentDir, config, ig)
 
+        const currentTime = new Date().toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric"
+        })
+
         try {
             await axios.patch(
                 `${config.base_url}/api/agents/${config.agent_id}`,
                 { instructions },
                 {
                     headers: {
-                        Authorization: `Bearer ${process.env.AQUARION_API_KEY}`,
-                    },
-                },
+                        Authorization: `Bearer ${process.env.AQUARION_API_KEY}`
+                    }
+                }
             )
 
-            console.log("Code Synced Successfully")
+            console.info(currentTime, "Code Synced Successfully")
         } catch (error) {
-            console.error("Code Sync Failed", (error as Error).message)
+            console.error(
+                currentTime,
+                "Code Sync Failed",
+                (error as Error).message
+            )
         }
     } catch (error) {
         console.error("Error:", (error as Error).message)

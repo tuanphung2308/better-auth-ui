@@ -11,6 +11,7 @@ export function useSession() {
         data,
         isPending,
         refetch,
-        updateUser: (fields: Record<string, unknown>) => authClient.updateUser(fields)
+        updateUser: (fields: Record<string, unknown>) =>
+            authClient.updateUser(fields)
     }
 }

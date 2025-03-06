@@ -7,18 +7,20 @@ import type { FetchError } from "../types/fetch-error"
 
 export function useListDeviceSessions() {
     const { authClient } = useContext(AuthUIContext)
-    const { data: sessionData, isPending: sessionPending } = authClient.useSession()
+    const { data: sessionData, isPending: sessionPending } =
+        authClient.useSession()
 
-    const [deviceSessions, setDeviceSessions] = useState<{ session: Session; user: User }[] | null>(
-        null
-    )
+    const [deviceSessions, setDeviceSessions] = useState<
+        { session: Session; user: User }[] | null
+    >(null)
     const [activeSessionPending, setActiveSessionPending] = useState(false)
     const [isPending, setIsPending] = useState(true)
     const initialized = useRef(false)
 
     const listDeviceSessions = useCallback(async () => {
-        // @ts-expect-error Optional plugin
-        const { data, error } = await authClient.multiSession.listDeviceSessions()
+        const { data, error } =
+            // @ts-expect-error Optional plugin
+            await authClient.multiSession.listDeviceSessions()
 
         if (error) toast.error(error.message || error.statusText)
 
@@ -43,7 +45,9 @@ export function useListDeviceSessions() {
         setActiveSessionPending(true)
 
         // @ts-expect-error Optional plugin
-        const { error } = await authClient.multiSession.setActive({ sessionToken })
+        const { error } = await authClient.multiSession.setActive({
+            sessionToken
+        })
 
         setActiveSessionPending(false)
 

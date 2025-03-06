@@ -9,7 +9,13 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle
+} from "../ui/card"
 
 import type { SettingsCardClassNames } from "./settings-card"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
@@ -36,7 +42,12 @@ export function SessionsCard({
 
     localization = { ...authLocalization, ...localization }
 
-    const { sessions, isPending: sessionsPending, refetch, revokeSession } = useListSessions()
+    const {
+        sessions,
+        isPending: sessionsPending,
+        refetch,
+        revokeSession
+    } = useListSessions()
     const { data: sessionData } = useSession()
 
     const [actionLoading, setActionLoading] = useState<string | null>(null)
@@ -67,23 +78,35 @@ export function SessionsCard({
     return (
         <Card className={cn("w-full", className, classNames?.base)}>
             <CardHeader className={classNames?.header}>
-                <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                <CardTitle
+                    className={cn("text-lg md:text-xl", classNames?.title)}
+                >
                     {localization.sessions}
                 </CardTitle>
 
-                <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
+                <CardDescription
+                    className={cn(
+                        "text-xs md:text-sm",
+                        classNames?.description
+                    )}
+                >
                     {localization.sessionsDescription}
                 </CardDescription>
             </CardHeader>
 
-            <CardContent className={cn("flex flex-col gap-3", classNames?.content)}>
+            <CardContent
+                className={cn("flex flex-col gap-3", classNames?.content)}
+            >
                 {sessions?.map((session) => {
                     const parser = UAParser(session.userAgent as string)
 
                     const isButtonLoading = actionLoading === session.token
 
                     return (
-                        <Card key={session.id} className="flex items-center gap-3 px-4 py-3">
+                        <Card
+                            key={session.id}
+                            className="flex items-center gap-3 px-4 py-3"
+                        >
                             {parser.device.type === "mobile" ? (
                                 <SmartphoneIcon className="size-4" />
                             ) : (
@@ -101,7 +124,10 @@ export function SessionsCard({
                             </span>
 
                             <Button
-                                className={cn("ms-auto relative", classNames?.button)}
+                                className={cn(
+                                    "ms-auto relative",
+                                    classNames?.button
+                                )}
                                 disabled={isButtonLoading}
                                 size="sm"
                                 variant="outline"
@@ -109,7 +135,13 @@ export function SessionsCard({
                                     handleRevoke(session.token)
                                 }}
                             >
-                                <span className={isButtonLoading ? "opacity-0" : "opacity-100"}>
+                                <span
+                                    className={
+                                        isButtonLoading
+                                            ? "opacity-0"
+                                            : "opacity-100"
+                                    }
+                                >
                                     {session.id === sessionData?.session?.id
                                         ? localization.signOut
                                         : localization.revoke}

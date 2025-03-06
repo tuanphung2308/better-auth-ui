@@ -6,7 +6,13 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
+import {
+    Card,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle
+} from "../ui/card"
 import {
     Dialog,
     DialogContent,
@@ -60,7 +66,9 @@ export function DeleteAccountCard({
     const isFresh = session
         ? Date.now() / 1000 - session?.createdAt.getTime() / 1000 < freshAge
         : false
-    const credentialsLinked = accounts?.some((acc) => acc.provider === "credential")
+    const credentialsLinked = accounts?.some(
+        (acc) => acc.provider === "credential"
+    )
 
     const formAction = async (_: unknown, formData: FormData) => {
         const params = {} as Record<string, string>
@@ -94,7 +102,12 @@ export function DeleteAccountCard({
     const [_, action, isSubmitting] = useActionState(formAction, null)
 
     if (isPending || sessionPending) {
-        return <DeleteAccountCardSkeleton className={className} classNames={classNames} />
+        return (
+            <DeleteAccountCardSkeleton
+                className={className}
+                classNames={classNames}
+            />
+        )
     }
 
     return (
@@ -106,12 +119,17 @@ export function DeleteAccountCard({
             )}
         >
             <CardHeader className={classNames?.header}>
-                <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                <CardTitle
+                    className={cn("text-lg md:text-xl", classNames?.title)}
+                >
                     {localization?.deleteAccount}
                 </CardTitle>
 
                 <CardDescription
-                    className={cn("text-xs md:text-sm", classNames?.description)}
+                    className={cn(
+                        "text-xs md:text-sm",
+                        classNames?.description
+                    )}
                 >
                     {localization?.deleteAccountDescription}
                 </CardDescription>
@@ -171,7 +189,9 @@ export function DeleteAccountCard({
                                         autoComplete="current-password"
                                         id="password"
                                         name="password"
-                                        placeholder={localization?.passwordPlaceholder}
+                                        placeholder={
+                                            localization?.passwordPlaceholder
+                                        }
                                         required
                                         type="password"
                                     />
@@ -187,7 +207,11 @@ export function DeleteAccountCard({
                                     disabled={isSubmitting}
                                     variant="destructive"
                                 >
-                                    <span className={cn(isSubmitting && "opacity-0")}>
+                                    <span
+                                        className={cn(
+                                            isSubmitting && "opacity-0"
+                                        )}
+                                    >
                                         {isFresh
                                             ? localization?.deleteAccount
                                             : localization?.signOut}

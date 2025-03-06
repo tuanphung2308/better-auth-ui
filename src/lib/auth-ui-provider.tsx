@@ -243,7 +243,9 @@ export type AuthUIProviderProps = {
     localization?: AuthLocalization
 } & Partial<Omit<AuthUIContextType, "viewPaths" | "localization">>
 
-export const AuthUIContext = createContext<AuthUIContextType>({} as unknown as AuthUIContextType)
+export const AuthUIContext = createContext<AuthUIContextType>(
+    {} as unknown as AuthUIContextType
+)
 
 export const AuthUIProvider = ({
     children,

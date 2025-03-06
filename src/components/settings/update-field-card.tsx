@@ -51,7 +51,9 @@ export function UpdateFieldCard({
         if (value === defaultValue) return {}
 
         if (validate && !validate(value)) {
-            return { error: { message: `${localization.failedToValidate} ${field}` } }
+            return {
+                error: { message: `${localization.failedToValidate} ${field}` }
+            }
         }
 
         const { error } = await updateUser({

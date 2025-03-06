@@ -8,7 +8,14 @@ import { AuthUIContext, type FieldType } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import type { FetchError } from "../../types/fetch-error"
 import { Button } from "../ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle
+} from "../ui/card"
 import { Checkbox } from "../ui/checkbox"
 import { Input } from "../ui/input"
 import type { UserAvatarClassNames } from "../user-avatar"
@@ -71,7 +78,10 @@ export function SettingsCard({
 
     const [disabled, setDisabled] = useState(true)
 
-    const performAction = async (_: Record<string, string>, formData: FormData) => {
+    const performAction = async (
+        _: Record<string, string>,
+        formData: FormData
+    ) => {
         const formDataObject = Object.fromEntries(formData.entries())
 
         setDisabled(true)
@@ -88,29 +98,50 @@ export function SettingsCard({
     const [state, action, isSubmitting] = useActionState(performAction, {})
 
     if (isPending) {
-        return <SettingsCardSkeleton className={className} classNames={classNames} />
+        return (
+            <SettingsCardSkeleton
+                className={className}
+                classNames={classNames}
+            />
+        )
     }
 
     return (
-        <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
+        <Card
+            className={cn(
+                "w-full overflow-hidden",
+                className,
+                classNames?.base
+            )}
+        >
             <form action={action}>
                 {type === "boolean" ? (
                     <CardHeader className={classNames?.header}>
                         <div className={cn("flex gap-3 items-center")}>
                             <Checkbox
-                                defaultChecked={state[field] === "on" || !!defaultValue}
+                                defaultChecked={
+                                    state[field] === "on" || !!defaultValue
+                                }
                                 id={field}
                                 name={field}
                                 onCheckedChange={() => setDisabled(false)}
                             />
 
-                            <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                            <CardTitle
+                                className={cn(
+                                    "text-lg md:text-xl",
+                                    classNames?.title
+                                )}
+                            >
                                 {label}
                             </CardTitle>
                         </div>
 
                         <CardDescription
-                            className={cn("text-xs md:text-sm", classNames?.description)}
+                            className={cn(
+                                "text-xs md:text-sm",
+                                classNames?.description
+                            )}
                         >
                             {description}
                         </CardDescription>
@@ -118,12 +149,20 @@ export function SettingsCard({
                 ) : (
                     <>
                         <CardHeader className={classNames?.header}>
-                            <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                            <CardTitle
+                                className={cn(
+                                    "text-lg md:text-xl",
+                                    classNames?.title
+                                )}
+                            >
                                 {label}
                             </CardTitle>
 
                             <CardDescription
-                                className={cn("text-xs md:text-sm", classNames?.description)}
+                                className={cn(
+                                    "text-xs md:text-sm",
+                                    classNames?.description
+                                )}
                             >
                                 {description}
                             </CardDescription>
@@ -135,7 +174,8 @@ export function SettingsCard({
                                 defaultValue={state[field] ?? defaultValue}
                                 name={field}
                                 placeholder={
-                                    placeholder || (typeof label === "string" ? label : "")
+                                    placeholder ||
+                                    (typeof label === "string" ? label : "")
                                 }
                                 required={required}
                                 type={type === "number" ? "number" : "text"}
@@ -153,7 +193,10 @@ export function SettingsCard({
                 >
                     {instructions && (
                         <CardDescription
-                            className={cn("text-xs md:text-sm", classNames?.instructions)}
+                            className={cn(
+                                "text-xs md:text-sm",
+                                classNames?.instructions
+                            )}
                         >
                             {instructions}
                         </CardDescription>
@@ -164,7 +207,11 @@ export function SettingsCard({
                         disabled={(!optimistic && isSubmitting) || disabled}
                         size="sm"
                     >
-                        <span className={cn(!optimistic && isSubmitting && "opacity-0")}>
+                        <span
+                            className={cn(
+                                !optimistic && isSubmitting && "opacity-0"
+                            )}
+                        >
                             {saveLabel || localization.save}
                         </span>
 

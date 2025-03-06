@@ -11,7 +11,13 @@ export function SettingsCardSkeleton({
     classNames?: SettingsCardClassNames
 }) {
     return (
-        <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
+        <Card
+            className={cn(
+                "w-full overflow-hidden",
+                className,
+                classNames?.base
+            )}
+        >
             <CardHeader className={cn("space-y-2", classNames?.header)}>
                 <Skeleton className="h-5 md:h-6 w-1/3" />
                 <Skeleton className="h-4 w-2/3" />

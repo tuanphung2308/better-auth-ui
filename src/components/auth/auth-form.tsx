@@ -7,7 +7,10 @@ import { toast } from "sonner"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
-import { type SocialProvider, socialProviders } from "../../lib/social-providers"
+import {
+    type SocialProvider,
+    socialProviders
+} from "../../lib/social-providers"
 import { cn, isValidEmail } from "../../lib/utils"
 import { Checkbox } from "../ui/checkbox"
 import { Input } from "../ui/input"
@@ -249,8 +252,13 @@ export function AuthForm({
                     if (formData.has(field)) {
                         const value = formData.get(field) as string
 
-                        if (additionalField.validate && !additionalField.validate(value)) {
-                            toast.error(`${localization.failedToValidate} ${field}`)
+                        if (
+                            additionalField.validate &&
+                            !additionalField.validate(value)
+                        ) {
+                            toast.error(
+                                `${localization.failedToValidate} ${field}`
+                            )
                             return
                         }
 
@@ -335,7 +343,8 @@ export function AuthForm({
     }, [view, authClient, replace, viewPaths.signIn, onSessionChange])
 
     useEffect(() => {
-        if (view !== "resetPassword" || checkingResetPasswordToken.current) return
+        if (view !== "resetPassword" || checkingResetPasswordToken.current)
+            return
 
         checkingResetPasswordToken.current = true
 
@@ -355,7 +364,10 @@ export function AuthForm({
             navigate(viewPaths.signIn)
         }
 
-        if (["signUp", "forgotPassword", "resetPassword"].includes(view) && !credentials) {
+        if (
+            ["signUp", "forgotPassword", "resetPassword"].includes(view) &&
+            !credentials
+        ) {
             navigate(viewPaths.signIn)
         }
     }, [view, viewPaths, credentials, navigate, magicLink])
@@ -372,12 +384,23 @@ export function AuthForm({
 
         onSessionChange?.()
         replace(getRedirectTo())
-    }, [isRestoring, view, replace, persistClient, getRedirectTo, onSessionChange])
+    }, [
+        isRestoring,
+        view,
+        replace,
+        persistClient,
+        getRedirectTo,
+        onSessionChange
+    ])
 
-    if (["signOut", "callback"].includes(view)) return <Loader2 className="animate-spin" />
+    if (["signOut", "callback"].includes(view))
+        return <Loader2 className="animate-spin" />
 
     return (
-        <form action={formAction} className={cn("grid gap-4 w-full", className, classNames?.base)}>
+        <form
+            action={formAction}
+            className={cn("grid gap-4 w-full", className, classNames?.base)}
+        >
             {credentials &&
                 view === "signUp" &&
                 (nameRequired || signUpFields?.includes("name")) && (
@@ -396,29 +419,34 @@ export function AuthForm({
                     </div>
                 )}
 
-            {credentials && usernamePlugin && ["signIn", "signUp"].includes(view) && (
-                <div className="grid gap-2">
-                    <Label className={classNames?.label} htmlFor="username">
-                        {localization.username}
-                    </Label>
+            {credentials &&
+                usernamePlugin &&
+                ["signIn", "signUp"].includes(view) && (
+                    <div className="grid gap-2">
+                        <Label className={classNames?.label} htmlFor="username">
+                            {localization.username}
+                        </Label>
 
-                    <Input
-                        className={classNames?.input}
-                        id="username"
-                        name="username"
-                        placeholder={
-                            view === "signIn"
-                                ? localization.usernameSignInPlaceholder
-                                : localization.usernamePlaceholder
-                        }
-                        required
-                    />
-                </div>
-            )}
+                        <Input
+                            className={classNames?.input}
+                            id="username"
+                            name="username"
+                            placeholder={
+                                view === "signIn"
+                                    ? localization.usernameSignInPlaceholder
+                                    : localization.usernamePlaceholder
+                            }
+                            required
+                        />
+                    </div>
+                )}
 
-            {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) &&
+            {(credentials ||
+                (["signIn", "magicLink"].includes(view) && magicLink)) &&
                 ((!usernamePlugin && view !== "resetPassword") ||
-                    ["signUp", "magicLink", "forgotPassword"].includes(view)) && (
+                    ["signUp", "magicLink", "forgotPassword"].includes(
+                        view
+                    )) && (
                     <div className="grid gap-2">
                         <Label className={classNames?.label} htmlFor="email">
                             {localization.email}
@@ -435,46 +463,54 @@ export function AuthForm({
                     </div>
                 )}
 
-            {credentials && ["signUp", "signIn", "resetPassword"].includes(view) && (
-                <div className="grid gap-2">
-                    <div className="flex items-center">
-                        <Label className={classNames?.label} htmlFor="password">
-                            {localization.password}
-                        </Label>
-
-                        {view === "signIn" && forgotPassword && (
-                            <LinkComponent
-                                className={cn(
-                                    "ml-auto inline-block text-sm hover:underline -my-1",
-                                    classNames?.forgotPasswordLink
-                                )}
-                                href="forgot-password"
-                                to="forgot-password"
+            {credentials &&
+                ["signUp", "signIn", "resetPassword"].includes(view) && (
+                    <div className="grid gap-2">
+                        <div className="flex items-center">
+                            <Label
+                                className={classNames?.label}
+                                htmlFor="password"
                             >
-                                {localization.forgotPasswordLink}
-                            </LinkComponent>
-                        )}
-                    </div>
+                                {localization.password}
+                            </Label>
 
-                    <Input
-                        autoComplete={
-                            ["signUp", "resetPassword"].includes(view) ? "new-password" : "password"
-                        }
-                        className={classNames?.input}
-                        id="password"
-                        name="password"
-                        placeholder={localization.passwordPlaceholder}
-                        required
-                        type="password"
-                    />
-                </div>
-            )}
+                            {view === "signIn" && forgotPassword && (
+                                <LinkComponent
+                                    className={cn(
+                                        "ml-auto inline-block text-sm hover:underline -my-1",
+                                        classNames?.forgotPasswordLink
+                                    )}
+                                    href="forgot-password"
+                                    to="forgot-password"
+                                >
+                                    {localization.forgotPasswordLink}
+                                </LinkComponent>
+                            )}
+                        </div>
+
+                        <Input
+                            autoComplete={
+                                ["signUp", "resetPassword"].includes(view)
+                                    ? "new-password"
+                                    : "password"
+                            }
+                            className={classNames?.input}
+                            id="password"
+                            name="password"
+                            placeholder={localization.passwordPlaceholder}
+                            required
+                            type="password"
+                        />
+                    </div>
+                )}
 
             {view === "signIn" && rememberMe && (
                 <div className="flex items-center gap-2">
                     <Checkbox id="rememberMe" name="rememberMe" />
 
-                    <Label htmlFor="rememberMe">{localization.rememberMe}</Label>
+                    <Label htmlFor="rememberMe">
+                        {localization.rememberMe}
+                    </Label>
                 </div>
             )}
 
@@ -490,20 +526,29 @@ export function AuthForm({
                         }
 
                         return additionalField.type === "boolean" ? (
-                            <div key={field} className="flex items-center gap-2">
+                            <div
+                                key={field}
+                                className="flex items-center gap-2"
+                            >
                                 <Checkbox
                                     id={field}
                                     name={field}
                                     required={additionalField.required}
                                 />
 
-                                <Label className={cn(classNames?.label)} htmlFor={field}>
+                                <Label
+                                    className={cn(classNames?.label)}
+                                    htmlFor={field}
+                                >
                                     {additionalField?.label}
                                 </Label>
                             </div>
                         ) : (
                             <div key={field} className="grid gap-2">
-                                <Label className={classNames?.label} htmlFor={field}>
+                                <Label
+                                    className={classNames?.label}
+                                    htmlFor={field}
+                                >
                                     {additionalField?.label}
                                 </Label>
 
@@ -513,18 +558,24 @@ export function AuthForm({
                                     name={field}
                                     placeholder={
                                         additionalField?.placeholder ||
-                                        (typeof additionalField?.label === "string"
+                                        (typeof additionalField?.label ===
+                                        "string"
                                             ? additionalField?.label
                                             : "")
                                     }
                                     required={additionalField?.required}
-                                    type={additionalField?.type === "number" ? "number" : "text"}
+                                    type={
+                                        additionalField?.type === "number"
+                                            ? "number"
+                                            : "text"
+                                    }
                                 />
                             </div>
                         )
                     })}
 
-            {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) && (
+            {(credentials ||
+                (["signIn", "magicLink"].includes(view) && magicLink)) && (
                 <ActionButton
                     authView={view}
                     className={classNames?.actionButton}
@@ -542,45 +593,47 @@ export function AuthForm({
                 />
             )}
 
-            {!["forgotPassword", "resetPassword"].includes(view) && providers?.length && (
-                <>
-                    <div
-                        className={cn(
-                            "w-full gap-2 flex items-center",
-                            "justify-between",
-                            socialLayout === "horizontal" && "flex-wrap",
-                            socialLayout === "vertical" && "flex-col",
-                            socialLayout === "grid" && "grid grid-cols-2"
+            {!["forgotPassword", "resetPassword"].includes(view) &&
+                providers?.length && (
+                    <>
+                        <div
+                            className={cn(
+                                "w-full gap-2 flex items-center",
+                                "justify-between",
+                                socialLayout === "horizontal" && "flex-wrap",
+                                socialLayout === "vertical" && "flex-col",
+                                socialLayout === "grid" && "grid grid-cols-2"
+                            )}
+                        >
+                            {providers?.map((provider) => {
+                                const socialProvider = socialProviders.find(
+                                    (socialProvider) =>
+                                        socialProvider.provider === provider
+                                )
+                                if (!socialProvider) return null
+
+                                return (
+                                    <ProviderButton
+                                        key={provider}
+                                        className={classNames?.providerButton}
+                                        isLoading={isLoading}
+                                        localization={localization}
+                                        socialLayout={socialLayout}
+                                        socialProvider={socialProvider}
+                                    />
+                                )
+                            })}
+                        </div>
+
+                        {passkey && (
+                            <PasskeyButton
+                                className={classNames?.secondaryButton}
+                                isLoading={isLoading}
+                                localization={localization}
+                            />
                         )}
-                    >
-                        {providers?.map((provider) => {
-                            const socialProvider = socialProviders.find(
-                                (socialProvider) => socialProvider.provider === provider
-                            )
-                            if (!socialProvider) return null
-
-                            return (
-                                <ProviderButton
-                                    key={provider}
-                                    className={classNames?.providerButton}
-                                    isLoading={isLoading}
-                                    localization={localization}
-                                    socialLayout={socialLayout}
-                                    socialProvider={socialProvider}
-                                />
-                            )
-                        })}
-                    </div>
-
-                    {passkey && (
-                        <PasskeyButton
-                            className={classNames?.secondaryButton}
-                            isLoading={isLoading}
-                            localization={localization}
-                        />
-                    )}
-                </>
-            )}
+                    </>
+                )}
         </form>
     )
 }

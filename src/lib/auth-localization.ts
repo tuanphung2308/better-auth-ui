@@ -18,7 +18,8 @@ export const authLocalization = {
     /**
      * @default "Click on the avatar to upload a custom one from your files."
      */
-    avatarDescription: "Click on the avatar to upload a custom one from your files.",
+    avatarDescription:
+        "Click on the avatar to upload a custom one from your files.",
     /**
      * @default "An avatar is optional but strongly recommended."
      */
@@ -30,7 +31,8 @@ export const authLocalization = {
     /**
      * @default "Enter your current password and a new password."
      */
-    changePasswordDescription: "Enter your current password and a new password.",
+    changePasswordDescription:
+        "Enter your current password and a new password.",
     /**
      * @default "Please use 8 characters at minimum."
      */
@@ -68,7 +70,8 @@ export const authLocalization = {
     /**
      * @default "Please check your email to verify the deletion of your account."
      */
-    deleteAccountEmail: "Please check your email to verify the deletion of your account.",
+    deleteAccountEmail:
+        "Please check your email to verify the deletion of your account.",
     /**
      * @default "Your account has been deleted."
      */
@@ -76,11 +79,13 @@ export const authLocalization = {
     /**
      * @default "You must be recently logged in to delete your account."
      */
-    deleteAccountNotFresh: "You must be recently logged in to delete your account.",
+    deleteAccountNotFresh:
+        "You must be recently logged in to delete your account.",
     /**
      * @default "Choose a provider to login to your account"
      */
-    disabledCredentialsDescription: "Choose a provider to login to your account",
+    disabledCredentialsDescription:
+        "Choose a provider to login to your account",
     /**
      * @default "Don't have an account?"
      */
@@ -260,7 +265,8 @@ export const authLocalization = {
     /**
      * @default "Enter your username below to login to your account"
      */
-    signInUsernameDescription: "Enter your username below to login to your account",
+    signInUsernameDescription:
+        "Enter your username below to login to your account",
     /**
      * @default "Sign in with"
      */

@@ -17,7 +17,8 @@ export const source = loader({
         if (icon === "NextJs") return <NextJsIcon />
         if (icon === "React") return <ReactIcon />
 
-        if (icon in icons) return createElement(icons[icon as keyof typeof icons])
+        if (icon in icons)
+            return createElement(icons[icon as keyof typeof icons])
     }
 })
 

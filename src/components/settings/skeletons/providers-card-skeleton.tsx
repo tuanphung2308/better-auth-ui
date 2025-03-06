@@ -17,7 +17,10 @@ export function ProvidersCardSkeleton({ className }: { className?: string }) {
 
             <CardContent className="flex flex-col gap-3">
                 {providers?.map((provider) => (
-                    <Card key={provider} className="flex items-center gap-3 px-4 py-3">
+                    <Card
+                        key={provider}
+                        className="flex items-center gap-3 px-4 py-3"
+                    >
                         <Skeleton className="size-4 rounded-full" />
                         <Skeleton className="h-4 w-24" />
                         <Skeleton className="h-8 w-14 ms-auto" />

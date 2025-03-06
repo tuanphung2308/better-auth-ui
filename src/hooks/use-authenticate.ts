@@ -14,7 +14,15 @@ export function useAuthenticate(authView: AuthView = "signIn", enabled = true) {
                 `${basePath}/${viewPaths[authView]}?redirectTo=${window.location.href.replace(window.location.origin, "")}`
             )
         }
-    }, [enabled, isPending, sessionData, basePath, viewPaths, replace, authView])
+    }, [
+        enabled,
+        isPending,
+        sessionData,
+        basePath,
+        viewPaths,
+        replace,
+        authView
+    ])
 
     return { data: sessionData, isPending, user: sessionData?.user, ...rest }
 }

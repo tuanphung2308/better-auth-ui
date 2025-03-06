@@ -57,9 +57,11 @@ export const EmailTemplate = ({
     variant = "vercel",
     url
 }: EmailTemplateProps) => {
-    baseUrl = baseUrl || process.env.BASE_URL || process.env.NEXT_PUBLIC_BASE_URL
+    baseUrl =
+        baseUrl || process.env.BASE_URL || process.env.NEXT_PUBLIC_BASE_URL
     imageUrl = imageUrl || `${baseUrl}/apple-touch-icon.png`
-    siteName = siteName || process.env.SITE_NAME || process.env.NEXT_PUBLIC_SITE_NAME
+    siteName =
+        siteName || process.env.SITE_NAME || process.env.NEXT_PUBLIC_SITE_NAME
     preview = preview || (typeof heading === "string" ? heading : undefined)
 
     return (
@@ -124,7 +126,12 @@ export const EmailTemplate = ({
             {preview && <Preview>{preview}</Preview>}
 
             <Tailwind>
-                <Body className={cn("my-auto mx-auto font-sans px-2", classNames?.body)}>
+                <Body
+                    className={cn(
+                        "my-auto mx-auto font-sans px-2",
+                        classNames?.body
+                    )}
+                >
                     <Container className="border border-solid border-color rounded my-[40px] mx-auto p-[20px] max-w-[465px]">
                         <Section className="mt-[32px]">
                             <Img
@@ -145,7 +152,12 @@ export const EmailTemplate = ({
                             {heading}
                         </Heading>
 
-                        <Text className={cn("text-[14px] leading-[24px]", classNames?.content)}>
+                        <Text
+                            className={cn(
+                                "text-[14px] leading-[24px]",
+                                classNames?.content
+                            )}
+                        >
                             {content}
                         </Text>
 
@@ -178,10 +190,15 @@ export const EmailTemplate = ({
 
                             {baseUrl && (
                                 <Link
-                                    className={cn("no-underline", classNames?.link)}
+                                    className={cn(
+                                        "no-underline",
+                                        classNames?.link
+                                    )}
                                     href={baseUrl}
                                 >
-                                    {baseUrl?.replace("https://", "").replace("http://", "")}
+                                    {baseUrl
+                                        ?.replace("https://", "")
+                                        .replace("http://", "")}
                                 </Link>
                             )}
                         </Text>

@@ -25,7 +25,10 @@ export function ProviderButton({
 
     return (
         <Button
-            className={cn(socialLayout === "vertical" ? "w-full" : "grow", className)}
+            className={cn(
+                socialLayout === "vertical" ? "w-full" : "grow",
+                className
+            )}
             disabled={pending || isLoading}
             formNoValidate
             name="provider"

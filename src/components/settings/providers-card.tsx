@@ -11,7 +11,13 @@ import { socialProviders } from "../../lib/social-providers"
 import { cn } from "../../lib/utils"
 import type { FetchError } from "../../types/fetch-error"
 import { Button } from "../ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle
+} from "../ui/card"
 
 import type { SettingsCardClassNames } from "./settings-card"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
@@ -110,18 +116,25 @@ export function ProvidersCard({
     return (
         <Card className={cn("w-full", className, classNames?.base)}>
             <CardHeader className={classNames?.header}>
-                <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                <CardTitle
+                    className={cn("text-lg md:text-xl", classNames?.title)}
+                >
                     {localization.providers}
                 </CardTitle>
 
                 <CardDescription
-                    className={cn("text-xs md:text-sm", classNames?.description)}
+                    className={cn(
+                        "text-xs md:text-sm",
+                        classNames?.description
+                    )}
                 >
                     {localization.providersDescription}
                 </CardDescription>
             </CardHeader>
 
-            <CardContent className={cn("flex flex-col gap-3", classNames?.content)}>
+            <CardContent
+                className={cn("flex flex-col gap-3", classNames?.content)}
+            >
                 {providers?.map((provider) => {
                     const socialProvider = socialProviders.find(
                         (socialProvider) => socialProvider.provider === provider
@@ -153,10 +166,15 @@ export function ProvidersCard({
                                 </>
                             )}
 
-                            <span className="text-sm">{socialProvider.name}</span>
+                            <span className="text-sm">
+                                {socialProvider.name}
+                            </span>
 
                             <Button
-                                className={cn("ms-auto relative", classNames?.button)}
+                                className={cn(
+                                    "ms-auto relative",
+                                    classNames?.button
+                                )}
                                 disabled={isButtonLoading}
                                 size="sm"
                                 type="button"
@@ -173,10 +191,14 @@ export function ProvidersCard({
                             >
                                 <span
                                     className={
-                                        isButtonLoading ? "opacity-0" : "opacity-100"
+                                        isButtonLoading
+                                            ? "opacity-0"
+                                            : "opacity-100"
                                     }
                                 >
-                                    {isLinked ? localization.unlink : localization.link}
+                                    {isLinked
+                                        ? localization.unlink
+                                        : localization.link}
                                 </span>
 
                                 {isButtonLoading && (

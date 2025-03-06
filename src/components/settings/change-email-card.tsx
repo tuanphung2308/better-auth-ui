@@ -28,14 +28,21 @@ export function ChangeEmailCard({
     } = useContext(AuthUIContext)
     localization = { ...authLocalization, ...localization }
 
-    const { data: sessionData, isPending: sessionPending, refetch } = useSession()
+    const {
+        data: sessionData,
+        isPending: sessionPending,
+        refetch
+    } = useSession()
 
     useEffect(() => {
         if (!sessionData) return
         if (shownVerifyEmailToast.current) return
 
         const searchParams = new URLSearchParams(window.location.search)
-        if (searchParams.get("verifyEmail") && !sessionData.user.emailVerified) {
+        if (
+            searchParams.get("verifyEmail") &&
+            !sessionData.user.emailVerified
+        ) {
             shownVerifyEmailToast.current = true
             setTimeout(() => toast(localization?.emailVerification))
         }
