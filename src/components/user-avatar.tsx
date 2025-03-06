@@ -26,7 +26,7 @@ export function UserAvatar({
 
     return (
         <Avatar
-            className={cn("text-sm", className, classNames?.base)}
+            className={cn(className, classNames?.base)}
             {...props}
         >
             <AvatarImage
