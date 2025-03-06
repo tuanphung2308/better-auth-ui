@@ -12,9 +12,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             {...baseOptions}
             disableThemeSwitch
             sidebar={{
-                footer: (
-                    <ThemeToggle className="ms-auto -mt-8" mode="light-dark-system" />
-                )
+                footer: <ThemeToggle className="ms-auto -mt-8" mode="light-dark-system" />
             }}
         >
             {children}

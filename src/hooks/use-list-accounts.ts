@@ -1,10 +1,4 @@
-import {
-    useCallback,
-    useContext,
-    useEffect,
-    useRef,
-    useState
-} from "react"
+import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"

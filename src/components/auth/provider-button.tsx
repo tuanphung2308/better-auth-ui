@@ -14,18 +14,18 @@ export function ProviderButton({
     socialLayout,
     socialProvider
 }: {
-    className?: string,
-    isLoading?: boolean,
-    localization: Partial<AuthLocalization>,
-    socialLayout: "auto" | "horizontal" | "grid" | "vertical",
-    socialProvider: typeof socialProviders[number]
+    className?: string
+    isLoading?: boolean
+    localization: Partial<AuthLocalization>
+    socialLayout: "auto" | "horizontal" | "grid" | "vertical"
+    socialProvider: (typeof socialProviders)[number]
 }) {
     const { pending } = useFormStatus()
     const { colorIcons, noColorIcons } = useContext(AuthUIContext)
 
     return (
         <Button
-            className={cn(socialLayout == "vertical" ? "w-full" : "grow", className)}
+            className={cn(socialLayout === "vertical" ? "w-full" : "grow", className)}
             disabled={pending || isLoading}
             formNoValidate
             name="provider"
@@ -43,17 +43,11 @@ export function ProviderButton({
                 </>
             )}
 
-            {socialLayout == "grid" && (
-                <>
-                    {socialProvider.name}
-                </>
-            )}
+            {socialLayout === "grid" && <>{socialProvider.name}</>}
 
-            {socialLayout == "vertical" && (
+            {socialLayout === "vertical" && (
                 <>
-                    {localization.signInWith}
-                    {" "}
-                    {socialProvider.name}
+                    {localization.signInWith} {socialProvider.name}
                 </>
             )}
         </Button>

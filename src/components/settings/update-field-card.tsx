@@ -22,37 +22,45 @@ export function UpdateFieldCard({
     type,
     validate
 }: {
-    className?: string,
-    classNames?: SettingsCardClassNames,
-    defaultValue?: unknown,
-    description?: ReactNode,
-    instructions?: ReactNode,
-    isPending?: boolean,
-    localization?: Partial<AuthLocalization>,
+    className?: string
+    classNames?: SettingsCardClassNames
+    defaultValue?: unknown
+    description?: ReactNode
+    instructions?: ReactNode
+    isPending?: boolean
+    localization?: Partial<AuthLocalization>
     field: string
-    placeholder?: string,
-    required?: boolean,
-    label?: ReactNode,
-    type?: FieldType,
+    placeholder?: string
+    required?: boolean
+    label?: ReactNode
+    type?: FieldType
     validate?: (value: string) => boolean | Promise<boolean>
 }) {
-    const { hooks: { useSession }, localization: authLocalization } = useContext(AuthUIContext)
+    const {
+        hooks: { useSession },
+        localization: authLocalization
+    } = useContext(AuthUIContext)
 
     localization = { ...authLocalization, ...localization }
 
     const { isPending: sessionPending, updateUser } = useSession()
 
     const formAction = async (formData: FormData) => {
-        const value = formData.get(field) as string || ""
+        const value = (formData.get(field) as string) || ""
 
-        if (value == defaultValue) return {}
+        if (value === defaultValue) return {}
 
         if (validate && !validate(value)) {
             return { error: { message: `${localization.failedToValidate} ${field}` } }
         }
 
         const { error } = await updateUser({
-            [field]: type == "number" ? parseFloat(value) : type == "boolean" ? value == "on" : value
+            [field]:
+                type === "number"
+                    ? Number.parseFloat(value)
+                    : type === "boolean"
+                      ? value === "on"
+                      : value
         })
 
         return { error }

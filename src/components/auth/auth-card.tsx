@@ -3,11 +3,14 @@
 import { Loader2 } from "lucide-react"
 import { useContext, useEffect } from "react"
 
-import { type AuthLocalization } from "../../lib/auth-localization"
+import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { cn } from "../../lib/utils"
-import { SettingsCards, type SettingsCardsClassNames } from "../settings/settings-cards"
+import {
+    SettingsCards,
+    type SettingsCardsClassNames
+} from "../settings/settings-cards"
 import {
     Card,
     CardContent,
@@ -70,44 +73,60 @@ export function AuthCard({
         console.error(`Invalid auth view: ${path}`)
     }
 
-    view = view || (Object.entries(viewPaths).find(([_, value]) => value === path)?.[0] || "signIn") as AuthView
+    view =
+        view ||
+        ((Object.entries(viewPaths).find(([_, value]) => value === path)?.[0] ||
+            "signIn") as AuthView)
 
     useEffect(() => {
-        if (view == "settings" && settingsUrl) {
+        if (view === "settings" && settingsUrl) {
             replace(settingsUrl)
         }
     }, [replace, settingsUrl, view])
 
-    if (["signOut", "callback"].includes(view)) return (
-        <AuthForm
-            callbackURL={callbackURL}
-            classNames={classNames?.form}
-            localization={localization}
-            redirectTo={redirectTo}
-            socialLayout={socialLayout}
-            view={view}
-        />
-    )
+    if (["signOut", "callback"].includes(view)) {
+        return (
+            <AuthForm
+                callbackURL={callbackURL}
+                classNames={classNames?.form}
+                localization={localization}
+                redirectTo={redirectTo}
+                socialLayout={socialLayout}
+                view={view}
+            />
+        )
+    }
 
-    if (view == "settings") return settingsUrl ? (
-        <Loader2 className="animate-spin" />
-    ) : (
-        <SettingsCards className={cn(className)} classNames={classNames?.settings} />
-    )
+    if (view === "settings")
+        return settingsUrl ? (
+            <Loader2 className="animate-spin" />
+        ) : (
+            <SettingsCards
+                className={cn(className)}
+                classNames={classNames?.settings}
+            />
+        )
 
     return (
         <Card className={cn("w-full max-w-sm", className, classNames?.base)}>
             <CardHeader className={classNames?.header}>
-                <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                <CardTitle
+                    className={cn("text-lg md:text-xl", classNames?.title)}
+                >
                     {localization[view as keyof typeof localization]}
                 </CardTitle>
 
-                <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
-                    {(!credentials && !magicLink) ? (
-                        localization.disabledCredentialsDescription
-                    ) : (
-                        localization[view + "Description" as keyof typeof localization]
+                <CardDescription
+                    className={cn(
+                        "text-xs md:text-sm",
+                        classNames?.description
                     )}
+                >
+                    {!credentials && !magicLink
+                        ? localization.disabledCredentialsDescription
+                        : localization[
+                              `${view}Description` as keyof typeof localization
+                          ]}
                 </CardDescription>
             </CardHeader>
 
@@ -123,15 +142,27 @@ export function AuthCard({
             </CardContent>
 
             {credentials && (
-                <CardFooter className={cn("justify-center text-sm text-muted-foreground gap-1", classNames?.footer)}>
-                    {view == "signIn" ? localization.dontHaveAnAccount : localization.alreadyHaveAnAccount}
+                <CardFooter
+                    className={cn(
+                        "justify-center text-sm text-muted-foreground gap-1",
+                        classNames?.footer
+                    )}
+                >
+                    {view === "signIn"
+                        ? localization.dontHaveAnAccount
+                        : localization.alreadyHaveAnAccount}
 
                     <LinkComponent
-                        className={cn("underline text-foreground", classNames?.footerLink)}
-                        href={`${viewPaths[view == "signIn" ? "signUp" : "signIn"]}`}
-                        to={`${viewPaths[view == "signIn" ? "signUp" : "signIn"]}`}
+                        className={cn(
+                            "underline text-foreground",
+                            classNames?.footerLink
+                        )}
+                        href={`${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
+                        to={`${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
                     >
-                        {view == "signIn" ? localization.signUp : localization.signIn}
+                        {view === "signIn"
+                            ? localization.signUp
+                            : localization.signIn}
                     </LinkComponent>
                 </CardFooter>
             )}

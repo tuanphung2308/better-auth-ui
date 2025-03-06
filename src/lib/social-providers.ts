@@ -19,85 +19,85 @@ import {
 
 export const socialProviders = [
     {
-        "provider": "apple",
-        "name": "Apple",
-        "icon": AppleIcon
+        provider: "apple",
+        name: "Apple",
+        icon: AppleIcon
     },
     {
-        "provider": "discord",
-        "name": "Discord",
-        "icon": DiscordIcon
+        provider: "discord",
+        name: "Discord",
+        icon: DiscordIcon
     },
     {
-        "provider": "dropbox",
-        "name": "Dropbox",
-        "icon": DropboxIcon
+        provider: "dropbox",
+        name: "Dropbox",
+        icon: DropboxIcon
     },
     {
-        "provider": "facebook",
-        "name": "Facebook",
-        "icon": FacebookIcon
+        provider: "facebook",
+        name: "Facebook",
+        icon: FacebookIcon
     },
     {
-        "provider": "github",
-        "name": "GitHub",
-        "icon": GitHubIcon
+        provider: "github",
+        name: "GitHub",
+        icon: GitHubIcon
     },
     {
-        "provider": "gitlab",
-        "name": "GitLab",
-        "icon": GitLabIcon
+        provider: "gitlab",
+        name: "GitLab",
+        icon: GitLabIcon
     },
     {
-        "provider": "google",
-        "name": "Google",
-        "icon": GoogleIcon
+        provider: "google",
+        name: "Google",
+        icon: GoogleIcon
     },
     {
-        "provider": "linkedin",
-        "name": "LinkedIn",
-        "icon": LinkedInIcon
+        provider: "linkedin",
+        name: "LinkedIn",
+        icon: LinkedInIcon
     },
     {
-        "provider": "microsoft",
-        "name": "Microsoft",
-        "icon": MicrosoftIcon
+        provider: "microsoft",
+        name: "Microsoft",
+        icon: MicrosoftIcon
     },
     {
-        "provider": "reddit",
-        "name": "Reddit",
-        "icon": RedditIcon
+        provider: "reddit",
+        name: "Reddit",
+        icon: RedditIcon
     },
     {
-        "provider": "roblox",
-        "name": "Roblox",
-        "icon": RobloxIcon
+        provider: "roblox",
+        name: "Roblox",
+        icon: RobloxIcon
     },
     {
-        "provider": "spotify",
-        "name": "Spotify",
-        "icon": SpotifyIcon
+        provider: "spotify",
+        name: "Spotify",
+        icon: SpotifyIcon
     },
     {
-        "provider": "tiktok",
-        "name": "TikTok",
-        "icon": TikTokIcon
+        provider: "tiktok",
+        name: "TikTok",
+        icon: TikTokIcon
     },
     {
-        "provider": "twitch",
-        "name": "Twitch",
-        "icon": TwitchIcon
+        provider: "twitch",
+        name: "Twitch",
+        icon: TwitchIcon
     },
     {
-        "provider": "vk",
-        "name": "VK",
-        "icon": VKIcon
+        provider: "vk",
+        name: "VK",
+        icon: VKIcon
     },
     {
-        "provider": "twitter",
-        "name": "X",
-        "icon": XIcon
+        provider: "twitter",
+        name: "X",
+        icon: XIcon
     }
 ] as const
 
-export type SocialProvider = typeof socialProviders[number]["provider"]
+export type SocialProvider = (typeof socialProviders)[number]["provider"]

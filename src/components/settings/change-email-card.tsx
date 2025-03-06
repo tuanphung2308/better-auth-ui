@@ -14,14 +14,18 @@ export function ChangeEmailCard({
     isPending,
     localization
 }: {
-    className?: string,
-    classNames?: SettingsCardClassNames,
-    isPending?: boolean,
+    className?: string
+    classNames?: SettingsCardClassNames
+    isPending?: boolean
     localization?: Partial<AuthLocalization>
 }) {
     const shownVerifyEmailToast = useRef(false)
 
-    const { authClient, hooks: { useSession }, localization: authLocalization } = useContext(AuthUIContext)
+    const {
+        authClient,
+        hooks: { useSession },
+        localization: authLocalization
+    } = useContext(AuthUIContext)
     localization = { ...authLocalization, ...localization }
 
     const { data: sessionData, isPending: sessionPending, refetch } = useSession()
@@ -35,15 +39,18 @@ export function ChangeEmailCard({
             shownVerifyEmailToast.current = true
             setTimeout(() => toast(localization?.emailVerification))
         }
-    }, [sessionData, localization])
+    }, [localization, sessionData])
 
     const formAction = async (formData: FormData) => {
-        const newEmail = formData.get("email") as string || ""
-        if (newEmail == sessionData?.user.email) return {}
+        const newEmail = (formData.get("email") as string) || ""
+        if (newEmail === sessionData?.user.email) return {}
 
         const callbackURL = `${window.location.pathname}?verifyEmail=true`
 
-        const { error } = await authClient.changeEmail({ newEmail, callbackURL })
+        const { error } = await authClient.changeEmail({
+            newEmail,
+            callbackURL
+        })
 
         if (!error) {
             if (sessionData?.user.emailVerified) {

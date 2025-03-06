@@ -5,7 +5,7 @@ import type { SettingsCardClassNames } from "../settings-card"
 
 export function SettingsCardSkeleton({
     className,
-    classNames,
+    classNames
 }: {
     className?: string
     classNames?: SettingsCardClassNames

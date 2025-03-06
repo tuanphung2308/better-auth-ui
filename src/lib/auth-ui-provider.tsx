@@ -1,7 +1,8 @@
 "use client"
 
 import type { createAuthClient } from "better-auth/react"
-import React, { ReactNode, createContext } from "react"
+import type React from "react"
+import { type ReactNode, createContext } from "react"
 
 import { useListAccounts } from "../hooks/use-list-accounts"
 import { useListDeviceSessions } from "../hooks/use-list-device-sessions"
@@ -12,18 +13,33 @@ import { type AuthLocalization, authLocalization } from "./auth-localization"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
 import type { SocialProvider } from "./social-providers"
 
-const DefaultLink = (
-    { href, className, children }: { href: string, className?: string, children: ReactNode }
-) => (
+const DefaultLink = ({
+    href,
+    className,
+    children
+}: {
+    href: string
+    className?: string
+    children: ReactNode
+}) => (
     <a className={className} href={href}>
         {children}
     </a>
 )
 
-const defaultNavigate = (href: string) => { window.location.href = href }
-const defaultReplace = (href: string) => { window.location.replace(href) }
+const defaultNavigate = (href: string) => {
+    window.location.href = href
+}
+const defaultReplace = (href: string) => {
+    window.location.replace(href)
+}
 
-export type Link = React.ComponentType<{ href: string, to: unknown, className?: string, children: ReactNode }>
+export type Link = React.ComponentType<{
+    href: string
+    to: unknown
+    className?: string
+    children: ReactNode
+}>
 
 export type FieldType = "string" | "number" | "boolean"
 
@@ -46,7 +62,7 @@ const defaultHooks = {
     useListAccounts,
     useListDeviceSessions,
     useListSessions,
-    useIsRestoring: () => false,
+    useIsRestoring: () => false
 }
 
 export type AuthUIContextType = {
@@ -262,7 +278,7 @@ export const AuthUIProvider = ({
             value={{
                 avatarExtension,
                 avatarSize,
-                basePath: basePath == "/" ? "" : basePath,
+                basePath: basePath === "/" ? "" : basePath,
                 defaultRedirectTo,
                 credentials,
                 forgotPassword,

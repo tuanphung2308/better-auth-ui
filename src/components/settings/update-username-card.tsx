@@ -5,7 +5,7 @@ import { useContext } from "react"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 
-import { type SettingsCardClassNames } from "./settings-card"
+import type { SettingsCardClassNames } from "./settings-card"
 import { UpdateFieldCard } from "./update-field-card"
 
 export function UpdateUsernameCard({
@@ -14,12 +14,13 @@ export function UpdateUsernameCard({
     isPending,
     localization
 }: {
-    className?: string,
-    classNames?: SettingsCardClassNames,
-    isPending?: boolean,
+    className?: string
+    classNames?: SettingsCardClassNames
+    isPending?: boolean
     localization?: Partial<AuthLocalization>
 }) {
-    const { hooks: { useSession }, localization: authLocalization } = useContext(AuthUIContext)
+    const { hooks, localization: authLocalization } = useContext(AuthUIContext)
+    const { useSession } = hooks
     localization = { ...authLocalization, ...localization }
 
     const { data: sessionData } = useSession()

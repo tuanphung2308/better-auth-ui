@@ -1,9 +1,9 @@
-import fs from "fs"
-import path from "path"
+import fs from "node:fs"
+import path from "node:path"
 
 import axios from "axios"
 import dotenv from "dotenv"
-import ignore, { Ignore } from "ignore"
+import ignore, { type Ignore } from "ignore"
 
 dotenv.config({ path: ".env" })
 
@@ -21,12 +21,12 @@ type CodeSyncConfig = {
 async function loadConfig() {
     const configPath = path.join(process.cwd(), "code-sync.config.json")
 
-    if (fs.existsSync(configPath)) {
-        const configContent = await fs.promises.readFile(configPath, "utf8")
-        return JSON.parse(configContent)
-    } else {
+    if (!fs.existsSync(configPath)) {
         throw new Error("Configuration file not found: code-sync.config.json")
     }
+
+    const configContent = await fs.promises.readFile(configPath, "utf8")
+    return JSON.parse(configContent)
 }
 
 // Function to read .gitignore files and create an ignore instance
@@ -35,7 +35,10 @@ async function getIgnoredFiles(ig: Ignore, cwd: string) {
 
     // Check if .gitignore file exists
     if (fs.existsSync(gitignorePath)) {
-        const gitignoreContent = await fs.promises.readFile(gitignorePath, "utf8")
+        const gitignoreContent = await fs.promises.readFile(
+            gitignorePath,
+            "utf8",
+        )
         ig.add(gitignoreContent)
     }
 
@@ -43,7 +46,11 @@ async function getIgnoredFiles(ig: Ignore, cwd: string) {
 }
 
 // Function to recursively append file contents to a large string
-async function appendFilesRecursively(dir: string, config: CodeSyncConfig, ig: Ignore) {
+async function appendFilesRecursively(
+    dir: string,
+    config: CodeSyncConfig,
+    ig: Ignore,
+) {
     let largeString = ""
 
     // Read directory contents
@@ -96,13 +103,15 @@ const codeSync = async () => {
         instructions += await appendFilesRecursively(currentDir, config, ig)
 
         try {
-            await axios.patch(`${config.base_url}/api/agents/${config.agent_id}`,
+            await axios.patch(
+                `${config.base_url}/api/agents/${config.agent_id}`,
                 { instructions },
                 {
                     headers: {
-                        "Authorization": `Bearer ${process.env.AQUARION_API_KEY}`
-                    }
-                })
+                        Authorization: `Bearer ${process.env.AQUARION_API_KEY}`,
+                    },
+                },
+            )
 
             console.log("Code Synced Successfully")
         } catch (error) {

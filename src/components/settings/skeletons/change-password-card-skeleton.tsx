@@ -5,7 +5,7 @@ import type { SettingsCardClassNames } from "../settings-card"
 
 export function ChangePasswordCardSkeleton({
     className,
-    classNames,
+    classNames
 }: {
     className?: string
     classNames?: SettingsCardClassNames

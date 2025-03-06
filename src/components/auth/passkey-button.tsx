@@ -8,11 +8,11 @@ import { Button } from "../ui/button"
 export function PasskeyButton({
     className,
     isLoading,
-    localization,
+    localization
 }: {
-    className?: string,
-    isLoading?: boolean,
-    localization: Partial<AuthLocalization>,
+    className?: string
+    isLoading?: boolean
+    localization: Partial<AuthLocalization>
 }) {
     const { pending } = useFormStatus()
 
@@ -26,9 +26,7 @@ export function PasskeyButton({
             variant="secondary"
         >
             <KeyIcon />
-            {localization.signInWith}
-            {" "}
-            {localization.passkey}
+            {localization.signInWith} {localization.passkey}
         </Button>
     )
 }

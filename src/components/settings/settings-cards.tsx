@@ -28,8 +28,8 @@ export function SettingsCards({
     classNames,
     localization
 }: {
-    className?: string,
-    classNames?: SettingsCardsClassNames,
+    className?: string
+    classNames?: SettingsCardsClassNames
     localization?: Partial<AuthLocalization>
 }) {
     const {
@@ -38,19 +38,26 @@ export function SettingsCards({
         avatar,
         credentials,
         deleteUser,
-        hooks: { useSession, useListAccounts },
+        hooks,
         nameRequired,
         providers,
         settingsFields,
         username
     } = useContext(AuthUIContext)
+    const { useListAccounts } = hooks
     const { data: sessionData, isPending: sessionPending } = useAuthenticate()
     const { accounts, isPending: accountsPending, refetch } = useListAccounts()
 
     const isPending = sessionPending || accountsPending
 
     return (
-        <div className={cn("w-full max-w-xl flex flex-col gap-4 items-center", className, classNames?.base)}>
+        <div
+            className={cn(
+                "w-full max-w-xl flex flex-col gap-4 items-center",
+                className,
+                classNames?.base
+            )}
+        >
             {avatar && (
                 <UpdateAvatarCard
                     classNames={classNames?.card}
@@ -85,7 +92,8 @@ export function SettingsCards({
                 const additionalField = additionalFields?.[field]
                 if (!additionalField) return null
 
-                const { label, description, instructions, placeholder, required, type, validate } = additionalField
+                const { label, description, instructions, placeholder, required, type, validate } =
+                    additionalField
 
                 // @ts-expect-error Custom fields are not typed
                 const defaultValue = sessionData?.user[field] as unknown

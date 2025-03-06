@@ -12,14 +12,22 @@ export function AuthUIProviderTanstack({
 }: {
     children: ReactNode
 } & AuthUIProviderProps) {
-    const { useListAccounts, useListDeviceSessions, useListSessions, useSession } = createAuthHooks(authClient)
+    // @ts-expect-error Ignore these types because they will never perfectly match
+    const { useListAccounts, useListDeviceSessions, useListSessions, useSession } = createAuthHooks(
+        authClient
+    ) as unknown
     const queryClient = useQueryClient()
 
     return (
         <AuthUIProvider
             authClient={authClient}
-            // @ts-expect-error Ignore these types because they will never perfectly match
-            hooks={{ useIsRestoring, useListAccounts, useListDeviceSessions, useListSessions, useSession }}
+            hooks={{
+                useIsRestoring,
+                useListAccounts,
+                useListDeviceSessions,
+                useListSessions,
+                useSession
+            }}
             onSessionChange={() => {
                 queryClient.clear()
                 onSessionChange?.()

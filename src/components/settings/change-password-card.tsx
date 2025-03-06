@@ -27,12 +27,12 @@ export function ChangePasswordCard({
     classNames,
     accounts,
     isPending,
-    localization,
+    localization
 }: {
-    className?: string,
-    classNames?: SettingsCardClassNames,
-    accounts?: { provider: string }[] | null,
-    isPending?: boolean,
+    className?: string
+    classNames?: SettingsCardClassNames
+    accounts?: { provider: string }[] | null
+    isPending?: boolean
     localization?: Partial<AuthLocalization>
 }) {
     const {
@@ -48,7 +48,6 @@ export function ChangePasswordCard({
     const { data: sessionData, isPending: sessionPending } = useSession()
 
     if (isPending === undefined && accounts === undefined) {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
         const result = useListAccounts()
         accounts = result.accounts
         isPending = result.isPending
@@ -101,10 +100,12 @@ export function ChangePasswordCard({
     const [_, action, isSubmitting] = useActionState(formAction, null)
 
     if (isPending || !accounts) {
-        return <ChangePasswordCardSkeleton className={className} classNames={classNames} />
+        return (
+            <ChangePasswordCardSkeleton className={className} classNames={classNames} />
+        )
     }
 
-    const credentialsLinked = accounts.some(acc => acc.provider === "credential")
+    const credentialsLinked = accounts.some((acc) => acc.provider === "credential")
 
     if (!credentialsLinked) {
         return (
@@ -114,7 +115,9 @@ export function ChangePasswordCard({
                         {localization.changePassword}
                     </CardTitle>
 
-                    <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
+                    <CardDescription
+                        className={cn("text-xs md:text-sm", classNames?.description)}
+                    >
                         {localization.setPasswordDescription}
                     </CardDescription>
                 </CardHeader>
@@ -125,7 +128,11 @@ export function ChangePasswordCard({
                         classNames?.footer
                     )}
                 >
-                    <Button disabled={isSetPasswordLoading} size="sm" onClick={handleSetPassword}>
+                    <Button
+                        disabled={isSetPasswordLoading}
+                        size="sm"
+                        onClick={handleSetPassword}
+                    >
                         <span className={cn(isSetPasswordLoading && "opacity-0")}>
                             {localization.setPassword}
                         </span>
@@ -149,7 +156,9 @@ export function ChangePasswordCard({
                         {localization.changePassword}
                     </CardTitle>
 
-                    <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
+                    <CardDescription
+                        className={cn("text-xs md:text-sm", classNames?.description)}
+                    >
                         {localization.changePasswordDescription}
                     </CardDescription>
                 </CardHeader>
@@ -196,7 +205,9 @@ export function ChangePasswordCard({
                         classNames?.footer
                     )}
                 >
-                    <CardDescription className={cn("text-xs md:text-sm", classNames?.instructions)}>
+                    <CardDescription
+                        className={cn("text-xs md:text-sm", classNames?.instructions)}
+                    >
                         {localization.changePasswordInstructions}
                     </CardDescription>
 

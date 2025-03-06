@@ -9,13 +9,7 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle
-} from "../ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 
 import type { SettingsCardClassNames } from "./settings-card"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
@@ -24,11 +18,11 @@ export function SessionsCard({
     className,
     classNames,
     isPending,
-    localization,
+    localization
 }: {
-    className?: string,
-    classNames?: SettingsCardClassNames,
-    isPending?: boolean,
+    className?: string
+    classNames?: SettingsCardClassNames
+    isPending?: boolean
     localization?: Partial<AuthLocalization>
 }) {
     const {
@@ -48,7 +42,7 @@ export function SessionsCard({
     const [actionLoading, setActionLoading] = useState<string | null>(null)
 
     const handleRevoke = async (token: string) => {
-        if (token == sessionData?.session?.token) {
+        if (token === sessionData?.session?.token) {
             navigate(`${basePath}/${viewPaths.signOut}`)
             return
         }
@@ -84,9 +78,9 @@ export function SessionsCard({
 
             <CardContent className={cn("flex flex-col gap-3", classNames?.content)}>
                 {sessions?.map((session) => {
-                    const parser = UAParser(session.userAgent!)
+                    const parser = UAParser(session.userAgent as string)
 
-                    const isButtonLoading = actionLoading == session.token
+                    const isButtonLoading = actionLoading === session.token
 
                     return (
                         <Card key={session.id} className="flex items-center gap-3 px-4 py-3">
@@ -97,12 +91,11 @@ export function SessionsCard({
                             )}
 
                             <span className="text-sm">
-                                {session.id == sessionData?.session?.id ? localization.currentSession : (
+                                {session.id === sessionData?.session?.id ? (
+                                    localization.currentSession
+                                ) : (
                                     <>
-                                        {parser.os.name}
-                                        ,
-                                        {" "}
-                                        {parser.browser.name}
+                                        {parser.os.name}, {parser.browser.name}
                                     </>
                                 )}
                             </span>
@@ -117,7 +110,9 @@ export function SessionsCard({
                                 }}
                             >
                                 <span className={isButtonLoading ? "opacity-0" : "opacity-100"}>
-                                    {session.id == sessionData?.session?.id ? localization.signOut : localization.revoke}
+                                    {session.id === sessionData?.session?.id
+                                        ? localization.signOut
+                                        : localization.revoke}
                                 </span>
 
                                 {isButtonLoading && (

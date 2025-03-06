@@ -5,13 +5,19 @@ import type { SettingsCardClassNames } from "../settings-card"
 
 export function DeleteAccountCardSkeleton({
     className,
-    classNames,
+    classNames
 }: {
     className?: string
     classNames?: SettingsCardClassNames
 }) {
     return (
-        <Card className={cn("w-full overflow-hidden border-destructive/40", className, classNames?.base)}>
+        <Card
+            className={cn(
+                "w-full overflow-hidden border-destructive/40",
+                className,
+                classNames?.base
+            )}
+        >
             <CardHeader className={cn("space-y-2", classNames?.header)}>
                 <Skeleton className="h-5 md:h-6 w-32" />
                 <Skeleton className="h-4 w-11/12" />

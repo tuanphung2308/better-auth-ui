@@ -58,11 +58,13 @@ export const authLocalization = {
     /**
      * @default "Permanently remove your account and all of its contents. This action is not reversible, so please continue with caution."
      */
-    deleteAccountDescription: "Permanently remove your account and all of its contents. This action is not reversible, so please continue with caution.",
+    deleteAccountDescription:
+        "Permanently remove your account and all of its contents. This action is not reversible, so please continue with caution.",
     /**
      * @default "Please confirm the deletion of your account. This action is not reversible, so please continue with caution."
      */
-    deleteAccountInstructions: "Please confirm the deletion of your account. This action is not reversible, so please continue with caution.",
+    deleteAccountInstructions:
+        "Please confirm the deletion of your account. This action is not reversible, so please continue with caution.",
     /**
      * @default "Please check your email to verify the deletion of your account."
      */
@@ -298,7 +300,8 @@ export const authLocalization = {
     /**
      * @default "You registered with a third-party service. Click the button below to set a password for your account."
      */
-    setPasswordDescription: "You registered with a third-party service. Click the button below to set a password for your account.",
+    setPasswordDescription:
+        "You registered with a third-party service. Click the button below to set a password for your account.",
     /**
      * @default "Check your email to set your password."
      */
@@ -334,7 +337,7 @@ export const authLocalization = {
     /**
      * @default "Username or email"
      */
-    usernameSignInPlaceholder: "Username or email",
+    usernameSignInPlaceholder: "Username or email"
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>

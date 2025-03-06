@@ -8,14 +8,7 @@ import { AuthUIContext, type FieldType } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import type { FetchError } from "../../types/fetch-error"
 import { Button } from "../ui/button"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle
-} from "../ui/card"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { Checkbox } from "../ui/checkbox"
 import { Input } from "../ui/input"
 import type { UserAvatarClassNames } from "../user-avatar"
@@ -50,29 +43,29 @@ export function SettingsCard({
     saveLabel,
     label,
     type = "string",
-    formAction,
+    formAction
 }: {
-    className?: string,
-    classNames?: SettingsCardClassNames,
-    defaultValue?: unknown | null,
-    description?: ReactNode,
-    instructions?: ReactNode,
-    isPending?: boolean,
-    localization?: Record<string, string>,
-    field: string,
-    placeholder?: string,
-    required?: boolean,
-    saveLabel?: ReactNode,
-    label?: ReactNode,
-    type?: FieldType,
-    formAction: (formData: FormData) => Promise<{ error?: FetchError | null }>,
+    className?: string
+    classNames?: SettingsCardClassNames
+    defaultValue?: unknown | null
+    description?: ReactNode
+    instructions?: ReactNode
+    isPending?: boolean
+    localization?: Record<string, string>
+    field: string
+    placeholder?: string
+    required?: boolean
+    saveLabel?: ReactNode
+    label?: ReactNode
+    type?: FieldType
+    formAction: (formData: FormData) => Promise<{ error?: FetchError | null }>
 }) {
     let { optimistic } = useContext(AuthUIContext)
     const { localization: authLocalization } = useContext(AuthUIContext)
 
     localization = { ...authLocalization, ...localization }
 
-    if (field == "email" || field == "username") {
+    if (field === "email" || field === "username") {
         optimistic = false
     }
 
@@ -101,24 +94,24 @@ export function SettingsCard({
     return (
         <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
             <form action={action}>
-                {type == "boolean" ? (
+                {type === "boolean" ? (
                     <CardHeader className={classNames?.header}>
                         <div className={cn("flex gap-3 items-center")}>
                             <Checkbox
-                                defaultChecked={state[field] == "on" || !!defaultValue}
+                                defaultChecked={state[field] === "on" || !!defaultValue}
                                 id={field}
                                 name={field}
                                 onCheckedChange={() => setDisabled(false)}
                             />
 
-                            <CardTitle
-                                className={cn("text-lg md:text-xl", classNames?.title)}
-                            >
+                            <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                                 {label}
                             </CardTitle>
                         </div>
 
-                        <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
+                        <CardDescription
+                            className={cn("text-xs md:text-sm", classNames?.description)}
+                        >
                             {description}
                         </CardDescription>
                     </CardHeader>
@@ -129,7 +122,9 @@ export function SettingsCard({
                                 {label}
                             </CardTitle>
 
-                            <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
+                            <CardDescription
+                                className={cn("text-xs md:text-sm", classNames?.description)}
+                            >
                                 {description}
                             </CardDescription>
                         </CardHeader>
@@ -139,9 +134,11 @@ export function SettingsCard({
                                 className={classNames?.input}
                                 defaultValue={state[field] ?? defaultValue}
                                 name={field}
-                                placeholder={placeholder || (typeof label == "string" ? label : "")}
+                                placeholder={
+                                    placeholder || (typeof label === "string" ? label : "")
+                                }
                                 required={required}
-                                type={type == "number" ? "number" : "text"}
+                                type={type === "number" ? "number" : "text"}
                                 onChange={() => setDisabled(false)}
                             />
                         </CardContent>
@@ -155,7 +152,9 @@ export function SettingsCard({
                     )}
                 >
                     {instructions && (
-                        <CardDescription className={cn("text-xs md:text-sm", classNames?.instructions)}>
+                        <CardDescription
+                            className={cn("text-xs md:text-sm", classNames?.instructions)}
+                        >
                             {instructions}
                         </CardDescription>
                     )}

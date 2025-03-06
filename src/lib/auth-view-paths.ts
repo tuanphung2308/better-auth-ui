@@ -14,7 +14,7 @@ export const authViewPaths = {
     /** @default "sign-out" */
     signOut: "sign-out",
     /** @default "sign-up" */
-    signUp: "sign-up",
+    signUp: "sign-up"
 }
 
 export type AuthViewPaths = typeof authViewPaths

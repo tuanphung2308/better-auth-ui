@@ -1,16 +1,10 @@
 "use client"
 
 import { Loader2 } from "lucide-react"
-import {
-    useCallback,
-    useContext,
-    useEffect,
-    useRef,
-    useState
-} from "react"
+import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 
-import { type AuthLocalization } from "../../lib/auth-localization"
+import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { type SocialProvider, socialProviders } from "../../lib/social-providers"
@@ -45,13 +39,13 @@ export function AuthForm({
     socialLayout = "auto",
     view
 }: {
-    className?: string,
-    classNames?: AuthFormClassNames,
-    callbackURL?: string,
-    localization?: Partial<AuthLocalization>,
-    pathname?: string,
-    redirectTo?: string,
-    socialLayout?: "auto" | "horizontal" | "grid" | "vertical",
+    className?: string
+    classNames?: AuthFormClassNames
+    callbackURL?: string
+    localization?: Partial<AuthLocalization>
+    pathname?: string
+    redirectTo?: string
+    socialLayout?: "auto" | "horizontal" | "grid" | "vertical"
     view?: AuthView
 }) {
     const [isLoading, setIsLoading] = useState(false)
@@ -84,8 +78,12 @@ export function AuthForm({
 
     const isRestoring = useIsRestoring()
 
-    if (socialLayout == "auto") {
-        socialLayout = !credentials ? "vertical" : (providers && providers.length > 3 ? "horizontal" : "vertical")
+    if (socialLayout === "auto") {
+        socialLayout = !credentials
+            ? "vertical"
+            : providers && providers.length > 3
+              ? "horizontal"
+              : "vertical"
     }
 
     const path = pathname?.split("/").pop()
@@ -94,27 +92,36 @@ export function AuthForm({
         console.error(`Invalid auth view: ${path}`)
     }
 
-    view = view || (Object.entries(viewPaths).find(([_, value]) => value === path)?.[0] || "signIn") as AuthView
+    view =
+        view ||
+        ((Object.entries(viewPaths).find(([_, value]) => value === path)?.[0] ||
+            "signIn") as AuthView)
 
-    const getRedirectTo = useCallback(() =>
-    (redirectTo
-        || new URLSearchParams(window.location.search).get("redirectTo")
-        || defaultRedirectTo
-    ), [defaultRedirectTo, redirectTo])
+    const getRedirectTo = useCallback(
+        () =>
+            redirectTo ||
+            new URLSearchParams(window.location.search).get("redirectTo") ||
+            defaultRedirectTo,
+        [defaultRedirectTo, redirectTo]
+    )
 
-    const getCallbackURL = useCallback(() =>
-    (callbackURL ||
-        (persistClient ?
-            `${window.location.pathname.replace(viewPaths[view], viewPaths.callback)}?redirectTo=${getRedirectTo()}`
-            : getRedirectTo()
-        )
-    ), [callbackURL, persistClient, view, viewPaths, getRedirectTo])
+    const getCallbackURL = useCallback(
+        () =>
+            callbackURL ||
+            (persistClient
+                ? `${window.location.pathname.replace(viewPaths[view], viewPaths.callback)}?redirectTo=${getRedirectTo()}`
+                : getRedirectTo()),
+        [callbackURL, persistClient, view, viewPaths, getRedirectTo]
+    )
 
     const formAction = async (formData: FormData) => {
         const provider = formData.get("provider") as SocialProvider
 
         if (provider) {
-            const { error } = await authClient.signIn.social({ provider, callbackURL: getCallbackURL() })
+            const { error } = await authClient.signIn.social({
+                provider,
+                callbackURL: getCallbackURL()
+            })
             if (error) {
                 toast.error(error.message || error.statusText)
             } else {
@@ -126,7 +133,9 @@ export function AuthForm({
 
         if (formData.get("passkey")) {
             // @ts-expect-error Optional plugin
-            const { error } = await authClient.signIn.passkey({ callbackURL: getCallbackURL() })
+            const { error } = await authClient.signIn.passkey({
+                callbackURL: getCallbackURL()
+            })
 
             if (error) {
                 toast.error(error.message || error.statusText)
@@ -139,13 +148,16 @@ export function AuthForm({
 
         let email = formData.get("email") as string
         const password = formData.get("password") as string
-        const name = formData.get("name") || "" as string
+        const name = formData.get("name") || ("" as string)
 
         switch (view) {
             case "signIn": {
                 if (!credentials) {
                     // @ts-expect-error Optional plugin
-                    const { error } = await authClient.signIn.magicLink({ email, callbackURL: getCallbackURL() })
+                    const { error } = await authClient.signIn.magicLink({
+                        email,
+                        callbackURL: getCallbackURL()
+                    })
 
                     if (error) {
                         toast.error(error.message || error.statusText)
@@ -156,12 +168,17 @@ export function AuthForm({
                     return
                 }
 
-                const params = { password, rememberMe: !rememberMe || formData.has("rememberMe") }
+                const params = {
+                    password,
+                    rememberMe: !rememberMe || formData.has("rememberMe")
+                }
 
                 if (usernamePlugin) {
                     const username = formData.get("username") as string
 
-                    if (!isValidEmail(username)) {
+                    if (isValidEmail(username)) {
+                        email = username
+                    } else {
                         // @ts-expect-error Optional plugin
                         const { error } = await authClient.signIn.username({
                             username,
@@ -177,12 +194,13 @@ export function AuthForm({
                         }
 
                         return
-                    } else {
-                        email = username
                     }
                 }
 
-                const { error } = await authClient.signIn.email({ email, ...params })
+                const { error } = await authClient.signIn.email({
+                    email,
+                    ...params
+                })
                 if (error) {
                     toast.error(error.message || error.statusText)
                 } else {
@@ -196,7 +214,10 @@ export function AuthForm({
 
             case "magicLink": {
                 // @ts-expect-error Optional plugin
-                const { error } = await authClient.signIn.magicLink({ email, callbackURL: getCallbackURL() })
+                const { error } = await authClient.signIn.magicLink({
+                    email,
+                    callbackURL: getCallbackURL()
+                })
 
                 if (error) {
                     toast.error(error.message || error.statusText)
@@ -208,14 +229,19 @@ export function AuthForm({
             }
 
             case "signUp": {
-                const params = { email, password, name, callbackURL: getCallbackURL() } as Record<string, unknown>
+                const params = {
+                    email,
+                    password,
+                    name,
+                    callbackURL: getCallbackURL()
+                } as Record<string, unknown>
 
                 if (usernamePlugin) {
                     params.username = formData.get("username")
                 }
 
-                signUpFields?.forEach((field) => {
-                    if (field == "name") return
+                signUpFields?.map((field) => {
+                    if (field === "name") return
 
                     const additionalField = additionalFields?.[field]
                     if (!additionalField) return
@@ -228,7 +254,12 @@ export function AuthForm({
                             return
                         }
 
-                        params[field] = additionalField.type == "number" ? parseFloat(value) : additionalField.type == "boolean" ? value == "on" : value
+                        params[field] =
+                            additionalField.type === "number"
+                                ? Number.parseFloat(value)
+                                : additionalField.type === "boolean"
+                                  ? value === "on"
+                                  : value
                     }
                 })
 
@@ -252,7 +283,10 @@ export function AuthForm({
             case "forgotPassword": {
                 const { error } = await authClient.forgetPassword({
                     email: email,
-                    redirectTo: window.location.pathname.replace(viewPaths.forgotPassword, viewPaths.resetPassword)
+                    redirectTo: window.location.pathname.replace(
+                        viewPaths.forgotPassword,
+                        viewPaths.resetPassword
+                    )
                 })
 
                 if (error) {
@@ -290,7 +324,7 @@ export function AuthForm({
     const checkingResetPasswordToken = useRef(false)
 
     useEffect(() => {
-        if (view != "signOut" || signingOut.current) return
+        if (view !== "signOut" || signingOut.current) return
 
         signingOut.current = true
         authClient.signOut().finally(async () => {
@@ -298,16 +332,16 @@ export function AuthForm({
             onSessionChange?.()
             signingOut.current = false
         })
-    }, [view, authClient, replace, viewPaths.signIn, onSessionChange, getRedirectTo])
+    }, [view, authClient, replace, viewPaths.signIn, onSessionChange])
 
     useEffect(() => {
-        if (view != "resetPassword" || checkingResetPasswordToken.current) return
+        if (view !== "resetPassword" || checkingResetPasswordToken.current) return
 
         checkingResetPasswordToken.current = true
 
         const searchParams = new URLSearchParams(window.location.search)
         const token = searchParams.get("token")
-        if (!token || token == "INVALID_TOKEN") {
+        if (!token || token === "INVALID_TOKEN") {
             navigate(viewPaths.signIn)
             setTimeout(() => {
                 toast.error(localization.resetPasswordInvalidToken)
@@ -317,7 +351,7 @@ export function AuthForm({
     }, [view, viewPaths, navigate, localization])
 
     useEffect(() => {
-        if (view == "magicLink" && !magicLink) {
+        if (view === "magicLink" && !magicLink) {
             navigate(viewPaths.signIn)
         }
 
@@ -327,7 +361,7 @@ export function AuthForm({
     }, [view, viewPaths, credentials, navigate, magicLink])
 
     useEffect(() => {
-        if (view != "callback") return
+        if (view !== "callback") return
 
         if (!persistClient) {
             replace(getRedirectTo())
@@ -340,30 +374,27 @@ export function AuthForm({
         replace(getRedirectTo())
     }, [isRestoring, view, replace, persistClient, getRedirectTo, onSessionChange])
 
-    if (["signOut", "callback"].includes(view)) return (
-        <Loader2 className="animate-spin" />
-    )
+    if (["signOut", "callback"].includes(view)) return <Loader2 className="animate-spin" />
 
     return (
-        <form
-            action={formAction}
-            className={cn("grid gap-4 w-full", className, classNames?.base)}
-        >
-            {credentials && view == "signUp" && (nameRequired || signUpFields?.includes("name")) && (
-                <div className="grid gap-2">
-                    <Label className={classNames?.label} htmlFor="name">
-                        {localization.name}
-                    </Label>
+        <form action={formAction} className={cn("grid gap-4 w-full", className, classNames?.base)}>
+            {credentials &&
+                view === "signUp" &&
+                (nameRequired || signUpFields?.includes("name")) && (
+                    <div className="grid gap-2">
+                        <Label className={classNames?.label} htmlFor="name">
+                            {localization.name}
+                        </Label>
 
-                    <Input
-                        className={classNames?.input}
-                        id="name"
-                        name="name"
-                        placeholder={localization.namePlaceholder}
-                        required={nameRequired}
-                    />
-                </div>
-            )}
+                        <Input
+                            className={classNames?.input}
+                            id="name"
+                            name="name"
+                            placeholder={localization.namePlaceholder}
+                            required={nameRequired}
+                        />
+                    </div>
+                )}
 
             {credentials && usernamePlugin && ["signIn", "signUp"].includes(view) && (
                 <div className="grid gap-2">
@@ -375,28 +406,34 @@ export function AuthForm({
                         className={classNames?.input}
                         id="username"
                         name="username"
-                        placeholder={view == "signIn" ? localization.usernameSignInPlaceholder : localization.usernamePlaceholder}
+                        placeholder={
+                            view === "signIn"
+                                ? localization.usernameSignInPlaceholder
+                                : localization.usernamePlaceholder
+                        }
                         required
                     />
                 </div>
             )}
 
-            {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) && ((!usernamePlugin && view != "resetPassword") || ["signUp", "magicLink", "forgotPassword"].includes(view)) && (
-                <div className="grid gap-2">
-                    <Label className={classNames?.label} htmlFor="email">
-                        {localization.email}
-                    </Label>
+            {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) &&
+                ((!usernamePlugin && view !== "resetPassword") ||
+                    ["signUp", "magicLink", "forgotPassword"].includes(view)) && (
+                    <div className="grid gap-2">
+                        <Label className={classNames?.label} htmlFor="email">
+                            {localization.email}
+                        </Label>
 
-                    <Input
-                        className={classNames?.input}
-                        id="email"
-                        name="email"
-                        placeholder={localization.emailPlaceholder}
-                        required
-                        type="email"
-                    />
-                </div>
-            )}
+                        <Input
+                            className={classNames?.input}
+                            id="email"
+                            name="email"
+                            placeholder={localization.emailPlaceholder}
+                            required
+                            type="email"
+                        />
+                    </div>
+                )}
 
             {credentials && ["signUp", "signIn", "resetPassword"].includes(view) && (
                 <div className="grid gap-2">
@@ -405,9 +442,10 @@ export function AuthForm({
                             {localization.password}
                         </Label>
 
-                        {view == "signIn" && forgotPassword && (
+                        {view === "signIn" && forgotPassword && (
                             <LinkComponent
-                                className={cn("ml-auto inline-block text-sm hover:underline -my-1",
+                                className={cn(
+                                    "ml-auto inline-block text-sm hover:underline -my-1",
                                     classNames?.forgotPasswordLink
                                 )}
                                 href="forgot-password"
@@ -419,7 +457,9 @@ export function AuthForm({
                     </div>
 
                     <Input
-                        autoComplete={["signUp", "resetPassword"].includes(view!) ? "new-password" : "password"}
+                        autoComplete={
+                            ["signUp", "resetPassword"].includes(view) ? "new-password" : "password"
+                        }
                         className={classNames?.input}
                         id="password"
                         name="password"
@@ -430,52 +470,59 @@ export function AuthForm({
                 </div>
             )}
 
-            {view == "signIn" && rememberMe && (
+            {view === "signIn" && rememberMe && (
                 <div className="flex items-center gap-2">
-                    <Checkbox
-                        id="rememberMe"
-                        name="rememberMe"
-                    />
+                    <Checkbox id="rememberMe" name="rememberMe" />
 
-                    <Label htmlFor="rememberMe">
-                        {localization.rememberMe}
-                    </Label>
+                    <Label htmlFor="rememberMe">{localization.rememberMe}</Label>
                 </div>
             )}
 
-            {view == "signUp" && signUpFields?.filter((field) => field != "name").map((field) => {
-                const additionalField = additionalFields?.[field]
+            {view === "signUp" &&
+                signUpFields
+                    ?.filter((field) => field !== "name")
+                    .map((field) => {
+                        const additionalField = additionalFields?.[field]
 
-                if (!additionalField) {
-                    console.error(`Invalid additional field: ${field}`)
-                    return null
-                }
+                        if (!additionalField) {
+                            console.error(`Invalid additional field: ${field}`)
+                            return null
+                        }
 
-                return additionalField.type == "boolean" ? (
-                    <div key={field} className="flex items-center gap-2">
-                        <Checkbox id={field} name={field} required={additionalField.required} />
+                        return additionalField.type === "boolean" ? (
+                            <div key={field} className="flex items-center gap-2">
+                                <Checkbox
+                                    id={field}
+                                    name={field}
+                                    required={additionalField.required}
+                                />
 
-                        <Label className={cn(classNames?.label)} htmlFor={field}>
-                            {additionalField?.label}
-                        </Label>
-                    </div>
-                ) : (
-                    <div key={field} className="grid gap-2">
-                        <Label className={classNames?.label} htmlFor={field}>
-                            {additionalField?.label}
-                        </Label>
+                                <Label className={cn(classNames?.label)} htmlFor={field}>
+                                    {additionalField?.label}
+                                </Label>
+                            </div>
+                        ) : (
+                            <div key={field} className="grid gap-2">
+                                <Label className={classNames?.label} htmlFor={field}>
+                                    {additionalField?.label}
+                                </Label>
 
-                        <Input
-                            className={classNames?.input}
-                            id={field}
-                            name={field}
-                            placeholder={additionalField?.placeholder || (typeof additionalField?.label == "string" ? additionalField?.label : "")}
-                            required={additionalField?.required}
-                            type={additionalField?.type == "number" ? "number" : "text"}
-                        />
-                    </div>
-                )
-            })}
+                                <Input
+                                    className={classNames?.input}
+                                    id={field}
+                                    name={field}
+                                    placeholder={
+                                        additionalField?.placeholder ||
+                                        (typeof additionalField?.label === "string"
+                                            ? additionalField?.label
+                                            : "")
+                                    }
+                                    required={additionalField?.required}
+                                    type={additionalField?.type === "number" ? "number" : "text"}
+                                />
+                            </div>
+                        )
+                    })}
 
             {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) && (
                 <ActionButton
@@ -486,7 +533,7 @@ export function AuthForm({
                 />
             )}
 
-            {magicLink && credentials && view != "resetPassword" && (
+            {magicLink && credentials && view !== "resetPassword" && (
                 <MagicLinkButton
                     className={classNames?.secondaryButton}
                     isLoading={isLoading}
@@ -501,13 +548,15 @@ export function AuthForm({
                         className={cn(
                             "w-full gap-2 flex items-center",
                             "justify-between",
-                            socialLayout == "horizontal" && "flex-wrap",
-                            socialLayout == "vertical" && "flex-col",
-                            socialLayout == "grid" && "grid grid-cols-2"
+                            socialLayout === "horizontal" && "flex-wrap",
+                            socialLayout === "vertical" && "flex-col",
+                            socialLayout === "grid" && "grid grid-cols-2"
                         )}
                     >
                         {providers?.map((provider) => {
-                            const socialProvider = socialProviders.find((socialProvider) => socialProvider.provider == provider)
+                            const socialProvider = socialProviders.find(
+                                (socialProvider) => socialProvider.provider === provider
+                            )
                             if (!socialProvider) return null
 
                             return (

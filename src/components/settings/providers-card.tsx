@@ -9,15 +9,9 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { socialProviders } from "../../lib/social-providers"
 import { cn } from "../../lib/utils"
-import { FetchError } from "../../types/fetch-error"
+import type { FetchError } from "../../types/fetch-error"
 import { Button } from "../ui/button"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle
-} from "../ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 
 import type { SettingsCardClassNames } from "./settings-card"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
@@ -31,28 +25,30 @@ export function ProvidersCard({
     refetch,
     unlinkAccount
 }: {
-    className?: string,
-    classNames?: SettingsCardClassNames,
-    accounts?: { provider: string }[] | null,
-    isPending?: boolean,
-    localization?: Partial<AuthLocalization>,
-    refetch?: () => Promise<void>,
-    unlinkAccount?: (providerId: string) => Promise<{ status?: boolean, code?: string, error?: FetchError | null }>
+    className?: string
+    classNames?: SettingsCardClassNames
+    accounts?: { provider: string }[] | null
+    isPending?: boolean
+    localization?: Partial<AuthLocalization>
+    refetch?: () => Promise<void>
+    unlinkAccount?: (
+        providerId: string
+    ) => Promise<{ status?: boolean; code?: string; error?: FetchError | null }>
 }) {
     const {
         authClient,
         colorIcons,
-        hooks: { useListAccounts },
+        hooks,
         localization: authLocalization,
         noColorIcons,
         optimistic,
         providers
     } = useContext(AuthUIContext)
+    const { useListAccounts } = hooks
 
     localization = { ...authLocalization, ...localization }
 
     if (isPending === undefined && accounts === undefined) {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
         const result = useListAccounts()
         accounts = result.accounts
         isPending = result.isPending
@@ -73,7 +69,7 @@ export function ProvidersCard({
                 // Remove the parameter from URL
                 params.delete("providerLinked")
                 const query = params.toString()
-                const url = `${window.location.pathname}${query ? "?" + query : ""}`
+                const url = `${window.location.pathname}${query ? `?${query}` : ""}`
                 window.history.replaceState(null, "", url)
             }, 0)
         }
@@ -118,35 +114,46 @@ export function ProvidersCard({
                     {localization.providers}
                 </CardTitle>
 
-                <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
+                <CardDescription
+                    className={cn("text-xs md:text-sm", classNames?.description)}
+                >
                     {localization.providersDescription}
                 </CardDescription>
             </CardHeader>
 
             <CardContent className={cn("flex flex-col gap-3", classNames?.content)}>
                 {providers?.map((provider) => {
-                    const socialProvider = socialProviders.find((socialProvider) => socialProvider.provider === provider)
+                    const socialProvider = socialProviders.find(
+                        (socialProvider) => socialProvider.provider === provider
+                    )
                     if (!socialProvider) return null
 
-                    const isLinked = accounts?.some(acc => acc.provider === socialProvider.provider)
-                    const isButtonLoading = actionLoading === provider || actionLoading === provider
+                    const isLinked = accounts?.some(
+                        (acc) => acc.provider === socialProvider.provider
+                    )
+                    const isButtonLoading =
+                        actionLoading === provider || actionLoading === provider
 
                     return (
-                        <Card key={provider} className="flex items-center gap-3 px-4 py-3">
+                        <Card
+                            key={provider}
+                            className="flex items-center gap-3 px-4 py-3"
+                        >
                             {colorIcons ? (
                                 <socialProvider.icon className="size-4" color />
                             ) : noColorIcons ? (
                                 <socialProvider.icon className="size-4" />
                             ) : (
                                 <>
-                                    <socialProvider.icon className="size-4 dark:hidden" color />
+                                    <socialProvider.icon
+                                        className="size-4 dark:hidden"
+                                        color
+                                    />
                                     <socialProvider.icon className="size-4 hidden dark:block" />
                                 </>
                             )}
 
-                            <span className="text-sm">
-                                {socialProvider.name}
-                            </span>
+                            <span className="text-sm">{socialProvider.name}</span>
 
                             <Button
                                 className={cn("ms-auto relative", classNames?.button)}
@@ -164,7 +171,11 @@ export function ProvidersCard({
                                     }
                                 }}
                             >
-                                <span className={isButtonLoading ? "opacity-0" : "opacity-100"}>
+                                <span
+                                    className={
+                                        isButtonLoading ? "opacity-0" : "opacity-100"
+                                    }
+                                >
                                     {isLinked ? localization.unlink : localization.link}
                                 </span>
 

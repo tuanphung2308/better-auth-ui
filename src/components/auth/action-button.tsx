@@ -11,22 +11,19 @@ export function ActionButton({
     localization,
     authView
 }: {
-    className?: string,
-    isLoading?: boolean,
-    localization: Partial<AuthLocalization>,
+    className?: string
+    isLoading?: boolean
+    localization: Partial<AuthLocalization>
     authView: string
 }) {
     const { pending } = useFormStatus()
 
     return (
-        <Button
-            className={cn("w-full", className)}
-            disabled={pending || isLoading}
-        >
-            {(pending || isLoading) ? (
+        <Button className={cn("w-full", className)} disabled={pending || isLoading}>
+            {pending || isLoading ? (
                 <Loader2 className="animate-spin" />
             ) : (
-                localization[authView + "Action" as keyof typeof localization]
+                localization[`${authView}Action` as keyof typeof localization]
             )}
         </Button>
     )

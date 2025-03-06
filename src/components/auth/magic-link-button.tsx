@@ -14,9 +14,9 @@ export function MagicLinkButton({
     localization,
     view
 }: {
-    className?: string,
-    isLoading?: boolean,
-    localization: Partial<AuthLocalization>,
+    className?: string
+    isLoading?: boolean
+    localization: Partial<AuthLocalization>
     view: AuthView
 }) {
     const { pending } = useFormStatus()
@@ -29,21 +29,12 @@ export function MagicLinkButton({
             type="button"
             variant="secondary"
             onClick={() => {
-                navigate(view == "magicLink" ? viewPaths.signIn : viewPaths.magicLink)
+                navigate(view === "magicLink" ? viewPaths.signIn : viewPaths.magicLink)
             }}
         >
-            {view == "magicLink"
-                ? <LockIcon />
-                : <MailIcon />
-            }
-
-            {localization.signInWith}
-            {" "}
-
-            {view == "magicLink"
-                ? localization.password
-                : localization.magicLink
-            }
+            {view === "magicLink" ? <LockIcon /> : <MailIcon />}
+            {localization.signInWith}{" "}
+            {view === "magicLink" ? localization.password : localization.magicLink}
         </Button>
     )
 }

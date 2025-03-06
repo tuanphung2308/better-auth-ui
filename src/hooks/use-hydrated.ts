@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react"
 
 function subscribe() {
-    return () => { }
+    return () => {}
 }
 
 export function useIsHydrated(): boolean {

@@ -28,10 +28,7 @@ export function UpdateAvatarCardSkeleton({
             </div>
 
             <CardFooter
-                className={cn(
-                    "border-t bg-muted dark:bg-transparent py-4.5",
-                    classNames?.footer
-                )}
+                className={cn("border-t bg-muted dark:bg-transparent py-4.5", classNames?.footer)}
             >
                 <Skeleton className="h-4 md:my-0.5 w-72 mx-auto md:mx-0" />
             </CardFooter>

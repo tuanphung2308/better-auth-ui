@@ -6,26 +6,25 @@ import { toast } from "sonner"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
-import {
-    Card,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle
-} from "../ui/card"
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { Skeleton } from "../ui/skeleton"
 import { UserAvatar } from "../user-avatar"
 
 import type { SettingsCardClassNames } from "./settings-card"
 import { UpdateAvatarCardSkeleton } from "./skeletons/update-avatar-card-skeleton"
 
-async function resizeAndCropImage(file: File, name: string, size: number, avatarExtension: string): Promise<File> {
+async function resizeAndCropImage(
+    file: File,
+    name: string,
+    size: number,
+    avatarExtension: string
+): Promise<File> {
     const image = await loadImage(file)
 
     const canvas = document.createElement("canvas")
     canvas.width = canvas.height = size
 
-    const ctx = canvas.getContext("2d")!
+    const ctx = canvas.getContext("2d")
 
     const minEdge = Math.min(image.width, image.height)
 
@@ -34,13 +33,15 @@ async function resizeAndCropImage(file: File, name: string, size: number, avatar
     const sWidth = minEdge
     const sHeight = minEdge
 
-    ctx.drawImage(image, sx, sy, sWidth, sHeight, 0, 0, size, size)
+    ctx?.drawImage(image, sx, sy, sWidth, sHeight, 0, 0, size, size)
 
     const resizedImageBlob = await new Promise<Blob | null>((resolve) =>
         canvas.toBlob(resolve, `image/${avatarExtension}`)
     )
 
-    return new File([resizedImageBlob!], `${name}.${avatarExtension}`, { type: `image/${avatarExtension}` })
+    return new File([resizedImageBlob as BlobPart], `${name}.${avatarExtension}`, {
+        type: `image/${avatarExtension}`
+    })
 }
 
 async function loadImage(file: File): Promise<HTMLImageElement> {
@@ -49,7 +50,7 @@ async function loadImage(file: File): Promise<HTMLImageElement> {
         const reader = new FileReader()
 
         reader.onload = (e) => {
-            image.src = e.target!.result as string
+            image.src = e.target?.result as string
         }
 
         image.onload = () => resolve(image)
@@ -63,11 +64,11 @@ export function UpdateAvatarCard({
     className,
     classNames,
     isPending,
-    localization,
+    localization
 }: {
-    className?: string,
-    classNames?: SettingsCardClassNames,
-    isPending?: boolean,
+    className?: string
+    classNames?: SettingsCardClassNames
+    isPending?: boolean
     localization?: Partial<AuthLocalization>
 }) {
     const {
@@ -89,7 +90,12 @@ export function UpdateAvatarCard({
         if (!sessionData) return
 
         setLoading(true)
-        const resizedFile = await resizeAndCropImage(file, sessionData.user.id, avatarSize, avatarExtension)
+        const resizedFile = await resizeAndCropImage(
+            file,
+            sessionData.user.id,
+            avatarSize,
+            avatarExtension
+        )
 
         let image: string | undefined | null
 
@@ -146,13 +152,11 @@ export function UpdateAvatarCard({
                     </CardDescription>
                 </CardHeader>
 
-                <button
-                    className={cn("me-6 my-5")}
-                    type="button"
-                    onClick={openFileDialog}
-                >
+                <button className={cn("me-6 my-5")} type="button" onClick={openFileDialog}>
                     {loading ? (
-                        <Skeleton className={cn("size-18 rounded-full", classNames?.avatar?.base)} />
+                        <Skeleton
+                            className={cn("size-18 rounded-full", classNames?.avatar?.base)}
+                        />
                     ) : (
                         <UserAvatar
                             className="size-18 text-2xl"
@@ -160,15 +164,11 @@ export function UpdateAvatarCard({
                             user={sessionData?.user}
                         />
                     )}
-
                 </button>
             </div>
 
             <CardFooter
-                className={cn(
-                    "border-t bg-muted dark:bg-transparent py-4.5",
-                    classNames?.footer
-                )}
+                className={cn("border-t bg-muted dark:bg-transparent py-4.5", classNames?.footer)}
             >
                 <CardDescription
                     className={cn(

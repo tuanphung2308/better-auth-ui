@@ -11,7 +11,7 @@ import {
 import { Fragment, useContext } from "react"
 import { toast } from "sonner"
 
-import { type AuthLocalization } from "../lib/auth-localization"
+import type { AuthLocalization } from "../lib/auth-localization"
 import { AuthUIContext } from "../lib/auth-ui-provider"
 import { cn } from "../lib/utils"
 import type { User } from "../types/user"
@@ -33,7 +33,7 @@ export interface UserButtonClassNames {
         base?: string
         avatar?: UserAvatarClassNames
         skeleton?: string
-    },
+    }
     content?: {
         base?: string
         avatar?: UserAvatarClassNames
@@ -45,7 +45,7 @@ export interface UserButtonClassNames {
 export interface UserButtonProps {
     className?: string
     classNames?: UserButtonClassNames
-    /** 
+    /**
      * @default authLocalization
      * @remarks `AuthLocalization`
      */
@@ -64,7 +64,7 @@ export function UserButton({
 }: UserButtonProps) {
     const {
         basePath,
-        hooks: { useSession, useListDeviceSessions },
+        hooks,
         localization: authLocalization,
         multiSession,
         settingsUrl,
@@ -72,10 +72,15 @@ export function UserButton({
         onSessionChange,
         LinkComponent
     } = useContext(AuthUIContext)
+    const { useSession, useListDeviceSessions } = hooks
 
     localization = { ...authLocalization, ...localization }
 
-    const { deviceSessions, isPending: deviceSessionsPending, setActiveSession } = useListDeviceSessions()
+    const {
+        deviceSessions,
+        isPending: deviceSessionsPending,
+        setActiveSession
+    } = useListDeviceSessions()
     const { data: sessionData, isPending: sessionPending } = useSession()
     const user = sessionData?.user as User
 
@@ -84,16 +89,18 @@ export function UserButton({
     return (
         <DropdownMenu>
             <DropdownMenuTrigger
-                asChild={size == "full"}
-                className={cn(size == "icon" && "rounded-full", classNames?.trigger?.base)}
+                asChild={size === "full"}
+                className={cn(size === "icon" && "rounded-full", classNames?.trigger?.base)}
                 disabled={isPending}
             >
-                {size == "icon" ? (
-                    (isPending) ? (
+                {size === "icon" ? (
+                    isPending ? (
                         <Skeleton
                             className={cn(
                                 "size-8 rounded-full",
-                                className, classNames?.base, classNames?.trigger?.skeleton
+                                className,
+                                classNames?.base,
+                                classNames?.trigger?.skeleton
                             )}
                         />
                     ) : (
@@ -114,25 +121,26 @@ export function UserButton({
                                     )}
                                 />
                             ) : (
-                                <UserAvatar
-                                    classNames={classNames?.content?.avatar}
-                                    user={user}
-                                />
+                                <UserAvatar classNames={classNames?.content?.avatar} user={user} />
                             )}
 
                             <div className="flex flex-col grow text-left truncate">
                                 <div className="font-medium text-sm truncate">
                                     {isPending ? (
                                         <Skeleton className="h-3 w-20" />
-                                    ) : (user?.name || user?.email || localization.account)}
+                                    ) : (
+                                        user?.name || user?.email || localization.account
+                                    )}
                                 </div>
 
                                 {isPending ? (
                                     <Skeleton className="h-3 w-32 mt-1" />
-                                ) : user?.name && (
-                                    <div className="text-muted-foreground !font-light text-xs truncate">
-                                        {user?.email}
-                                    </div>
+                                ) : (
+                                    user?.name && (
+                                        <div className="text-muted-foreground !font-light text-xs truncate">
+                                            {user?.email}
+                                        </div>
+                                    )
                                 )}
                             </div>
 
@@ -143,20 +151,15 @@ export function UserButton({
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
-                className={cn("me-3", size == "full" && "min-w-48", classNames?.content?.base)}
+                className={cn("me-3", size === "full" && "min-w-48", classNames?.content?.base)}
                 onCloseAutoFocus={(e) => e.preventDefault()}
             >
-                {(user && !user.isAnonymous) ? (
+                {user && !user.isAnonymous ? (
                     <div className="flex gap-2 p-2 items-center">
-                        <UserAvatar
-                            classNames={classNames?.content?.avatar}
-                            user={user}
-                        />
+                        <UserAvatar classNames={classNames?.content?.avatar} user={user} />
 
                         <div className="flex flex-col">
-                            <div className="font-medium text-sm">
-                                {user.name || user.email}
-                            </div>
+                            <div className="font-medium text-sm">{user.name || user.email}</div>
 
                             {user.name && (
                                 <div className="text-muted-foreground !font-light text-xs">
@@ -179,10 +182,9 @@ export function UserButton({
                             href={`${basePath}/${viewPaths.signIn}`}
                             to={`${basePath}/${viewPaths.signIn}`}
                         >
-                            <DropdownMenuItem
-                                className={classNames?.content?.menuItem}
-                            >
+                            <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <LogInIcon />
+
                                 {localization.signIn}
                             </DropdownMenuItem>
                         </LinkComponent>
@@ -193,6 +195,7 @@ export function UserButton({
                         >
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <UserRoundPlus />
+
                                 {localization.signUp}
                             </DropdownMenuItem>
                         </LinkComponent>
@@ -205,6 +208,7 @@ export function UserButton({
                         >
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <SettingsIcon />
+
                                 {localization.settings}
                             </DropdownMenuItem>
                         </LinkComponent>
@@ -215,6 +219,7 @@ export function UserButton({
                         >
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <LogOutIcon />
+
                                 {localization.signOut}
                             </DropdownMenuItem>
                         </LinkComponent>
@@ -225,13 +230,14 @@ export function UserButton({
                     <>
                         <DropdownMenuSeparator className={classNames?.content?.separator} />
 
-                        {deviceSessions?.filter((sessionData) => sessionData.user.id !== user?.id)
+                        {deviceSessions
+                            ?.filter((sessionData) => sessionData.user.id !== user?.id)
                             .map(({ session, user }) => (
                                 <Fragment key={session.id}>
                                     <DropdownMenuItem
                                         className={classNames?.content?.menuItem}
                                         onClick={async () => {
-                                            const { error } = await setActiveSession?.(session.token)
+                                            const { error } = await setActiveSession(session.token)
                                             if (error) {
                                                 toast.error(error.message || error.statusText)
                                             } else {
@@ -259,7 +265,9 @@ export function UserButton({
                                         </div>
                                     </DropdownMenuItem>
 
-                                    <DropdownMenuSeparator className={classNames?.content?.separator} />
+                                    <DropdownMenuSeparator
+                                        className={classNames?.content?.separator}
+                                    />
                                 </Fragment>
                             ))}
 
@@ -269,6 +277,7 @@ export function UserButton({
                         >
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <PlusCircleIcon />
+
                                 {localization.addAccount}
                             </DropdownMenuItem>
                         </LinkComponent>

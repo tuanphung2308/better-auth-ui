@@ -14,7 +14,14 @@ export const baseOptions: BaseLayoutProps = {
         // can be JSX too!
         title: (
             <>
-                <svg className="w-5 h-5" fill="none" height="45" viewBox="0 0 60 45" width="60" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    height="45"
+                    viewBox="0 0 60 45"
+                    width="60"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
                     <path
                         className="fill-black dark:fill-white"
                         clipRule="evenodd"
@@ -22,11 +29,9 @@ export const baseOptions: BaseLayoutProps = {
                         fillRule="evenodd"
                     />
                 </svg>
-
                 BETTER-AUTH. UI
             </>
-
-        ),
+        )
     },
     links: [
         {

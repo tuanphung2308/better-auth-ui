@@ -6,13 +6,7 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
-import {
-    Card,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle
-} from "../ui/card"
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import {
     Dialog,
     DialogContent,
@@ -25,7 +19,7 @@ import {
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
-import { type SettingsCardClassNames } from "./settings-card"
+import type { SettingsCardClassNames } from "./settings-card"
 import { DeleteAccountCardSkeleton } from "./skeletons/delete-account-card-skeleton"
 
 export function DeleteAccountCard({
@@ -33,12 +27,12 @@ export function DeleteAccountCard({
     classNames,
     accounts,
     isPending,
-    localization,
+    localization
 }: {
-    className?: string,
-    classNames?: SettingsCardClassNames,
-    accounts?: { provider: string }[] | null,
-    isPending?: boolean,
+    className?: string
+    classNames?: SettingsCardClassNames
+    accounts?: { provider: string }[] | null
+    isPending?: boolean
     localization?: Partial<AuthLocalization>
 }) {
     const {
@@ -55,7 +49,6 @@ export function DeleteAccountCard({
     localization = { ...authLocalization, ...localization }
 
     if (isPending === undefined && accounts === undefined) {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
         const result = useListAccounts()
         accounts = result.accounts
         isPending = result.isPending
@@ -64,8 +57,10 @@ export function DeleteAccountCard({
     const { data: sessionData, isPending: sessionPending } = useSession()
     const session = sessionData?.session
 
-    const isFresh = session ? (Date.now() / 1000 - session?.createdAt.getTime() / 1000 < freshAge) : false
-    const credentialsLinked = accounts?.some(acc => acc.provider === "credential")
+    const isFresh = session
+        ? Date.now() / 1000 - session?.createdAt.getTime() / 1000 < freshAge
+        : false
+    const credentialsLinked = accounts?.some((acc) => acc.provider === "credential")
 
     const formAction = async (_: unknown, formData: FormData) => {
         const params = {} as Record<string, string>
@@ -103,13 +98,21 @@ export function DeleteAccountCard({
     }
 
     return (
-        <Card className={cn("w-full overflow-hidden border-destructive/40", className, classNames?.base)}>
+        <Card
+            className={cn(
+                "w-full overflow-hidden border-destructive/40",
+                className,
+                classNames?.base
+            )}
+        >
             <CardHeader className={classNames?.header}>
                 <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                     {localization?.deleteAccount}
                 </CardTitle>
 
-                <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
+                <CardDescription
+                    className={cn("text-xs md:text-sm", classNames?.description)}
+                >
                     {localization?.deleteAccountDescription}
                 </CardDescription>
             </CardHeader>
@@ -123,7 +126,10 @@ export function DeleteAccountCard({
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button
-                            className={cn("mx-auto md:ms-auto md:mx-0", classNames?.button)}
+                            className={cn(
+                                "mx-auto md:ms-auto md:mx-0",
+                                classNames?.button
+                            )}
                             size="sm"
                             variant="destructive"
                         >
@@ -134,12 +140,24 @@ export function DeleteAccountCard({
                     <DialogContent className="sm:max-w-md">
                         <form action={action} className="grid gap-4">
                             <DialogHeader>
-                                <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                                <DialogTitle
+                                    className={cn(
+                                        "text-lg md:text-xl",
+                                        classNames?.title
+                                    )}
+                                >
                                     {localization?.deleteAccount}
                                 </DialogTitle>
 
-                                <DialogDescription className={cn("text-xs md:text-sm", classNames?.description)}>
-                                    {isFresh ? localization?.deleteAccountInstructions : localization?.deleteAccountNotFresh}
+                                <DialogDescription
+                                    className={cn(
+                                        "text-xs md:text-sm",
+                                        classNames?.description
+                                    )}
+                                >
+                                    {isFresh
+                                        ? localization?.deleteAccountInstructions
+                                        : localization?.deleteAccountNotFresh}
                                 </DialogDescription>
                             </DialogHeader>
 
@@ -162,12 +180,17 @@ export function DeleteAccountCard({
 
                             <DialogFooter>
                                 <Button
-                                    className={cn("mx-auto md:ms-auto md:mx-0", classNames?.button)}
+                                    className={cn(
+                                        "mx-auto md:ms-auto md:mx-0",
+                                        classNames?.button
+                                    )}
                                     disabled={isSubmitting}
                                     variant="destructive"
                                 >
                                     <span className={cn(isSubmitting && "opacity-0")}>
-                                        {isFresh ? localization?.deleteAccount : localization?.signOut}
+                                        {isFresh
+                                            ? localization?.deleteAccount
+                                            : localization?.signOut}
                                     </span>
 
                                     {isSubmitting && (

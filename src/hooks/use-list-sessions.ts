@@ -1,11 +1,5 @@
 import type { Session } from "better-auth/types"
-import {
-    useCallback,
-    useContext,
-    useEffect,
-    useRef,
-    useState
-} from "react"
+import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
@@ -34,7 +28,7 @@ export function useListSessions() {
 
         initialized.current = true
         listSessions()
-    }, [listSessions, sessionData, sessionPending])
+    }, [listSessions, sessionData])
 
     return {
         sessions,
