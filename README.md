@@ -1,6 +1,6 @@
 # @daveyplate/better-auth-ui
 
-<img src="docs/public/better-auth-ui-promo.png?v=1" alt="better-auth-ui" />
+<img src="docs/public/better-auth-ui-promo-dark.png" alt="better-auth-ui" />
 
 ## [better-auth-ui.com](https://better-auth-ui.com)
 
