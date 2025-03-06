@@ -9,6 +9,7 @@
         "mdx",
         "js",
         "jsx",
+        "mjs",
         "ts",
         "tsx",
         "css",
@@ -16,21 +17,5 @@
         "json",
         "sql"
     ],
-    "ignore": [
-        "ios",
-        "public",
-        "code-sync.ts",
-        "code-sync.config.json",
-        "migrations",
-        "prism-one-light.css",
-        "package-lock.json",
-        "jsconfig.json",
-        "next-i18next.config.js",
-        ".github",
-        "/src/components/ui",
-        "/messages",
-        "/ios/App/App/Assets.xcassets",
-        "/ios/App/App/public",
-        "/android/app/src/main/assets/public"
-    ]
+    "ignore": ["code-sync.ts", "code-sync.config.json", "src/components/ui"]
 }
