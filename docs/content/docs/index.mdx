@@ -47,8 +47,12 @@ Below are examples of the authentication components provided by `@daveyplate/bet
     </div>
     <div>
         ### User Button
+        <div className="flex gap-2 mt-0">
+            <img alt="Seto" src="/avatars/seto.png" className="size-8 rounded-full mt-0 mb-3" />
+            <img alt="Seto" src="/avatars/dark.png" className="size-8 rounded-full hidden dark:block mt-0 mb-3" />
+            <img alt="Seto" src="/avatars/light.png" className="size-8 rounded-full dark:hidden mt-0 mb-3" />
+        </div>
         <div className="flex items-center gap-3">
-            <img alt="Seto" src="/avatars/seto.png" className="size-8 rounded-full mt-0 mb-0" />
             <img alt="Seto" src="/screenshots/user-button-dark.png" className="w-64 rounded-md hidden dark:block mt-0 mb-0" />
             <img alt="Seto" src="/screenshots/user-button-light.png" className="w-64 rounded-md dark:hidden mt-0 mb-0" />
         </div>
