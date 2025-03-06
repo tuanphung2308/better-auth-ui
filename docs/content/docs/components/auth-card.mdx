@@ -1,0 +1,116 @@
+---
+title: <AuthCard />
+---
+
+The `<AuthCard />` component provides an interactive and customizable authentication interface that seamlessly integrates with your authentication flow. It supports multiple authentication methods, including email/password, magic links, passkey (WebAuthn), and social providers.
+
+## Usage
+
+Here's a basic example on how to use the `<AuthCard />` component within your application:
+
+```tsx
+import { AuthCard } from "@daveyplate/better-auth-ui"
+
+export default function AuthPage({ params }: { params: { pathname: string } }) {
+  return (
+    <div className="flex justify-center my-auto">
+      <AuthCard pathname={params.pathname} />
+    </div>
+  )
+}
+```
+
+---
+
+## Props Reference
+
+The following props can be passed to `<AuthCard />` for customization:
+
+<AutoTypeTable path="../src/components/auth/auth-card.tsx" name="AuthCardProps" />
+
+---
+
+## Examples
+
+Below are practical usage examples demonstrating common scenarios:
+
+### Specifying Initial View
+
+You can specify the current view manually using the `view` prop:
+
+```tsx
+<AuthCard view="signIn" />
+```
+
+### Custom Redirect After Authentication
+
+Customize the navigation after successful authentication using the `redirectTo` prop:
+
+```tsx
+<AuthCard redirectTo="/dashboard" />
+```
+
+### Localization
+
+You can pass custom localization texts to fit different languages or contexts:
+
+```tsx
+<AuthCard
+  localization={{
+    signIn: "Log in",
+    signUp: "Register",
+    magicLink: "Sign in with Email",
+  }}
+/>
+```
+
+### Custom Styling using TailwindCSS
+
+You can thoroughly customize `<AuthCard />` components using TailwindCSS utility classes and the provided `classNames` prop:
+
+```tsx
+<AuthCard
+  classNames={{
+    base: "border-2 border-destructive max-w-xs",
+    header: "bg-destructive/30",
+    title: "text-xl text-destructive font-semibold",
+    footerLink: "text-destructive hover:text-foreground",
+  }}
+/>
+```
+
+### Full Example – Full Feature Usage
+
+This example uses most available options in a fully-featured setup:
+
+```tsx
+import { AuthCard } from "@daveyplate/better-auth-ui"
+
+export default function AuthPage({ params }: { params: { pathname: string } }) {
+  return (
+    <div className="flex justify-center my-auto">
+      <AuthCard
+        pathname={params.pathname}
+        socialLayout="grid"
+        providers={["github", "google", "discord"]}
+        redirectTo="/home"
+        localization={{
+          signUp: "Create an Account",
+          signIn: "Sign In",
+          magicLink: "Sign In via Email",
+        }}
+        classNames={{
+          base: "border-destructive",
+          form: {
+            input: "placeholder:text-red-500",
+            label: "text-destructive",
+          },
+          title: "text-destructive"
+        }}
+      />
+    </div>
+  )
+}
+```
+
+---

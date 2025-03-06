@@ -1,0 +1,131 @@
+---
+title: <SettingsCards />
+---
+
+The `<SettingsCards />` component provides a convenient plug-and-play UI for managing user account settings. It includes a comprehensive suite of manageable account settings, such as changing passwords and email addresses, updating avatars, managing linked providers, handling active sessions, and more.
+
+This component automatically leverages all the features you have enabled via the [`<AuthUIProvider>`](/components/auth-ui-provider) and provides a seamless user settings UI out of the box.
+
+### Default Settings Page Behavior
+
+By default, the built-in [`<AuthCard />`](/components/auth-card) component automatically displays `<SettingsCards />` when the `/auth/settings` route is accessed. If you prefer to handle user settings on a custom route or component, you can override this behavior using the `settingsUrl` prop.
+
+## Overriding Built-in SettingsURL 
+
+To use your own custom settings route and avoid using the default included settings card, you can specify the `settingsUrl` prop within your [`<AuthUIProvider>`](/components/auth-ui-provider) configuration:
+
+```tsx title="app/providers.tsx"
+import { AuthUIProvider } from "@daveyplate/better-auth-ui"
+import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+
+export function Providers({ children }: { children: React.ReactNode }) {
+    const router = useRouter()
+
+    return (
+        <AuthUIProvider
+            authClient={authClient}
+            navigate={router.push}
+            replace={router.replace}
+            onSessionChange={() => router.refresh()}
+            settingsUrl="/dashboard/settings"  // Your custom settings page URL
+            LinkComponent={Link}
+        >
+            {children}
+        </AuthUIProvider>
+    )
+```
+
+By setting the `settingsUrl` as shown above, the built-in `/auth/settings` page will also automatically redirect users to your specified `/dashboard/settings` page.
+
+---
+
+## Using `<SettingsCards />` on Your Custom Page
+
+You can then easily utilize the provided `<SettingsCards />` component directly in your custom settings route within your app's layout. Here's how you might set up a properly protected custom settings route in your framework of choice:
+
+```tsx title="app/dashboard/settings/page.tsx"
+import { SettingsCards } from "@daveyplate/better-auth-ui"
+
+export default function SettingsPage() {
+  return (
+    <div className="flex justify-center py-12 px-4">
+      <SettingsCards className="max-w-xl" />
+    </div>
+  )
+}
+```
+
+This will provide users a customizable, fully-styled settings experience without requiring you to create all components yourself.
+
+---
+
+## Customization Options
+
+You can customize the UI extensively by passing TailwindCSS classes or customizing provided class names through the `classNames` prop.
+
+### Customizing Styles with classNames
+
+Using Tailwind utility classes, you can fully customize all card states. Here’s an example to illustrate significant styling customization:
+
+```tsx
+<SettingsCards
+  className="max-w-xl mx-auto"
+  classNames={{
+    card: {
+      base: "border-blue-500",
+      header: "bg-blue-50",
+      title: "text-blue-600 text-xl",
+      description: "text-muted-foreground",
+      content: "bg-blue-50",
+      footer: "bg-blue-500/5",
+      button: "text-white bg-blue-600 hover:bg-blue-700",
+      input: "bg-background placeholder:text-muted-foreground/50"
+    }
+  }}
+/>
+```
+
+### All available settings included in SettingsCards: 
+
+- **Avatar** (optional, requires avatar upload configured in AuthUIProvider)
+- **Name**
+- **Email**
+- **Username** (requires username plugin)
+- **Password** (optional, requires credentials to be enabled)
+- **Connected Providers** (if enabled)
+- **Active Sessions**
+- **Delete Account** (optional, requires account deletion configuration)
+
+#### Custom Additional Fields
+
+The `<SettingsCards />` also supports displaying any custom `additionalFields` you've provided via the `settingsFields` prop of the `<AuthUIProvider>`:
+
+```tsx title="app/providers.tsx"
+<AuthUIProvider
+  authClient={authClient}
+  additionalFields={{
+    age: {
+      label: "Age",
+      placeholder: "Your age",
+      description: "Please enter your age",
+      required: true,
+      type: "number",
+    },
+    newsletter: {
+      label: "Receive our newsletter",
+      description: "Subscribe to receive newsletters.",
+      required: false,
+      type: "boolean",
+    }
+  }}
+  settingsFields={["age", "newsletter"]}
+>
+  {children}
+</AuthUIProvider>
+```
+
+These fields appear alongside the existing provided setting cards automatically.
+
+---

@@ -19,7 +19,7 @@ import {
 
 import { AuthForm, type AuthFormClassNames } from "./auth-form"
 
-export type AuthCardClassNames = {
+export interface AuthCardClassNames {
     base?: string
     content?: string
     description?: string
@@ -31,6 +31,17 @@ export type AuthCardClassNames = {
     title?: string
 }
 
+export interface AuthCardProps {
+    className?: string
+    classNames?: AuthCardClassNames
+    callbackURL?: string
+    localization?: Partial<AuthLocalization>
+    pathname?: string
+    redirectTo?: string
+    socialLayout?: "auto" | "horizontal" | "grid" | "vertical"
+    view?: AuthView
+}
+
 export function AuthCard({
     className,
     classNames,
@@ -40,16 +51,7 @@ export function AuthCard({
     redirectTo,
     socialLayout = "auto",
     view
-}: {
-    className?: string,
-    classNames?: AuthCardClassNames,
-    callbackURL?: string,
-    localization?: Partial<AuthLocalization>,
-    pathname?: string,
-    redirectTo?: string,
-    socialLayout?: "auto" | "horizontal" | "grid" | "vertical",
-    view?: AuthView,
-}) {
+}: AuthCardProps) {
     const path = pathname?.split("/").pop()
 
     const {
