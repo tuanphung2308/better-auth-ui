@@ -1,7 +1,5 @@
 import fs from "node:fs"
 import path from "node:path"
-
-import axios from "axios"
 import dotenv from "dotenv"
 import ignore, { type Ignore } from "ignore"
 
@@ -109,15 +107,23 @@ const codeSync = async () => {
         })
 
         try {
-            await axios.patch(
+            const response = await fetch(
                 `${config.base_url}/api/agents/${config.agent_id}`,
-                { instructions },
                 {
+                    method: "PATCH",
                     headers: {
-                        Authorization: `Bearer ${process.env.AQUARION_API_KEY}`
-                    }
+                        Authorization: `Bearer ${process.env.AQUARION_API_KEY}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ instructions })
                 }
             )
+
+            if (!response.ok) {
+                throw new Error(
+                    `HTTP error ${response.status}: ${response.statusText}`
+                )
+            }
 
             console.info(currentTime, "Code Synced Successfully")
         } catch (error) {
