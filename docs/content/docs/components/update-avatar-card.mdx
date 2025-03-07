@@ -2,7 +2,7 @@
 title: <UpdateAvatarCard />
 ---
 
-The `<UpdateAvatarCard />` component is a pre-built UI element for users to easily manage and update their avatar image. It seamlessly integrates with the `<AuthUIProvider />` and utilizes either a custom or built-in avatar upload implementation.
+The `<UpdateAvatarCard />` component is a pre-built UI element for users to easily manage and update their avatar image. It seamlessly integrates with the [`AuthUIProvider`](../components/auth-ui-provider) and utilizes either a custom or built-in avatar upload implementation.
 
 ## Usage
 
@@ -20,7 +20,7 @@ export default function CustomSettings() {
 }
 ```
 
-To enable avatar support, you need to configure the `avatar` and optionally `uploadAvatar` properties within your `<AuthUIProvider />`:
+To enable avatar support, you need to configure the `avatar` and optionally `uploadAvatar` properties within your [`AuthUIProvider`](../components/auth-ui-provider):
 
 ```tsx title="providers.tsx"
 "use client"
@@ -45,8 +45,8 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
                 formData.append("avatar", file)
 
                 const res = await fetch("/api/uploadAvatar", {
-                method: "POST",
-                body: formData,
+                    method: "POST",
+                    body: formData,
                 })
 
                 const { data } = await res.json()
@@ -60,17 +60,13 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
 }
 ```
 
-### Explanation of `uploadAvatar`
-
-The `uploadAvatar` prop allows you to implement custom upload logic. Your custom upload logic should accept a `File` object containing the avatar image and return a Promise resolving to a URL pointing to the uploaded file. This method provides you complete flexibility to integrate your own storage solution or third-party cloud storage.
-
 ## Props Reference
 
 These are the available props for `<UpdateAvatarCard />`:
 
 <AutoTypeTable path="../src/components/settings/update-avatar-card.tsx" name="UpdateAvatarCardProps" />
 
-### Custom Styling
+## Custom Styling
 
 The `classNames` prop is useful for customizing inner elements using Tailwind classes:
 
@@ -87,7 +83,7 @@ The `classNames` prop is useful for customizing inner elements using Tailwind cl
 />
 ```
 
-## Avatar Handling & Customization
+## Avatar Notes
 
 Avatars are auto-cropped, optimized, and resized before uploading:
 
@@ -95,46 +91,6 @@ Avatars are auto-cropped, optimized, and resized before uploading:
 - **Sizing**: Default `avatarSize` is set to:
   - `128px` (when using built-in storage - base64)
   - `256px` (when using custom `uploadAvatar`)
-- **File Format**: You can customize the uploaded image file format via `avatarExtension` prop in `<AuthUIProvider>`. It defaults to `"png"`.
-
-## Example with Custom Storage (Presigned URL)
-
-Here's an example demonstrating custom storage (AWS S3 / Presigned URL):
-
-```tsx
-<AuthUIProvider
-    authClient={authClient}
-    avatar
-    avatarExtension="jpeg"
-    avatarSize={256}
-    uploadAvatar={async (file: File) => {
-        const presignedUrlRes = await fetch("/api/request-presigned-url", {
-            method: "POST",
-            body: JSON.stringify({ name: file.name, type: file.type }),
-        })
-
-        const { url, fields, fileUrl } = await presignedUrlRes.json()
-
-        const formData = new FormData()
-        
-        Object.keys(fields).forEach((key) => {
-            formData.append(key, fields[key])
-        })
-
-        formData.append("file", file)
-
-        await fetch(url, {
-            method: "POST",
-            body: formData,
-        })
-
-        return fileUrl
-    }}
->
-    {children}
-</AuthUIProvider>
-```
-
-This implementation uses a presigned URL to securely upload images directly to a cloud storage provider.
+- **File Format**: You can customize the uploaded image file format via `avatarExtension` prop in [`AuthUIProvider`](../components/auth-ui-provider). It defaults to `"png"`.
 
 ---

@@ -8,17 +8,19 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 
 import { SettingsCard, type SettingsCardClassNames } from "./settings-card"
 
+export interface ChangeEmailCardProps {
+    className?: string
+    classNames?: SettingsCardClassNames
+    isPending?: boolean
+    localization?: AuthLocalization
+}
+
 export function ChangeEmailCard({
     className,
     classNames,
     isPending,
     localization
-}: {
-    className?: string
-    classNames?: SettingsCardClassNames
-    isPending?: boolean
-    localization?: Partial<AuthLocalization>
-}) {
+}: ChangeEmailCardProps) {
     const shownVerifyEmailToast = useRef(false)
 
     const {
