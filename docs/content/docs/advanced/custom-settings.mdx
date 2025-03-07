@@ -1,0 +1,196 @@
+---
+title: Custom Settings
+icon: Cog
+---
+
+The default authentication components provided by `@daveyplate/better-auth-ui` include a built-in settings page accessible at `/auth/settings`.
+
+However, for advanced use cases or customization needs, you may want to provide a user settings interface at your own custom path or selectively use only certain settings components within your own application structure.
+
+## Overview
+
+You have two primary ways to create a custom settings page experience:
+
+1. Use the built-in plug-and-play `<SettingsCards />` component on your custom route.
+2. Selectively import and use individual components to build your own specific settings page layout.
+
+## Step 1: Setting `settingsUrl`
+
+To override the default built-in settings page URL (`/auth/settings`) with your custom URL (example: `/dashboard/settings`):
+
+### With AuthUIProvider:
+
+Set the `settingsUrl` prop within your main application provider:
+
+```tsx title="app/providers.tsx"
+"use client"
+
+import { AuthUIProvider } from "@daveyplate/better-auth-ui"
+import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+
+export function Providers({ children }: { children: React.ReactNode }) {
+    const router = useRouter()
+
+    return (
+        <AuthUIProvider
+            authClient={authClient}
+            navigate={router.push}
+            replace={router.replace}
+            onSessionChange={() => router.refresh()}
+            settingsUrl="/dashboard/settings" // Your custom settings route
+            LinkComponent={Link}
+        >
+            {children}
+        </AuthUIProvider>
+    )
+}
+```
+
+> **Important**: Once `settingsUrl` is set, the built-in `/auth/settings` route will automatically redirect users visiting `/auth/settings` to your custom path, providing a seamless replacement of the default option.
+
+## Step 2: Implementing Custom Settings UI
+
+### Option A: Using `<SettingsCards />`
+
+The easiest way is to use the `<SettingsCards />` component, which automatically handles displaying all enabled settings. This includes avatar, email, username, password, linked social providers, session management, delete account, and custom additional fields you've provided.
+
+```tsx title="app/dashboard/settings/page.tsx"
+import { SettingsCards } from "@daveyplate/better-auth-ui"
+
+export default function UserSettingsPage() {
+    return (
+        <div className="mx-auto max-w-xl py-12 px-4">
+            <SettingsCards />
+        </div>
+    )
+}
+```
+
+You can customize the appearance using TailwindCSS classes through `classNames` props as documented in [SettingsCards](../components/settings-cards) documentation:
+
+```tsx
+<SettingsCards 
+    className="mx-auto max-w-xl"
+    classNames={{
+        card: {
+            base: "border-primary/50",
+            header: "bg-primary/10",
+            content: "bg-background",
+            footer: "bg-primary/10",
+            button: "bg-primary hover:bg-primary/80",
+            input: "bg-transparent placeholder-muted-foreground/50"
+        }
+    }}
+/>
+```
+
+### Option B: Individually Using Settings Components
+
+For finer-grained control, selectively import the components you want:
+
+| Component | Description |
+|-----------|-------------|
+| `<UpdateAvatarCard />` | User avatar management |
+| `<UpdateNameCard />` | Update user's name |
+| `<UpdateUsernameCard />` | Manage username (if applicable/username set via plugin) |
+| `<ChangeEmailCard />` | Changing the user's email address |
+| `<ChangePasswordCard />` | Allow user to securely update password |
+| `<ProvidersCard />` | Linking/Unlinking social provider accounts |
+| `<SessionsCard />` | Active session management |
+| `<DeleteAccountCard />` | Deleting the user account securely |
+| `<UpdateFieldCard />` | Add or update additional custom user fields |
+
+Here's a complete example demonstrating an individually composed user settings page:
+
+```tsx title="app/dashboard/settings/page.tsx"
+import {
+    UpdateAvatarCard,
+    UpdateNameCard,
+    UpdateUsernameCard,
+    ChangeEmailCard,
+    ChangePasswordCard,
+    ProvidersCard,
+    SessionsCard,
+    DeleteAccountCard,
+    UpdateFieldCard
+} from "@daveyplate/better-auth-ui"
+
+export default function CustomSettingsPage() {
+    return (
+        <div className="flex flex-col gap-6 max-w-xl mx-auto py-12 px-4">
+            <UpdateAvatarCard />
+
+            <UpdateNameCard />
+
+            <UpdateUsernameCard />
+
+            <ChangeEmailCard />
+
+            <ChangePasswordCard />
+
+            <ProvidersCard />
+
+            <SessionsCard />
+
+            <DeleteAccountCard />
+
+            <UpdateFieldCard
+                field="age"
+                label="Age"
+                description="Update your age"
+                placeholder="Enter your current age"
+                type="number"
+            />
+        </div>
+    )
+}
+```
+
+This example assumes `additionalFields` are configured via your `<AuthUIProvider>`:
+
+```tsx title="app/providers.tsx"
+<AuthUIProvider
+    authClient={authClient}
+    additionalFields={{
+        age: {
+            label: "Age",
+            placeholder: "Your age",
+            description: "Enter your age",
+            required: false,
+            type: "number"
+        }
+    }}
+    settingsFields={["age"]}
+    settingsUrl="/dashboard/settings"
+>
+    {children}
+</AuthUIProvider>
+```
+
+## Handling Authentication for Settings Page
+
+It's essential that your custom settings page is protected and accessible only by authenticated users. There's a built-in helper `useAuthenticate` to ensure your settings pages are secured:
+
+### Example:
+
+```tsx title="app/dashboard/settings/page.tsx"
+import {
+    RedirectToSignIn,
+    SignedIn,
+    SettingsCards
+} from "@daveyplate/better-auth-ui"
+
+export default function CustomSettingsPage() {
+    return (
+        <>
+            <RedirectToSignIn />
+            
+            <SignedIn>
+                <SettingsCards />
+            </SignedIn>
+        </>
+    )
+}
+```
