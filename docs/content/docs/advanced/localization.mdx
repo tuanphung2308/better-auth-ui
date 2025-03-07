@@ -1,0 +1,79 @@
+---
+title: Localization
+icon: Languages
+---
+
+## Localization Overview
+
+You can fully customize the text strings displayed across all `@daveyplate/better-auth-ui` components through the provided `localization` prop. The library ships with a full default localization object [`AuthLocalization`](/api-reference/auth-localization), but you can override any of these defaults easily with custom strings.
+
+## Modifying Strings
+
+To modify default strings, you need to provide your custom localization object within your `<AuthUIProvider>` or individual components.
+
+Here's an example of modifying some default strings globally across your application using `<AuthUIProvider>`:
+
+```tsx title="app/providers.tsx"
+"use client"
+
+import { AuthUIProvider } from "@daveyplate/better-auth-ui"
+import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+
+export function Providers({ children }: { children: React.ReactNode }) {
+    const router = useRouter()
+
+    return (
+        <AuthUIProvider
+            authClient={authClient}
+            navigate={router.push}
+            replace={router.replace}
+            onSessionChange={() => router.refresh()}
+            LinkComponent={Link}
+            localization={{
+                signIn: "Log in",
+                signInDescription: "Use your email and password to log in.",
+                signUp: "Create Account",
+                forgotPassword: "Reset Password",
+                emailPlaceholder: "your-email@example.com",
+                passwordPlaceholder: "Secret password",
+                magicLinkEmail: "Check your inbox for your login link!",
+                forgotPasswordEmail: "Check your inbox for the password reset link.",
+                resetPasswordSuccess: "You can now sign in with your new password!",
+                changePasswordSuccess: "Your password has been successfully updated.",
+                deleteAccountSuccess: "Your account has been permanently deleted.",
+            }}
+        >
+            {children}
+        </AuthUIProvider>
+    )
+}
+```
+
+## Customizing Strings Per Component
+
+You can also provide overridden strings on an individual component basis. Here's how you can override strings for just one instance, such as the `<AuthCard>`:
+
+```tsx
+import { AuthCard } from "@daveyplate/better-auth-ui"
+
+export default function AuthPage({ params }: { params: { pathname: string } }) {
+    return (
+        <div className="flex justify-center items-center">
+            <AuthCard
+                pathname={params.pathname}
+                localization={{
+                    signIn: "Log In",
+                    signUp: "Register an Account",
+                    forgotPassword: "Forgot Your Password?",
+                    signInDescription: "Log in and start using your account.",
+                    magicLink: "Log in via Email",
+                }}
+            />
+        </div>
+    )
+}
+```
+
+You can find all available strings to override in the [`AuthLocalization`](/api-reference/auth-localization) reference.
