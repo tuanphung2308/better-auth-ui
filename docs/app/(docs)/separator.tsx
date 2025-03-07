@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import type { ReactNode } from "react";
+import type { ReactNode } from "react"
 
 export default function SeparatorComponent({
-  item,
+    item
 }: {
-  item: { name: ReactNode; type: "separator"; icon?: ReactNode };
+    item: { name: ReactNode; type: "separator"; icon?: ReactNode }
 }) {
-  return <div className="ml-5 mt-3 mb-0.5">{item.name}</div>;
+    return <div className="ml-5 mt-3 mb-0.5">{item.name}</div>
 }
