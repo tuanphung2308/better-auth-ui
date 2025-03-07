@@ -1,3 +1,26 @@
 {
-    "icon": "Box"
+    "icon": "Box",
+    "pages": [
+        "auth-card",
+        "auth-loading",
+        "change-email-card",
+        "change-password-card",
+        "delete-account-card",
+        "providers-card",
+        "session-card",
+        "settings-card",
+        "update-avatar-card",
+        "update-username-card",
+        "...",
+        "--- Providers ---",
+        "auth-ui-provider",
+        "--- Redirect Components ---",
+        "redirect-to-sign-in",
+        "redirect-to-sign-up",
+        "--- Conditional Components ---",
+        "signed-in",
+        "signed-out",
+        "--- Templates ---",
+        "email-template"
+    ]
 }
