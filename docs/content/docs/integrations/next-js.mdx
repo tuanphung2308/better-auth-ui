@@ -2,16 +2,17 @@
 title: Next.js
 icon: NextJs
 ---
+import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 This guide covers integrating `@daveyplate/better-auth-ui` into your Next.js project.
-
----
 
 ## App Router
 
 Follow these steps to set up `@daveyplate/better-auth-ui` in your [Next.js](https://nextjs.org) project using the **App Router**:
 
-### 1. Setting up AuthUIProvider
+<Steps>
+<Step>
+### Setting up AuthUIProvider
 
 The first step is to set up the [`<AuthUIProvider>`](/components/auth-ui-provider) client component with your [`authClient`](https://www.better-auth.com/docs/installation#create-client-instance), wrapping your layout. This is required to provide the context & hooks to your authentication components across your application.
 
@@ -63,8 +64,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ```
 
 The [`<AuthUIProvider>`](/components/auth-ui-provider) can be fully customized with plugins, styles, localization and more. For more information and all available props, see the [`<AuthUIProvider>`](/components/auth-ui-provider) component documentation.
+</Step>
 
-### 2. Creating Auth Pages
+<Step>
+### Creating Auth Pages
 
 Create a dynamic route segment for authentication views in `app/auth/[pathname]/page.tsx`.
 
@@ -101,14 +104,16 @@ The newly created dynamic route covers the following paths by default:
 - `/auth/callback` – Internal route to handle Auth callbacks (do not use directly)
 
 Ensure that any links to the authentication process utilize these routes accordingly. All routes will render the `<AuthCard />` component and automatically handle navigation and authentication flow.
-
----
+</Step>
+</Steps>
 
 ## Pages Router
 
 Follow these steps to set up `@daveyplate/better-auth-ui` in your [Next.js](https://nextjs.org) project using the **Pages Router**:
 
-### 1. Setting up AuthUIProvider
+<Steps>
+<Step>
+### Setting up AuthUIProvider
 
 First set up the [`<AuthUIProvider>`](/components/auth-ui-provider) within your custom App component in `_app.tsx`.
 
@@ -138,8 +143,10 @@ export default function App({ Component, pageProps }: { Component: any, pageProp
 ```
 
 Now the authentication context is available across your entire application.
+</Step>
 
-### 2. Creating Auth Pages
+<Step>
+### Creating Auth Pages
 
 Create a page with a dynamic segment in your Pages directory in `pages/auth/[pathname].tsx`
 
@@ -181,3 +188,5 @@ With this setup, the following routes will automatically handle their associated
 - `/auth/reset-password` – Reset password after receiving email
 - `/auth/sign-out` – Log user out of account
 - `/auth/callback` – Internal route to handle OAuth callbacks (do not navigate to this route directly)
+</Step>
+</Steps>

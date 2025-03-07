@@ -2,16 +2,13 @@
 title: React
 icon: React
 ---
+import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 This guide covers integrating `@daveyplate/better-auth-ui` into your React project.
 
----
-
-## Getting Started
-
-Follow these steps to integrate `@daveyplate/better-auth-ui` seamlessly into your React app:
-
-## 1. Setting up AuthUIProvider 
+<Steps>
+<Step>
+## Setting up AuthUIProvider 
 
 First, set up [`<AuthUIProvider>`](/components/auth-ui-provider) as it provides context and hooks required by all subsequent authentication components. Create a top-level provider to encapsulate your app:
 
@@ -51,8 +48,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   </BrowserRouter>
 )
 ```
+</Step>
 
-## 2. Creating Auth Pages
+<Step>
+## Creating Auth Pages
 
 Configure routes to render [`<AuthCard>`](/components/auth-ui-provider) for authentication views using React Router.
 
@@ -100,5 +99,5 @@ The dynamic segment `[pathname]` covers the following default authentication vie
 - `/auth/callback` – Internal OAuth/Auth callback handler (do not use directly)
 
 Your authentication flow is now completely set up and supporting full customization capabilities.
-
----
+</Step>
+</Steps>

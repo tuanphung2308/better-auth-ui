@@ -2,11 +2,12 @@
 title: Installation
 icon: Download
 ---
+import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 Follow the steps below to install the `@daveyplate/better-auth-ui` library.
 
---- 
-
+<Steps>
+<Step>
 ## Install the package
 
 Install the `@daveyplate/better-auth-ui` library using your preferred package manager.
@@ -14,7 +15,9 @@ Install the `@daveyplate/better-auth-ui` library using your preferred package ma
 ```package-install
 @daveyplate/better-auth-ui@latest
 ```
+</Step>
 
+<Step>
 ## TailwindCSS configuration
 
 For [TailwindCSS](https://tailwindcss.com) `v4`, add the following `@source` to your global css:
@@ -30,10 +33,14 @@ content: [
     "./node_modules/@daveyplate/better-auth-ui/dist/**/*.{js,ts,jsx,tsx,mdx}"
 ]
 ```
+</Step>
 
+<Step>
 ## Integrations
 
 Now that you've installed `@daveyplate/better-auth-ui`, follow one of the guides below to integrate it with your preferred framework:
+</Step>
+</Steps>
 
 <div className="grid sm:grid-cols-2 gap-4 mt-8 sm:gap-6">
   <Card href="/integrations/next-js" className="flex flex-col items-center">
@@ -154,5 +161,3 @@ Now that you've installed `@daveyplate/better-auth-ui`, follow one of the guides
     <p className="font-medium mt-2">Manual</p>
   </Card> */}
 </div>
-
----
