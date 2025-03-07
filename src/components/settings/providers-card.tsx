@@ -159,7 +159,10 @@ export function ProvidersCard({
                     return (
                         <Card
                             key={provider}
-                            className="flex items-center gap-3 px-4 py-3"
+                            className={cn(
+                                "flex items-center gap-3 px-4 py-3",
+                                classNames?.cell
+                            )}
                         >
                             {colorIcons ? (
                                 <socialProvider.icon className="size-4" color />

@@ -26,6 +26,7 @@ export type SettingsCardClassNames = {
     base?: string
     avatar?: UserAvatarClassNames
     button?: string
+    cell?: string
     content?: string
     description?: string
     footer?: string
