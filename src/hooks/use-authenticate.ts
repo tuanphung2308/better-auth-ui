@@ -23,6 +23,4 @@ export function useAuthenticate(authView: AuthView = "signIn", enabled = true) {
         replace,
         authView
     ])
-
-    return { data: sessionData, isPending, user: sessionData?.user, ...rest }
 }

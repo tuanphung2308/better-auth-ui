@@ -44,8 +44,9 @@ export function SettingsCards({
         settingsFields,
         username
     } = useContext(AuthUIContext)
-    const { useListAccounts } = hooks
-    const { data: sessionData, isPending: sessionPending } = useAuthenticate()
+    const { useListAccounts, useSession } = hooks
+    useAuthenticate()
+    const { data: sessionData, isPending: sessionPending } = useSession()
     const { accounts, isPending: accountsPending, refetch } = useListAccounts()
 
     const isPending = sessionPending || accountsPending
