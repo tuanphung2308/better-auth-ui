@@ -1,5 +1,7 @@
 @import "tailwindcss";
+
 @import "fumadocs-ui/css/black.css";
+
 @import "fumadocs-ui/css/preset.css";
 
 @source '../node_modules/fumadocs-ui/dist/**/*.js';
@@ -30,6 +32,6 @@ Make sure disabled buttons don't get the pointer cursor.
 }
 
 /* article a:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a) {
-  @apply no-underline;
-  color: var(--color-fd-primary);
+    @apply no-underline;
+    color: var(--color-fd-primary);
 } */
