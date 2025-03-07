@@ -1,0 +1,63 @@
+---
+title: <DeleteAccountCard />
+---
+
+The `<DeleteAccountCard />` component provides users a streamlined UI to delete their account. It supports verification flows, such as password confirmation or email verification, before account deletion.
+
+## Usage
+
+Include the `<DeleteAccountCard />` component on your user settings page:
+
+```tsx
+import { DeleteAccountCard } from "@daveyplate/better-auth-ui"
+
+export default function SettingsPage() {
+    return (
+        <div className="flex flex-col gap-6">
+            <DeleteAccountCard />
+        </div>
+    )
+}
+```
+
+This component leverages the [`AuthUIProvider`](/components/auth-ui-provider) context to handle account deletion (and optional verification) seamlessly.
+
+## Props Reference
+
+These are the available props for `<DeleteAccountCard />`:
+
+<AutoTypeTable path="../src/components/settings/delete-account-card.tsx" name="DeleteAccountCardProps" />
+
+## Custom Styling
+
+You can customize styling using the provided `classNames` prop with TailwindCSS classes:
+
+```tsx
+<DeleteAccountCard
+    classNames={{
+        base: "border-destructive",
+        header: "bg-destructive/10",
+        title: "text-destructive text-xl font-semibold",
+        description: "text-destructive",
+        footer: "bg-destructive/30",
+        button: "bg-destructive hover:bg-destructive/80 text-white"
+    }}
+/>
+```
+
+## Custom Localization
+
+Adjust the text within the component for specific requirements or languages:
+
+```tsx
+<DeleteAccountCard
+    localization={{
+        deleteAccount: "Delete My Account",
+        deleteAccountDescription: "This action permanently deletes your account and is irreversible.",
+        deleteAccountInstructions: "Please provide your password to confirm deletion.",
+        deleteAccountNotFresh: "Sign out and back in to delete your account.",
+    }}
+/>
+```
+
+---

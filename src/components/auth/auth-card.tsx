@@ -38,10 +38,20 @@ export interface AuthCardProps {
     className?: string
     classNames?: AuthCardClassNames
     callbackURL?: string
-    localization?: Partial<AuthLocalization>
+    /**
+     * @default authLocalization
+     * @remarks `AuthLocalization`
+     */
+    localization?: AuthLocalization
     pathname?: string
     redirectTo?: string
+    /**
+     * @default "auto"
+     */
     socialLayout?: "auto" | "horizontal" | "grid" | "vertical"
+    /**
+     * @remarks `AuthView`
+     */
     view?: AuthView
 }
 

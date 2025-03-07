@@ -28,19 +28,28 @@ import { Label } from "../ui/label"
 import type { SettingsCardClassNames } from "./settings-card"
 import { DeleteAccountCardSkeleton } from "./skeletons/delete-account-card-skeleton"
 
+export interface DeleteAccountCardProps {
+    className?: string
+    classNames?: SettingsCardClassNames
+    /**
+     * @internal
+     */
+    accounts?: { provider: string }[] | null
+    isPending?: boolean
+    /**
+     * @default authLocalization
+     * @remarks `AuthLocalization`
+     */
+    localization?: AuthLocalization
+}
+
 export function DeleteAccountCard({
     className,
     classNames,
     accounts,
     isPending,
     localization
-}: {
-    className?: string
-    classNames?: SettingsCardClassNames
-    accounts?: { provider: string }[] | null
-    isPending?: boolean
-    localization?: Partial<AuthLocalization>
-}) {
+}: DeleteAccountCardProps) {
     const {
         authClient,
         basePath,

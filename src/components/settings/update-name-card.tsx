@@ -8,17 +8,23 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { SettingsCardClassNames } from "./settings-card"
 import { UpdateFieldCard } from "./update-field-card"
 
+export interface UpdateNameCardProps {
+    className?: string
+    classNames?: SettingsCardClassNames
+    isPending?: boolean
+    /**
+     * @default authLocalization
+     * @remarks `AuthLocalization`
+     */
+    localization?: AuthLocalization
+}
+
 export function UpdateNameCard({
     className,
     classNames,
     isPending,
     localization
-}: {
-    className?: string
-    classNames?: SettingsCardClassNames
-    isPending?: boolean
-    localization?: Partial<AuthLocalization>
-}) {
+}: UpdateNameCardProps) {
     const {
         hooks: { useSession },
         localization: authLocalization,

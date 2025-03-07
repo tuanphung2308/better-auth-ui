@@ -23,15 +23,21 @@ export type SettingsCardsClassNames = {
     card?: SettingsCardClassNames
 }
 
+export interface SettingsCardsProps {
+    className?: string
+    classNames?: SettingsCardsClassNames
+    /**
+     * @default authLocalization
+     * @remarks `AuthLocalization`
+     */
+    localization?: AuthLocalization
+}
+
 export function SettingsCards({
     className,
     classNames,
     localization
-}: {
-    className?: string
-    classNames?: SettingsCardsClassNames
-    localization?: Partial<AuthLocalization>
-}) {
+}: SettingsCardsProps) {
     const {
         additionalFields,
         authClient,
