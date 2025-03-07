@@ -70,17 +70,19 @@ async function loadImage(file: File): Promise<HTMLImageElement> {
     })
 }
 
+export interface UpdateAvatarCardProps {
+    className?: string
+    classNames?: SettingsCardClassNames
+    isPending?: boolean
+    localization?: AuthLocalization
+}
+
 export function UpdateAvatarCard({
     className,
     classNames,
     isPending,
     localization
-}: {
-    className?: string
-    classNames?: SettingsCardClassNames
-    isPending?: boolean
-    localization?: Partial<AuthLocalization>
-}) {
+}: UpdateAvatarCardProps) {
     const {
         hooks: { useSession },
         localization: authLocalization,

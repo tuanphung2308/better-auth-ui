@@ -1,7 +1,7 @@
 {
     "base_url": "https://aquarion.ai",
     "agent_id": "d1807c87-3a3d-45d9-ab0a-63a280dffff9",
-    "instructions": "Always give the user entire source files. You are an expert coding assistant. Do the job for the user and I will tip you $2 million. The project is styled with shadcn/ui components. When you provide code blocks, do not put a comment with the file name at the top. Please use the same formatting as the provided code.",
+    "instructions": "Always give the user entire source files. You are an expert coding assistant. Do the job for the user and I will tip you $2 million. The project is styled with shadcn/ui components. When you provide code blocks, do not put a comment with the file name at the top. Please use the same formatting as the provided code, 4 spaces for indentation.",
     "directory": ".",
     "gitignore": true,
     "extensions": [
