@@ -22,6 +22,21 @@ import { Label } from "../ui/label"
 import type { SettingsCardClassNames } from "./settings-card"
 import { ChangePasswordCardSkeleton } from "./skeletons/change-password-card-skeleton"
 
+export interface ChangePasswordCardProps {
+    className?: string
+    classNames?: SettingsCardClassNames
+    /**
+     * @internal
+     */
+    accounts?: { provider: string }[] | null
+    isPending?: boolean
+    /**
+     * @default authLocalization
+     * @remarks `AuthLocalization`
+     */
+    localization?: AuthLocalization
+}
+
 export function ChangePasswordCard({
     className,
     classNames,

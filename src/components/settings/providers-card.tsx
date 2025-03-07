@@ -22,6 +22,25 @@ import {
 import type { SettingsCardClassNames } from "./settings-card"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
 
+export interface ProvidersCardProps {
+    className?: string
+    classNames?: SettingsCardClassNames
+    /** @internal */
+    accounts?: { provider: string }[] | null
+    isPending?: boolean
+    /**
+     * @default authLocalization
+     * @remarks `AuthLocalization`
+     */
+    localization?: Partial<AuthLocalization>
+    /** @internal */
+    refetch?: () => Promise<void>
+    /** @internal */
+    unlinkAccount?: (
+        providerId: string
+    ) => Promise<{ status?: boolean; code?: string; error?: FetchError | null }>
+}
+
 export function ProvidersCard({
     className,
     classNames,
@@ -30,17 +49,7 @@ export function ProvidersCard({
     localization,
     refetch,
     unlinkAccount
-}: {
-    className?: string
-    classNames?: SettingsCardClassNames
-    accounts?: { provider: string }[] | null
-    isPending?: boolean
-    localization?: Partial<AuthLocalization>
-    refetch?: () => Promise<void>
-    unlinkAccount?: (
-        providerId: string
-    ) => Promise<{ status?: boolean; code?: string; error?: FetchError | null }>
-}) {
+}: ProvidersCardProps) {
     const {
         authClient,
         colorIcons,

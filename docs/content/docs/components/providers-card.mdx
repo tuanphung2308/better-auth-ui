@@ -1,0 +1,136 @@
+---
+title: <ProvidersCard />
+---
+
+The `<ProvidersCard />` component provides a simple interface for managing linked social providers. It allows users to link or unlink third-party social accounts with a clean, customizable UI out of the box.
+
+## Usage
+
+Here's how you can include `<ProvidersCard />` on your user settings or account management page:
+
+```tsx
+import { ProvidersCard } from "@daveyplate/better-auth-ui"
+
+export default function SettingsPage() {
+    return (
+        <div className="flex flex-col gap-6">
+            <ProvidersCard />
+        </div>
+    )
+}
+```
+
+This component seamlessly pulls in settings from your [`AuthUIProvider`](../components/auth-ui-provider) context, automatically handling provider link and unlink workflows.
+
+## Props Reference
+
+You can use the following props to further customize `<ProvidersCard />`:
+
+<AutoTypeTable path="../src/components/settings/providers-card.tsx" name="ProvidersCardProps" />
+
+## Custom Styling
+
+Customize the styling of your `<ProvidersCard />` through the `classNames` prop:
+
+```tsx
+<ProvidersCard
+    classNames={{
+        base: "border-primary shadow",
+        header: "bg-primary-foreground",
+        title: "text-xl font-semibold text-primary",
+        description: "text-muted-foreground",
+        content: "bg-background",
+        footer: "bg-muted",
+        button: "bg-primary hover:bg-primary-foreground text-white"
+    }}
+/>
+```
+
+## Custom Localization
+
+Adjust displayed texts via the `localization` prop to fit your application's localization:
+
+```tsx
+<ProvidersCard
+    localization={{
+        providers: "Social Accounts",
+        providersDescription: "Link or unlink your third-party social accounts.",
+        link: "Link Account",
+        unlink: "Unlink",
+        providerLinkSuccess: "Provider linked successfully!",
+        providerUnlinkSuccess: "Provider unlinked successfully!",
+    }}
+/>
+```
+
+---
+
+## Usage in Settings Page
+
+You usually integrate the `<ProvidersCard />` with other settings components. Here's a typical example configuration:
+
+```tsx title="app/dashboard/settings/page.tsx"
+import {
+    ProvidersCard,  
+    ChangeEmailCard,
+    SettingsCards,
+} from "@daveyplate/better-auth-ui";
+
+export default function SettingsPage() {
+    return (
+        <div className="flex flex-col gap-6 mx-auto max-w-xl">
+            <UpdateAvatarCard />
+            <UpdateUsernameCard />
+            <ChangeEmailCard />
+            <ChangePasswordCard />
+            <ProvidersCard />
+            <SessionsCard />
+            <DeleteAccountCard />
+        </div>
+    )
+}
+```
+
+This complete implementation shows how you can use `<ProvidersCard />` along with other available settings cards to build a comprehensive, managed user settings experience quickly.
+
+---
+
+## Styling Your ProvidersCard
+
+All components within Better Auth UI use TailwindCSS by default. You can customize the `<ProvidersCard />` appearance by accessing the provided Tailwind utility class via the `classNames` prop.
+
+Here is an example showing significant styling customization:
+
+```tsx
+<ProvidersCard
+    classNames={{
+        base: "border-emerald-400 rounded-md",
+        header: "bg-emerald-100 dark:bg-emerald-900",
+        title: "text-emerald-700 dark:text-emerald-300",
+        description: "text-muted-foreground",
+        content: "bg-background",
+        button: "rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow"
+    }}
+/>
+```
+
+---
+
+## Showing Linked Providers
+
+The component automatically retrieves linked accounts using the authentication context, and renders a button to link or unlink each supported social provider:
+
+- Displayed providers are based on the `providers` prop defined in the [`<AuthUIProvider>`](../components/auth-ui-provider).
+- Buttons indicate whether the provider is currently linked or not.
+- Linking invokes the OAuth flow or native social authentication.
+- Unlinking automatically revokes the provider's access securely.
+
+---
+
+## Notes
+
+- Providers linking automatically supports redirection and authentication workflows based on your [`AuthUIProvider`](../components/auth-ui-provider) configuration.
+- Success and error handling, as well as toast messages, are built directly into the component workflow.
+- The UI is cleanly designed to adapt to both mobile and desktop displays out-of-the-box.
+
+---

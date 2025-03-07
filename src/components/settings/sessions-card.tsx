@@ -20,17 +20,23 @@ import {
 import type { SettingsCardClassNames } from "./settings-card"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
 
+export interface SettingsCardProps {
+    className?: string
+    classNames?: SettingsCardClassNames
+    isPending?: boolean
+    /**
+     * @default authLocalization
+     * @remarks `AuthLocalization`
+     */
+    localization?: AuthLocalization
+}
+
 export function SessionsCard({
     className,
     classNames,
     isPending,
     localization
-}: {
-    className?: string
-    classNames?: SettingsCardClassNames
-    isPending?: boolean
-    localization?: Partial<AuthLocalization>
-}) {
+}: SettingsCardProps) {
     const {
         hooks: { useListSessions, useSession },
         localization: authLocalization,
