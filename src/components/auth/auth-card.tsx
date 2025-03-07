@@ -117,6 +117,11 @@ export function AuthCard({
             />
         )
 
+    const description =
+        !credentials && !magicLink
+            ? localization.disabledCredentialsDescription
+            : localization[`${view}Description` as keyof typeof localization]
+
     return (
         <Card className={cn("w-full max-w-sm", className, classNames?.base)}>
             <CardHeader className={classNames?.header}>
@@ -126,18 +131,16 @@ export function AuthCard({
                     {localization[view as keyof typeof localization]}
                 </CardTitle>
 
-                <CardDescription
-                    className={cn(
-                        "text-xs md:text-sm",
-                        classNames?.description
-                    )}
-                >
-                    {!credentials && !magicLink
-                        ? localization.disabledCredentialsDescription
-                        : localization[
-                              `${view}Description` as keyof typeof localization
-                          ]}
-                </CardDescription>
+                {description && (
+                    <CardDescription
+                        className={cn(
+                            "text-xs md:text-sm",
+                            classNames?.description
+                        )}
+                    >
+                        {description}
+                    </CardDescription>
+                )}
             </CardHeader>
 
             <CardContent className={classNames?.content}>

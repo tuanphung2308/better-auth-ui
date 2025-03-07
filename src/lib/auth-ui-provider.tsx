@@ -30,6 +30,7 @@ const DefaultLink = ({
 const defaultNavigate = (href: string) => {
     window.location.href = href
 }
+
 const defaultReplace = (href: string) => {
     window.location.replace(href)
 }

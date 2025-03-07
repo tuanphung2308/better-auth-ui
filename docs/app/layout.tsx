@@ -18,6 +18,7 @@ export const metadata = createMetadata({
         "UI components for the most comprehensive authentication library for TypeScript.",
     metadataBase: baseUrl
 })
+
 export default function Layout({ children }: { children: ReactNode }) {
     return (
         <html lang="en" suppressHydrationWarning>

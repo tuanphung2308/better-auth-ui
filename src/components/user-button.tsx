@@ -167,7 +167,7 @@ export function UserButton({
 
             <DropdownMenuContent
                 className={cn(
-                    "me-3",
+                    "me-3 max-w-64",
                     size === "full" && "min-w-48",
                     classNames?.content?.base
                 )}
@@ -180,13 +180,13 @@ export function UserButton({
                             user={user}
                         />
 
-                        <div className="flex flex-col">
-                            <div className="font-medium text-sm">
+                        <div className="flex flex-col truncate">
+                            <div className="font-medium text-sm truncate">
                                 {user.name || user.email}
                             </div>
 
                             {user.name && (
-                                <div className="text-muted-foreground !font-light text-xs">
+                                <div className="text-muted-foreground !font-light text-xs truncate">
                                     {user.email}
                                 </div>
                             )}
@@ -295,7 +295,7 @@ export function UserButton({
                                             }
                                         }}
                                     >
-                                        <div className="flex gap-2 items-center">
+                                        <div className="flex gap-2 items-center truncate">
                                             <UserAvatar
                                                 classNames={
                                                     classNames?.content?.avatar
@@ -303,13 +303,13 @@ export function UserButton({
                                                 user={user}
                                             />
 
-                                            <div className="flex flex-col">
-                                                <div className="font-medium text-sm">
+                                            <div className="flex flex-col truncate">
+                                                <div className="font-medium text-sm truncate">
                                                     {user.name || user.email}
                                                 </div>
 
                                                 {user.name && (
-                                                    <div className="text-muted-foreground !font-light text-xs">
+                                                    <div className="text-muted-foreground !font-light text-xs truncate">
                                                         {user.email}
                                                     </div>
                                                 )}
