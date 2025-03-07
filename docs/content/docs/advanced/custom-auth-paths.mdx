@@ -1,0 +1,117 @@
+---
+title: Custom Auth Paths
+icon: Route
+---
+
+Here's a complete guide on how to customize view paths using the `AuthUIProvider` component. This example will show you how to change the auth routes from `/auth/sign-in` and `/auth/sign-out` to use custom paths such as `/auth/login` and `/auth/logout`, respectively.
+
+### Step 1: Customize Auth View Paths
+
+First, customize the default built-in paths by providing your custom routes through the `viewPaths` prop on the `<AuthUIProvider>` component.
+
+```tsx
+"use client"
+
+import { AuthUIProvider } from "@daveyplate/better-auth-ui"
+import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+
+export function Providers({ children }: { children: React.ReactNode }) {
+    const router = useRouter()
+
+    return (
+        <AuthUIProvider
+            authClient={authClient}
+            navigate={router.push}
+            replace={router.replace}
+            onSessionChange={() => router.refresh()}
+            LinkComponent={Link}
+            viewPaths={{
+                signIn: "login",
+                signOut: "logout",
+                signUp: "register",
+                forgotPassword: "forgot",
+                resetPassword: "reset",
+                magicLink: "magic",
+                settings: "config"
+            }}
+        >
+            {children}
+        </AuthUIProvider>
+    )
+}
+```
+
+Now your newly configured `viewPaths` object is as follows:
+
+| Default Path         | Custom Path          |
+| -------------------- | -------------------- |
+| `/auth/sign-in`      | `/auth/login`        |
+| `/auth/sign-out`     | `/auth/logout` |
+| `/auth/sign-up`      | `/auth/register`     |
+| `/auth/forgot-password` | `/auth/forgot`    |
+| `/auth/reset-password`  | `/auth/reset`     |
+| `/auth/magic-link`     | `/auth/magic`     |
+| `/auth/settings`     | `/auth/config`     |
+
+## Adjusting Dynamic Auth Route
+
+Next, your authentication page route can dynamically handle these paths. Set up your dynamic authentication page based on these custom routes.
+
+Using Next.js App Router (`app` router):
+
+```tsx
+import { AuthCard } from "@daveyplate/better-auth-ui"
+import { authViewPaths } from "@daveyplate/better-auth-ui/server"
+
+export function generateStaticParams() {
+    return Object.values({
+        ...authViewPaths,
+        signIn: "login",
+        signOut: "logout",
+        signUp: "register",
+        forgotPassword: "forgot",
+        resetPassword: "reset",
+        magicLink: "magic",
+        settings: "config"
+    }).map((pathname) => ({ pathname }))
+}
+
+export default async function AuthPage({ params }: { params: Promise<{ pathname: string }> }) {
+    const { pathname } = await params
+
+    return (
+        <div className="flex flex-col justify-center items-center my-auto">
+            <AuthCard pathname={pathname} />
+        </div>
+    )
+}
+```
+
+### Example usage across your app:
+
+#### Linking to new auth views:
+
+```tsx
+import Link from "next/link"
+
+export default function Navbar() {
+    return (
+        <nav className="flex gap-4">
+            <Link href="/auth/login">Login</Link>
+            <Link href="/auth/register">Register</Link>
+            <Link href="/auth/forgot">Forgot Password</Link>
+            <Link href="/auth/config">Config</Link>
+        </nav>
+    )
+}
+```
+
+### Summary of Steps (Recap):
+
+- Defined custom view paths within `AuthUIProvider`.
+- Updated dynamic auth page to handle correct paths within `generateStaticParams`.
+- Revised links/apps accordingly to use your newly specified paths.
+
+You have now successfully customized all your authentication URLs using the shipped customization options while preserving all the other features and integrations seamlessly.
