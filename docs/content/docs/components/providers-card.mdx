@@ -25,13 +25,13 @@ export default function SettingsPage() {
 
 This component seamlessly pulls in settings from your [`AuthUIProvider`](../components/auth-ui-provider) context, automatically handling provider link and unlink workflows.
 
-## Props Reference
+## Reference
 
 You can use the following props to further customize `<ProvidersCard />`:
 
 <AutoTypeTable path="../src/components/settings/providers-card.tsx" name="ProvidersCardProps" />
 
-## Custom Styling
+## Styling
 
 Customize the styling of your `<ProvidersCard />` through the `classNames` prop:
 
@@ -49,7 +49,7 @@ Customize the styling of your `<ProvidersCard />` through the `classNames` prop:
 />
 ```
 
-## Custom Localization
+## Localization
 
 Adjust displayed texts via the `localization` prop to fit your application's localization:
 
@@ -65,8 +65,6 @@ Adjust displayed texts via the `localization` prop to fit your application's loc
     }}
 />
 ```
-
----
 
 ## Usage in Settings Page
 
@@ -95,45 +93,3 @@ export default function SettingsPage() {
 ```
 
 This complete implementation shows how you can use `<ProvidersCard />` along with other available settings cards to build a comprehensive, managed user settings experience quickly.
-
----
-
-## Styling Your ProvidersCard
-
-All components within Better Auth UI use TailwindCSS by default. You can customize the `<ProvidersCard />` appearance by accessing the provided Tailwind utility class via the `classNames` prop.
-
-Here is an example showing significant styling customization:
-
-```tsx
-<ProvidersCard
-    classNames={{
-        base: "border-emerald-400 rounded-md",
-        header: "bg-emerald-100 dark:bg-emerald-900",
-        title: "text-emerald-700 dark:text-emerald-300",
-        description: "text-muted-foreground",
-        content: "bg-background",
-        button: "rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow"
-    }}
-/>
-```
-
----
-
-## Showing Linked Providers
-
-The component automatically retrieves linked accounts using the authentication context, and renders a button to link or unlink each supported social provider:
-
-- Displayed providers are based on the `providers` prop defined in the [`<AuthUIProvider>`](../components/auth-ui-provider).
-- Buttons indicate whether the provider is currently linked or not.
-- Linking invokes the OAuth flow or native social authentication.
-- Unlinking automatically revokes the provider's access securely.
-
----
-
-## Notes
-
-- Providers linking automatically supports redirection and authentication workflows based on your [`AuthUIProvider`](../components/auth-ui-provider) configuration.
-- Success and error handling, as well as toast messages, are built directly into the component workflow.
-- The UI is cleanly designed to adapt to both mobile and desktop displays out-of-the-box.
-
----

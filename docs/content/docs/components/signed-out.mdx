@@ -40,10 +40,13 @@ export default function Navbar() {
                 <SignedOut>
                     <a href="/auth/sign-in" className="text-sm font-medium">
                         Sign In
-                    </SignedOut>
+                    </a>
+                </SignedOut>
 
                 <SignedOut>
-                    <a href="/auth/sign-up" className="text-sm font-medium">Create account</a>
+                    <a href="/auth/sign-up" className="text-sm font-medium">
+                        Create account
+                    </a>
                 </SignedOut>
 
                 <UserButton />
@@ -52,15 +55,3 @@ export default function Navbar() {
     )
 }
 ```
-
-This setup neatly handles cases where certain UI elements should only appear to unauthenticated visitors, enhancing control and improving the overall user experience.
-
-## Practical Use Cases
-
-The `<SignedOut>` component is especially useful when:
-
-- You want to display sign-up or login specific messaging and CTAs exclusively to unauthenticated users.
-- Encouraging unauthorized visitors to sign in or create an account.
-- Clearly signposting functionality or features that require authentication before access.
-
----

@@ -8,7 +8,7 @@ The `<UserButton />` component provides an easy-to-use dropdown menu button that
 <img alt="User Dropdown Dark" src="/screenshots/user-dropdown-dark.png" className="border-r rounded-lg hidden dark:block w-44" />
 <img alt="User Dropdown Light" src="/screenshots/user-dropdown-light.png" className="border-r rounded-lg dark:hidden w-44" />
 
-## Basic Usage
+## Usage
 
 ```tsx
 import { UserButton } from "@daveyplate/better-auth-ui";
@@ -24,11 +24,11 @@ These are the available props for the `<UserButton />` component:
 
 <AutoTypeTable path="../src/components/user-button.tsx" name="UserButtonProps" />
 
----
-
 ## Examples
 
 ### Icon Size Button
+
+The `size="icon"` prop turns the UserButton into a small button, showing only the user's avatar. This is the default size.
 
 <img alt="Seto" src="/avatars/seto.png" className="size-8 rounded-full -mb-6" />
 <img alt="User Dropdown Dark" src="/screenshots/user-dropdown-dark.png" className="border-r rounded-lg hidden dark:block w-44" />
@@ -59,7 +59,7 @@ export default function Example() {
 }
 ```
 
-### Custom Styling
+### Styling
 
 You can fully customize the appearance of the UserButton component with [`UserButtonClassNames`](/api-reference/user-button-class-names) using the `classNames` prop.
 
@@ -87,7 +87,3 @@ export default function Example() {
   )
 }
 ```
-
-This example demonstrates extensive style customization using TailwindCSS classes.
-
----  

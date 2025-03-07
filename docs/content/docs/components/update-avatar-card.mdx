@@ -63,13 +63,13 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
 }
 ```
 
-## Props Reference
+## Reference
 
 These are the available props for `<UpdateAvatarCard />`:
 
 <AutoTypeTable path="../src/components/settings/update-avatar-card.tsx" name="UpdateAvatarCardProps" />
 
-## Custom Styling
+## Styling
 
 The `classNames` prop is useful for customizing inner elements using Tailwind classes:
 
@@ -86,7 +86,7 @@ The `classNames` prop is useful for customizing inner elements using Tailwind cl
 />
 ```
 
-## Avatar Notes
+## Notes
 
 Avatars are auto-cropped, optimized, and resized before uploading:
 
@@ -95,5 +95,3 @@ Avatars are auto-cropped, optimized, and resized before uploading:
   - `128px` (when using built-in storage - base64)
   - `256px` (when using custom `uploadAvatar`)
 - **File Format**: You can customize the uploaded image file format via `avatarExtension` prop in [`AuthUIProvider`](../components/auth-ui-provider). It defaults to `"png"`.
-
----

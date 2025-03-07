@@ -7,7 +7,7 @@ The `<EmailTemplate />` component lets you easily build responsive HTML emails w
 <img alt="Email Template" src="/screenshots/email-template-dark.png" className="rounded-xl hidden dark:block w-sm mt-0 mb-0" />
 <img alt="Email Template" src="/screenshots/email-template-light.png" className="rounded-xl dark:hidden w-sm mt-0 mb-0" />
 
-## Usage Example for Email Verification
+## Usage
 
 This example demonstrates implementing the email verification notification with the `<EmailTemplate />`:
 
@@ -56,12 +56,10 @@ export const auth = betterAuth({
 })
 ```
 
-This example demonstrates using the component specifically to send email verification messages. You can easily adapt it to suit other use cases like password reset, magic links, and more, by adjusting the `content`, `action`, and `preview`.
+This example demonstrates using the component specifically to send email verification messages. You can easily adapt it to suit other use cases like password reset, magic links, and more, by adjusting the `content`, `action`, and `heading`.
 
 ## Reference
 
 The following props can be passed to the `<EmailTemplate />` component:
 
 <AutoTypeTable path="../src/components/email/email-template.tsx" name="EmailTemplateProps" />
-
----

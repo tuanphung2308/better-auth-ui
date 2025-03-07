@@ -4,7 +4,7 @@ title: "<RedirectToSignUp />"
 
 The `<RedirectToSignUp />` component ensures users are redirected to the sign-up page if they are not authenticated. If the user is signed in, it does nothing. It's useful for protected pages in your application, specifically when you want unauthenticated users to immediately register instead of logging in.
 
-Basic usage:
+## Usage
 
 ```tsx
 import { RedirectToSignUp, SignedIn } from "@daveyplate/better-auth-ui"
@@ -21,11 +21,3 @@ export default function ProtectedPage() {
   )
 }
 ```
-
-## See Also:
-
-- [`<SignedIn>`](/components/signed-in) – Conditionally renders content to signed-in users.
-- [`<SignedOut>`](/components/signed-out) – Conditionally renders content only to users without an active session.
-- [`<RedirectToSignIn />`](/components/redirect-to-sign-in) – Redirects users who aren't authenticated to the sign-in page.
-
----  

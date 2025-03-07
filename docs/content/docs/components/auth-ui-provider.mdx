@@ -4,7 +4,7 @@ title: <AuthUIProvider>
 
 The `<AuthUIProvider>` wraps your application with authentication context, providing essential hooks, settings, and methods required by authentication-related components and hooks throughout your app.
 
-Basic usage:
+## Usage
 
 ```tsx title="providers.tsx"
 "use client"
@@ -31,15 +31,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
----
-
 ## Reference
 
 The following props can be passed to the `<AuthUIProvider>` component:
 
 <AutoTypeTable path="../src/lib/auth-ui-provider.tsx" name="AuthUIProviderProps" />
-
----
 
 ## Example
 
@@ -88,8 +84,3 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   )
 }
 ```
-
-
-This comprehensive setup covers all possible features—use only what you need!
-
----
