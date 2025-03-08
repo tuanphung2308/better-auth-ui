@@ -6,6 +6,14 @@ import { toast } from "sonner"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 
+import { cn } from "../../lib/utils"
+import {
+    Card,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle
+} from "../ui/card"
 import { SettingsCard, type SettingsCardClassNames } from "./settings-card"
 
 export interface ChangeEmailCardProps {
@@ -73,19 +81,49 @@ export function ChangeEmailCard({
     }
 
     return (
-        <SettingsCard
-            key={sessionData?.user.email}
-            className={className}
-            classNames={classNames}
-            defaultValue={sessionData?.user?.email}
-            description={localization.emailDescription}
-            field="email"
-            formAction={formAction}
-            instructions={localization.emailInstructions}
-            isPending={isPending || sessionPending}
-            label={localization.email}
-            localization={localization}
-            placeholder={localization.emailPlaceholder}
-        />
+        <>
+            <SettingsCard
+                key={sessionData?.user.email}
+                className={className}
+                classNames={classNames}
+                defaultValue={sessionData?.user?.email}
+                description={localization.emailDescription}
+                field="email"
+                formAction={formAction}
+                instructions={localization.emailInstructions}
+                isPending={isPending || sessionPending}
+                label={localization.email}
+                localization={localization}
+                placeholder={localization.emailPlaceholder}
+            />
+
+            {sessionData?.user && !sessionData?.user.emailVerified && (
+                <Card className={classNames?.base}>
+                    <CardHeader className={classNames?.header}>
+                        <CardTitle
+                            className={cn(
+                                "text-lg md:text-xl",
+                                classNames?.title
+                            )}
+                        >
+                            {localization.verifyYourEmail}
+                        </CardTitle>
+
+                        <CardDescription className={classNames?.description}>
+                            {localization.verifyYourEmailDescription}
+                        </CardDescription>
+                    </CardHeader>
+
+                    <CardFooter
+                        className={cn(
+                            "border-t bg-muted dark:bg-transparent py-4 md:py-3 flex flex-col md:flex-row gap-4 justify-between",
+                            classNames?.footer
+                        )}
+                    >
+                        test
+                    </CardFooter>
+                </Card>
+            )}
+        </>
     )
 }

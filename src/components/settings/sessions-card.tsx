@@ -20,7 +20,7 @@ import {
 import type { SettingsCardClassNames } from "./settings-card"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
 
-export interface SettingsCardProps {
+export interface SessionsCardProps {
     className?: string
     classNames?: SettingsCardClassNames
     isPending?: boolean
@@ -36,7 +36,7 @@ export function SessionsCard({
     classNames,
     isPending,
     localization
-}: SettingsCardProps) {
+}: SessionsCardProps) {
     const {
         hooks: { useListSessions, useSession },
         localization: authLocalization,

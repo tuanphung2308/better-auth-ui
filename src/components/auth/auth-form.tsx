@@ -136,14 +136,14 @@ export function AuthForm({
 
         if (formData.get("passkey")) {
             // @ts-expect-error Optional plugin
-            const { error } = await authClient.signIn.passkey({
-                callbackURL: getCallbackURL()
-            })
+            const response = await authClient.signIn.passkey()
 
-            if (error) {
-                toast.error(error.message || error.statusText)
+            if (response?.error) {
+                toast.error(response.error.message || response.error.statusText)
             } else {
                 setIsLoading(true)
+                onSessionChange?.()
+                navigate(getRedirectTo())
             }
 
             return

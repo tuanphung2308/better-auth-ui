@@ -10,6 +10,7 @@ import { cn } from "../../lib/utils"
 import { ChangeEmailCard } from "./change-email-card"
 import { ChangePasswordCard } from "./change-password-card"
 import { DeleteAccountCard } from "./delete-account-card"
+import { PasskeysCard } from "./passkeys-card"
 import { ProvidersCard } from "./providers-card"
 import { SessionsCard } from "./sessions-card"
 import type { SettingsCardClassNames } from "./settings-card"
@@ -46,6 +47,7 @@ export function SettingsCards({
         deleteUser,
         hooks,
         nameRequired,
+        passkey,
         providers,
         settingsFields,
         username
@@ -150,6 +152,14 @@ export function SettingsCards({
                     unlinkAccount={(providerId: string) =>
                         authClient.unlinkAccount({ providerId })
                     }
+                />
+            )}
+
+            {passkey && (
+                <PasskeysCard
+                    classNames={classNames?.card}
+                    isPending={isPending}
+                    localization={localization}
                 />
             )}
 
