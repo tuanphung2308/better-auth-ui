@@ -13,12 +13,12 @@ export function SettingsCardSkeleton({
     return (
         <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
             <CardHeader className={cn("space-y-2", classNames?.header)}>
-                <Skeleton className="h-5 md:h-6 w-1/3" />
-                <Skeleton className="h-4 w-2/3" />
+                <Skeleton className={cn("h-5 md:h-6 w-1/3", classNames?.skeleton)} />
+                <Skeleton className={cn("h-4 w-2/3", classNames?.skeleton)} />
             </CardHeader>
 
             <CardContent className={cn("space-y-2", classNames?.content)}>
-                <Skeleton className="h-9 w-full" />
+                <Skeleton className={cn("h-9 w-full", classNames?.skeleton)} />
             </CardContent>
 
             <CardFooter
@@ -27,8 +27,8 @@ export function SettingsCardSkeleton({
                     classNames?.footer
                 )}
             >
-                <Skeleton className="h-4 w-1/2" />
-                <Skeleton className="h-8 w-14 md:ms-auto" />
+                <Skeleton className={cn("h-4 w-48 md:w-56", classNames?.skeleton)} />
+                <Skeleton className={cn("h-8 w-14 md:ms-auto", classNames?.skeleton)} />
             </CardFooter>
         </Card>
     )

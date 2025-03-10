@@ -68,7 +68,7 @@ export function SessionsCard({
     }
 
     if (isPending || sessionsPending) {
-        return <ProvidersCardSkeleton className={className} />
+        return <ProvidersCardSkeleton className={className} classNames={classNames} />
     }
 
     return (

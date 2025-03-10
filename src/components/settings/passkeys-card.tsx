@@ -10,19 +10,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import type { SettingsCardClassNames } from "./settings-card"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
 
-type Passkey = {
-    id: string
-    name?: string
-    publicKey: string
-    userId: string
-    credentialID: string
-    counter: number
-    deviceType: string
-    backedUp: boolean
-    transports?: string
-    createdAt: Date
-}
-
 export interface PasskeysCardProps {
     className?: string
     classNames?: SettingsCardClassNames
@@ -85,7 +72,7 @@ export function PasskeysCard({
     }
 
     if (isPending || passkeysPending) {
-        return <ProvidersCardSkeleton className={className} />
+        return <ProvidersCardSkeleton className={className} classNames={classNames} />
     }
 
     return (

@@ -127,7 +127,7 @@ export function UpdateAvatarCard({
     const openFileDialog = () => fileInputRef.current?.click()
 
     if (isPending || sessionPending) {
-        return <UpdateAvatarCardSkeleton classNames={classNames} />
+        return <UpdateAvatarCardSkeleton className={className} classNames={classNames} />
     }
 
     return (
@@ -158,11 +158,11 @@ export function UpdateAvatarCard({
                 <button className={cn("me-6 my-5")} type="button" onClick={openFileDialog}>
                     {loading ? (
                         <Skeleton
-                            className={cn("size-18 rounded-full", classNames?.avatar?.base)}
+                            className={cn("size-20 rounded-full", classNames?.avatar?.base)}
                         />
                     ) : (
                         <UserAvatar
-                            className="size-18 text-2xl"
+                            className="size-20 text-2xl"
                             classNames={classNames?.avatar}
                             user={sessionData?.user}
                         />

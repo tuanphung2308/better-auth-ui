@@ -27,6 +27,7 @@ export type SettingsCardClassNames = {
     input?: string
     instructions?: string
     label?: string
+    skeleton?: string
     title?: string
 }
 

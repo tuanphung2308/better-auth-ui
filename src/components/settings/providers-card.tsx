@@ -105,7 +105,7 @@ export function ProvidersCard({
     }
 
     if (isPending) {
-        return <ProvidersCardSkeleton className={className} />
+        return <ProvidersCardSkeleton className={className} classNames={classNames} />
     }
 
     return (

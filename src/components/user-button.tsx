@@ -29,6 +29,7 @@ import { UserAvatar, type UserAvatarClassNames } from "./user-avatar"
 
 export interface UserButtonClassNames {
     base?: string
+    skeleton?: string
     trigger?: {
         base?: string
         avatar?: UserAvatarClassNames
@@ -111,6 +112,7 @@ export function UserButton({
                                 "size-8 rounded-full",
                                 className,
                                 classNames?.base,
+                                classNames?.skeleton,
                                 classNames?.trigger?.skeleton
                             )}
                         />
@@ -128,6 +130,7 @@ export function UserButton({
                                 <Skeleton
                                     className={cn(
                                         "size-8 rounded-full",
+                                        classNames?.skeleton,
                                         classNames?.trigger?.skeleton
                                     )}
                                 />
@@ -138,14 +141,18 @@ export function UserButton({
                             <div className="flex flex-col grow text-left truncate">
                                 <div className="font-medium text-sm truncate">
                                     {isPending ? (
-                                        <Skeleton className="h-3 w-20" />
+                                        <Skeleton
+                                            className={cn("h-3 w-20", classNames?.skeleton)}
+                                        />
                                     ) : (
                                         user?.name || user?.email || localization.account
                                     )}
                                 </div>
 
                                 {isPending ? (
-                                    <Skeleton className="h-3 w-32 mt-1" />
+                                    <Skeleton
+                                        className={cn("h-3 w-32 mt-1", classNames?.skeleton)}
+                                    />
                                 ) : (
                                     user?.name && (
                                         <div className="text-muted-foreground !font-light text-xs truncate">
