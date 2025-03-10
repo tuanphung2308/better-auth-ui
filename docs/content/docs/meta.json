@@ -1,11 +1,4 @@
 {
     "defaultOpen": true,
-    "pages": [
-        "index",
-        "getting-started",
-        "integrations",
-        "components",
-        "advanced",
-        "api-reference"
-    ]
+    "pages": ["index", "getting-started", "integrations", "components", "advanced", "api-reference"]
 }

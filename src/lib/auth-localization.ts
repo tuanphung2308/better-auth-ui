@@ -254,6 +254,9 @@ export const authLocalization = {
     /** @default "Save" */
     save: "Save",
 
+    /** @default "Security" */
+    security: "Security",
+
     /** @default "Unlink" */
     unlink: "Unlink",
 
