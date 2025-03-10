@@ -8,7 +8,7 @@ import {
     SettingsIcon,
     UserRoundPlus
 } from "lucide-react"
-import { Fragment, useContext, useEffect, useState } from "react"
+import { Fragment, type ReactNode, useContext, useEffect, useState } from "react"
 import { toast } from "sonner"
 
 import type { AuthLocalization } from "../lib/auth-localization"
@@ -45,6 +45,12 @@ export interface UserButtonClassNames {
 export interface UserButtonProps {
     className?: string
     classNames?: UserButtonClassNames
+    additionalLinks?: {
+        href: string
+        icon?: ReactNode
+        label: ReactNode
+        signedIn?: boolean
+    }[]
     /**
      * @default authLocalization
      * @remarks `AuthLocalization`
@@ -59,6 +65,7 @@ export interface UserButtonProps {
 export function UserButton({
     className,
     classNames,
+    additionalLinks,
     localization,
     size = "icon"
 }: UserButtonProps) {
@@ -185,6 +192,19 @@ export function UserButton({
                 )}
 
                 <DropdownMenuSeparator className={classNames?.content?.separator} />
+
+                {additionalLinks?.map(
+                    ({ href, icon, label, signedIn }) =>
+                        (!signedIn || !!sessionData) && (
+                            <LinkComponent href={href} to={href} key={href}>
+                                <DropdownMenuItem className={classNames?.content?.menuItem}>
+                                    {icon}
+
+                                    {label}
+                                </DropdownMenuItem>
+                            </LinkComponent>
+                        )
+                )}
 
                 {!user || user.isAnonymous ? (
                     <>
