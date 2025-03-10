@@ -11,6 +11,7 @@ import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 
+import type { Session } from "better-auth"
 import type { SettingsCardClassNames } from "./settings-card"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
 
@@ -23,13 +24,17 @@ export interface SessionsCardProps {
      * @remarks `AuthLocalization`
      */
     localization?: AuthLocalization
+    sessions?: Session[] | null
+    refetch?: () => Promise<void>
 }
 
 export function SessionsCard({
     className,
     classNames,
     isPending,
-    localization
+    localization,
+    sessions,
+    refetch
 }: SessionsCardProps) {
     const {
         hooks: { useListSessions, useSession },
@@ -43,7 +48,13 @@ export function SessionsCard({
 
     localization = { ...authLocalization, ...localization }
 
-    const { data: sessions, isPending: sessionsPending, refetch } = useListSessions()
+    if (isPending === undefined && sessions === undefined) {
+        const result = useListSessions()
+        sessions = result.data
+        isPending = result.isPending
+        refetch = result.refetch
+    }
+
     const { data: sessionData } = useSession()
 
     const [actionLoading, setActionLoading] = useState<string | null>(null)
@@ -67,7 +78,7 @@ export function SessionsCard({
         setActionLoading(null)
     }
 
-    if (isPending || sessionsPending) {
+    if (isPending) {
         return <ProvidersCardSkeleton className={className} classNames={classNames} />
     }
 

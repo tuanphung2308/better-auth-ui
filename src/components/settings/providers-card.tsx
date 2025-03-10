@@ -18,7 +18,6 @@ import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
 export interface ProvidersCardProps {
     className?: string
     classNames?: SettingsCardClassNames
-    /** @internal */
     accounts?: { provider: string }[] | null
     isPending?: boolean
     /**
@@ -26,7 +25,6 @@ export interface ProvidersCardProps {
      * @remarks `AuthLocalization`
      */
     localization?: Partial<AuthLocalization>
-    /** @internal */
     refetch?: () => Promise<void>
 }
 

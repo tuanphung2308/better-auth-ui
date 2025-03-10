@@ -25,9 +25,6 @@ import { DeleteAccountCardSkeleton } from "./skeletons/delete-account-card-skele
 export interface DeleteAccountCardProps {
     className?: string
     classNames?: SettingsCardClassNames
-    /**
-     * @internal
-     */
     accounts?: { provider: string }[] | null
     isPending?: boolean
     /**

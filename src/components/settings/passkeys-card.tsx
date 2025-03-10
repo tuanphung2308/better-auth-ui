@@ -1,6 +1,8 @@
+import type { Passkey } from "better-auth/plugins/passkey"
 import { FingerprintIcon, Loader2, PlusIcon } from "lucide-react"
 import { useContext, useState } from "react"
 import { toast } from "sonner"
+
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
@@ -19,13 +21,17 @@ export interface PasskeysCardProps {
      * @remarks `AuthLocalization`
      */
     localization?: AuthLocalization
+    passkeys?: Passkey[]
+    refetch?: () => void
 }
 
 export function PasskeysCard({
     className,
     classNames,
     isPending,
-    localization
+    localization,
+    passkeys,
+    refetch
 }: PasskeysCardProps) {
     const {
         authClient: contextAuthClient,
@@ -38,7 +44,12 @@ export function PasskeysCard({
 
     localization = { ...authLocalization, ...localization }
 
-    const { data: passkeys, isPending: passkeysPending, refetch } = useListPasskeys()
+    if (passkeys === undefined && isPending === undefined) {
+        const result = useListPasskeys()
+        passkeys = result.data as Passkey[]
+        isPending = result.isPending
+        refetch = result.refetch
+    }
 
     const [isLoading, setIsLoading] = useState(false)
     const [actionLoading, setActionLoading] = useState<string | null>(null)
@@ -51,7 +62,7 @@ export function PasskeysCard({
         if (response?.error) {
             toast.error(response?.error.message || response?.error.statusText)
         } else {
-            refetch()
+            refetch?.()
         }
 
         setIsLoading(false)
@@ -65,13 +76,13 @@ export function PasskeysCard({
         if (response?.error) {
             toast.error(response?.error.message || response?.error.statusText)
         } else {
-            refetch()
+            refetch?.()
         }
 
         setActionLoading(null)
     }
 
-    if (isPending || passkeysPending) {
+    if (isPending) {
         return <ProvidersCardSkeleton className={className} classNames={classNames} />
     }
 

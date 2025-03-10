@@ -18,9 +18,6 @@ import { ChangePasswordCardSkeleton } from "./skeletons/change-password-card-ske
 export interface ChangePasswordCardProps {
     className?: string
     classNames?: SettingsCardClassNames
-    /**
-     * @internal
-     */
     accounts?: { provider: string }[] | null
     isPending?: boolean
     /**

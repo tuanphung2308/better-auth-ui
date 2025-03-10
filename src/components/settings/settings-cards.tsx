@@ -7,6 +7,7 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 
+import type { Passkey } from "better-auth/plugins/passkey"
 import { KeyIcon, UserIcon } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { ChangeEmailCard } from "./change-email-card"
@@ -57,12 +58,32 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         username
     } = useContext(AuthUIContext)
     localization = { ...authLocalization, ...localization }
-    const { useListAccounts, useSession } = hooks
+    const { useListAccounts, useListPasskeys, useListSessions, useSession } = hooks
     useAuthenticate()
     const { data: sessionData, isPending: sessionPending } = useSession()
-    const { data: accounts, isPending: accountsPending, refetch } = useListAccounts()
+    const {
+        data: accounts,
+        isPending: accountsPending,
+        refetch: refetchAccounts
+    } = useListAccounts()
+    const {
+        data: sessions,
+        isPending: sessionsPending,
+        refetch: refetchSessions
+    } = useListSessions()
 
-    const isPending = sessionPending || accountsPending
+    let passkeys: Passkey[] | undefined = undefined
+    let passkeysPending: boolean | undefined = undefined
+    let refetchPasskeys: (() => void) | undefined = undefined
+
+    if (passkey) {
+        const result = useListPasskeys()
+        passkeys = result.data as Passkey[]
+        passkeysPending = result.isPending
+        refetchPasskeys = result.refetch
+    }
+
+    const isPending = sessionPending || accountsPending || sessionsPending || passkeysPending
 
     return (
         <div
@@ -178,7 +199,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             classNames={classNames?.card}
                             isPending={isPending}
                             localization={localization}
-                            refetch={refetch}
+                            refetch={refetchAccounts}
                         />
                     )}
 
@@ -187,6 +208,8 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             classNames={classNames?.card}
                             isPending={isPending}
                             localization={localization}
+                            passkeys={passkeys}
+                            refetch={refetchPasskeys}
                         />
                     )}
 
@@ -194,6 +217,8 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         classNames={classNames?.card}
                         isPending={isPending}
                         localization={localization}
+                        sessions={sessions}
+                        refetch={refetchSessions}
                     />
 
                     {deleteUser && (
