@@ -34,9 +34,7 @@ export function UserAvatar({
                 className={classNames?.image}
                 src={
                     user && !user.isAnonymous
-                        ? ((user.image ||
-                              user.avatar ||
-                              user.avatarUrl) as string)
+                        ? ((user.image || user.avatar || user.avatarUrl) as string)
                         : undefined
                 }
             />
@@ -46,9 +44,7 @@ export function UserAvatar({
                 delayMs={src ? 200 : 0}
             >
                 {firstTwoCharacters(name) || (
-                    <UserIcon
-                        className={cn("w-[55%]", classNames?.fallbackIcon)}
-                    />
+                    <UserIcon className={cn("w-[55%]", classNames?.fallbackIcon)} />
                 )}
             </AvatarFallback>
         </Avatar>

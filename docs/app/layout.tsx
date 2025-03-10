@@ -14,17 +14,14 @@ export const metadata = createMetadata({
         template: "%s | Better Auth UI",
         default: "Better Auth UI"
     },
-    description:
-        "UI components for the most comprehensive authentication library for TypeScript.",
+    description: "UI components for the most comprehensive authentication library for TypeScript.",
     metadataBase: baseUrl
 })
 
 export default function Layout({ children }: { children: ReactNode }) {
     return (
         <html lang="en" suppressHydrationWarning>
-            <body
-                className={`${geistSans.className} flex flex-col min-h-screen antialiased`}
-            >
+            <body className={`${geistSans.className} flex flex-col min-h-screen antialiased`}>
                 <RootProvider
                     search={{
                         options: {

@@ -7,12 +7,11 @@ import type { FetchError } from "../types/fetch-error"
 
 export function useListDeviceSessions() {
     const { authClient } = useContext(AuthUIContext)
-    const { data: sessionData, isPending: sessionPending } =
-        authClient.useSession()
+    const { data: sessionData, isPending: sessionPending } = authClient.useSession()
 
-    const [deviceSessions, setDeviceSessions] = useState<
-        { session: Session; user: User }[] | null
-    >(null)
+    const [deviceSessions, setDeviceSessions] = useState<{ session: Session; user: User }[] | null>(
+        null
+    )
     const [activeSessionPending, setActiveSessionPending] = useState(false)
     const [isPending, setIsPending] = useState(true)
     const initialized = useRef(false)

@@ -5,12 +5,9 @@ import { AuthUIContext } from "../lib/auth-ui-provider"
 
 export function useListAccounts() {
     const { authClient } = useContext(AuthUIContext)
-    const { data: sessionData, isPending: sessionPending } =
-        authClient.useSession()
+    const { data: sessionData, isPending: sessionPending } = authClient.useSession()
 
-    const [accounts, setAccounts] = useState<{ provider: string }[] | null>(
-        null
-    )
+    const [accounts, setAccounts] = useState<{ provider: string }[] | null>(null)
     const [isPending, setIsPending] = useState(true)
     const initialized = useRef(false)
 
@@ -40,7 +37,6 @@ export function useListAccounts() {
         accounts,
         isPending,
         refetch: listAccounts,
-        unlinkAccount: (providerId: string) =>
-            authClient.unlinkAccount({ providerId })
+        unlinkAccount: (providerId: string) => authClient.unlinkAccount({ providerId })
     }
 }

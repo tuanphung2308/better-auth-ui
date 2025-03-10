@@ -7,18 +7,8 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { cn } from "../../lib/utils"
-import {
-    SettingsCards,
-    type SettingsCardsClassNames
-} from "../settings/settings-cards"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle
-} from "../ui/card"
+import { SettingsCards, type SettingsCardsClassNames } from "../settings/settings-cards"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 
 import { AuthForm, type AuthFormClassNames } from "./auth-form"
 
@@ -111,10 +101,7 @@ export function AuthCard({
         return settingsUrl ? (
             <Loader2 className="animate-spin" />
         ) : (
-            <SettingsCards
-                className={cn(className)}
-                classNames={classNames?.settings}
-            />
+            <SettingsCards className={cn(className)} classNames={classNames?.settings} />
         )
 
     const description =
@@ -125,19 +112,12 @@ export function AuthCard({
     return (
         <Card className={cn("w-full max-w-sm", className, classNames?.base)}>
             <CardHeader className={classNames?.header}>
-                <CardTitle
-                    className={cn("text-lg md:text-xl", classNames?.title)}
-                >
+                <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                     {localization[view as keyof typeof localization]}
                 </CardTitle>
 
                 {description && (
-                    <CardDescription
-                        className={cn(
-                            "text-xs md:text-sm",
-                            classNames?.description
-                        )}
-                    >
+                    <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
                         {description}
                     </CardDescription>
                 )}
@@ -166,16 +146,11 @@ export function AuthCard({
                         : localization.alreadyHaveAnAccount}
 
                     <LinkComponent
-                        className={cn(
-                            "underline text-foreground",
-                            classNames?.footerLink
-                        )}
+                        className={cn("underline text-foreground", classNames?.footerLink)}
                         href={`${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
                         to={`${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
                     >
-                        {view === "signIn"
-                            ? localization.signUp
-                            : localization.signIn}
+                        {view === "signIn" ? localization.signUp : localization.signIn}
                     </LinkComponent>
                 </CardFooter>
             )}

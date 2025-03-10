@@ -38,12 +38,13 @@ export function UpdateFieldCard({
 }) {
     const {
         hooks: { useSession },
+        mutates: { updateUser },
         localization: authLocalization
     } = useContext(AuthUIContext)
 
     localization = { ...authLocalization, ...localization }
 
-    const { isPending: sessionPending, updateUser } = useSession()
+    const { isPending: sessionPending } = useSession()
 
     const formAction = async (formData: FormData) => {
         const value = (formData.get(field) as string) || ""

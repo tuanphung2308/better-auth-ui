@@ -34,11 +34,7 @@ export interface SettingsCardsProps {
     localization?: AuthLocalization
 }
 
-export function SettingsCards({
-    className,
-    classNames,
-    localization
-}: SettingsCardsProps) {
+export function SettingsCards({ className, classNames, localization }: SettingsCardsProps) {
     const {
         additionalFields,
         authClient,
@@ -101,15 +97,8 @@ export function SettingsCards({
                 const additionalField = additionalFields?.[field]
                 if (!additionalField) return null
 
-                const {
-                    label,
-                    description,
-                    instructions,
-                    placeholder,
-                    required,
-                    type,
-                    validate
-                } = additionalField
+                const { label, description, instructions, placeholder, required, type, validate } =
+                    additionalField
 
                 // @ts-expect-error Custom fields are not typed
                 const defaultValue = sessionData?.user[field] as unknown
@@ -149,9 +138,7 @@ export function SettingsCards({
                     isPending={isPending}
                     localization={localization}
                     refetch={refetch}
-                    unlinkAccount={(providerId: string) =>
-                        authClient.unlinkAccount({ providerId })
-                    }
+                    unlinkAccount={(providerId: string) => authClient.unlinkAccount({ providerId })}
                 />
             )}
 

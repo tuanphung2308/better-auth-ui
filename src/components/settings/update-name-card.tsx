@@ -36,7 +36,6 @@ export function UpdateNameCard({
 
     return (
         <UpdateFieldCard
-            key={sessionData?.user.name}
             className={className}
             classNames={classNames}
             defaultValue={sessionData?.user.name}

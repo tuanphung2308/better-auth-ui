@@ -6,13 +6,7 @@ import { toast } from "sonner"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
-import {
-    Card,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle
-} from "../ui/card"
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { Skeleton } from "../ui/skeleton"
 import { UserAvatar } from "../user-avatar"
 
@@ -45,13 +39,9 @@ async function resizeAndCropImage(
         canvas.toBlob(resolve, `image/${avatarExtension}`)
     )
 
-    return new File(
-        [resizedImageBlob as BlobPart],
-        `${name}.${avatarExtension}`,
-        {
-            type: `image/${avatarExtension}`
-        }
-    )
+    return new File([resizedImageBlob as BlobPart], `${name}.${avatarExtension}`, {
+        type: `image/${avatarExtension}`
+    })
 }
 
 async function loadImage(file: File): Promise<HTMLImageElement> {
@@ -94,11 +84,7 @@ export function UpdateAvatarCard({
 
     localization = { ...authLocalization, ...localization }
 
-    const {
-        data: sessionData,
-        isPending: sessionPending,
-        updateUser
-    } = useSession()
+    const { data: sessionData, isPending: sessionPending, updateUser } = useSession()
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [loading, setLoading] = useState(false)
 
@@ -144,13 +130,7 @@ export function UpdateAvatarCard({
     }
 
     return (
-        <Card
-            className={cn(
-                "w-full overflow-hidden",
-                className,
-                classNames?.base
-            )}
-        >
+        <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
             <input
                 ref={fileInputRef}
                 accept="image/*"
@@ -165,33 +145,19 @@ export function UpdateAvatarCard({
 
             <div className="flex justify-between">
                 <CardHeader className={cn(classNames?.header)}>
-                    <CardTitle
-                        className={cn("text-lg md:text-xl", classNames?.title)}
-                    >
+                    <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                         {localization.avatar}
                     </CardTitle>
 
-                    <CardDescription
-                        className={cn(
-                            "text-xs md:text-sm",
-                            classNames?.description
-                        )}
-                    >
+                    <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
                         {localization.avatarDescription}
                     </CardDescription>
                 </CardHeader>
 
-                <button
-                    className={cn("me-6 my-5")}
-                    type="button"
-                    onClick={openFileDialog}
-                >
+                <button className={cn("me-6 my-5")} type="button" onClick={openFileDialog}>
                     {loading ? (
                         <Skeleton
-                            className={cn(
-                                "size-18 rounded-full",
-                                classNames?.avatar?.base
-                            )}
+                            className={cn("size-18 rounded-full", classNames?.avatar?.base)}
                         />
                     ) : (
                         <UserAvatar
@@ -204,10 +170,7 @@ export function UpdateAvatarCard({
             </div>
 
             <CardFooter
-                className={cn(
-                    "border-t bg-muted dark:bg-transparent py-4.5",
-                    classNames?.footer
-                )}
+                className={cn("border-t bg-muted dark:bg-transparent py-4.5", classNames?.footer)}
             >
                 <CardDescription
                     className={cn(

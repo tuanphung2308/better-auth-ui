@@ -1,15 +1,12 @@
 import { useContext, useEffect } from "react"
-
-import type { createAuthClient } from "better-auth/react"
 import { AuthUIContext } from "../lib/auth-ui-provider"
-import type { AuthView } from "../lib/auth-view-paths"
+import type { AuthView } from "../server"
+import type { AuthClient } from "../types/auth-client"
 
-export function useAuthenticate<
-    TAuthClient extends Omit<
-        ReturnType<typeof createAuthClient>,
-        "signUp"
-    > = ReturnType<typeof createAuthClient>
->(authView: AuthView = "signIn", enabled = true) {
+export function useAuthenticate<TAuthClient extends AuthClient = AuthClient>(
+    authView: AuthView = "signIn",
+    enabled = true
+) {
     const { hooks, basePath, viewPaths, replace } = useContext(AuthUIContext)
     const { useSession } = hooks
     const { data, isPending, ...rest } = useSession()
@@ -22,12 +19,13 @@ export function useAuthenticate<
         }
     }, [enabled, isPending, data, basePath, viewPaths, replace, authView])
 
-    type SessionData = TAuthClient["$Infer"]["Session"] | undefined
-    type User = TAuthClient["$Infer"]["Session"]["user"] | undefined
-    type Session = TAuthClient["$Infer"]["Session"]["session"] | undefined
-    const sessionData = data as SessionData
-    const user = sessionData?.user as User
-    const session = sessionData?.session as Session
+    type SessionData = TAuthClient["$Infer"]["Session"]
+    type User = TAuthClient["$Infer"]["Session"]["user"]
+    type Session = TAuthClient["$Infer"]["Session"]["session"]
+
+    const sessionData = data as SessionData | undefined
+    const user = sessionData?.user as User | undefined
+    const session = sessionData?.session as Session | undefined
 
     return {
         data: sessionData,

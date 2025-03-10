@@ -6,13 +6,7 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
-import {
-    Card,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle
-} from "../ui/card"
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import {
     Dialog,
     DialogContent,
@@ -75,9 +69,7 @@ export function DeleteAccountCard({
     const isFresh = session
         ? Date.now() / 1000 - session?.createdAt.getTime() / 1000 < freshAge
         : false
-    const credentialsLinked = accounts?.some(
-        (acc) => acc.provider === "credential"
-    )
+    const credentialsLinked = accounts?.some((acc) => acc.provider === "credential")
 
     const formAction = async (_: unknown, formData: FormData) => {
         const params = {} as Record<string, string>
@@ -111,12 +103,7 @@ export function DeleteAccountCard({
     const [_, action, isSubmitting] = useActionState(formAction, null)
 
     if (isPending || sessionPending) {
-        return (
-            <DeleteAccountCardSkeleton
-                className={className}
-                classNames={classNames}
-            />
-        )
+        return <DeleteAccountCardSkeleton className={className} classNames={classNames} />
     }
 
     return (
@@ -128,18 +115,11 @@ export function DeleteAccountCard({
             )}
         >
             <CardHeader className={classNames?.header}>
-                <CardTitle
-                    className={cn("text-lg md:text-xl", classNames?.title)}
-                >
+                <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                     {localization?.deleteAccount}
                 </CardTitle>
 
-                <CardDescription
-                    className={cn(
-                        "text-xs md:text-sm",
-                        classNames?.description
-                    )}
-                >
+                <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
                     {localization?.deleteAccountDescription}
                 </CardDescription>
             </CardHeader>
@@ -153,10 +133,7 @@ export function DeleteAccountCard({
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button
-                            className={cn(
-                                "mx-auto md:ms-auto md:mx-0",
-                                classNames?.button
-                            )}
+                            className={cn("mx-auto md:ms-auto md:mx-0", classNames?.button)}
                             size="sm"
                             variant="destructive"
                         >
@@ -168,19 +145,13 @@ export function DeleteAccountCard({
                         <form action={action} className="grid gap-4">
                             <DialogHeader>
                                 <DialogTitle
-                                    className={cn(
-                                        "text-lg md:text-xl",
-                                        classNames?.title
-                                    )}
+                                    className={cn("text-lg md:text-xl", classNames?.title)}
                                 >
                                     {localization?.deleteAccount}
                                 </DialogTitle>
 
                                 <DialogDescription
-                                    className={cn(
-                                        "text-xs md:text-sm",
-                                        classNames?.description
-                                    )}
+                                    className={cn("text-xs md:text-sm", classNames?.description)}
                                 >
                                     {isFresh
                                         ? localization?.deleteAccountInstructions
@@ -190,17 +161,13 @@ export function DeleteAccountCard({
 
                             {credentialsLinked && (
                                 <div className="grid gap-2">
-                                    <Label htmlFor="password">
-                                        {localization?.password}
-                                    </Label>
+                                    <Label htmlFor="password">{localization?.password}</Label>
 
                                     <Input
                                         autoComplete="current-password"
                                         id="password"
                                         name="password"
-                                        placeholder={
-                                            localization?.passwordPlaceholder
-                                        }
+                                        placeholder={localization?.passwordPlaceholder}
                                         required
                                         type="password"
                                     />
@@ -209,18 +176,11 @@ export function DeleteAccountCard({
 
                             <DialogFooter>
                                 <Button
-                                    className={cn(
-                                        "mx-auto md:ms-auto md:mx-0",
-                                        classNames?.button
-                                    )}
+                                    className={cn("mx-auto md:ms-auto md:mx-0", classNames?.button)}
                                     disabled={isSubmitting}
                                     variant="destructive"
                                 >
-                                    <span
-                                        className={cn(
-                                            isSubmitting && "opacity-0"
-                                        )}
-                                    >
+                                    <span className={cn(isSubmitting && "opacity-0")}>
                                         {isFresh
                                             ? localization?.deleteAccount
                                             : localization?.signOut}

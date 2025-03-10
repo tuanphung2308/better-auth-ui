@@ -7,13 +7,7 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 
 import { cn } from "../../lib/utils"
-import {
-    Card,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle
-} from "../ui/card"
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { SettingsCard, type SettingsCardClassNames } from "./settings-card"
 
 export interface ChangeEmailCardProps {
@@ -38,21 +32,14 @@ export function ChangeEmailCard({
     } = useContext(AuthUIContext)
     localization = { ...authLocalization, ...localization }
 
-    const {
-        data: sessionData,
-        isPending: sessionPending,
-        refetch
-    } = useSession()
+    const { data: sessionData, isPending: sessionPending, refetch } = useSession()
 
     useEffect(() => {
         if (!sessionData) return
         if (shownVerifyEmailToast.current) return
 
         const searchParams = new URLSearchParams(window.location.search)
-        if (
-            searchParams.get("verifyEmail") &&
-            !sessionData.user.emailVerified
-        ) {
+        if (searchParams.get("verifyEmail") && !sessionData.user.emailVerified) {
             shownVerifyEmailToast.current = true
             setTimeout(() => toast(localization?.emailVerification))
         }
@@ -100,12 +87,7 @@ export function ChangeEmailCard({
             {sessionData?.user && !sessionData?.user.emailVerified && (
                 <Card className={classNames?.base}>
                     <CardHeader className={classNames?.header}>
-                        <CardTitle
-                            className={cn(
-                                "text-lg md:text-xl",
-                                classNames?.title
-                            )}
-                        >
+                        <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                             {localization.verifyYourEmail}
                         </CardTitle>
 

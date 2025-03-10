@@ -90,10 +90,7 @@ export function UserButton({
         <DropdownMenu>
             <DropdownMenuTrigger
                 asChild={size === "full"}
-                className={cn(
-                    size === "icon" && "rounded-full",
-                    classNames?.trigger?.base
-                )}
+                className={cn(size === "icon" && "rounded-full", classNames?.trigger?.base)}
                 disabled={isPending}
             >
                 {size === "icon" ? (
@@ -108,20 +105,13 @@ export function UserButton({
                         />
                     ) : (
                         <UserAvatar
-                            className={cn(
-                                "size-8",
-                                className,
-                                classNames?.base
-                            )}
+                            className={cn("size-8", className, classNames?.base)}
                             classNames={classNames?.trigger?.avatar}
                             user={user}
                         />
                     )
                 ) : (
-                    <Button
-                        className={cn("h-12 !px-3", className)}
-                        variant="outline"
-                    >
+                    <Button className={cn("h-12 !px-3", className)} variant="outline">
                         <>
                             {isPending ? (
                                 <Skeleton
@@ -131,10 +121,7 @@ export function UserButton({
                                     )}
                                 />
                             ) : (
-                                <UserAvatar
-                                    classNames={classNames?.content?.avatar}
-                                    user={user}
-                                />
+                                <UserAvatar classNames={classNames?.content?.avatar} user={user} />
                             )}
 
                             <div className="flex flex-col grow text-left truncate">
@@ -142,9 +129,7 @@ export function UserButton({
                                     {isPending ? (
                                         <Skeleton className="h-3 w-20" />
                                     ) : (
-                                        user?.name ||
-                                        user?.email ||
-                                        localization.account
+                                        user?.name || user?.email || localization.account
                                     )}
                                 </div>
 
@@ -175,10 +160,7 @@ export function UserButton({
             >
                 {user && !user.isAnonymous ? (
                     <div className="flex gap-2 p-2 items-center">
-                        <UserAvatar
-                            classNames={classNames?.content?.avatar}
-                            user={user}
-                        />
+                        <UserAvatar classNames={classNames?.content?.avatar} user={user} />
 
                         <div className="flex flex-col truncate">
                             <div className="font-medium text-sm truncate">
@@ -198,9 +180,7 @@ export function UserButton({
                     </div>
                 )}
 
-                <DropdownMenuSeparator
-                    className={classNames?.content?.separator}
-                />
+                <DropdownMenuSeparator className={classNames?.content?.separator} />
 
                 {!user || user.isAnonymous ? (
                     <>
@@ -208,9 +188,7 @@ export function UserButton({
                             href={`${basePath}/${viewPaths.signIn}`}
                             to={`${basePath}/${viewPaths.signIn}`}
                         >
-                            <DropdownMenuItem
-                                className={classNames?.content?.menuItem}
-                            >
+                            <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <LogInIcon />
 
                                 {localization.signIn}
@@ -221,9 +199,7 @@ export function UserButton({
                             href={`${basePath}/${viewPaths.signUp}`}
                             to={`${basePath}/${viewPaths.signUp}`}
                         >
-                            <DropdownMenuItem
-                                className={classNames?.content?.menuItem}
-                            >
+                            <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <UserRoundPlus />
 
                                 {localization.signUp}
@@ -233,15 +209,10 @@ export function UserButton({
                 ) : (
                     <>
                         <LinkComponent
-                            href={
-                                settingsUrl ||
-                                `${basePath}/${viewPaths.settings}`
-                            }
+                            href={settingsUrl || `${basePath}/${viewPaths.settings}`}
                             to={settingsUrl || `${basePath}/settings`}
                         >
-                            <DropdownMenuItem
-                                className={classNames?.content?.menuItem}
-                            >
+                            <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <SettingsIcon />
 
                                 {localization.settings}
@@ -252,9 +223,7 @@ export function UserButton({
                             href={`${basePath}/${viewPaths.signOut}`}
                             to={`${basePath}/${viewPaths.signOut}`}
                         >
-                            <DropdownMenuItem
-                                className={classNames?.content?.menuItem}
-                            >
+                            <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <LogOutIcon />
 
                                 {localization.signOut}
@@ -265,31 +234,18 @@ export function UserButton({
 
                 {user && multiSession && (
                     <>
-                        <DropdownMenuSeparator
-                            className={classNames?.content?.separator}
-                        />
+                        <DropdownMenuSeparator className={classNames?.content?.separator} />
 
                         {deviceSessions
-                            ?.filter(
-                                (sessionData) =>
-                                    sessionData.user.id !== user?.id
-                            )
+                            ?.filter((sessionData) => sessionData.user.id !== user?.id)
                             .map(({ session, user }) => (
                                 <Fragment key={session.id}>
                                     <DropdownMenuItem
-                                        className={
-                                            classNames?.content?.menuItem
-                                        }
+                                        className={classNames?.content?.menuItem}
                                         onClick={async () => {
-                                            const { error } =
-                                                await setActiveSession(
-                                                    session.token
-                                                )
+                                            const { error } = await setActiveSession(session.token)
                                             if (error) {
-                                                toast.error(
-                                                    error.message ||
-                                                        error.statusText
-                                                )
+                                                toast.error(error.message || error.statusText)
                                             } else {
                                                 onSessionChange?.()
                                             }
@@ -297,9 +253,7 @@ export function UserButton({
                                     >
                                         <div className="flex gap-2 items-center truncate">
                                             <UserAvatar
-                                                classNames={
-                                                    classNames?.content?.avatar
-                                                }
+                                                classNames={classNames?.content?.avatar}
                                                 user={user}
                                             />
 
@@ -318,9 +272,7 @@ export function UserButton({
                                     </DropdownMenuItem>
 
                                     <DropdownMenuSeparator
-                                        className={
-                                            classNames?.content?.separator
-                                        }
+                                        className={classNames?.content?.separator}
                                     />
                                 </Fragment>
                             ))}
@@ -329,9 +281,7 @@ export function UserButton({
                             href={`${basePath}/${viewPaths.signIn}`}
                             to={`${basePath}/${viewPaths.signIn}`}
                         >
-                            <DropdownMenuItem
-                                className={classNames?.content?.menuItem}
-                            >
+                            <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <PlusCircleIcon />
 
                                 {localization.addAccount}

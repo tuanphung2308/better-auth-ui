@@ -8,14 +8,7 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle
-} from "../ui/card"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
@@ -115,40 +108,20 @@ export function ChangePasswordCard({
     const [_, action, isSubmitting] = useActionState(formAction, null)
 
     if (isPending || !accounts) {
-        return (
-            <ChangePasswordCardSkeleton
-                className={className}
-                classNames={classNames}
-            />
-        )
+        return <ChangePasswordCardSkeleton className={className} classNames={classNames} />
     }
 
-    const credentialsLinked = accounts.some(
-        (acc) => acc.provider === "credential"
-    )
+    const credentialsLinked = accounts.some((acc) => acc.provider === "credential")
 
     if (!credentialsLinked) {
         return (
-            <Card
-                className={cn(
-                    "w-full overflow-hidden",
-                    className,
-                    classNames?.base
-                )}
-            >
+            <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
                 <CardHeader className={classNames?.header}>
-                    <CardTitle
-                        className={cn("text-lg md:text-xl", classNames?.title)}
-                    >
+                    <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                         {localization.changePassword}
                     </CardTitle>
 
-                    <CardDescription
-                        className={cn(
-                            "text-xs md:text-sm",
-                            classNames?.description
-                        )}
-                    >
+                    <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
                         {localization.setPasswordDescription}
                     </CardDescription>
                 </CardHeader>
@@ -159,14 +132,8 @@ export function ChangePasswordCard({
                         classNames?.footer
                     )}
                 >
-                    <Button
-                        disabled={isSetPasswordLoading}
-                        size="sm"
-                        onClick={handleSetPassword}
-                    >
-                        <span
-                            className={cn(isSetPasswordLoading && "opacity-0")}
-                        >
+                    <Button disabled={isSetPasswordLoading} size="sm" onClick={handleSetPassword}>
+                        <span className={cn(isSetPasswordLoading && "opacity-0")}>
                             {localization.setPassword}
                         </span>
 
@@ -182,37 +149,21 @@ export function ChangePasswordCard({
     }
 
     return (
-        <Card
-            className={cn(
-                "w-full overflow-hidden",
-                className,
-                classNames?.base
-            )}
-        >
+        <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
             <form action={action}>
                 <CardHeader className={classNames?.header}>
-                    <CardTitle
-                        className={cn("text-lg md:text-xl", classNames?.title)}
-                    >
+                    <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                         {localization.changePassword}
                     </CardTitle>
 
-                    <CardDescription
-                        className={cn(
-                            "text-xs md:text-sm",
-                            classNames?.description
-                        )}
-                    >
+                    <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
                         {localization.changePasswordDescription}
                     </CardDescription>
                 </CardHeader>
 
                 <CardContent className={cn("grid gap-4", classNames?.content)}>
                     <div className="grid gap-2">
-                        <Label
-                            className={classNames?.label}
-                            htmlFor="currentPassword"
-                        >
+                        <Label className={classNames?.label} htmlFor="currentPassword">
                             {localization.currentPassword}
                         </Label>
 
@@ -221,9 +172,7 @@ export function ChangePasswordCard({
                             className={classNames?.input}
                             id="currentPassword"
                             name="currentPassword"
-                            placeholder={
-                                localization.currentPasswordPlaceholder
-                            }
+                            placeholder={localization.currentPasswordPlaceholder}
                             required
                             type="password"
                             onChange={() => setDisabled(false)}
@@ -231,10 +180,7 @@ export function ChangePasswordCard({
                     </div>
 
                     <div className="grid gap-2">
-                        <Label
-                            className={classNames?.label}
-                            htmlFor="newPassword"
-                        >
+                        <Label className={classNames?.label} htmlFor="newPassword">
                             {localization.newPassword}
                         </Label>
 
@@ -257,12 +203,7 @@ export function ChangePasswordCard({
                         classNames?.footer
                     )}
                 >
-                    <CardDescription
-                        className={cn(
-                            "text-xs md:text-sm",
-                            classNames?.instructions
-                        )}
-                    >
+                    <CardDescription className={cn("text-xs md:text-sm", classNames?.instructions)}>
                         {localization.changePasswordInstructions}
                     </CardDescription>
 
@@ -271,9 +212,7 @@ export function ChangePasswordCard({
                         disabled={disabled || isSubmitting}
                         size="sm"
                     >
-                        <span className={cn(isSubmitting && "opacity-0")}>
-                            {localization.save}
-                        </span>
+                        <span className={cn(isSubmitting && "opacity-0")}>{localization.save}</span>
 
                         {isSubmitting && (
                             <span className="absolute">

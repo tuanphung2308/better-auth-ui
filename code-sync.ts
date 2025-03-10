@@ -33,10 +33,7 @@ async function getIgnoredFiles(ig: Ignore, cwd: string) {
 
     // Check if .gitignore file exists
     if (fs.existsSync(gitignorePath)) {
-        const gitignoreContent = await fs.promises.readFile(
-            gitignorePath,
-            "utf8"
-        )
+        const gitignoreContent = await fs.promises.readFile(gitignorePath, "utf8")
         ig.add(gitignoreContent)
     }
 
@@ -44,11 +41,7 @@ async function getIgnoredFiles(ig: Ignore, cwd: string) {
 }
 
 // Function to recursively append file contents to a large string
-async function appendFilesRecursively(
-    dir: string,
-    config: CodeSyncConfig,
-    ig: Ignore
-) {
+async function appendFilesRecursively(dir: string, config: CodeSyncConfig, ig: Ignore) {
     let largeString = ""
 
     // Read directory contents
@@ -107,31 +100,22 @@ const codeSync = async () => {
         })
 
         try {
-            const response = await fetch(
-                `${config.base_url}/api/agents/${config.agent_id}`,
-                {
-                    method: "PATCH",
-                    headers: {
-                        Authorization: `Bearer ${process.env.AQUARION_API_KEY}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ instructions })
-                }
-            )
+            const response = await fetch(`${config.base_url}/api/agents/${config.agent_id}`, {
+                method: "PATCH",
+                headers: {
+                    Authorization: `Bearer ${process.env.AQUARION_API_KEY}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ instructions })
+            })
 
             if (!response.ok) {
-                throw new Error(
-                    `HTTP error ${response.status}: ${response.statusText}`
-                )
+                throw new Error(`HTTP error ${response.status}: ${response.statusText}`)
             }
 
             console.info(currentTime, "Code Synced Successfully")
         } catch (error) {
-            console.error(
-                currentTime,
-                "Code Sync Failed",
-                (error as Error).message
-            )
+            console.error(currentTime, "Code Sync Failed", (error as Error).message)
         }
     } catch (error) {
         console.error("Error:", (error as Error).message)

@@ -5,14 +5,7 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle
-} from "../ui/card"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import type { SettingsCardClassNames } from "./settings-card"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
 
@@ -46,8 +39,7 @@ export function PasskeysCard({
     isPending,
     localization
 }: PasskeysCardProps) {
-    const { authClient, localization: authLocalization } =
-        useContext(AuthUIContext)
+    const { authClient, localization: authLocalization } = useContext(AuthUIContext)
 
     localization = { ...authLocalization, ...localization }
 
@@ -100,34 +92,19 @@ export function PasskeysCard({
     }
 
     return (
-        <Card
-            className={cn(
-                "w-full overflow-hidden",
-                className,
-                classNames?.base
-            )}
-        >
+        <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
             <CardHeader className={classNames?.header}>
-                <CardTitle
-                    className={cn("text-lg md:text-xl", classNames?.title)}
-                >
+                <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                     {localization.passkeys}
                 </CardTitle>
 
-                <CardDescription
-                    className={cn(
-                        "text-xs md:text-sm",
-                        classNames?.description
-                    )}
-                >
+                <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
                     {localization.passkeysDescription}
                 </CardDescription>
             </CardHeader>
 
             {!!passkeys?.length && (
-                <CardContent
-                    className={cn("flex flex-col gap-3", classNames?.content)}
-                >
+                <CardContent className={cn("flex flex-col gap-3", classNames?.content)}>
                     {passkeys?.map((passkey) => {
                         const isButtonLoading = actionLoading === passkey.id
 
@@ -146,10 +123,7 @@ export function PasskeysCard({
                                 </span>
 
                                 <Button
-                                    className={cn(
-                                        "ms-auto relative",
-                                        classNames?.button
-                                    )}
+                                    className={cn("ms-auto relative", classNames?.button)}
                                     disabled={isButtonLoading}
                                     size="sm"
                                     variant="outline"
@@ -157,13 +131,7 @@ export function PasskeysCard({
                                         deletePasskey(passkey.id)
                                     }}
                                 >
-                                    <span
-                                        className={
-                                            isButtonLoading
-                                                ? "opacity-0"
-                                                : "opacity-100"
-                                        }
-                                    >
+                                    <span className={isButtonLoading ? "opacity-0" : "opacity-100"}>
                                         {localization.delete}
                                     </span>
 
@@ -186,12 +154,7 @@ export function PasskeysCard({
                 )}
             >
                 {localization.passkeysInstructions && (
-                    <CardDescription
-                        className={cn(
-                            "text-xs md:text-sm",
-                            classNames?.instructions
-                        )}
-                    >
+                    <CardDescription className={cn("text-xs md:text-sm", classNames?.instructions)}>
                         {localization.passkeysInstructions}
                     </CardDescription>
                 )}

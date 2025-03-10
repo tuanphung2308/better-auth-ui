@@ -1,6 +1,4 @@
 "use client"
-
-import type { createAuthClient } from "better-auth/react"
 import type React from "react"
 import { type ReactNode, createContext } from "react"
 
@@ -9,6 +7,7 @@ import { useListDeviceSessions } from "../hooks/use-list-device-sessions"
 import { useListSessions } from "../hooks/use-list-sessions"
 import { useSession } from "../hooks/use-session"
 
+import type { AuthClient } from "../types/auth-client"
 import { type AuthLocalization, authLocalization } from "./auth-localization"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
 import type { SocialProvider } from "./social-providers"
@@ -66,8 +65,16 @@ const defaultHooks = {
     useIsRestoring: () => false
 }
 
+type DefaultMutates = {
+    updateUser: AuthClient["updateUser"]
+}
+
 export type AuthUIContextType = {
-    authClient: Omit<ReturnType<typeof createAuthClient>, "signUp">
+    authClient: AuthClient
+    /**
+     * Additional fields for users
+     */
+    additionalFields?: AdditionalFields
     /**
      * Enable or disable avatar support
      * @default false
@@ -123,6 +130,10 @@ export type AuthUIContextType = {
      * @default 60 * 60 * 24
      */
     freshAge: number
+    /**
+     * @internal
+     */
+    hooks: typeof defaultHooks
     localization: AuthLocalization
     /**
      * Enable or disable magic link support
@@ -134,6 +145,8 @@ export type AuthUIContextType = {
      * @default false
      */
     multiSession?: boolean
+    /** @internal */
+    mutates: DefaultMutates
     /**
      * Enable or disable name requirement for sign up
      * @default true
@@ -188,14 +201,6 @@ export type AuthUIContextType = {
      * @default false
      */
     username?: boolean
-    /**
-     * Additional fields for users
-     */
-    additionalFields?: AdditionalFields
-    /**
-     * @internal
-     */
-    hooks: typeof defaultHooks
     viewPaths: AuthViewPaths
     /**
      * Navigate to a new URL
@@ -229,7 +234,7 @@ export type AuthUIProviderProps = {
      * @default Required
      * @remarks `AuthClient`
      */
-    authClient: ReturnType<typeof createAuthClient>
+    authClient: AuthClient
     /**
      * Customize the paths for the auth views
      * @default authViewPaths
@@ -242,14 +247,15 @@ export type AuthUIProviderProps = {
      * @remarks `AuthLocalization`
      */
     localization?: AuthLocalization
-} & Partial<Omit<AuthUIContextType, "viewPaths" | "localization">>
+    /** @internal */
+    mutates?: DefaultMutates
+} & Partial<Omit<AuthUIContextType, "viewPaths" | "localization" | "mutates">>
 
-export const AuthUIContext = createContext<AuthUIContextType>(
-    {} as unknown as AuthUIContextType
-)
+export const AuthUIContext = createContext<AuthUIContextType>({} as unknown as AuthUIContextType)
 
 export const AuthUIProvider = ({
     children,
+    authClient,
     avatarExtension = "png",
     avatarSize,
     basePath = "/auth",
@@ -258,6 +264,7 @@ export const AuthUIProvider = ({
     forgotPassword = true,
     freshAge = 60 * 60 * 24,
     hooks = defaultHooks,
+    mutates,
     localization,
     nameRequired = true,
     settingsFields = ["name"],
@@ -274,11 +281,16 @@ export const AuthUIProvider = ({
     replace = replace || navigate || defaultReplace
     navigate = navigate || defaultNavigate
 
+    mutates = mutates || {
+        updateUser: authClient.updateUser
+    }
+
     avatarSize = uploadAvatar ? 256 : 128
 
     return (
         <AuthUIContext.Provider
             value={{
+                authClient,
                 avatarExtension,
                 avatarSize,
                 basePath: basePath === "/" ? "" : basePath,
@@ -287,6 +299,7 @@ export const AuthUIProvider = ({
                 forgotPassword,
                 freshAge,
                 hooks,
+                mutates,
                 localization: { ...authLocalization, ...localization },
                 nameRequired,
                 settingsFields,

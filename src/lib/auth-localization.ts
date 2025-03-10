@@ -15,8 +15,7 @@ export const authLocalization = {
     avatar: "Avatar",
 
     /** @default "Click on the avatar to upload a custom one from your files." */
-    avatarDescription:
-        "Click on the avatar to upload a custom one from your files.",
+    avatarDescription: "Click on the avatar to upload a custom one from your files.",
 
     /** @default "An avatar is optional but strongly recommended." */
     avatarInstructions: "An avatar is optional but strongly recommended.",
@@ -25,8 +24,7 @@ export const authLocalization = {
     changePassword: "Change Password",
 
     /** @default "Enter your current password and a new password." */
-    changePasswordDescription:
-        "Enter your current password and a new password.",
+    changePasswordDescription: "Enter your current password and a new password.",
 
     /** @default "Please use 8 characters at minimum." */
     changePasswordInstructions: "Please use 8 characters at minimum.",
@@ -58,19 +56,16 @@ export const authLocalization = {
         "Please confirm the deletion of your account. This action is not reversible, so please continue with caution.",
 
     /** @default "Please check your email to verify the deletion of your account." */
-    deleteAccountEmail:
-        "Please check your email to verify the deletion of your account.",
+    deleteAccountEmail: "Please check your email to verify the deletion of your account.",
 
     /** @default "Your account has been deleted." */
     deleteAccountSuccess: "Your account has been deleted.",
 
     /** @default "You must be recently logged in to delete your account." */
-    deleteAccountNotFresh:
-        "You must be recently logged in to delete your account.",
+    deleteAccountNotFresh: "You must be recently logged in to delete your account.",
 
     /** @default "Choose a provider to login to your account" */
-    disabledCredentialsDescription:
-        "Choose a provider to login to your account",
+    disabledCredentialsDescription: "Choose a provider to login to your account",
 
     /** @default "Don't have an account?" */
     dontHaveAnAccount: "Don't have an account?",
@@ -216,8 +211,7 @@ export const authLocalization = {
     signInDescription: "Enter your email below to login to your account",
 
     /** @default "Enter your username below to login to your account" */
-    signInUsernameDescription:
-        "Enter your username below to login to your account",
+    signInUsernameDescription: "Enter your username below to login to your account",
 
     /** @default "Sign in with" */
     signInWith: "Sign in with",
