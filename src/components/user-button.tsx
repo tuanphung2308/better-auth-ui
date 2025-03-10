@@ -8,7 +8,7 @@ import {
     SettingsIcon,
     UserRoundPlus
 } from "lucide-react"
-import { Fragment, useContext, useState } from "react"
+import { Fragment, useContext, useEffect, useState } from "react"
 import { toast } from "sonner"
 
 import type { AuthLocalization } from "../lib/auth-localization"
@@ -84,6 +84,11 @@ export function UserButton({
 
     const isPending =
         (sessionData && deviceSessionsPending) || sessionPending || activeSessionPending
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies:
+    useEffect(() => {
+        setActiveSessionPending(false)
+    }, [sessionData])
 
     return (
         <DropdownMenu>
@@ -251,7 +256,6 @@ export function UserButton({
                                             } else {
                                                 onSessionChange?.()
                                             }
-                                            setActiveSessionPending(false)
                                         }}
                                     >
                                         <div className="flex gap-2 items-center truncate">
