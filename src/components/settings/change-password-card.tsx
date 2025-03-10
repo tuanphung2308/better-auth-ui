@@ -113,7 +113,7 @@ export function ChangePasswordCard({
 
     const credentialsLinked = accounts.some((acc) => acc.provider === "credential")
 
-    if (credentialsLinked) {
+    if (!credentialsLinked) {
         return (
             <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
                 <CardHeader className={classNames?.header}>
