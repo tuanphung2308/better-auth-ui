@@ -181,7 +181,8 @@ export const authLocalization = {
     /** @default "Remember me" */
     rememberMe: "Remember me",
 
-    resendVerificationEmail: "Resend verification email",
+    /** @default "Resend verification email" */
+    resendVerificationEmail: "Resend Verification Email",
 
     /** @default "Reset Password" */
     resetPassword: "Reset Password",

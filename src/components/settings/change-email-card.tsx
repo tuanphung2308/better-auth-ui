@@ -1,12 +1,14 @@
 "use client"
 
-import { useContext, useEffect, useRef } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 
+import { Loader2 } from "lucide-react"
 import { cn } from "../../lib/utils"
+import { Button } from "../ui/button"
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { SettingsCard, type SettingsCardClassNames } from "./settings-card"
 
@@ -27,12 +29,15 @@ export function ChangeEmailCard({
 
     const {
         authClient,
+        emailVerification,
         hooks: { useSession },
         localization: authLocalization
     } = useContext(AuthUIContext)
     localization = { ...authLocalization, ...localization }
 
     const { data: sessionData, isPending: sessionPending, refetch } = useSession()
+    const [resendDisabled, setResendDisabled] = useState(false)
+    const [isResending, setIsResending] = useState(false)
 
     useEffect(() => {
         if (!sessionData) return
@@ -84,7 +89,7 @@ export function ChangeEmailCard({
                 placeholder={localization.emailPlaceholder}
             />
 
-            {sessionData?.user && !sessionData?.user.emailVerified && (
+            {emailVerification && sessionData?.user && !sessionData?.user.emailVerified && (
                 <Card className={classNames?.base}>
                     <CardHeader className={classNames?.header}>
                         <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
@@ -102,7 +107,38 @@ export function ChangeEmailCard({
                             classNames?.footer
                         )}
                     >
-                        test
+                        <Button
+                            className={cn("md:ms-auto", classNames?.button)}
+                            disabled={isResending || resendDisabled}
+                            size="sm"
+                            onClick={async () => {
+                                setIsResending(true)
+                                setResendDisabled(true)
+
+                                const { error } = await authClient.sendVerificationEmail({
+                                    email: sessionData.user.email
+                                })
+
+                                setIsResending(false)
+
+                                if (error) {
+                                    toast(error.message || error.statusText)
+                                    setResendDisabled(false)
+                                } else {
+                                    toast(localization.emailVerification)
+                                }
+                            }}
+                        >
+                            <span className={cn(isResending && "opacity-0")}>
+                                {localization.resendVerificationEmail}
+                            </span>
+
+                            {isResending && (
+                                <span className="absolute">
+                                    <Loader2 className="animate-spin" />
+                                </span>
+                            )}
+                        </Button>
                     </CardFooter>
                 </Card>
             )}

@@ -127,6 +127,10 @@ export type AuthUIContextType = {
      */
     deleteUser?: boolean
     /**
+     * Show verify email card for unverified emails
+     */
+    emailVerification?: boolean
+    /**
      * Enable or disable forgot password support
      * @default false
      */

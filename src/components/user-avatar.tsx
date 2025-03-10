@@ -28,7 +28,7 @@ export function UserAvatar({
     const src = (user?.image || user?.avatar || user?.avatarUrl) as string
 
     return (
-        <Avatar className={cn(className, classNames?.base)} {...props}>
+        <Avatar key={src} className={cn(className, classNames?.base)} {...props}>
             <AvatarImage
                 alt={name || "Avatar"}
                 className={classNames?.image}
