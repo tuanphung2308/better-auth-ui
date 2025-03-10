@@ -5,7 +5,7 @@
     "description": "Plug & play shadcn/ui components for better-auth",
     "scripts": {
         "build": "tsup --clean --dts",
-        "dev": "tsc-watch --onSuccess 'biome check' & nodemon --watch . -e '*' --exec 'tsx code-sync.ts' -q",
+        "dev": "tsc-watch --onSuccess 'biome check --fix' & nodemon --watch . -e '*' --exec 'tsx code-sync.ts' -q",
         "prepublishOnly": "rm -rf dist && tsup --clean --dts"
     },
     "type": "module",
@@ -43,17 +43,8 @@
             }
         }
     },
-    "files": [
-        "src",
-        "dist"
-    ],
-    "keywords": [
-        "typescript",
-        "react",
-        "better-auth",
-        "shadcn",
-        "nextjs"
-    ],
+    "files": ["src", "dist"],
+    "keywords": ["typescript", "react", "better-auth", "shadcn", "nextjs"],
     "author": "daveycodez",
     "license": "MIT",
     "devDependencies": {

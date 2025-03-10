@@ -67,7 +67,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
     return (
         <div
             className={cn(
-                "w-full max-w-xl flex flex-col gap-4 items-center",
+                "w-full max-w-xl flex flex-col gap-4 items-center grow",
                 className,
                 classNames?.base
             )}
