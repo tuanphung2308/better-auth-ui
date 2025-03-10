@@ -7,7 +7,8 @@ import { useListDeviceSessions } from "../hooks/use-list-device-sessions"
 import { useListSessions } from "../hooks/use-list-sessions"
 import { useSession } from "../hooks/use-session"
 
-import type { AuthClient } from "../types/auth-client"
+import { useListPasskeys } from "../hooks/use-list-passkeys"
+import type { AuthClient, MultiSessionAuthClient, PasskeyAuthClient } from "../types/auth-client"
 import { type AuthLocalization, authLocalization } from "./auth-localization"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
 import type { SocialProvider } from "./social-providers"
@@ -62,11 +63,16 @@ const defaultHooks = {
     useListAccounts,
     useListDeviceSessions,
     useListSessions,
+    useListPasskeys,
     useIsRestoring: () => false
 }
 
 type DefaultMutates = {
     updateUser: AuthClient["updateUser"]
+    unlinkAccount: AuthClient["unlinkAccount"]
+    deletePasskey: PasskeyAuthClient["passkey"]["deletePasskey"]
+    revokeSession: AuthClient["revokeSession"]
+    setActiveSession: MultiSessionAuthClient["multiSession"]["setActive"]
 }
 
 export type AuthUIContextType = {
@@ -282,7 +288,11 @@ export const AuthUIProvider = ({
     navigate = navigate || defaultNavigate
 
     mutates = mutates || {
-        updateUser: authClient.updateUser
+        updateUser: authClient.updateUser,
+        deletePasskey: (authClient as PasskeyAuthClient).passkey.deletePasskey,
+        unlinkAccount: authClient.unlinkAccount,
+        revokeSession: authClient.revokeSession,
+        setActiveSession: (authClient as MultiSessionAuthClient).multiSession.setActive
     }
 
     avatarSize = uploadAvatar ? 256 : 128

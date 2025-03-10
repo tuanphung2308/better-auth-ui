@@ -4,6 +4,7 @@ import { toast } from "sonner"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
+import type { PasskeyAuthClient } from "../../types/auth-client"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import type { SettingsCardClassNames } from "./settings-card"
@@ -39,49 +40,45 @@ export function PasskeysCard({
     isPending,
     localization
 }: PasskeysCardProps) {
-    const { authClient, localization: authLocalization } = useContext(AuthUIContext)
+    const {
+        authClient: contextAuthClient,
+        hooks: { useListPasskeys },
+        mutates: { deletePasskey },
+        localization: authLocalization,
+        optimistic
+    } = useContext(AuthUIContext)
+    const authClient = contextAuthClient as PasskeyAuthClient
 
     localization = { ...authLocalization, ...localization }
 
-    const {
-        data,
-        isPending: passkeysPending,
-        refetch
-        // @ts-expect-error Optional plugin
-    } = authClient.useListPasskeys()
+    const { data: passkeys, isPending: passkeysPending, refetch } = useListPasskeys()
 
     const [isLoading, setIsLoading] = useState(false)
     const [actionLoading, setActionLoading] = useState<string | null>(null)
 
-    const passkeys = data as Passkey[] | undefined
-
     const addPasskey = async () => {
         setIsLoading(true)
 
-        // @ts-expect-error Optional plugin
         const response = await authClient.passkey.addPasskey()
 
         if (response?.error) {
             toast.error(response?.error.message || response?.error.statusText)
         } else {
-            toast.success("Passkey added")
-            await refetch()
+            refetch()
         }
 
         setIsLoading(false)
     }
 
-    const deletePasskey = async (id: string) => {
-        setActionLoading(id)
+    const handleDeletePasskey = async (id: string) => {
+        if (!optimistic) setActionLoading(id)
 
-        // @ts-expect-error Optional plugin
-        const response = await authClient.passkey.deletePasskey({ id })
+        const response = await deletePasskey({ id })
 
         if (response?.error) {
             toast.error(response?.error.message || response?.error.statusText)
         } else {
-            toast.success("Passkey added")
-            await refetch()
+            refetch()
         }
 
         setActionLoading(null)
@@ -128,7 +125,7 @@ export function PasskeysCard({
                                     size="sm"
                                     variant="outline"
                                     onClick={() => {
-                                        deletePasskey(passkey.id)
+                                        handleDeletePasskey(passkey.id)
                                     }}
                                 >
                                     <span className={isButtonLoading ? "opacity-0" : "opacity-100"}>

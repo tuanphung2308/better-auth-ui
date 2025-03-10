@@ -8,7 +8,7 @@ import {
     SettingsIcon,
     UserRoundPlus
 } from "lucide-react"
-import { Fragment, useContext } from "react"
+import { Fragment, useContext, useState } from "react"
 import { toast } from "sonner"
 
 import type { AuthLocalization } from "../lib/auth-localization"
@@ -65,6 +65,7 @@ export function UserButton({
     const {
         basePath,
         hooks,
+        mutates: { setActiveSession },
         localization: authLocalization,
         multiSession,
         settingsUrl,
@@ -76,15 +77,13 @@ export function UserButton({
 
     localization = { ...authLocalization, ...localization }
 
-    const {
-        deviceSessions,
-        isPending: deviceSessionsPending,
-        setActiveSession
-    } = useListDeviceSessions()
+    const { data: deviceSessions, isPending: deviceSessionsPending } = useListDeviceSessions()
     const { data: sessionData, isPending: sessionPending } = useSession()
     const user = sessionData?.user as User
+    const [activeSessionPending, setActiveSessionPending] = useState(false)
 
-    const isPending = (sessionData && deviceSessionsPending) || sessionPending
+    const isPending =
+        (sessionData && deviceSessionsPending) || sessionPending || activeSessionPending
 
     return (
         <DropdownMenu>
@@ -243,12 +242,16 @@ export function UserButton({
                                     <DropdownMenuItem
                                         className={classNames?.content?.menuItem}
                                         onClick={async () => {
-                                            const { error } = await setActiveSession(session.token)
+                                            setActiveSessionPending(true)
+                                            const { error } = await setActiveSession({
+                                                sessionToken: session.token
+                                            })
                                             if (error) {
                                                 toast.error(error.message || error.statusText)
                                             } else {
                                                 onSessionChange?.()
                                             }
+                                            setActiveSessionPending(false)
                                         }}
                                     >
                                         <div className="flex gap-2 items-center truncate">

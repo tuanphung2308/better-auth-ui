@@ -9,7 +9,6 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { socialProviders } from "../../lib/social-providers"
 import { cn } from "../../lib/utils"
-import type { FetchError } from "../../types/fetch-error"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 
@@ -29,10 +28,6 @@ export interface ProvidersCardProps {
     localization?: Partial<AuthLocalization>
     /** @internal */
     refetch?: () => Promise<void>
-    /** @internal */
-    unlinkAccount?: (
-        providerId: string
-    ) => Promise<{ status?: boolean; code?: string; error?: FetchError | null }>
 }
 
 export function ProvidersCard({
@@ -41,13 +36,13 @@ export function ProvidersCard({
     accounts,
     isPending,
     localization,
-    refetch,
-    unlinkAccount
+    refetch
 }: ProvidersCardProps) {
     const {
         authClient,
         colorIcons,
         hooks,
+        mutates: { unlinkAccount },
         localization: authLocalization,
         noColorIcons,
         optimistic,
@@ -59,10 +54,9 @@ export function ProvidersCard({
 
     if (isPending === undefined && accounts === undefined) {
         const result = useListAccounts()
-        accounts = result.accounts
+        accounts = result.data
         isPending = result.isPending
         refetch = result.refetch
-        unlinkAccount = result.unlinkAccount
     }
 
     const [actionLoading, setActionLoading] = useState<string | null>(null)
@@ -96,11 +90,9 @@ export function ProvidersCard({
     }
 
     const handleUnlink = async (providerId: string) => {
-        if (!unlinkAccount) return toast.error("unlinkAccount is not defined")
+        if (!optimistic) setActionLoading(providerId)
 
-        setActionLoading(providerId)
-
-        const { error } = await unlinkAccount(providerId)
+        const { error } = await unlinkAccount({ providerId })
 
         if (error) {
             toast.error(error.message || error.statusText)

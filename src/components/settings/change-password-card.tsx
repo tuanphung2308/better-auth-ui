@@ -57,7 +57,7 @@ export function ChangePasswordCard({
 
     if (isPending === undefined && accounts === undefined) {
         const result = useListAccounts()
-        accounts = result.accounts
+        accounts = result.data
         isPending = result.isPending
     }
 

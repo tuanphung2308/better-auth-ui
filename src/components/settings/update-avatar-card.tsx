@@ -75,6 +75,7 @@ export function UpdateAvatarCard({
 }: UpdateAvatarCardProps) {
     const {
         hooks: { useSession },
+        mutates: { updateUser },
         localization: authLocalization,
         optimistic,
         uploadAvatar,
@@ -84,7 +85,7 @@ export function UpdateAvatarCard({
 
     localization = { ...authLocalization, ...localization }
 
-    const { data: sessionData, isPending: sessionPending, updateUser } = useSession()
+    const { data: sessionData, isPending: sessionPending } = useSession()
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [loading, setLoading] = useState(false)
 

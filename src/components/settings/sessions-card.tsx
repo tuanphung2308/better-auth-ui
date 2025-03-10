@@ -33,6 +33,7 @@ export function SessionsCard({
 }: SessionsCardProps) {
     const {
         hooks: { useListSessions, useSession },
+        mutates: { revokeSession },
         localization: authLocalization,
         optimistic,
         navigate,
@@ -42,7 +43,7 @@ export function SessionsCard({
 
     localization = { ...authLocalization, ...localization }
 
-    const { sessions, isPending: sessionsPending, refetch, revokeSession } = useListSessions()
+    const { data: sessions, isPending: sessionsPending, refetch } = useListSessions()
     const { data: sessionData } = useSession()
 
     const [actionLoading, setActionLoading] = useState<string | null>(null)
@@ -55,7 +56,7 @@ export function SessionsCard({
 
         if (!optimistic) setActionLoading(token)
 
-        const { error } = await revokeSession(token)
+        const { error } = await revokeSession({ token })
 
         if (error) {
             toast.error(error.message || error.statusText)

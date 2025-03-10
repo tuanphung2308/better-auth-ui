@@ -8,16 +8,16 @@ export function useListSessions() {
     const { authClient } = useContext(AuthUIContext)
     const { data: sessionData } = authClient.useSession()
 
-    const [sessions, setSessions] = useState<Session[] | null>(null)
+    const [data, setData] = useState<Session[] | null>(null)
     const [isPending, setIsPending] = useState(true)
     const initialized = useRef(false)
 
-    const listSessions = useCallback(async () => {
+    const refetch = useCallback(async () => {
         const { data, error } = await authClient.listSessions()
 
         if (error) toast.error(error.message || error.statusText)
 
-        setSessions(data)
+        setData(data)
         setIsPending(false)
     }, [authClient])
 
@@ -27,14 +27,12 @@ export function useListSessions() {
         if (initialized.current) return
 
         initialized.current = true
-        listSessions()
-    }, [listSessions, sessionData])
+        refetch()
+    }, [refetch, sessionData])
 
     return {
-        sessions,
+        data,
         isPending,
-        refetch: listSessions,
-        revokeSession: (token: string) => authClient.revokeSession({ token }),
-        revokeOtherSessions: () => authClient.revokeOtherSessions()
+        refetch
     }
 }

@@ -161,7 +161,7 @@ export function SettingsCard({
 
                     <Button
                         className={cn("md:ms-auto", classNames?.button)}
-                        disabled={(!optimistic && isSubmitting) || disabled}
+                        disabled={isSubmitting || disabled}
                         size="sm"
                     >
                         <span className={cn(!optimistic && isSubmitting && "opacity-0")}>

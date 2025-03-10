@@ -51,7 +51,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
     const { useListAccounts, useSession } = hooks
     useAuthenticate()
     const { data: sessionData, isPending: sessionPending } = useSession()
-    const { accounts, isPending: accountsPending, refetch } = useListAccounts()
+    const { data: accounts, isPending: accountsPending, refetch } = useListAccounts()
 
     const isPending = sessionPending || accountsPending
 
@@ -138,7 +138,6 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                     isPending={isPending}
                     localization={localization}
                     refetch={refetch}
-                    unlinkAccount={(providerId: string) => authClient.unlinkAccount({ providerId })}
                 />
             )}
 
