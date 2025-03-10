@@ -16,6 +16,7 @@ import { AuthUIContext } from "../lib/auth-ui-provider"
 import { cn } from "../lib/utils"
 import type { User } from "../types/user"
 
+import type { Session } from "better-auth"
 import { Button } from "./ui/button"
 import {
     DropdownMenu,
@@ -63,6 +64,11 @@ export interface UserButtonProps {
     size?: "icon" | "full"
 }
 
+type DeviceSession = {
+    session: Session
+    user: User
+}
+
 export function UserButton({
     className,
     classNames,
@@ -85,7 +91,15 @@ export function UserButton({
 
     localization = { ...authLocalization, ...localization }
 
-    const { data: deviceSessions, isPending: deviceSessionsPending } = useListDeviceSessions()
+    let deviceSessions: DeviceSession[] | null = null
+    let deviceSessionsPending = false
+
+    if (multiSession) {
+        const { data, isPending } = useListDeviceSessions()
+        deviceSessions = data
+        deviceSessionsPending = isPending
+    }
+
     const { data: sessionData, isPending: sessionPending } = useSession()
     const user = sessionData?.user as User
     const [activeSessionPending, setActiveSessionPending] = useState(false)
@@ -95,6 +109,8 @@ export function UserButton({
 
     // biome-ignore lint/correctness/useExhaustiveDependencies:
     useEffect(() => {
+        if (!multiSession) return
+
         setActiveSessionPending(false)
     }, [sessionData])
 
