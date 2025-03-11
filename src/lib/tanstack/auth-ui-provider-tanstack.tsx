@@ -67,7 +67,7 @@ export function AuthUIProviderTanstack({
             // @ts-ignore
             mutates={mutates}
             onSessionChange={() => {
-                queryClient.clear()
+                queryClient.invalidateQueries()
                 onSessionChange?.()
             }}
             optimistic={optimistic}
