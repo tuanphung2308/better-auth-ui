@@ -30,23 +30,24 @@ The first step is to set up the [`<AuthUIProvider>`](/components/auth-ui-provide
 import { AuthUIProvider } from "@daveyplate/better-auth-ui"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import type { ReactNode } from "react"
 
 import { authClient } from "@/lib/auth-client"
 
-export function Providers({ children }: { children: React.ReactNode }) {
-  const router = useRouter()
+export function Providers({ children }: { children: ReactNode }) {
+    const router = useRouter()
 
-  return (
-    <AuthUIProvider
-      authClient={authClient}
-      navigate={router.push}
-      replace={router.replace}
-      onSessionChange={() => router.refresh()}
-      LinkComponent={Link}
-    >
-      {children}
-    </AuthUIProvider>
-  )
+    return (
+        <AuthUIProvider
+            authClient={authClient}
+            navigate={router.push}
+            replace={router.replace}
+            onSessionChange={() => router.refresh()}
+            LinkComponent={Link}
+        >
+            {children}
+        </AuthUIProvider>
+    )
 }
 ```
 
@@ -56,18 +57,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
 Once configured, wrap your layout component with the `Providers` component:
 
-
 ```tsx title="app/layout.tsx"
+import type { ReactNode } from "react"
 import { Providers } from "./providers"
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <body>
-        <Providers>{children}</Providers>
-      </body>
-    </html>
-  )
+export default function RootLayout({ children }: { children: ReactNode }) {
+    return (
+        <html lang="en">
+            <body>
+                <Providers>{children}</Providers>
+            </body>
+        </html>
+    )
 }
 ```
 
@@ -93,9 +94,9 @@ export default async function AuthPage(
     const { pathname } = await params
 
     return (
-        <div className="flex flex-col grow size-full items-center justify-center gap-3">
+        <main className="flex flex-col grow p-4 items-center justify-center">
             <AuthCard pathname={pathname} />
-        </div>
+        </main>
     )
 }
 ```
@@ -133,7 +134,7 @@ import Link from 'next/link'
 
 import { authClient } from '@/lib/auth-client'
 
-export default function App({ Component, pageProps }: { Component: any, pageProps: any }) {
+export default function App({ Component, pageProps }: AppProps) {
     const router = useRouter()
 
     return (
@@ -169,9 +170,9 @@ export default function AuthPage({
     params: { pathname: string }
 }) {
     return (
-        <div className="flex flex-col grow size-full items-center justify-center gap-3">
+        <main className="flex flex-col grow p-4 items-center justify-center">
             <AuthCard pathname={pathname} />
-        </div>
+        </main>
     )
 }
 
