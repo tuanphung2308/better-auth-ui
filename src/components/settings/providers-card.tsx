@@ -25,7 +25,8 @@ export interface ProvidersCardProps {
      * @remarks `AuthLocalization`
      */
     localization?: Partial<AuthLocalization>
-    refetch?: () => Promise<void>
+    skipHook?: boolean
+    refetch?: () => void
 }
 
 export function ProvidersCard({
@@ -34,6 +35,7 @@ export function ProvidersCard({
     accounts,
     isPending,
     localization,
+    skipHook,
     refetch
 }: ProvidersCardProps) {
     const {
@@ -50,7 +52,7 @@ export function ProvidersCard({
 
     localization = { ...authLocalization, ...localization }
 
-    if (isPending === undefined && accounts === undefined) {
+    if (!skipHook) {
         const result = useListAccounts()
         accounts = result.data
         isPending = result.isPending
@@ -96,7 +98,7 @@ export function ProvidersCard({
             toast.error(error.message || error.statusText)
         } else {
             toast.success(localization.providerUnlinkSuccess)
-            await refetch?.()
+            refetch?.()
         }
 
         setActionLoading(null)

@@ -25,6 +25,7 @@ export interface ChangePasswordCardProps {
      * @remarks `AuthLocalization`
      */
     localization?: AuthLocalization
+    skipHook?: boolean
 }
 
 export function ChangePasswordCard({
@@ -32,14 +33,9 @@ export function ChangePasswordCard({
     classNames,
     accounts,
     isPending,
-    localization
-}: {
-    className?: string
-    classNames?: SettingsCardClassNames
-    accounts?: { provider: string }[] | null
-    isPending?: boolean
-    localization?: Partial<AuthLocalization>
-}) {
+    localization,
+    skipHook
+}: ChangePasswordCardProps) {
     const {
         authClient,
         basePath,
@@ -50,9 +46,9 @@ export function ChangePasswordCard({
 
     localization = { ...authLocalization, ...localization }
 
-    const { data: sessionData, isPending: sessionPending } = useSession()
+    const { data: sessionData } = useSession()
 
-    if (isPending === undefined && accounts === undefined) {
+    if (!skipHook) {
         const result = useListAccounts()
         accounts = result.data
         isPending = result.isPending

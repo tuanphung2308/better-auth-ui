@@ -7,7 +7,8 @@
 /*
 Set the default cursor for buttons.
 */
-button, [role="button"] {
+button,
+[role="button"] {
     cursor: pointer;
 }
 

@@ -90,7 +90,7 @@ export function ChangeEmailCard({
             />
 
             {emailVerification && sessionData?.user && !sessionData?.user.emailVerified && (
-                <Card className={classNames?.base}>
+                <Card className={cn("w-full overflow-hidden", classNames?.base)}>
                     <CardHeader className={classNames?.header}>
                         <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                             {localization.verifyYourEmail}

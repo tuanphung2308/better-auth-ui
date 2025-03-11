@@ -23,6 +23,7 @@ export function AuthUIProviderTanstack({
         useListPasskeys,
         useDeletePasskey,
         useRevokeSession,
+        useRevokeDeviceSession,
         useSetActiveSession
     } = createAuthHooks(authClient)
     const queryClient = useQueryClient()
@@ -31,6 +32,7 @@ export function AuthUIProviderTanstack({
     const { deletePasskeyAsync } = useDeletePasskey()
     const { unlinkAccountAsync } = useUnlinkAccount()
     const { revokeSessionAsync } = useRevokeSession()
+    const { revokeDeviceSessionAsync } = useRevokeDeviceSession()
     const { setActiveSessionAsync } = useSetActiveSession()
 
     const hooks = {
@@ -52,7 +54,9 @@ export function AuthUIProviderTanstack({
         revokeSession: (params: Parameters<typeof revokeSessionAsync>[0]) =>
             revokeSessionAsync({ fetchOptions: { throw: false }, ...params }),
         setActiveSession: (params: Parameters<typeof setActiveSessionAsync>[0]) =>
-            setActiveSessionAsync({ fetchOptions: { throw: false }, ...params })
+            setActiveSessionAsync({ fetchOptions: { throw: false }, ...params }),
+        revokeDeviceSession: (params: Parameters<typeof revokeDeviceSessionAsync>[0]) =>
+            revokeDeviceSessionAsync({ fetchOptions: { throw: false }, ...params })
     }
 
     return (

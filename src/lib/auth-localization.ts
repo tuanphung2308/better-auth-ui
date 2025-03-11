@@ -2,6 +2,15 @@ export const authLocalization = {
     /** @default "Account" */
     account: "Account",
 
+    /** @default "Accounts" */
+    accounts: "Accounts",
+
+    /** @default "Manage your currently signed in accounts." */
+    accountsDescription: "Switch between your currently signed in accounts.",
+
+    /** @default "Sign in to an additional account." */
+    accountsInstructions: "Sign in to an additional account.",
+
     /** @default "Add Account" */
     addAccount: "Add Account",
 
@@ -256,6 +265,9 @@ export const authLocalization = {
 
     /** @default "Security" */
     security: "Security",
+
+    /** @default "Switch Account" */
+    switchAccount: "Switch Account",
 
     /** @default "Unlink" */
     unlink: "Unlink",

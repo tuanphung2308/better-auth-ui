@@ -32,6 +32,7 @@ export interface DeleteAccountCardProps {
      * @remarks `AuthLocalization`
      */
     localization?: AuthLocalization
+    skipHook?: boolean
 }
 
 export function DeleteAccountCard({
@@ -39,7 +40,8 @@ export function DeleteAccountCard({
     classNames,
     accounts,
     isPending,
-    localization
+    localization,
+    skipHook
 }: DeleteAccountCardProps) {
     const {
         authClient,
@@ -54,7 +56,7 @@ export function DeleteAccountCard({
 
     localization = { ...authLocalization, ...localization }
 
-    if (isPending === undefined && accounts === undefined) {
+    if (!skipHook) {
         const result = useListAccounts()
         accounts = result.data
         isPending = result.isPending

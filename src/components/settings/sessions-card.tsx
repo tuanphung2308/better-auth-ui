@@ -25,7 +25,8 @@ export interface SessionsCardProps {
      */
     localization?: AuthLocalization
     sessions?: Session[] | null
-    refetch?: () => Promise<void>
+    skipHook?: boolean
+    refetch?: () => void
 }
 
 export function SessionsCard({
@@ -34,6 +35,7 @@ export function SessionsCard({
     isPending,
     localization,
     sessions,
+    skipHook,
     refetch
 }: SessionsCardProps) {
     const {
@@ -72,7 +74,7 @@ export function SessionsCard({
         if (error) {
             toast.error(error.message || error.statusText)
         } else if (!optimistic) {
-            await refetch?.()
+            refetch?.()
         }
 
         setActionLoading(null)

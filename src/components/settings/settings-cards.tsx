@@ -7,9 +7,11 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 
+import type { Session, User } from "better-auth"
 import type { Passkey } from "better-auth/plugins/passkey"
 import { KeyIcon, UserIcon } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
+import { AccountsCard } from "./accounts-card"
 import { ChangeEmailCard } from "./change-email-card"
 import { ChangePasswordCard } from "./change-password-card"
 import { DeleteAccountCard } from "./delete-account-card"
@@ -51,6 +53,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         deleteUser,
         hooks,
         localization: authLocalization,
+        multiSession,
         nameRequired,
         passkey,
         providers,
@@ -58,7 +61,8 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         username
     } = useContext(AuthUIContext)
     localization = { ...authLocalization, ...localization }
-    const { useListAccounts, useListPasskeys, useListSessions, useSession } = hooks
+    const { useListAccounts, useListDeviceSessions, useListPasskeys, useListSessions, useSession } =
+        hooks
     useAuthenticate()
     const { data: sessionData, isPending: sessionPending } = useSession()
     const {
@@ -83,7 +87,23 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         refetchPasskeys = result.refetch
     }
 
-    const isPending = sessionPending || accountsPending || sessionsPending || passkeysPending
+    let deviceSessions: { user: User; session: Session }[] | undefined = undefined
+    let deviceSessionsPending: boolean | undefined = undefined
+    let refetchDeviceSessions: (() => void) | undefined = undefined
+
+    if (multiSession) {
+        const result = useListDeviceSessions()
+        deviceSessions = result.data as { user: User; session: Session }[]
+        deviceSessionsPending = result.isPending
+        refetchDeviceSessions = result.refetch
+    }
+
+    const isPending =
+        sessionPending ||
+        accountsPending ||
+        sessionsPending ||
+        passkeysPending ||
+        deviceSessionsPending
 
     return (
         <div
@@ -178,6 +198,17 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             />
                         )
                     })}
+
+                    {multiSession && (
+                        <AccountsCard
+                            classNames={classNames?.card}
+                            deviceSessions={deviceSessions}
+                            isPending={isPending}
+                            localization={localization}
+                            refetch={refetchDeviceSessions}
+                            skipHook
+                        />
+                    )}
                 </TabsContent>
 
                 <TabsContent
@@ -190,6 +221,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             classNames={classNames?.card}
                             isPending={isPending}
                             localization={localization}
+                            skipHook
                         />
                     )}
 
@@ -200,6 +232,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             isPending={isPending}
                             localization={localization}
                             refetch={refetchAccounts}
+                            skipHook
                         />
                     )}
 
@@ -210,6 +243,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             localization={localization}
                             passkeys={passkeys}
                             refetch={refetchPasskeys}
+                            skipHook
                         />
                     )}
 
@@ -219,6 +253,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         localization={localization}
                         sessions={sessions}
                         refetch={refetchSessions}
+                        skipHook
                     />
 
                     {deleteUser && (
@@ -227,6 +262,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             classNames={classNames?.card}
                             isPending={isPending}
                             localization={localization}
+                            skipHook
                         />
                     )}
                 </TabsContent>

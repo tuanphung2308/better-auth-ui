@@ -73,6 +73,7 @@ type DefaultMutates = {
     deletePasskey: PasskeyAuthClient["passkey"]["deletePasskey"]
     revokeSession: AuthClient["revokeSession"]
     setActiveSession: MultiSessionAuthClient["multiSession"]["setActive"]
+    revokeDeviceSession: MultiSessionAuthClient["multiSession"]["revoke"]
 }
 
 export type AuthUIContextType = {
@@ -296,7 +297,8 @@ export const AuthUIProvider = ({
         deletePasskey: (authClient as PasskeyAuthClient).passkey.deletePasskey,
         unlinkAccount: authClient.unlinkAccount,
         revokeSession: authClient.revokeSession,
-        setActiveSession: (authClient as MultiSessionAuthClient).multiSession.setActive
+        setActiveSession: (authClient as MultiSessionAuthClient).multiSession.setActive,
+        revokeDeviceSession: (authClient as MultiSessionAuthClient).multiSession.revoke
     }
 
     avatarSize = uploadAvatar ? 256 : 128
