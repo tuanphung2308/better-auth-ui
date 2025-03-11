@@ -5,7 +5,7 @@
     "description": "Plug & play shadcn/ui components for better-auth",
     "scripts": {
         "build": "tsup --clean --dts",
-        "dev": "tsc-watch --onSuccess 'biome check --fix' & nodemon --watch . -e '*' --exec 'tsx code-sync.ts' -q",
+        "dev": "tsc-watch --onSuccess 'biome check --fix' & nodemon --watch . -e '*' --exec 'tsx code-sync.ts' -q --ignore dist",
         "prepublishOnly": "rm -rf dist && tsup --clean --dts"
     },
     "type": "module",
