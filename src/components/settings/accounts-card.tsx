@@ -121,14 +121,14 @@ export function AccountsCard({
                             key={deviceSession.session.id}
                             className={cn("flex items-center gap-3 px-4 py-3", classNames?.cell)}
                         >
-                            <div className="flex gap-2 items-center truncate">
+                            <div className="flex items-center gap-2 truncate">
                                 <UserAvatar
                                     user={deviceSession.user}
                                     classNames={classNames?.avatar}
                                 />
 
                                 <div className="flex flex-col truncate">
-                                    <div className="font-medium text-sm truncate">
+                                    <div className="truncate font-medium text-sm">
                                         {deviceSession.user.name ||
                                             // @ts-ignore
                                             deviceSession.user.username ||
@@ -137,7 +137,7 @@ export function AccountsCard({
                                     {(deviceSession.user.name ||
                                         // @ts-ignore
                                         deviceSession.user.username) && (
-                                        <div className="text-muted-foreground !font-light text-xs truncate">
+                                        <div className="!font-light truncate text-muted-foreground text-xs">
                                             {deviceSession.user.email}
                                         </div>
                                     )}
@@ -145,7 +145,7 @@ export function AccountsCard({
                             </div>
 
                             <Button
-                                className={cn("ms-auto relative", classNames?.button)}
+                                className={cn("relative ms-auto", classNames?.button)}
                                 disabled={!!actionLoading}
                                 size="sm"
                                 type="button"
@@ -180,7 +180,7 @@ export function AccountsCard({
 
             <CardFooter
                 className={cn(
-                    "border-t bg-muted dark:bg-transparent py-4 md:py-3 flex flex-col md:flex-row gap-4 justify-between",
+                    "flex flex-col justify-between gap-4 border-t bg-muted py-4 md:flex-row md:py-3 dark:bg-transparent",
                     classNames?.footer
                 )}
             >

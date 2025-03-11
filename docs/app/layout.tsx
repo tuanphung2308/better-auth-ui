@@ -21,7 +21,7 @@ export const metadata = createMetadata({
 export default function Layout({ children }: { children: ReactNode }) {
     return (
         <html lang="en" suppressHydrationWarning>
-            <body className={`${geistSans.className} flex flex-col min-h-screen antialiased`}>
+            <body className={`${geistSans.className} flex min-h-screen flex-col antialiased`}>
                 <RootProvider
                     search={{
                         options: {

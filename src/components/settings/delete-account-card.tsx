@@ -125,14 +125,14 @@ export function DeleteAccountCard({
 
             <CardFooter
                 className={cn(
-                    "border-t border-destructive/30 bg-destructive/10 py-4 md:py-3",
+                    "border-destructive/30 border-t bg-destructive/10 py-4 md:py-3",
                     classNames?.footer
                 )}
             >
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button
-                            className={cn("mx-auto md:ms-auto md:mx-0", classNames?.button)}
+                            className={cn("mx-auto md:mx-0 md:ms-auto", classNames?.button)}
                             size="sm"
                             variant="destructive"
                         >
@@ -175,7 +175,7 @@ export function DeleteAccountCard({
 
                             <DialogFooter>
                                 <Button
-                                    className={cn("mx-auto md:ms-auto md:mx-0", classNames?.button)}
+                                    className={cn("mx-auto md:mx-0 md:ms-auto", classNames?.button)}
                                     disabled={isSubmitting}
                                     variant="destructive"
                                 >

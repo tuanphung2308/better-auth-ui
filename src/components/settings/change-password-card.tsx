@@ -121,7 +121,7 @@ export function ChangePasswordCard({
 
                 <CardFooter
                     className={cn(
-                        "border-t bg-muted dark:bg-transparent py-4 md:py-3 flex justify-center md:justify-end",
+                        "flex justify-center border-t bg-muted py-4 md:justify-end md:py-3 dark:bg-transparent",
                         classNames?.footer
                     )}
                 >
@@ -192,7 +192,7 @@ export function ChangePasswordCard({
 
                 <CardFooter
                     className={cn(
-                        "border-t bg-muted dark:bg-transparent py-4 md:py-3 flex flex-col md:flex-row gap-4 justify-between",
+                        "flex flex-col justify-between gap-4 border-t bg-muted py-4 md:flex-row md:py-3 dark:bg-transparent",
                         classNames?.footer
                     )}
                 >

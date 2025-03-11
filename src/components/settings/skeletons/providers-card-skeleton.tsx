@@ -15,7 +15,7 @@ export function ProvidersCardSkeleton({
     return (
         <Card className={cn("w-full", classNames?.base, className)}>
             <CardHeader className={cn("space-y-2", classNames?.header)}>
-                <Skeleton className={cn("h-5 md:h-6 w-24", classNames?.skeleton)} />
+                <Skeleton className={cn("h-5 w-24 md:h-6", classNames?.skeleton)} />
                 <Skeleton className={cn("h-4 w-72", classNames?.skeleton)} />
             </CardHeader>
 
@@ -27,7 +27,7 @@ export function ProvidersCardSkeleton({
                     >
                         <Skeleton className={cn("size-4 rounded-full", classNames?.skeleton)} />
                         <Skeleton className={cn("h-4 w-24", classNames?.skeleton)} />
-                        <Skeleton className={cn("h-8 w-14 ms-auto", classNames?.skeleton)} />
+                        <Skeleton className={cn("ms-auto h-8 w-14", classNames?.skeleton)} />
                     </Card>
                 ))}
             </CardContent>

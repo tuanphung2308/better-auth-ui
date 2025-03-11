@@ -13,7 +13,7 @@ export function ChangePasswordCardSkeleton({
     return (
         <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
             <CardHeader className={cn("space-y-2", classNames?.header)}>
-                <Skeleton className={cn("h-5 md:h-6 w-40", classNames?.skeleton)} />
+                <Skeleton className={cn("h-5 w-40 md:h-6", classNames?.skeleton)} />
                 <Skeleton className={cn("h-4 w-3/4", classNames?.skeleton)} />
             </CardHeader>
 
@@ -31,7 +31,7 @@ export function ChangePasswordCardSkeleton({
 
             <CardFooter
                 className={cn(
-                    "border-t bg-muted dark:bg-transparent py-4 md:py-3 flex flex-col md:flex-row gap-4 justify-between",
+                    "flex flex-col justify-between gap-4 border-t bg-muted py-4 md:flex-row md:py-3 dark:bg-transparent",
                     classNames?.footer
                 )}
             >

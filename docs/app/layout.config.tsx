@@ -15,7 +15,7 @@ export const baseOptions: BaseLayoutProps = {
         title: (
             <>
                 <svg
-                    className="w-5 h-5"
+                    className="h-5 w-5"
                     fill="none"
                     height="45"
                     viewBox="0 0 60 45"

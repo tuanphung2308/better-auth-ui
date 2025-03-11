@@ -124,7 +124,7 @@ export function SessionsCard({
                             </span>
 
                             <Button
-                                className={cn("ms-auto relative", classNames?.button)}
+                                className={cn("relative ms-auto", classNames?.button)}
                                 disabled={isButtonLoading}
                                 size="sm"
                                 variant="outline"

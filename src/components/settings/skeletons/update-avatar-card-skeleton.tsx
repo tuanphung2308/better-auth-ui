@@ -13,18 +13,18 @@ export function UpdateAvatarCardSkeleton({
     return (
         <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
             <div className="flex justify-between">
-                <CardHeader className={cn("space-y-2 grow", classNames?.header)}>
+                <CardHeader className={cn("grow space-y-2", classNames?.header)}>
                     <Skeleton
-                        className={cn("h-5 md:h-6 w-24 mt-0.5 md:mt-0", classNames?.skeleton)}
+                        className={cn("mt-0.5 h-5 w-24 md:mt-0 md:h-6", classNames?.skeleton)}
                     />
 
                     <div className="flex flex-col space-y-1.5">
-                        <Skeleton className={cn("h-3 md:h-4 w-5/6", classNames?.skeleton)} />
-                        <Skeleton className={cn("md:hidden h-3 w-2/3", classNames?.skeleton)} />
+                        <Skeleton className={cn("h-3 w-5/6 md:h-4", classNames?.skeleton)} />
+                        <Skeleton className={cn("h-3 w-2/3 md:hidden", classNames?.skeleton)} />
                     </div>
                 </CardHeader>
 
-                <div className="me-6 my-5">
+                <div className="my-5 me-6">
                     <Skeleton
                         className={cn(
                             "size-20 rounded-full",
@@ -36,11 +36,11 @@ export function UpdateAvatarCardSkeleton({
             </div>
 
             <CardFooter
-                className={cn("border-t bg-muted dark:bg-transparent py-4.5", classNames?.footer)}
+                className={cn("border-t bg-muted py-4.5 dark:bg-transparent", classNames?.footer)}
             >
                 <Skeleton
                     className={cn(
-                        "h-4 md:my-0.5 w-64 md:w-80 mx-auto md:mx-0",
+                        "mx-auto h-4 w-64 md:mx-0 md:my-0.5 md:w-80",
                         classNames?.skeleton
                     )}
                 />

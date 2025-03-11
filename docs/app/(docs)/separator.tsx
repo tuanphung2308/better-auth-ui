@@ -7,5 +7,5 @@ export default function SeparatorComponent({
 }: {
     item: { name: ReactNode; type: "separator"; icon?: ReactNode }
 }) {
-    return <div className="ml-5 mt-3 mb-0.5">{item.name}</div>
+    return <div className="mt-3 mb-0.5 ml-5">{item.name}</div>
 }

@@ -120,7 +120,7 @@ export function PasskeysCard({
                                 </span>
 
                                 <Button
-                                    className={cn("ms-auto relative", classNames?.button)}
+                                    className={cn("relative ms-auto", classNames?.button)}
                                     disabled={isButtonLoading}
                                     size="sm"
                                     variant="outline"
@@ -146,7 +146,7 @@ export function PasskeysCard({
 
             <CardFooter
                 className={cn(
-                    "border-t bg-muted dark:bg-transparent py-4 md:py-3 flex flex-col md:flex-row gap-4 justify-between",
+                    "flex flex-col justify-between gap-4 border-t bg-muted py-4 md:flex-row md:py-3 dark:bg-transparent",
                     classNames?.footer
                 )}
             >
@@ -164,7 +164,7 @@ export function PasskeysCard({
                 >
                     <span
                         className={cn(
-                            "flex gap-2 items-center",
+                            "flex items-center gap-2",
                             isLoading ? "opacity-0" : "opacity-100"
                         )}
                     >

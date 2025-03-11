@@ -140,7 +140,7 @@ export function UserButton({
                         />
                     )
                 ) : (
-                    <Button className={cn("h-12 !px-3", className)} variant="outline">
+                    <Button className={cn("!px-3 h-12", className)} variant="outline">
                         <>
                             {isPending ? (
                                 <Skeleton
@@ -154,8 +154,8 @@ export function UserButton({
                                 <UserAvatar classNames={classNames?.content?.avatar} user={user} />
                             )}
 
-                            <div className="flex flex-col grow text-left truncate">
-                                <div className="font-medium text-sm truncate">
+                            <div className="flex grow flex-col truncate text-left">
+                                <div className="truncate font-medium text-sm">
                                     {isPending ? (
                                         <Skeleton
                                             className={cn("h-3 w-20", classNames?.skeleton)}
@@ -167,11 +167,11 @@ export function UserButton({
 
                                 {isPending ? (
                                     <Skeleton
-                                        className={cn("h-3 w-32 mt-1", classNames?.skeleton)}
+                                        className={cn("mt-1 h-3 w-32", classNames?.skeleton)}
                                     />
                                 ) : (
                                     user?.name && (
-                                        <div className="text-muted-foreground !font-light text-xs truncate">
+                                        <div className="!font-light truncate text-muted-foreground text-xs">
                                             {user?.email}
                                         </div>
                                     )
@@ -193,23 +193,23 @@ export function UserButton({
                 onCloseAutoFocus={(e) => e.preventDefault()}
             >
                 {user && !user.isAnonymous ? (
-                    <div className="flex gap-2 p-2 items-center">
+                    <div className="flex items-center gap-2 p-2">
                         <UserAvatar classNames={classNames?.content?.avatar} user={user} />
 
                         <div className="flex flex-col truncate">
-                            <div className="font-medium text-sm truncate">
+                            <div className="truncate font-medium text-sm">
                                 {user.name || user.email}
                             </div>
 
                             {user.name && (
-                                <div className="text-muted-foreground !font-light text-xs truncate">
+                                <div className="!font-light truncate text-muted-foreground text-xs">
                                     {user.email}
                                 </div>
                             )}
                         </div>
                     </div>
                 ) : (
-                    <div className="px-2 py-1 text-muted-foreground !font-light text-xs">
+                    <div className="!font-light px-2 py-1 text-muted-foreground text-xs">
                         {localization.account}
                     </div>
                 )}
@@ -301,19 +301,19 @@ export function UserButton({
                                             }
                                         }}
                                     >
-                                        <div className="flex gap-2 items-center truncate">
+                                        <div className="flex items-center gap-2 truncate">
                                             <UserAvatar
                                                 classNames={classNames?.content?.avatar}
                                                 user={user}
                                             />
 
                                             <div className="flex flex-col truncate">
-                                                <div className="font-medium text-sm truncate">
+                                                <div className="truncate font-medium text-sm">
                                                     {user.name || user.email}
                                                 </div>
 
                                                 {user.name && (
-                                                    <div className="text-muted-foreground !font-light text-xs truncate">
+                                                    <div className="!font-light truncate text-muted-foreground text-xs">
                                                         {user.email}
                                                     </div>
                                                 )}

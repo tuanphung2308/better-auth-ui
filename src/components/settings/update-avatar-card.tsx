@@ -155,7 +155,7 @@ export function UpdateAvatarCard({
                     </CardDescription>
                 </CardHeader>
 
-                <button className={cn("me-6 my-5")} type="button" onClick={openFileDialog}>
+                <button className={cn("my-5 me-6")} type="button" onClick={openFileDialog}>
                     {loading ? (
                         <Skeleton
                             className={cn("size-20 rounded-full", classNames?.avatar?.base)}
@@ -171,11 +171,11 @@ export function UpdateAvatarCard({
             </div>
 
             <CardFooter
-                className={cn("border-t bg-muted dark:bg-transparent py-4.5", classNames?.footer)}
+                className={cn("border-t bg-muted py-4.5 dark:bg-transparent", classNames?.footer)}
             >
                 <CardDescription
                     className={cn(
-                        "text-xs text-center mx-auto md:text-sm md:mx-0 md:text-left",
+                        "mx-auto text-center text-xs md:mx-0 md:text-left md:text-sm",
                         classNames?.instructions
                     )}
                 >

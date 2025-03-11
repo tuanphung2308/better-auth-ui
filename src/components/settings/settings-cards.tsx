@@ -108,14 +108,14 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
     return (
         <div
             className={cn(
-                "w-full max-w-xl flex flex-col gap-4 items-center grow",
+                "flex w-full max-w-xl grow flex-col items-center gap-4",
                 className,
                 classNames?.base
             )}
         >
             <Tabs
                 defaultValue="account"
-                className={cn("flex flex-col w-full gap-4", classNames?.tabs?.base)}
+                className={cn("flex w-full flex-col gap-4", classNames?.tabs?.base)}
             >
                 <TabsList className={cn("grid w-full grid-cols-2", classNames?.tabs?.list)}>
                     <TabsTrigger value="account" className={classNames?.tabs?.trigger}>

@@ -96,7 +96,7 @@ export function SettingsCard({
             <form action={action}>
                 {type === "boolean" ? (
                     <CardHeader className={classNames?.header}>
-                        <div className={cn("flex gap-3 items-center")}>
+                        <div className={cn("flex items-center gap-3")}>
                             <Checkbox
                                 defaultChecked={state[field] === "on" || !!defaultValue}
                                 id={field}
@@ -148,7 +148,7 @@ export function SettingsCard({
 
                 <CardFooter
                     className={cn(
-                        "border-t bg-muted dark:bg-transparent py-4 md:py-3 flex flex-col md:flex-row gap-4 justify-between",
+                        "flex flex-col justify-between gap-4 border-t bg-muted py-4 md:flex-row md:py-3 dark:bg-transparent",
                         classNames?.footer
                     )}
                 >

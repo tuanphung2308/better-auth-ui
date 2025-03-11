@@ -137,7 +137,7 @@ export function AuthCard({
             {credentials && (
                 <CardFooter
                     className={cn(
-                        "justify-center text-sm text-muted-foreground gap-1",
+                        "justify-center gap-1 text-muted-foreground text-sm",
                         classNames?.footer
                     )}
                 >
@@ -146,7 +146,7 @@ export function AuthCard({
                         : localization.alreadyHaveAnAccount}
 
                     <LinkComponent
-                        className={cn("underline text-foreground", classNames?.footerLink)}
+                        className={cn("text-foreground underline", classNames?.footerLink)}
                         href={`${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
                         to={`${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
                     >

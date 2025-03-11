@@ -19,19 +19,19 @@ export function DeleteAccountCardSkeleton({
             )}
         >
             <CardHeader className={cn("space-y-2", classNames?.header)}>
-                <Skeleton className={cn("h-5 md:h-6 w-32", classNames?.skeleton)} />
+                <Skeleton className={cn("h-5 w-32 md:h-6", classNames?.skeleton)} />
                 <Skeleton className={cn("h-4 w-11/12", classNames?.skeleton)} />
-                <Skeleton className={cn("h-4 w-3/4 -mt-2", classNames?.skeleton)} />
+                <Skeleton className={cn("-mt-2 h-4 w-3/4", classNames?.skeleton)} />
             </CardHeader>
 
             <CardFooter
                 className={cn(
-                    "border-t border-destructive/30 bg-destructive/10 py-4 md:py-3 flex",
+                    "flex border-destructive/30 border-t bg-destructive/10 py-4 md:py-3",
                     classNames?.footer
                 )}
             >
                 <Skeleton
-                    className={cn("h-8 w-32 mx-auto md:ms-auto md:mx-0", classNames?.skeleton)}
+                    className={cn("mx-auto h-8 w-32 md:mx-0 md:ms-auto", classNames?.skeleton)}
                 />
             </CardFooter>
         </Card>

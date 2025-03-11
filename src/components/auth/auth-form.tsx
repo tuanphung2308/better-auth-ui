@@ -377,7 +377,7 @@ export function AuthForm({
     if (["signOut", "callback"].includes(view)) return <Loader2 className="animate-spin" />
 
     return (
-        <form action={formAction} className={cn("grid gap-4 w-full", className, classNames?.base)}>
+        <form action={formAction} className={cn("grid w-full gap-4", className, classNames?.base)}>
             {credentials &&
                 view === "signUp" &&
                 (nameRequired || signUpFields?.includes("name")) && (
@@ -445,7 +445,7 @@ export function AuthForm({
                         {view === "signIn" && forgotPassword && (
                             <LinkComponent
                                 className={cn(
-                                    "ml-auto inline-block text-sm hover:underline -my-1",
+                                    "-my-1 ml-auto inline-block text-sm hover:underline",
                                     classNames?.forgotPasswordLink
                                 )}
                                 href="forgot-password"
@@ -546,7 +546,7 @@ export function AuthForm({
                 <>
                     <div
                         className={cn(
-                            "w-full gap-2 flex items-center",
+                            "flex w-full items-center gap-2",
                             "justify-between",
                             socialLayout === "horizontal" && "flex-wrap",
                             socialLayout === "vertical" && "flex-col",

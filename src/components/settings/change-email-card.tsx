@@ -103,7 +103,7 @@ export function ChangeEmailCard({
 
                     <CardFooter
                         className={cn(
-                            "border-t bg-muted dark:bg-transparent py-4 md:py-3 flex flex-col md:flex-row gap-4 justify-between",
+                            "flex flex-col justify-between gap-4 border-t bg-muted py-4 md:flex-row md:py-3 dark:bg-transparent",
                             classNames?.footer
                         )}
                     >

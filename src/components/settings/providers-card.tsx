@@ -144,14 +144,14 @@ export function ProvidersCard({
                             ) : (
                                 <>
                                     <socialProvider.icon className="size-4 dark:hidden" color />
-                                    <socialProvider.icon className="size-4 hidden dark:block" />
+                                    <socialProvider.icon className="hidden size-4 dark:block" />
                                 </>
                             )}
 
                             <span className="text-sm">{socialProvider.name}</span>
 
                             <Button
-                                className={cn("ms-auto relative", classNames?.button)}
+                                className={cn("relative ms-auto", classNames?.button)}
                                 disabled={isButtonLoading}
                                 size="sm"
                                 type="button"

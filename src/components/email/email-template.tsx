@@ -124,12 +124,12 @@ export const EmailTemplate = ({
             {preview && <Preview>{preview}</Preview>}
 
             <Tailwind>
-                <Body className={cn("my-auto mx-auto font-sans px-2", classNames?.body)}>
-                    <Container className="border border-solid border-color rounded my-[40px] mx-auto p-[20px] max-w-[465px]">
+                <Body className={cn("mx-auto my-auto px-2 font-sans", classNames?.body)}>
+                    <Container className="mx-auto my-[40px] max-w-[465px] rounded border border-color border-solid p-[20px]">
                         <Section className="mt-[32px]">
                             <Img
                                 alt={siteName}
-                                className="my-0 mx-auto rounded-full"
+                                className="mx-auto my-0 rounded-full"
                                 height="40"
                                 src={imageUrl}
                                 width="40"
@@ -138,7 +138,7 @@ export const EmailTemplate = ({
 
                         <Heading
                             className={cn(
-                                "text-[24px] font-bold text-center p-0 my-[30px] mx-0",
+                                "mx-0 my-[30px] p-0 text-center font-bold text-[24px]",
                                 classNames?.heading
                             )}
                         >
@@ -149,10 +149,10 @@ export const EmailTemplate = ({
                             {content}
                         </Text>
 
-                        <Section className="text-center mt-[32px] mb-[32px]">
+                        <Section className="mt-[32px] mb-[32px] text-center">
                             <Button
                                 className={cn(
-                                    "action-button rounded text-[12px] font-semibold no-underline text-center px-5 py-3",
+                                    "action-button rounded px-5 py-3 text-center font-semibold text-[12px] no-underline",
                                     classNames?.button
                                 )}
                                 href={url}
@@ -163,7 +163,7 @@ export const EmailTemplate = ({
 
                         <Hr
                             className={cn(
-                                "border border-solid border-color my-[26px] mx-0 w-full",
+                                "mx-0 my-[26px] w-full border border-color border-solid",
                                 classNames?.hr
                             )}
                         />
