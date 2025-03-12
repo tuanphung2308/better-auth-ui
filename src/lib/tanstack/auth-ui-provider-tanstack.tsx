@@ -1,6 +1,6 @@
-import { createAuthHooks } from "@daveyplate/better-auth-tanstack"
+import { AuthQueryContext, createAuthHooks } from "@daveyplate/better-auth-tanstack"
 import { useIsRestoring, useQueryClient } from "@tanstack/react-query"
-import type { ReactNode } from "react"
+import { type ReactNode, useContext } from "react"
 
 import { AuthUIProvider, type AuthUIProviderProps } from "../../lib/auth-ui-provider"
 
@@ -34,6 +34,7 @@ export function AuthUIProviderTanstack({
     const { revokeSessionAsync } = useRevokeSession()
     const { revokeDeviceSessionAsync } = useRevokeDeviceSession()
     const { setActiveSessionAsync } = useSetActiveSession()
+    const { sessionKey } = useContext(AuthQueryContext)
 
     const hooks = {
         useIsRestoring,
@@ -66,9 +67,16 @@ export function AuthUIProviderTanstack({
             hooks={hooks}
             // @ts-ignore
             mutates={mutates}
-            onSessionChange={() => {
-                queryClient.resetQueries()
-                onSessionChange?.()
+            onSessionChange={async () => {
+                await queryClient.refetchQueries({ queryKey: sessionKey })
+
+                setTimeout(() =>
+                    queryClient.invalidateQueries({
+                        predicate: (query) => query.queryKey !== sessionKey
+                    })
+                )
+
+                await onSessionChange?.()
             }}
             optimistic={optimistic}
             {...props}

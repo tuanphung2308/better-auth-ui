@@ -221,7 +221,7 @@ export type AuthUIContextType = {
     /**
      * Called whenever the session changes
      */
-    onSessionChange?: () => void
+    onSessionChange?: () => Promise<void>
     /**
      * Replace the current URL
      * @default navigate

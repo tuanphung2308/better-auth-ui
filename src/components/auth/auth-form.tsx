@@ -139,7 +139,7 @@ export function AuthForm({
                 toast.error(response.error.message || response.error.statusText)
             } else {
                 setIsLoading(true)
-                onSessionChange?.()
+                await onSessionChange?.()
                 navigate(getRedirectTo())
             }
 
@@ -189,7 +189,7 @@ export function AuthForm({
                             toast.error(error.message || error.statusText)
                         } else {
                             setIsLoading(true)
-                            onSessionChange?.()
+                            await onSessionChange?.()
                             navigate(getRedirectTo())
                         }
 
@@ -205,7 +205,7 @@ export function AuthForm({
                     toast.error(error.message || error.statusText)
                 } else {
                     setIsLoading(true)
-                    onSessionChange?.()
+                    await onSessionChange?.()
                     navigate(getRedirectTo())
                 }
 
@@ -270,7 +270,7 @@ export function AuthForm({
                     toast.error(error.message || error.statusText)
                 } else if (data.token) {
                     setIsLoading(true)
-                    onSessionChange?.()
+                    await onSessionChange?.()
                     navigate(getRedirectTo())
                 } else {
                     navigate(viewPaths.signIn)
@@ -324,13 +324,18 @@ export function AuthForm({
     const checkingResetPasswordToken = useRef(false)
 
     useEffect(() => {
+        if (view !== "signOut") {
+            signingOut.current = false
+        }
+    }, [view])
+
+    useEffect(() => {
         if (view !== "signOut" || signingOut.current) return
 
         signingOut.current = true
         authClient.signOut().finally(async () => {
             replace(viewPaths.signIn)
             onSessionChange?.()
-            signingOut.current = false
         })
     }, [view, authClient, replace, viewPaths.signIn, onSessionChange])
 
@@ -370,8 +375,9 @@ export function AuthForm({
 
         if (isRestoring) return
 
-        onSessionChange?.()
-        replace(getRedirectTo())
+        onSessionChange?.().then(() => {
+            replace(getRedirectTo())
+        })
     }, [isRestoring, view, replace, persistClient, getRedirectTo, onSessionChange])
 
     if (["signOut", "callback"].includes(view)) return <Loader2 className="animate-spin" />
