@@ -78,6 +78,10 @@ export function AuthForm({
 
     const isRestoring = useIsRestoring()
 
+    const signingOut = useRef(false)
+    const isRedirecting = useRef(false)
+    const checkingResetPasswordToken = useRef(false)
+
     if (socialLayout === "auto") {
         socialLayout = !credentials
             ? "vertical"
@@ -320,12 +324,13 @@ export function AuthForm({
         }
     }
 
-    const signingOut = useRef(false)
-    const checkingResetPasswordToken = useRef(false)
-
     useEffect(() => {
         if (view !== "signOut") {
             signingOut.current = false
+        }
+
+        if (view !== "callback") {
+            isRedirecting.current = false
         }
     }, [view])
 
@@ -366,7 +371,7 @@ export function AuthForm({
     }, [view, viewPaths, credentials, navigate, magicLink])
 
     useEffect(() => {
-        if (view !== "callback") return
+        if (view !== "callback" || isRedirecting.current) return
 
         if (!persistClient) {
             replace(getRedirectTo())
@@ -374,6 +379,8 @@ export function AuthForm({
         }
 
         if (isRestoring) return
+
+        isRedirecting.current = true
 
         const doRedirect = async () => {
             await onSessionChange?.()
