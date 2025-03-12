@@ -30,6 +30,10 @@
             },
             "style": {
                 "noNonNullAssertion": "off",
+                "useSelfClosingElements": {
+                    "fix": "safe",
+                    "level": "warn"
+                },
                 "useTemplate": {
                     "fix": "safe",
                     "level": "warn"

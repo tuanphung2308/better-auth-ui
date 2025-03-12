@@ -13,6 +13,7 @@ import { Checkbox } from "../ui/checkbox"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
+import { PasswordInput } from "../password-input"
 import { ActionButton } from "./action-button"
 import { MagicLinkButton } from "./magic-link-button"
 import { PasskeyButton } from "./passkey-button"
@@ -472,16 +473,16 @@ export function AuthForm({
                         )}
                     </div>
 
-                    <Input
+                    <PasswordInput
+                        id="password"
+                        name="password"
                         autoComplete={
                             ["signUp", "resetPassword"].includes(view) ? "new-password" : "password"
                         }
                         className={classNames?.input}
-                        id="password"
-                        name="password"
+                        enableToggle={view !== "signIn"}
                         placeholder={localization.passwordPlaceholder}
                         required
-                        type="password"
                     />
                 </div>
             )}

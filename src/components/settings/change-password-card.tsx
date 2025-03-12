@@ -9,9 +9,9 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
-import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
+import { PasswordInput } from "../password-input"
 import type { SettingsCardClassNames } from "./settings-card"
 import { ChangePasswordCardSkeleton } from "./skeletons/change-password-card-skeleton"
 
@@ -160,14 +160,14 @@ export function ChangePasswordCard({
                             {localization.currentPassword}
                         </Label>
 
-                        <Input
-                            autoComplete="current-password"
-                            className={classNames?.input}
+                        <PasswordInput
                             id="currentPassword"
                             name="currentPassword"
+                            className={classNames?.input}
+                            autoComplete="current-password"
                             placeholder={localization.currentPasswordPlaceholder}
                             required
-                            type="password"
+                            enableToggle
                             onChange={() => setDisabled(false)}
                         />
                     </div>
@@ -177,14 +177,14 @@ export function ChangePasswordCard({
                             {localization.newPassword}
                         </Label>
 
-                        <Input
-                            autoComplete="new-password"
-                            className={classNames?.input}
+                        <PasswordInput
                             id="newPassword"
                             name="newPassword"
+                            className={classNames?.input}
+                            autoComplete="new-password"
                             placeholder={localization.newPasswordPlaceholder}
                             required
-                            type="password"
+                            enableToggle
                             onChange={() => setDisabled(false)}
                         />
                     </div>
