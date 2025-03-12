@@ -559,43 +559,41 @@ export function AuthForm({
             )}
 
             {!["forgotPassword", "resetPassword"].includes(view) && providers?.length && (
-                <>
-                    <div
-                        className={cn(
-                            "flex w-full items-center gap-2",
-                            "justify-between",
-                            socialLayout === "horizontal" && "flex-wrap",
-                            socialLayout === "vertical" && "flex-col",
-                            socialLayout === "grid" && "grid grid-cols-2"
-                        )}
-                    >
-                        {providers?.map((provider) => {
-                            const socialProvider = socialProviders.find(
-                                (socialProvider) => socialProvider.provider === provider
-                            )
-                            if (!socialProvider) return null
-
-                            return (
-                                <ProviderButton
-                                    key={provider}
-                                    className={classNames?.providerButton}
-                                    isLoading={isLoading}
-                                    localization={localization}
-                                    socialLayout={socialLayout}
-                                    socialProvider={socialProvider}
-                                />
-                            )
-                        })}
-                    </div>
-
-                    {passkey && (
-                        <PasskeyButton
-                            className={classNames?.secondaryButton}
-                            isLoading={isLoading}
-                            localization={localization}
-                        />
+                <div
+                    className={cn(
+                        "flex w-full items-center gap-2",
+                        "justify-between",
+                        socialLayout === "horizontal" && "flex-wrap",
+                        socialLayout === "vertical" && "flex-col",
+                        socialLayout === "grid" && "grid grid-cols-2"
                     )}
-                </>
+                >
+                    {providers?.map((provider) => {
+                        const socialProvider = socialProviders.find(
+                            (socialProvider) => socialProvider.provider === provider
+                        )
+                        if (!socialProvider) return null
+
+                        return (
+                            <ProviderButton
+                                key={provider}
+                                className={classNames?.providerButton}
+                                isLoading={isLoading}
+                                localization={localization}
+                                socialLayout={socialLayout}
+                                socialProvider={socialProvider}
+                            />
+                        )
+                    })}
+                </div>
+            )}
+
+            {passkey && (
+                <PasskeyButton
+                    className={classNames?.secondaryButton}
+                    isLoading={isLoading}
+                    localization={localization}
+                />
             )}
         </form>
     )
