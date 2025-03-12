@@ -375,9 +375,12 @@ export function AuthForm({
 
         if (isRestoring) return
 
-        onSessionChange?.().then(() => {
+        const doRedirect = async () => {
+            await onSessionChange?.()
             replace(getRedirectTo())
-        })
+        }
+
+        doRedirect()
     }, [isRestoring, view, replace, persistClient, getRedirectTo, onSessionChange])
 
     if (["signOut", "callback"].includes(view)) return <Loader2 className="animate-spin" />
