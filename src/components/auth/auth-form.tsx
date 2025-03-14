@@ -58,7 +58,7 @@ export function AuthForm({
         defaultRedirectTo,
         credentials,
         forgotPassword,
-        hooks: { useIsRestoring },
+        hooks: { useIsRestoring, useSession },
         localization: authLocalization,
         magicLink,
         nameRequired,
@@ -74,6 +74,8 @@ export function AuthForm({
         onSessionChange,
         LinkComponent
     } = useContext(AuthUIContext)
+
+    const { data: sessionData, error } = useSession()
 
     localization = { ...authLocalization, ...localization }
 
@@ -119,6 +121,25 @@ export function AuthForm({
         [callbackURL, persistClient, view, viewPaths, getRedirectTo]
     )
 
+    const onSuccess = useCallback(() => {
+        setIsLoading(true)
+        onSessionChange?.()
+    }, [onSessionChange])
+
+    useEffect(() => {
+        if (!isLoading) return
+
+        if (error) {
+            setIsLoading(false)
+            toast.error(error.message || error.statusText)
+            return
+        }
+
+        if (sessionData) {
+            navigate(getRedirectTo())
+        }
+    }, [isLoading, error, navigate, sessionData, getRedirectTo])
+
     const formAction = async (formData: FormData) => {
         const provider = formData.get("provider") as SocialProvider
 
@@ -143,9 +164,7 @@ export function AuthForm({
             if (response?.error) {
                 toast.error(response.error.message || response.error.statusText)
             } else {
-                setIsLoading(true)
-                await onSessionChange?.()
-                navigate(getRedirectTo())
+                onSuccess()
             }
 
             return
@@ -193,9 +212,7 @@ export function AuthForm({
                         if (error) {
                             toast.error(error.message || error.statusText)
                         } else {
-                            setIsLoading(true)
-                            await onSessionChange?.()
-                            navigate(getRedirectTo())
+                            onSuccess()
                         }
 
                         return
@@ -209,9 +226,7 @@ export function AuthForm({
                 if (error) {
                     toast.error(error.message || error.statusText)
                 } else {
-                    setIsLoading(true)
-                    await onSessionChange?.()
-                    navigate(getRedirectTo())
+                    onSuccess()
                 }
 
                 break
@@ -274,9 +289,7 @@ export function AuthForm({
                 if (error) {
                     toast.error(error.message || error.statusText)
                 } else if (data.token) {
-                    setIsLoading(true)
-                    await onSessionChange?.()
-                    navigate(getRedirectTo())
+                    onSuccess()
                 } else {
                     navigate(viewPaths.signIn)
                     toast.success(localization.signUpEmail)
@@ -383,13 +396,8 @@ export function AuthForm({
 
         isRedirecting.current = true
 
-        const doRedirect = async () => {
-            await onSessionChange?.()
-            replace(getRedirectTo())
-        }
-
-        doRedirect()
-    }, [isRestoring, view, replace, persistClient, getRedirectTo, onSessionChange])
+        onSuccess()
+    }, [isRestoring, view, replace, persistClient, getRedirectTo, onSuccess])
 
     if (["signOut", "callback"].includes(view)) return <Loader2 className="animate-spin" />
 
