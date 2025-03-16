@@ -58,6 +58,7 @@ export function AuthCard({
     const path = pathname?.split("/").pop()
 
     const {
+        basePath,
         credentials,
         localization: authLocalization,
         magicLink,
@@ -148,8 +149,8 @@ export function AuthCard({
 
                     <LinkComponent
                         className={cn("text-foreground underline", classNames?.footerLink)}
-                        href={`${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
-                        to={`${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
+                        href={`${basePath}/${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
+                        to={`${basePath}/${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
                     >
                         {view === "signIn" ? localization.signUp : localization.signIn}
                     </LinkComponent>
