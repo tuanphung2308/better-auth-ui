@@ -257,7 +257,7 @@ export function UserButton({
                     <>
                         <LinkComponent
                             href={settingsUrl || `${basePath}/${viewPaths.settings}`}
-                            to={settingsUrl || `${basePath}/settings`}
+                            to={settingsUrl || `${basePath}/${viewPaths.settings}`}
                         >
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <SettingsIcon />

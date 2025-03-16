@@ -291,7 +291,7 @@ export function AuthForm({
                 } else if (data.token) {
                     onSuccess()
                 } else {
-                    navigate(viewPaths.signIn)
+                    navigate(`${basePath}/${viewPaths.signIn}`)
                     toast.success(localization.signUpEmail)
                 }
 
@@ -311,7 +311,7 @@ export function AuthForm({
                     toast.error(error.message || error.statusText)
                 } else {
                     toast.success(localization.forgotPasswordEmail)
-                    navigate(viewPaths.signIn)
+                    navigate(`${basePath}/${viewPaths.signIn}`)
                 }
 
                 break
@@ -330,7 +330,7 @@ export function AuthForm({
                     toast.error(error.message || error.statusText)
                 } else {
                     toast.success(localization.resetPasswordSuccess)
-                    navigate(viewPaths.signIn)
+                    navigate(`${basePath}/${viewPaths.signIn}`)
                 }
 
                 break
@@ -353,10 +353,10 @@ export function AuthForm({
 
         signingOut.current = true
         authClient.signOut().finally(async () => {
-            replace(viewPaths.signIn)
+            replace(`${basePath}/${viewPaths.signIn}`)
             onSessionChange?.()
         })
-    }, [view, authClient, replace, viewPaths.signIn, onSessionChange])
+    }, [view, authClient, basePath, replace, viewPaths.signIn, onSessionChange])
 
     useEffect(() => {
         if (view !== "resetPassword" || checkingResetPasswordToken.current) return
@@ -366,23 +366,23 @@ export function AuthForm({
         const searchParams = new URLSearchParams(window.location.search)
         const token = searchParams.get("token")
         if (!token || token === "INVALID_TOKEN") {
-            navigate(viewPaths.signIn)
+            navigate(`${basePath}/${viewPaths.signIn}`)
             setTimeout(() => {
                 toast.error(localization.resetPasswordInvalidToken)
                 checkingResetPasswordToken.current = false
             }, 100)
         }
-    }, [view, viewPaths, navigate, localization])
+    }, [basePath, view, viewPaths, navigate, localization])
 
     useEffect(() => {
         if (view === "magicLink" && !magicLink) {
-            navigate(viewPaths.signIn)
+            navigate(`${basePath}/${viewPaths.signIn}`)
         }
 
         if (["signUp", "forgotPassword", "resetPassword"].includes(view) && !credentials) {
-            navigate(viewPaths.signIn)
+            navigate(`${basePath}/${viewPaths.signIn}`)
         }
-    }, [view, viewPaths, credentials, navigate, magicLink])
+    }, [basePath, view, viewPaths, credentials, navigate, magicLink])
 
     useEffect(() => {
         if (view !== "callback" || isRedirecting.current) return
@@ -473,8 +473,8 @@ export function AuthForm({
                                     "-my-1 ml-auto inline-block text-sm hover:underline",
                                     classNames?.forgotPasswordLink
                                 )}
-                                href="forgot-password"
-                                to="forgot-password"
+                                href={`${basePath}/${viewPaths.forgotPassword}`}
+                                to={`${basePath}/${viewPaths.forgotPassword}`}
                             >
                                 {localization.forgotPasswordLink}
                             </LinkComponent>
