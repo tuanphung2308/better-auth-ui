@@ -53,6 +53,7 @@ export interface UserButtonProps {
         label: ReactNode
         signedIn?: boolean
     }[]
+    disableDefaultLinks?: boolean
     /**
      * @default authLocalization
      * @remarks `AuthLocalization`
@@ -73,6 +74,7 @@ export function UserButton({
     className,
     classNames,
     additionalLinks,
+    disableDefaultLinks,
     localization,
     size = "icon"
 }: UserButtonProps) {
@@ -255,16 +257,18 @@ export function UserButton({
                     </>
                 ) : (
                     <>
-                        <LinkComponent
-                            href={settingsUrl || `${basePath}/${viewPaths.settings}`}
-                            to={settingsUrl || `${basePath}/${viewPaths.settings}`}
-                        >
-                            <DropdownMenuItem className={classNames?.content?.menuItem}>
-                                <SettingsIcon />
+                        {!disableDefaultLinks && (
+                            <LinkComponent
+                                href={settingsUrl || `${basePath}/${viewPaths.settings}`}
+                                to={settingsUrl || `${basePath}/${viewPaths.settings}`}
+                            >
+                                <DropdownMenuItem className={classNames?.content?.menuItem}>
+                                    <SettingsIcon />
 
-                                {localization.settings}
-                            </DropdownMenuItem>
-                        </LinkComponent>
+                                    {localization.settings}
+                                </DropdownMenuItem>
+                            </LinkComponent>
+                        )}
 
                         <LinkComponent
                             href={`${basePath}/${viewPaths.signOut}`}

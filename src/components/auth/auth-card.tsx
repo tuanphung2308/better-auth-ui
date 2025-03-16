@@ -63,6 +63,7 @@ export function AuthCard({
         magicLink,
         replace,
         settingsUrl,
+        signUp,
         viewPaths,
         LinkComponent
     } = useContext(AuthUIContext)
@@ -134,7 +135,7 @@ export function AuthCard({
                 />
             </CardContent>
 
-            {credentials && (
+            {credentials && signUp && (
                 <CardFooter
                     className={cn(
                         "justify-center gap-1 text-muted-foreground text-sm",

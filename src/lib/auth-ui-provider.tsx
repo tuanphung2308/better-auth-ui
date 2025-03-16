@@ -203,6 +203,11 @@ export type AuthUIContextType = {
      */
     settingsUrl?: string
     /**
+     * Enable or disable sign up support
+     * @default true
+     */
+    signUp?: boolean
+    /**
      * Array of fields to show in Sign Up form
      * @default ["name"]
      */
@@ -279,6 +284,7 @@ export const AuthUIProvider = ({
     localization,
     nameRequired = true,
     settingsFields = ["name"],
+    signUp = true,
     signUpFields = ["name"],
     viewPaths,
     navigate,
@@ -319,6 +325,7 @@ export const AuthUIProvider = ({
                 localization: { ...authLocalization, ...localization },
                 nameRequired,
                 settingsFields,
+                signUp,
                 signUpFields,
                 navigate,
                 replace,

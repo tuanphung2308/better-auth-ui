@@ -68,6 +68,7 @@ export function AuthForm({
         providers,
         rememberMe,
         replace,
+        signUp,
         signUpFields,
         username: usernamePlugin,
         viewPaths,
@@ -376,13 +377,17 @@ export function AuthForm({
 
     useEffect(() => {
         if (view === "magicLink" && !magicLink) {
-            navigate(`${basePath}/${viewPaths.signIn}`)
+            replace(`${basePath}/${viewPaths.signIn}`)
+        }
+
+        if (view === "signUp" && !signUp) {
+            replace(`${basePath}/${viewPaths.signIn}`)
         }
 
         if (["signUp", "forgotPassword", "resetPassword"].includes(view) && !credentials) {
-            navigate(`${basePath}/${viewPaths.signIn}`)
+            replace(`${basePath}/${viewPaths.signIn}`)
         }
-    }, [basePath, view, viewPaths, credentials, navigate, magicLink])
+    }, [basePath, view, viewPaths, credentials, replace, signUp, magicLink])
 
     useEffect(() => {
         if (view !== "callback" || isRedirecting.current) return
