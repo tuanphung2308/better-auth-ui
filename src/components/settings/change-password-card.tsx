@@ -167,7 +167,6 @@ export function ChangePasswordCard({
                             autoComplete="current-password"
                             placeholder={localization.currentPasswordPlaceholder}
                             required
-                            enableToggle
                             onChange={() => setDisabled(false)}
                         />
                     </div>
