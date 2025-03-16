@@ -6,6 +6,7 @@ import {
     GitHubIcon,
     GitLabIcon,
     GoogleIcon,
+    KickIcon,
     LinkedInIcon,
     MicrosoftIcon,
     RedditIcon,
@@ -52,6 +53,11 @@ export const socialProviders = [
         provider: "google",
         name: "Google",
         icon: GoogleIcon
+    },
+    {
+        provider: "kick",
+        name: "Kick",
+        icon: KickIcon
     },
     {
         provider: "linkedin",

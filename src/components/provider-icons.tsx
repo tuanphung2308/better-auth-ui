@@ -136,6 +136,21 @@ export const GoogleIcon = ({ className, color }: { className?: string; color?: b
         </svg>
     )
 
+export const KickIcon = ({ className, color }: { className?: string; color?: boolean }) => (
+    <svg
+        className={className}
+        xmlns="http://www.w3.org/2000/svg"
+        width={24}
+        height={24}
+        viewBox="0 0 24 24"
+    >
+        <path
+            fill="currentColor"
+            d="M1.333 0h8v5.333H12V2.667h2.667V0h8v8H20v2.667h-2.667v2.666H20V16h2.667v8h-8v-2.667H12v-2.666H9.333V24h-8Z"
+        />
+    </svg>
+)
+
 export const LinkedInIcon = ({ className, color }: { className?: string; color?: boolean }) =>
     color ? (
         <svg className={className} viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
