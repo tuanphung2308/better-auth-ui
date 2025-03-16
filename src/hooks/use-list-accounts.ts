@@ -7,7 +7,7 @@ export function useListAccounts() {
     const { authClient } = useContext(AuthUIContext)
     const { data: sessionData, isPending: sessionPending } = authClient.useSession()
 
-    const [data, setData] = useState<{ provider: string }[] | null>(null)
+    const [data, setData] = useState<{ accountId: string; provider: string }[] | null>(null)
     const [isPending, setIsPending] = useState(true)
     const initialized = useRef(false)
 

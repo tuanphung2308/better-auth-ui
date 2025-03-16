@@ -18,7 +18,7 @@ import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
 export interface ProvidersCardProps {
     className?: string
     classNames?: SettingsCardClassNames
-    accounts?: { provider: string }[] | null
+    accounts?: { accountId: string; provider: string }[] | null
     isPending?: boolean
     /**
      * @default authLocalization
@@ -89,10 +89,16 @@ export function ProvidersCard({
         }
     }
 
-    const handleUnlink = async (providerId: string) => {
+    const handleUnlink = async ({
+        accountId,
+        providerId
+    }: {
+        accountId: string
+        providerId: string
+    }) => {
         if (!optimistic) setActionLoading(providerId)
 
-        const { error } = await unlinkAccount({ providerId })
+        const { error } = await unlinkAccount({ accountId, providerId })
 
         if (error) {
             toast.error(error.message || error.statusText)
@@ -127,9 +133,9 @@ export function ProvidersCard({
                     )
                     if (!socialProvider) return null
 
-                    const isLinked = accounts?.some(
-                        (acc) => acc.provider === socialProvider.provider
-                    )
+                    const account = accounts?.find((acc) => acc.provider === provider)
+                    const isLinked = !!account
+
                     const isButtonLoading = actionLoading === provider || actionLoading === provider
 
                     return (
@@ -160,7 +166,10 @@ export function ProvidersCard({
                                     if (actionLoading) return
 
                                     if (isLinked) {
-                                        handleUnlink(provider)
+                                        handleUnlink({
+                                            accountId: account.accountId,
+                                            providerId: provider
+                                        })
                                     } else {
                                         handleLink(provider)
                                     }

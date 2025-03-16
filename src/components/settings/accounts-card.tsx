@@ -1,5 +1,5 @@
 "use client"
-import { Loader2 } from "lucide-react"
+import { EllipsisIcon, Loader2, LogOutIcon, RepeatIcon } from "lucide-react"
 import { useContext, useEffect, useState } from "react"
 import { toast } from "sonner"
 
@@ -11,6 +11,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 
 import type { Session, User } from "better-auth"
 import { useSession } from "../../hooks/use-session"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from "../ui/dropdown-menu"
 import { UserAvatar } from "../user-avatar"
 import type { SettingsCardClassNames } from "./settings-card"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
@@ -144,35 +150,62 @@ export function AccountsCard({
                                 </div>
                             </div>
 
-                            <Button
-                                className={cn("relative ms-auto", classNames?.button)}
-                                disabled={!!actionLoading}
-                                size="sm"
-                                type="button"
-                                variant="outline"
-                                onClick={() => {
-                                    if (actionLoading) return
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        className={cn("relative ms-auto", classNames?.button)}
+                                        disabled={!!actionLoading}
+                                        size="icon"
+                                        type="button"
+                                        variant="outline"
+                                    >
+                                        <span
+                                            className={
+                                                isButtonLoading ? "opacity-0" : "opacity-100"
+                                            }
+                                        >
+                                            <EllipsisIcon />
+                                        </span>
 
-                                    if (deviceSession.session.id === session?.id) {
-                                        navigate(`${basePath}/${viewPaths.signOut}`)
-                                        return
-                                    }
+                                        {isButtonLoading && (
+                                            <span className="absolute">
+                                                <Loader2 className="animate-spin" />
+                                            </span>
+                                        )}
+                                    </Button>
+                                </DropdownMenuTrigger>
 
-                                    handleSetActiveSession(deviceSession.session.token)
-                                }}
-                            >
-                                <span className={isButtonLoading ? "opacity-0" : "opacity-100"}>
-                                    {deviceSession.session.id === session?.id
-                                        ? localization.signOut
-                                        : localization.switchAccount}
-                                </span>
+                                <DropdownMenuContent>
+                                    {deviceSession.session.id !== session?.id && (
+                                        <DropdownMenuItem
+                                            onClick={() =>
+                                                handleSetActiveSession(deviceSession.session.token)
+                                            }
+                                        >
+                                            <RepeatIcon />
 
-                                {isButtonLoading && (
-                                    <span className="absolute">
-                                        <Loader2 className="animate-spin" />
-                                    </span>
-                                )}
-                            </Button>
+                                            {localization.switchAccount}
+                                        </DropdownMenuItem>
+                                    )}
+
+                                    <DropdownMenuItem
+                                        onClick={() => {
+                                            if (deviceSession.session.id === session?.id) {
+                                                navigate(`${basePath}/${viewPaths.signOut}`)
+                                                return
+                                            }
+
+                                            handleRevoke(deviceSession.session.token)
+                                        }}
+                                    >
+                                        <LogOutIcon />
+
+                                        {deviceSession.session.id === session?.id
+                                            ? localization.signOut
+                                            : localization.revoke}
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </Card>
                     )
                 })}
