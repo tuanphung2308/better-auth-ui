@@ -123,8 +123,8 @@ export function AuthForm({
     )
 
     const onSuccess = useCallback(() => {
-        setIsLoading(true)
         onSessionChange?.()
+        setIsLoading(true)
     }, [onSessionChange])
 
     useEffect(() => {
@@ -137,7 +137,9 @@ export function AuthForm({
         }
 
         if (sessionData) {
-            navigate(getRedirectTo())
+            setTimeout(() => {
+                navigate(getRedirectTo())
+            }, 100)
         }
     }, [isLoading, error, navigate, sessionData, getRedirectTo])
 
