@@ -139,7 +139,7 @@ export function AuthForm({
         if (sessionData) {
             setTimeout(() => {
                 navigate(getRedirectTo())
-            }, 100)
+            }, 1000)
         }
     }, [isLoading, error, navigate, sessionData, getRedirectTo])
 
