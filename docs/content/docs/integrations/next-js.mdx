@@ -55,6 +55,8 @@ export function Providers({ children }: { children: ReactNode }) {
 **Note**: Since the Next.js **App Router** caches routes by default, navigation to protected routes may fail until you perform a `router.refresh()` to clear the cache. To prevent this issue, you must use `router.refresh()` in the provided `onSessionChange` callback. This forces Next.js to clear the router cache and reload middleware-protected content, ensuring subsequent navigations accurately reflect the current auth state.
 </small>
 
+**It is now recommended to call router.refresh() on page mount as well, since slow connections might fail to redirect.**
+
 Once configured, wrap your layout component with the `Providers` component:
 
 ```tsx title="app/layout.tsx"
@@ -81,17 +83,37 @@ The [`<AuthUIProvider>`](/components/auth-ui-provider) can be fully customized w
 Create a dynamic route segment for authentication views in `app/auth/[pathname]/page.tsx`.
 
 ```tsx title="app/auth/[pathname]/page.tsx"
-import { AuthCard } from "@daveyplate/better-auth-ui"
 import { authViewPaths } from "@daveyplate/better-auth-ui/server"
+import { AuthView } from "./view"
 
 export function generateStaticParams() {
     return Object.values(authViewPaths).map((pathname) => ({ pathname }))
 }
 
-export default async function AuthPage(
-    { params }: { params: Promise<{ pathname: string }> }
-) {
+export default async function AuthPage({ params }: { params: Promise<{ pathname: string }> }) {
     const { pathname } = await params
+
+    return <AuthView pathname={pathname} />
+}
+```
+
+```tsx title="app/auth/[pathname]/view.tsx"
+"use client"
+
+import { AuthCard } from "@daveyplate/better-auth-ui"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+
+export function AuthView({
+    pathname
+}: {
+    pathname: string
+}) {
+    const router = useRouter()
+
+    useEffect(() => {
+        router.refresh()
+    }, [router])
 
     return (
         <main className="flex flex-col grow p-4 items-center justify-center">
