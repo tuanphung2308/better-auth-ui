@@ -122,17 +122,21 @@ export function AuthForm({
         [callbackURL, persistClient, view, viewPaths, getRedirectTo]
     )
 
+    const successRef = useRef(false)
+
     const onSuccess = useCallback(() => {
         onSessionChange?.()
+        successRef.current = true
         setIsLoading(true)
     }, [onSessionChange])
 
     useEffect(() => {
-        if (!isLoading) return
+        if (!isLoading || !successRef.current) return
 
         if (error) {
             setIsLoading(false)
             toast.error(error.message || error.statusText)
+            successRef.current = false
             return
         }
 
