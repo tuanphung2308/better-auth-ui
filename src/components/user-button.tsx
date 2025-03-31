@@ -87,7 +87,7 @@ export function UserButton({
         settingsUrl,
         viewPaths,
         onSessionChange,
-        LinkComponent
+        Link
     } = useContext(AuthUIContext)
     const { useSession, useListDeviceSessions } = hooks
 
@@ -221,19 +221,19 @@ export function UserButton({
                 {additionalLinks?.map(
                     ({ href, icon, label, signedIn }) =>
                         (!signedIn || !!sessionData) && (
-                            <LinkComponent href={href} to={href} key={href}>
+                            <Link href={href} to={href} key={href}>
                                 <DropdownMenuItem className={classNames?.content?.menuItem}>
                                     {icon}
 
                                     {label}
                                 </DropdownMenuItem>
-                            </LinkComponent>
+                            </Link>
                         )
                 )}
 
                 {!user || user.isAnonymous ? (
                     <>
-                        <LinkComponent
+                        <Link
                             href={`${basePath}/${viewPaths.signIn}`}
                             to={`${basePath}/${viewPaths.signIn}`}
                         >
@@ -242,9 +242,9 @@ export function UserButton({
 
                                 {localization.signIn}
                             </DropdownMenuItem>
-                        </LinkComponent>
+                        </Link>
 
-                        <LinkComponent
+                        <Link
                             href={`${basePath}/${viewPaths.signUp}`}
                             to={`${basePath}/${viewPaths.signUp}`}
                         >
@@ -253,12 +253,12 @@ export function UserButton({
 
                                 {localization.signUp}
                             </DropdownMenuItem>
-                        </LinkComponent>
+                        </Link>
                     </>
                 ) : (
                     <>
                         {!disableDefaultLinks && (
-                            <LinkComponent
+                            <Link
                                 href={settingsUrl || `${basePath}/${viewPaths.settings}`}
                                 to={settingsUrl || `${basePath}/${viewPaths.settings}`}
                             >
@@ -267,10 +267,10 @@ export function UserButton({
 
                                     {localization.settings}
                                 </DropdownMenuItem>
-                            </LinkComponent>
+                            </Link>
                         )}
 
-                        <LinkComponent
+                        <Link
                             href={`${basePath}/${viewPaths.signOut}`}
                             to={`${basePath}/${viewPaths.signOut}`}
                         >
@@ -279,7 +279,7 @@ export function UserButton({
 
                                 {localization.signOut}
                             </DropdownMenuItem>
-                        </LinkComponent>
+                        </Link>
                     </>
                 )}
 
@@ -331,7 +331,7 @@ export function UserButton({
                                 </Fragment>
                             ))}
 
-                        <LinkComponent
+                        <Link
                             href={`${basePath}/${viewPaths.signIn}`}
                             to={`${basePath}/${viewPaths.signIn}`}
                         >
@@ -340,7 +340,7 @@ export function UserButton({
 
                                 {localization.addAccount}
                             </DropdownMenuItem>
-                        </LinkComponent>
+                        </Link>
                     </>
                 )}
             </DropdownMenuContent>

@@ -55,7 +55,7 @@ export function AuthForm({
         additionalFields,
         authClient,
         basePath,
-        defaultRedirectTo,
+        redirectTo: defaultRedirectTo,
         credentials,
         forgotPassword,
         hooks: { useIsRestoring, useSession },
@@ -73,7 +73,7 @@ export function AuthForm({
         username: usernamePlugin,
         viewPaths,
         onSessionChange,
-        LinkComponent
+        Link
     } = useContext(AuthUIContext)
 
     const { data: sessionData, error } = useSession()
@@ -477,7 +477,7 @@ export function AuthForm({
                         </Label>
 
                         {view === "signIn" && forgotPassword && (
-                            <LinkComponent
+                            <Link
                                 className={cn(
                                     "-my-1 ml-auto inline-block text-sm hover:underline",
                                     classNames?.forgotPasswordLink
@@ -486,7 +486,7 @@ export function AuthForm({
                                 to={`${basePath}/${viewPaths.forgotPassword}`}
                             >
                                 {localization.forgotPasswordLink}
-                            </LinkComponent>
+                            </Link>
                         )}
                     </div>
 

@@ -66,7 +66,7 @@ export function AuthCard({
         settingsUrl,
         signUp,
         viewPaths,
-        LinkComponent
+        Link
     } = useContext(AuthUIContext)
 
     localization = { ...authLocalization, ...localization }
@@ -147,13 +147,13 @@ export function AuthCard({
                         ? localization.dontHaveAnAccount
                         : localization.alreadyHaveAnAccount}
 
-                    <LinkComponent
+                    <Link
                         className={cn("text-foreground underline", classNames?.footerLink)}
                         href={`${basePath}/${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
                         to={`${basePath}/${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
                     >
                         {view === "signIn" ? localization.signUp : localization.signIn}
-                    </LinkComponent>
+                    </Link>
                 </CardFooter>
             )}
         </Card>

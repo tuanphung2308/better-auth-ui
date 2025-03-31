@@ -35,7 +35,7 @@ const defaultReplace = (href: string) => {
     window.location.replace(href)
 }
 
-export type Link = React.ComponentType<{
+export type TLink = React.ComponentType<{
     href: string
     to: unknown
     className?: string
@@ -116,7 +116,7 @@ export type AuthUIContextType = {
      * Default redirect path after sign in
      * @default "/"
      */
-    defaultRedirectTo: string
+    redirectTo: string
     /**
      * Enable or disable email verification for account deletion
      * @default false
@@ -241,7 +241,7 @@ export type AuthUIContextType = {
      * Custom link component for navigation
      * @default <a>
      */
-    LinkComponent: Link
+    Link: TLink
 }
 
 export type AuthUIProviderProps = {
@@ -275,7 +275,7 @@ export const AuthUIProvider = ({
     avatarExtension = "png",
     avatarSize,
     basePath = "/auth",
-    defaultRedirectTo = "/",
+    redirectTo: defaultRedirectTo = "/",
     credentials = true,
     forgotPassword = true,
     freshAge = 60 * 60 * 24,
@@ -290,7 +290,7 @@ export const AuthUIProvider = ({
     navigate,
     replace,
     uploadAvatar,
-    LinkComponent = DefaultLink,
+    Link = DefaultLink,
     ...props
 }: {
     children: ReactNode
@@ -316,7 +316,7 @@ export const AuthUIProvider = ({
                 avatarExtension,
                 avatarSize,
                 basePath: basePath === "/" ? "" : basePath,
-                defaultRedirectTo,
+                redirectTo: defaultRedirectTo,
                 credentials,
                 forgotPassword,
                 freshAge,
@@ -331,7 +331,7 @@ export const AuthUIProvider = ({
                 replace,
                 viewPaths: { ...authViewPaths, ...viewPaths },
                 uploadAvatar,
-                LinkComponent,
+                Link,
                 ...props
             }}
         >
