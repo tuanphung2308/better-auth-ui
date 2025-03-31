@@ -16,6 +16,7 @@ import { Label } from "../ui/label"
 import { PasswordInput } from "../password-input"
 import { ActionButton } from "./action-button"
 import { MagicLinkButton } from "./magic-link-button"
+import { OtherProviderButton } from "./other-provider-button"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
 
@@ -63,6 +64,7 @@ export function AuthForm({
         magicLink,
         nameRequired,
         navigate,
+        otherProviders,
         passkey,
         persistClient,
         providers,
@@ -153,6 +155,25 @@ export function AuthForm({
                 provider,
                 callbackURL: getCallbackURL()
             })
+
+            if (error) {
+                toast.error(error.message || error.statusText)
+            } else {
+                setIsLoading(true)
+            }
+
+            return
+        }
+
+        const otherProvider = formData.get("otherProvider") as string
+
+        if (otherProvider) {
+            // @ts-ignore
+            const { error } = await authClient.signIn.oauth2({
+                providerId: otherProvider,
+                callbackURL: getCallbackURL()
+            })
+
             if (error) {
                 toast.error(error.message || error.statusText)
             } else {
@@ -603,6 +624,17 @@ export function AuthForm({
                             />
                         )
                     })}
+
+                    {otherProviders?.map((provider) => (
+                        <OtherProviderButton
+                            key={provider.id}
+                            className={classNames?.providerButton}
+                            isLoading={isLoading}
+                            localization={localization}
+                            socialLayout={socialLayout}
+                            provider={provider}
+                        />
+                    ))}
                 </div>
             )}
 

@@ -76,6 +76,11 @@ type DefaultMutates = {
     revokeDeviceSession: MultiSessionAuthClient["multiSession"]["revoke"]
 }
 
+export type OtherProvider = {
+    id: string
+    icon?: ReactNode
+}
+
 export type AuthUIContextType = {
     authClient: AuthClient
     /**
@@ -188,6 +193,11 @@ export type AuthUIContextType = {
      * @remarks `SocialProvider[]`
      */
     providers?: SocialProvider[]
+    /**
+     * Custom OAuth Providers
+     * @default false
+     */
+    otherProviders?: OtherProvider[]
     /**
      * Enable or disable remember me support
      * @default false
