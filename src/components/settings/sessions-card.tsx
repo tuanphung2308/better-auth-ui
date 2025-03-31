@@ -2,7 +2,6 @@
 
 import { LaptopIcon, Loader2, SmartphoneIcon } from "lucide-react"
 import { useContext, useState } from "react"
-import { toast } from "sonner"
 import { UAParser } from "ua-parser-js"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
@@ -44,6 +43,7 @@ export function SessionsCard({
         localization: authLocalization,
         optimistic,
         navigate,
+        toast,
         basePath,
         viewPaths
     } = useContext(AuthUIContext)
@@ -72,7 +72,7 @@ export function SessionsCard({
         const { error } = await revokeSession({ token })
 
         if (error) {
-            toast.error(error.message || error.statusText)
+            toast({ variant: "error", message: error.message || error.statusText })
         } else if (!optimistic) {
             refetch?.()
         }

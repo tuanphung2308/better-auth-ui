@@ -2,7 +2,6 @@
 
 import { Loader2 } from "lucide-react"
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import { toast } from "sonner"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
@@ -72,6 +71,7 @@ export function AuthForm({
         replace,
         signUp,
         signUpFields,
+        toast,
         username: usernamePlugin,
         viewPaths,
         onSessionChange,
@@ -137,7 +137,7 @@ export function AuthForm({
 
         if (error) {
             setIsLoading(false)
-            toast.error(error.message || error.statusText)
+            toast({ variant: "error", message: error.message || error.statusText })
             successRef.current = false
             return
         }
@@ -145,7 +145,7 @@ export function AuthForm({
         if (sessionData) {
             navigate(getRedirectTo())
         }
-    }, [isLoading, error, navigate, sessionData, getRedirectTo])
+    }, [isLoading, error, navigate, sessionData, getRedirectTo, toast])
 
     const formAction = async (formData: FormData) => {
         const provider = formData.get("provider") as SocialProvider
@@ -157,7 +157,7 @@ export function AuthForm({
             })
 
             if (error) {
-                toast.error(error.message || error.statusText)
+                toast({ variant: "error", message: error.message || error.statusText })
             } else {
                 setIsLoading(true)
             }
@@ -175,7 +175,7 @@ export function AuthForm({
             })
 
             if (error) {
-                toast.error(error.message || error.statusText)
+                toast({ variant: "error", message: error.message || error.statusText })
             } else {
                 setIsLoading(true)
             }
@@ -186,9 +186,9 @@ export function AuthForm({
         if (formData.get("passkey")) {
             // @ts-expect-error Optional plugin
             const response = await authClient.signIn.passkey()
-
-            if (response?.error) {
-                toast.error(response.error.message || response.error.statusText)
+            const error = response?.error
+            if (error) {
+                toast({ variant: "error", message: error.message || error.statusText })
             } else {
                 onSuccess()
             }
@@ -210,9 +210,9 @@ export function AuthForm({
                     })
 
                     if (error) {
-                        toast.error(error.message || error.statusText)
+                        toast({ variant: "error", message: error.message || error.statusText })
                     } else {
-                        toast.success(localization.magicLinkEmail)
+                        toast({ variant: "success", message: localization.magicLinkEmail! })
                     }
 
                     return
@@ -236,7 +236,7 @@ export function AuthForm({
                         })
 
                         if (error) {
-                            toast.error(error.message || error.statusText)
+                            toast({ variant: "error", message: error.message || error.statusText })
                         } else {
                             onSuccess()
                         }
@@ -250,7 +250,7 @@ export function AuthForm({
                     ...params
                 })
                 if (error) {
-                    toast.error(error.message || error.statusText)
+                    toast({ variant: "error", message: error.message || error.statusText })
                 } else {
                     onSuccess()
                 }
@@ -266,9 +266,9 @@ export function AuthForm({
                 })
 
                 if (error) {
-                    toast.error(error.message || error.statusText)
+                    toast({ variant: "error", message: error.message || error.statusText })
                 } else {
-                    toast.success(localization.magicLinkEmail)
+                    toast({ variant: "success", message: localization.magicLinkEmail! })
                 }
 
                 break
@@ -296,7 +296,10 @@ export function AuthForm({
                         const value = formData.get(field) as string
 
                         if (additionalField.validate && !additionalField.validate(value)) {
-                            toast.error(`${localization.failedToValidate} ${field}`)
+                            toast({
+                                variant: "error",
+                                message: `${localization.failedToValidate} ${field}`
+                            })
                             return
                         }
 
@@ -313,12 +316,12 @@ export function AuthForm({
                 const { data, error } = await authClient.signUp.email(params)
 
                 if (error) {
-                    toast.error(error.message || error.statusText)
+                    toast({ variant: "error", message: error.message || error.statusText })
                 } else if (data.token) {
                     onSuccess()
                 } else {
                     navigate(`${basePath}/${viewPaths.signIn}`)
-                    toast.success(localization.signUpEmail)
+                    toast({ variant: "success", message: localization.signUpEmail! })
                 }
 
                 break
@@ -334,9 +337,9 @@ export function AuthForm({
                 })
 
                 if (error) {
-                    toast.error(error.message || error.statusText)
+                    toast({ variant: "error", message: error.message || error.statusText })
                 } else {
-                    toast.success(localization.forgotPasswordEmail)
+                    toast({ variant: "success", message: localization.forgotPasswordEmail! })
                     navigate(`${basePath}/${viewPaths.signIn}`)
                 }
 
@@ -353,9 +356,9 @@ export function AuthForm({
                 })
 
                 if (error) {
-                    toast.error(error.message || error.statusText)
+                    toast({ variant: "error", message: error.message || error.statusText })
                 } else {
-                    toast.success(localization.resetPasswordSuccess)
+                    toast({ variant: "success", message: localization.resetPasswordSuccess! })
                     navigate(`${basePath}/${viewPaths.signIn}`)
                 }
 
@@ -394,11 +397,11 @@ export function AuthForm({
         if (!token || token === "INVALID_TOKEN") {
             navigate(`${basePath}/${viewPaths.signIn}`)
             setTimeout(() => {
-                toast.error(localization.resetPasswordInvalidToken)
+                toast({ variant: "error", message: localization.resetPasswordInvalidToken! })
                 checkingResetPasswordToken.current = false
             }, 100)
         }
-    }, [basePath, view, viewPaths, navigate, localization])
+    }, [basePath, view, viewPaths, navigate, localization, toast])
 
     useEffect(() => {
         if (view === "magicLink" && !magicLink) {

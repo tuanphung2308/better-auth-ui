@@ -1,7 +1,6 @@
 "use client"
 
 import { useContext, useRef, useState } from "react"
-import { toast } from "sonner"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
@@ -80,7 +79,8 @@ export function UpdateAvatarCard({
         optimistic,
         uploadAvatar,
         avatarSize,
-        avatarExtension
+        avatarExtension,
+        toast
     } = useContext(AuthUIContext)
 
     localization = { ...authLocalization, ...localization }
@@ -118,7 +118,7 @@ export function UpdateAvatarCard({
         const { error } = await updateUser({ image })
 
         if (error) {
-            toast.error(error.message || error.statusText)
+            toast({ variant: "error", message: error.message || error.statusText })
         }
 
         setLoading(false)

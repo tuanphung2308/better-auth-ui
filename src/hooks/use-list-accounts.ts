@@ -1,10 +1,9 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import { toast } from "sonner"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
 
 export function useListAccounts() {
-    const { authClient } = useContext(AuthUIContext)
+    const { authClient, toast } = useContext(AuthUIContext)
     const { data: sessionData, isPending: sessionPending } = authClient.useSession()
 
     const [data, setData] = useState<{ accountId: string; provider: string }[] | null>(null)
@@ -14,11 +13,11 @@ export function useListAccounts() {
     const refetch = useCallback(async () => {
         const { data, error } = await authClient.listAccounts()
 
-        if (error) toast.error(error.message || error.statusText)
+        if (error) toast({ variant: "error", message: error.message || error.statusText })
 
         setData(data)
         setIsPending(false)
-    }, [authClient])
+    }, [authClient, toast])
 
     useEffect(() => {
         if (!sessionData) {

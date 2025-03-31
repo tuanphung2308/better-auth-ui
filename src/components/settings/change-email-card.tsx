@@ -1,7 +1,6 @@
 "use client"
 
 import { useContext, useEffect, useRef, useState } from "react"
-import { toast } from "sonner"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
@@ -31,7 +30,8 @@ export function ChangeEmailCard({
         authClient,
         emailVerification,
         hooks: { useSession },
-        localization: authLocalization
+        localization: authLocalization,
+        toast
     } = useContext(AuthUIContext)
     localization = { ...authLocalization, ...localization }
 
@@ -46,9 +46,9 @@ export function ChangeEmailCard({
         const searchParams = new URLSearchParams(window.location.search)
         if (searchParams.get("verifyEmail") && !sessionData.user.emailVerified) {
             shownVerifyEmailToast.current = true
-            setTimeout(() => toast(localization?.emailVerification))
+            setTimeout(() => toast({ message: localization.emailVerification! }))
         }
-    }, [localization, sessionData])
+    }, [localization, sessionData, toast])
 
     const formAction = async (formData: FormData) => {
         const newEmail = (formData.get("email") as string) || ""
@@ -63,7 +63,7 @@ export function ChangeEmailCard({
 
         if (!error) {
             if (sessionData?.user.emailVerified) {
-                toast(localization?.emailVerifyChange)
+                toast({ message: localization.emailVerifyChange! })
             } else {
                 refetch()
             }
@@ -122,10 +122,13 @@ export function ChangeEmailCard({
                                 setIsResending(false)
 
                                 if (error) {
-                                    toast(error.message || error.statusText)
+                                    toast({
+                                        variant: "error",
+                                        message: error.message || error.statusText
+                                    })
                                     setResendDisabled(false)
                                 } else {
-                                    toast(localization.emailVerification)
+                                    toast({ message: localization.emailVerification! })
                                 }
                             }}
                         >

@@ -12,7 +12,6 @@ import { Checkbox } from "../ui/checkbox"
 import { Input } from "../ui/input"
 import type { UserAvatarClassNames } from "../user-avatar"
 
-import { toast } from "sonner"
 import { SettingsCardSkeleton } from "./skeletons/settings-card-skeleton"
 
 export type SettingsCardClassNames = {
@@ -63,7 +62,7 @@ export function SettingsCard({
     formAction: (formData: FormData) => Promise<{ error?: FetchError | null }>
 }) {
     let { optimistic } = useContext(AuthUIContext)
-    const { localization: authLocalization } = useContext(AuthUIContext)
+    const { localization: authLocalization, toast } = useContext(AuthUIContext)
 
     localization = { ...authLocalization, ...localization }
 
@@ -78,7 +77,11 @@ export function SettingsCard({
 
         const { error } = await formAction(formData)
 
-        if (error) toast.error(error.message || error.statusText)
+        if (error)
+            toast({
+                variant: "error",
+                message: error.message || error.statusText || "Unknown Error"
+            })
 
         setDisabled(!error)
 

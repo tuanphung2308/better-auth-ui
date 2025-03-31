@@ -2,7 +2,6 @@
 
 import { Loader2 } from "lucide-react"
 import { useActionState, useContext, useState } from "react"
-import { toast } from "sonner"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
@@ -41,6 +40,7 @@ export function ChangePasswordCard({
         basePath,
         hooks: { useSession, useListAccounts },
         localization: authLocalization,
+        toast,
         viewPaths
     } = useContext(AuthUIContext)
 
@@ -61,7 +61,7 @@ export function ChangePasswordCard({
         const email = sessionData?.user.email
 
         if (!email) {
-            toast.error("Email not found")
+            toast({ variant: "error", message: "Email not found" })
             return
         }
 
@@ -75,9 +75,9 @@ export function ChangePasswordCard({
         setIsSetPasswordLoading(false)
 
         if (error) {
-            toast.error(error.message || error.statusText)
+            toast({ variant: "error", message: error.message || error.statusText })
         } else {
-            toast.success(localization.setPasswordEmailSent)
+            toast({ variant: "success", message: localization.setPasswordEmailSent! })
         }
     }
 
@@ -92,9 +92,9 @@ export function ChangePasswordCard({
         })
 
         if (error) {
-            toast.error(error.message || error.statusText)
+            toast({ variant: "error", message: error.message || error.statusText })
         } else {
-            toast.success(localization.changePasswordSuccess)
+            toast({ variant: "success", message: localization.changePasswordSuccess! })
         }
     }
 

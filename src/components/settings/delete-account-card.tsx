@@ -1,6 +1,5 @@
 import { Loader2 } from "lucide-react"
 import { useActionState, useContext } from "react"
-import { toast } from "sonner"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
@@ -51,6 +50,7 @@ export function DeleteAccountCard({
         hooks: { useSession, useListAccounts },
         localization: authLocalization,
         navigate,
+        toast,
         viewPaths
     } = useContext(AuthUIContext)
 
@@ -88,12 +88,12 @@ export function DeleteAccountCard({
         const { error } = await authClient.deleteUser(params)
 
         if (error) {
-            toast.error(error.message || error.statusText)
+            toast({ variant: "error", message: error.message || error.statusText })
         } else {
             if (deleteAccountVerification) {
-                toast(localization?.deleteAccountEmail)
+                toast({ message: localization.deleteAccountEmail! })
             } else {
-                toast.success(localization?.deleteAccountSuccess)
+                toast({ variant: "success", message: localization.deleteAccountSuccess! })
                 navigate(`${basePath}/${viewPaths.signOut}`)
             }
         }

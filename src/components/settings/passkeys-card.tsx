@@ -1,7 +1,6 @@
 import type { Passkey } from "better-auth/plugins/passkey"
 import { FingerprintIcon, Loader2 } from "lucide-react"
 import { useContext, useState } from "react"
-import { toast } from "sonner"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
@@ -40,7 +39,8 @@ export function PasskeysCard({
         hooks: { useListPasskeys },
         mutates: { deletePasskey },
         localization: authLocalization,
-        optimistic
+        optimistic,
+        toast
     } = useContext(AuthUIContext)
     const authClient = contextAuthClient as PasskeyAuthClient
 
@@ -60,9 +60,9 @@ export function PasskeysCard({
         setIsLoading(true)
 
         const response = await authClient.passkey.addPasskey()
-
-        if (response?.error) {
-            toast.error(response?.error.message || response?.error.statusText)
+        const error = response?.error
+        if (error) {
+            toast({ variant: "error", message: error.message || error.statusText })
         } else {
             refetch?.()
         }
@@ -74,9 +74,9 @@ export function PasskeysCard({
         if (!optimistic) setActionLoading(id)
 
         const response = await deletePasskey({ id })
-
-        if (response?.error) {
-            toast.error(response?.error.message || response?.error.statusText)
+        const error = response?.error
+        if (error) {
+            toast({ variant: "error", message: error.message || error.statusText })
         } else {
             refetch?.()
         }

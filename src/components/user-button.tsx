@@ -9,7 +9,6 @@ import {
     UserRoundPlus
 } from "lucide-react"
 import { Fragment, type ReactNode, useContext, useEffect, useState } from "react"
-import { toast } from "sonner"
 
 import type { AuthLocalization } from "../lib/auth-localization"
 import { AuthUIContext } from "../lib/auth-ui-provider"
@@ -85,6 +84,7 @@ export function UserButton({
         localization: authLocalization,
         multiSession,
         settingsUrl,
+        toast,
         viewPaths,
         onSessionChange,
         Link
@@ -299,7 +299,10 @@ export function UserButton({
                                                 sessionToken: session.token
                                             })
                                             if (error) {
-                                                toast.error(error.message || error.statusText)
+                                                toast({
+                                                    variant: "error",
+                                                    message: error.message || error.statusText
+                                                })
                                             } else {
                                                 onSessionChange?.()
                                             }

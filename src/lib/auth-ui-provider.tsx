@@ -7,6 +7,7 @@ import { useListDeviceSessions } from "../hooks/use-list-device-sessions"
 import { useListSessions } from "../hooks/use-list-sessions"
 import { useSession } from "../hooks/use-session"
 
+import { toast } from "sonner"
 import { useListPasskeys } from "../hooks/use-list-passkeys"
 import type { AuthClient, MultiSessionAuthClient, PasskeyAuthClient } from "../types/auth-client"
 import { type AuthLocalization, authLocalization } from "./auth-localization"
@@ -33,6 +34,20 @@ const defaultNavigate = (href: string) => {
 
 const defaultReplace = (href: string) => {
     window.location.replace(href)
+}
+
+type ToastVariant = "default" | "success" | "error" | "info" | "warning"
+export type RenderToast = ({
+    variant,
+    message
+}: { variant?: ToastVariant; message: string }) => void
+
+const defaultToast: RenderToast = ({ variant = "default", message }) => {
+    if (variant === "default") {
+        toast(message)
+    } else {
+        toast[variant](message)
+    }
 }
 
 export type TLink = React.ComponentType<{
@@ -222,6 +237,7 @@ export type AuthUIContextType = {
      * @default ["name"]
      */
     signUpFields?: string[]
+    toast: RenderToast
     /**
      * Enable or disable username support
      * @default false
@@ -268,6 +284,11 @@ export type AuthUIProviderProps = {
      */
     viewPaths?: Partial<AuthViewPaths>
     /**
+     * Render custom toasts
+     * @default Sonner
+     */
+    toast?: RenderToast
+    /**
      * Customize the localization strings
      * @default authLocalization
      * @remarks `AuthLocalization`
@@ -275,7 +296,7 @@ export type AuthUIProviderProps = {
     localization?: AuthLocalization
     /** @internal */
     mutates?: DefaultMutates
-} & Partial<Omit<AuthUIContextType, "viewPaths" | "localization" | "mutates">>
+} & Partial<Omit<AuthUIContextType, "viewPaths" | "localization" | "mutates" | "toast">>
 
 export const AuthUIContext = createContext<AuthUIContextType>({} as unknown as AuthUIContextType)
 
@@ -296,6 +317,7 @@ export const AuthUIProvider = ({
     settingsFields = ["name"],
     signUp = true,
     signUpFields = ["name"],
+    toast = defaultToast,
     viewPaths,
     navigate,
     replace,
@@ -337,6 +359,7 @@ export const AuthUIProvider = ({
                 settingsFields,
                 signUp,
                 signUpFields,
+                toast,
                 navigate,
                 replace,
                 viewPaths: { ...authViewPaths, ...viewPaths },

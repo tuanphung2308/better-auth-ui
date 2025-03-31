@@ -1,7 +1,7 @@
 "use client"
+
 import { EllipsisIcon, Loader2, LogOutIcon, RepeatIcon } from "lucide-react"
 import { useContext, useEffect, useState } from "react"
-import { toast } from "sonner"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
@@ -50,6 +50,7 @@ export function AccountsCard({
         mutates: { revokeDeviceSession, setActiveSession },
         localization: authLocalization,
         optimistic,
+        toast,
         viewPaths,
         navigate
     } = useContext(AuthUIContext)
@@ -75,7 +76,7 @@ export function AccountsCard({
         const { error } = await revokeDeviceSession({ sessionToken })
 
         if (error) {
-            toast.error(error.message || error.statusText)
+            toast({ variant: "error", message: error.message || error.statusText })
         } else {
             refetch?.()
         }
@@ -89,7 +90,7 @@ export function AccountsCard({
         const { error } = await setActiveSession({ sessionToken })
 
         if (error) {
-            toast.error(error.message || error.statusText)
+            toast({ variant: "error", message: error.message || error.statusText })
         } else {
             refetch?.()
         }

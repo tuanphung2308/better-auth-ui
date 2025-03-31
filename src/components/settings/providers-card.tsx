@@ -3,7 +3,6 @@
 import type { SocialProvider } from "better-auth/social-providers"
 import { Loader2 } from "lucide-react"
 import { useContext, useEffect, useRef, useState } from "react"
-import { toast } from "sonner"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
@@ -46,7 +45,8 @@ export function ProvidersCard({
         localization: authLocalization,
         noColorIcons,
         optimistic,
-        providers
+        providers,
+        toast
     } = useContext(AuthUIContext)
     const { useListAccounts } = hooks
 
@@ -67,7 +67,7 @@ export function ProvidersCard({
         if (params.get("providerLinked") && !hasShownLinkedToast.current) {
             hasShownLinkedToast.current = true
             setTimeout(() => {
-                toast.success(localization.providerLinkSuccess)
+                toast({ variant: "success", message: localization.providerLinkSuccess! })
 
                 // Remove the parameter from URL
                 params.delete("providerLinked")
@@ -76,7 +76,7 @@ export function ProvidersCard({
                 window.history.replaceState(null, "", url)
             }, 0)
         }
-    }, [localization.providerLinkSuccess])
+    }, [localization.providerLinkSuccess, toast])
 
     const handleLink = async (provider: SocialProvider) => {
         setActionLoading(provider)
@@ -84,7 +84,7 @@ export function ProvidersCard({
         const { error } = await authClient.linkSocial({ provider, callbackURL })
 
         if (error) {
-            toast.error(error.message || error.statusText)
+            toast({ variant: "error", message: error.message || error.statusText })
             setActionLoading(null)
         }
     }
@@ -101,9 +101,9 @@ export function ProvidersCard({
         const { error } = await unlinkAccount({ accountId, providerId })
 
         if (error) {
-            toast.error(error.message || error.statusText)
+            toast({ variant: "error", message: error.message || error.statusText })
         } else {
-            toast.success(localization.providerUnlinkSuccess)
+            toast({ variant: "success", message: localization.providerUnlinkSuccess! })
             refetch?.()
         }
 

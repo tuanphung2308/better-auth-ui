@@ -1,11 +1,10 @@
 import type { Session } from "better-auth/types"
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import { toast } from "sonner"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
 
 export function useListSessions() {
-    const { authClient } = useContext(AuthUIContext)
+    const { authClient, toast } = useContext(AuthUIContext)
     const { data: sessionData } = authClient.useSession()
 
     const [data, setData] = useState<Session[] | null>(null)
@@ -15,11 +14,11 @@ export function useListSessions() {
     const refetch = useCallback(async () => {
         const { data, error } = await authClient.listSessions()
 
-        if (error) toast.error(error.message || error.statusText)
+        if (error) toast({ variant: "error", message: error.message || error.statusText })
 
         setData(data)
         setIsPending(false)
-    }, [authClient])
+    }, [authClient, toast])
 
     useEffect(() => {
         if (!sessionData) return

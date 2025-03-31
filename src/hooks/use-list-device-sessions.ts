@@ -1,11 +1,10 @@
 import type { Session, User } from "better-auth"
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import { toast } from "sonner"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
 
 export function useListDeviceSessions() {
-    const { authClient } = useContext(AuthUIContext)
+    const { authClient, toast } = useContext(AuthUIContext)
     const { data: sessionData, isPending: sessionPending } = authClient.useSession()
 
     const [data, setData] = useState<{ session: Session; user: User }[] | null>(null)
@@ -17,11 +16,11 @@ export function useListDeviceSessions() {
             // @ts-expect-error Optional plugin
             await authClient.multiSession.listDeviceSessions()
 
-        if (error) toast.error(error.message || error.statusText)
+        if (error) toast({ variant: "error", message: error.message || error.statusText })
 
         setData(data)
         setIsPending(false)
-    }, [authClient])
+    }, [authClient, toast])
 
     useEffect(() => {
         if (!sessionData) {
