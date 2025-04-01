@@ -39,10 +39,7 @@ export function UserAvatar({
                 }
             />
 
-            <AvatarFallback
-                className={cn("uppercase", classNames?.fallback)}
-                delayMs={src ? 200 : 0}
-            >
+            <AvatarFallback className={cn("uppercase", classNames?.fallback)}>
                 {firstTwoCharacters(name) || (
                     <UserIcon className={cn("w-[55%]", classNames?.fallbackIcon)} />
                 )}
