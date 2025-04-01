@@ -55,6 +55,7 @@ export function AuthForm({
         additionalFields,
         authClient,
         basePath,
+        confirmPassword: confirmPasswordEnabled,
         redirectTo: defaultRedirectTo,
         credentials,
         forgotPassword,
@@ -275,6 +276,14 @@ export function AuthForm({
             }
 
             case "signUp": {
+                if (confirmPasswordEnabled) {
+                    const confirmPassword = formData.get("confirmPassword") as string
+                    if (password !== confirmPassword) {
+                        toast({ variant: "error", message: localization.passwordsDoNotMatch! })
+                        return
+                    }
+                }
+
                 const params = {
                     email,
                     password,
@@ -347,6 +356,14 @@ export function AuthForm({
             }
 
             case "resetPassword": {
+                if (confirmPasswordEnabled) {
+                    const confirmPassword = formData.get("confirmPassword") as string
+                    if (password !== confirmPassword) {
+                        toast({ variant: "error", message: localization.passwordsDoNotMatch! })
+                        return
+                    }
+                }
+
                 const searchParams = new URLSearchParams(window.location.search)
                 const token = searchParams.get("token") as string
 
@@ -494,38 +511,62 @@ export function AuthForm({
                 )}
 
             {credentials && ["signUp", "signIn", "resetPassword"].includes(view) && (
-                <div className="grid gap-2">
-                    <div className="flex items-center">
-                        <Label className={classNames?.label} htmlFor="password">
-                            {localization.password}
-                        </Label>
+                <>
+                    <div className="grid gap-2">
+                        <div className="flex items-center">
+                            <Label className={classNames?.label} htmlFor="password">
+                                {localization.password}
+                            </Label>
 
-                        {view === "signIn" && forgotPassword && (
-                            <Link
-                                className={cn(
-                                    "-my-1 ml-auto inline-block text-sm hover:underline",
-                                    classNames?.forgotPasswordLink
-                                )}
-                                href={`${basePath}/${viewPaths.forgotPassword}`}
-                                to={`${basePath}/${viewPaths.forgotPassword}`}
-                            >
-                                {localization.forgotPasswordLink}
-                            </Link>
-                        )}
+                            {view === "signIn" && forgotPassword && (
+                                <Link
+                                    className={cn(
+                                        "-my-1 ml-auto inline-block text-sm hover:underline",
+                                        classNames?.forgotPasswordLink
+                                    )}
+                                    href={`${basePath}/${viewPaths.forgotPassword}`}
+                                    to={`${basePath}/${viewPaths.forgotPassword}`}
+                                >
+                                    {localization.forgotPasswordLink}
+                                </Link>
+                            )}
+                        </div>
+
+                        <PasswordInput
+                            id="password"
+                            name="password"
+                            autoComplete={
+                                ["signUp", "resetPassword"].includes(view)
+                                    ? "new-password"
+                                    : "password"
+                            }
+                            className={classNames?.input}
+                            enableToggle={view !== "signIn"}
+                            placeholder={localization.passwordPlaceholder}
+                            required
+                        />
                     </div>
 
-                    <PasswordInput
-                        id="password"
-                        name="password"
-                        autoComplete={
-                            ["signUp", "resetPassword"].includes(view) ? "new-password" : "password"
-                        }
-                        className={classNames?.input}
-                        enableToggle={view !== "signIn"}
-                        placeholder={localization.passwordPlaceholder}
-                        required
-                    />
-                </div>
+                    {confirmPasswordEnabled && ["signUp", "resetPassword"].includes(view) && (
+                        <div className="grid gap-2">
+                            <div className="flex items-center">
+                                <Label className={classNames?.label} htmlFor="password">
+                                    {localization.confirmPassword}
+                                </Label>
+                            </div>
+
+                            <PasswordInput
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                autoComplete="new-password"
+                                className={classNames?.input}
+                                enableToggle
+                                placeholder={localization.confirmPasswordPlaceholder}
+                                required
+                            />
+                        </div>
+                    )}
+                </>
             )}
 
             {view === "signIn" && rememberMe && (

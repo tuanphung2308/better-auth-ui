@@ -41,6 +41,12 @@ export const authLocalization = {
     /** @default "Your password has been changed." */
     changePasswordSuccess: "Your password has been changed.",
 
+    /** @default "Change Password" */
+    confirmPassword: "Confirm Password",
+
+    /** @default "Confirm Password" */
+    confirmPasswordPlaceholder: "Confirm Password",
+
     /** @default "Current Password" */
     currentPassword: "Current Password",
 
@@ -165,6 +171,9 @@ export const authLocalization = {
 
     /** @default "Enter your current password." */
     passwordDescription: "Enter your current password.",
+
+    /** @default "Passwords do not match." */
+    passwordsDoNotMatch: "Passwords do not match",
 
     /** @default "Please use 8 characters at minimum." */
     passwordInstructions: "Please use 8 characters at minimum.",

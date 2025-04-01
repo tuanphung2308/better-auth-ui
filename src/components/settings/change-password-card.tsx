@@ -38,6 +38,7 @@ export function ChangePasswordCard({
     const {
         authClient,
         basePath,
+        confirmPassword: confirmPasswordEnabled,
         hooks: { useSession, useListAccounts },
         localization: authLocalization,
         toast,
@@ -84,6 +85,14 @@ export function ChangePasswordCard({
     const formAction = async (_: unknown, formData: FormData) => {
         const currentPassword = formData.get("currentPassword") as string
         const newPassword = formData.get("newPassword") as string
+
+        if (confirmPasswordEnabled) {
+            const confirmPassword = formData.get("confirmPassword") as string
+            if (newPassword !== confirmPassword) {
+                toast({ variant: "error", message: localization.passwordsDoNotMatch! })
+                return
+            }
+        }
 
         const { error } = await authClient.changePassword({
             currentPassword,
@@ -187,6 +196,24 @@ export function ChangePasswordCard({
                             onChange={() => setDisabled(false)}
                         />
                     </div>
+
+                    {confirmPasswordEnabled && (
+                        <div className="grid gap-2">
+                            <Label className={classNames?.label} htmlFor="newPassword">
+                                {localization.confirmPassword}
+                            </Label>
+
+                            <PasswordInput
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                className={classNames?.input}
+                                autoComplete="current-password"
+                                placeholder={localization.confirmPasswordPlaceholder}
+                                required
+                                onChange={() => setDisabled(false)}
+                            />
+                        </div>
+                    )}
                 </CardContent>
 
                 <CardFooter

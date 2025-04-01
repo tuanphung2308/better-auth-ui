@@ -128,6 +128,11 @@ export type AuthUIContextType = {
      */
     colorIcons?: boolean
     /**
+     * Enable or disable confirm password input
+     * @default false
+     */
+    confirmPassword?: boolean
+    /**
      * Enable or disable credentials support
      * @default true
      */
