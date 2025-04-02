@@ -1,4 +1,13 @@
-export const AppleIcon = ({ className, color }: { className?: string; color?: boolean }) => (
+import type { ReactNode } from "react"
+
+export interface ProviderIconProps {
+    className?: string
+    color?: boolean
+}
+
+export type ProviderIcon = (props: ProviderIconProps) => ReactNode
+
+export const AppleIcon: ProviderIcon = ({ className, color }) => (
     <svg className={className} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
         <path
             d="M9.438 31.401a7 7 0 0 1-1.656-1.536a20 20 0 0 1-1.422-1.938a18.9 18.9 0 0 1-2.375-4.849c-.667-2-.99-3.917-.99-5.792c0-2.094.453-3.922 1.339-5.458a7.7 7.7 0 0 1 2.797-2.906a7.45 7.45 0 0 1 3.786-1.12q.705.002 1.51.198c.385.109.854.281 1.427.495c.729.281 1.13.453 1.266.495c.427.156.786.224 1.068.224c.214 0 .516-.068.859-.172c.193-.068.557-.188 1.078-.411c.516-.188.922-.349 1.245-.469c.495-.146.974-.281 1.401-.349a6.7 6.7 0 0 1 1.531-.063a9 9 0 0 1 2.589.557c1.359.547 2.458 1.401 3.276 2.615a6.4 6.4 0 0 0-.969.734a8.2 8.2 0 0 0-1.641 2.005a6.8 6.8 0 0 0-.859 3.359c.021 1.443.391 2.714 1.12 3.813a7.2 7.2 0 0 0 2.047 2.047c.417.281.776.474 1.12.604c-.161.5-.333.984-.536 1.464a19 19 0 0 1-1.667 3.083c-.578.839-1.031 1.464-1.375 1.88c-.536.635-1.052 1.12-1.573 1.458c-.573.38-1.25.583-1.938.583a4.4 4.4 0 0 1-1.38-.167c-.385-.13-.766-.271-1.141-.432a9 9 0 0 0-1.203-.453a6.3 6.3 0 0 0-3.099-.005c-.417.12-.818.26-1.214.432c-.557.234-.927.391-1.141.458c-.427.125-.87.203-1.318.229c-.693 0-1.339-.198-1.979-.599zm9.14-24.615c-.906.453-1.771.646-2.63.583c-.135-.865 0-1.75.359-2.719a7.3 7.3 0 0 1 1.333-2.24A7.1 7.1 0 0 1 19.812.733q1.319-.68 2.521-.734c.104.906 0 1.797-.333 2.76a8 8 0 0 1-1.333 2.344a6.8 6.8 0 0 1-2.115 1.682z"
@@ -7,7 +16,7 @@ export const AppleIcon = ({ className, color }: { className?: string; color?: bo
     </svg>
 )
 
-export const DiscordIcon = ({ className, color }: { className?: string; color?: boolean }) =>
+export const DiscordIcon: ProviderIcon = ({ className, color }) =>
     color ? (
         <svg className={className} viewBox="0 0 256 199" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -24,7 +33,7 @@ export const DiscordIcon = ({ className, color }: { className?: string; color?: 
         </svg>
     )
 
-export const DropboxIcon = ({ className, color }: { className?: string; color?: boolean }) =>
+export const DropboxIcon: ProviderIcon = ({ className, color }) =>
     color ? (
         <svg className={className} viewBox="0 0 256 218" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -41,7 +50,7 @@ export const DropboxIcon = ({ className, color }: { className?: string; color?: 
         </svg>
     )
 
-export const FacebookIcon = ({ className, color }: { className?: string; color?: boolean }) =>
+export const FacebookIcon: ProviderIcon = ({ className, color }) =>
     color ? (
         <svg className={className} viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -63,7 +72,7 @@ export const FacebookIcon = ({ className, color }: { className?: string; color?:
         </svg>
     )
 
-export const GitHubIcon = ({ className, color }: { className?: string; color?: boolean }) => (
+export const GitHubIcon: ProviderIcon = ({ className, color }) => (
     <svg className={className} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path
             d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
@@ -72,7 +81,7 @@ export const GitHubIcon = ({ className, color }: { className?: string; color?: b
     </svg>
 )
 
-export const GitLabIcon = ({ className, color }: { className?: string; color?: boolean }) =>
+export const GitLabIcon: ProviderIcon = ({ className, color }) =>
     color ? (
         <svg className={className} viewBox="0 0 256 236" xmlns="http://www.w3.org/2000/svg">
             <path d="m128.075 236.075l47.104-144.97H80.97z" fill="#e24329" />
@@ -104,7 +113,7 @@ export const GitLabIcon = ({ className, color }: { className?: string; color?: b
         </svg>
     )
 
-export const GoogleIcon = ({ className, color }: { className?: string; color?: boolean }) =>
+export const GoogleIcon: ProviderIcon = ({ className, color }) =>
     color ? (
         <svg className={className} viewBox="0 0 256 262" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -136,7 +145,7 @@ export const GoogleIcon = ({ className, color }: { className?: string; color?: b
         </svg>
     )
 
-export const KickIcon = ({ className, color }: { className?: string; color?: boolean }) => (
+export const KickIcon: ProviderIcon = ({ className, color }) => (
     <svg
         className={className}
         xmlns="http://www.w3.org/2000/svg"
@@ -151,7 +160,7 @@ export const KickIcon = ({ className, color }: { className?: string; color?: boo
     </svg>
 )
 
-export const LinkedInIcon = ({ className, color }: { className?: string; color?: boolean }) =>
+export const LinkedInIcon: ProviderIcon = ({ className, color }) =>
     color ? (
         <svg className={className} viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -172,7 +181,7 @@ export const LinkedInIcon = ({ className, color }: { className?: string; color?:
         </svg>
     )
 
-export const MicrosoftIcon = ({ className, color }: { className?: string; color?: boolean }) =>
+export const MicrosoftIcon: ProviderIcon = ({ className, color }) =>
     color ? (
         <svg className={className} viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
             <path d="M121.666 121.666H0V0h121.666z" fill="#f1511b" />
@@ -189,7 +198,7 @@ export const MicrosoftIcon = ({ className, color }: { className?: string; color?
         </svg>
     )
 
-export const RedditIcon = ({ className, color }: { className?: string; color?: boolean }) =>
+export const RedditIcon: ProviderIcon = ({ className, color }) =>
     color ? (
         <svg className={className} viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
             <circle cx="128" cy="128" fill="#ff4500" r="128" />
@@ -209,7 +218,7 @@ export const RedditIcon = ({ className, color }: { className?: string; color?: b
         </svg>
     )
 
-export const RobloxIcon = ({ className, color }: { className?: string; color?: boolean }) => (
+export const RobloxIcon: ProviderIcon = ({ className, color }) => (
     <svg className={className} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path
             d="M18.926 23.998L0 18.892L5.075.002L24 5.108ZM15.348 10.09l-5.282-1.453l-1.414 5.273l5.282 1.453z"
@@ -218,7 +227,7 @@ export const RobloxIcon = ({ className, color }: { className?: string; color?: b
     </svg>
 )
 
-export const SpotifyIcon = ({ className, color }: { className?: string; color?: boolean }) =>
+export const SpotifyIcon: ProviderIcon = ({ className, color }) =>
     color ? (
         <svg className={className} viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -235,7 +244,7 @@ export const SpotifyIcon = ({ className, color }: { className?: string; color?: 
         </svg>
     )
 
-export const TikTokIcon = ({ className, color }: { className?: string; color?: boolean }) =>
+export const TikTokIcon: ProviderIcon = ({ className, color }) =>
     color ? (
         <svg className={className} viewBox="0 0 256 290" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -259,7 +268,7 @@ export const TikTokIcon = ({ className, color }: { className?: string; color?: b
         </svg>
     )
 
-export const TwitchIcon = ({ className, color }: { className?: string; color?: boolean }) =>
+export const TwitchIcon: ProviderIcon = ({ className, color }) =>
     color ? (
         <svg
             className={className}
@@ -309,7 +318,7 @@ export const TwitchIcon = ({ className, color }: { className?: string; color?: b
         </svg>
     )
 
-export const VKIcon = ({ className, color }: { className?: string; color?: boolean }) => (
+export const VKIcon: ProviderIcon = ({ className, color }) => (
     <svg className={className} viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg">
         <path
             d="M545 117.7c3.7-12.5 0-21.7-17.8-21.7h-58.9c-15 0-21.9 7.9-25.6 16.7c0 0-30 73.1-72.4 120.5c-13.7 13.7-20 18.1-27.5 18.1c-3.7 0-9.4-4.4-9.4-16.9V117.7c0-15-4.2-21.7-16.6-21.7h-92.6c-9.4 0-15 7-15 13.5c0 14.2 21.2 17.5 23.4 57.5v86.8c0 19-3.4 22.5-10.9 22.5c-20 0-68.6-73.4-97.4-157.4c-5.8-16.3-11.5-22.9-26.6-22.9H38.8c-16.8 0-20.2 7.9-20.2 16.7c0 15.6 20 93.1 93.1 195.5C160.4 378.1 229 416 291.4 416c37.5 0 42.1-8.4 42.1-22.9c0-66.8-3.4-73.1 15.4-73.1c8.7 0 23.7 4.4 58.7 38.1c40 40 46.6 57.9 69 57.9h58.9c16.8 0 25.3-8.4 20.4-25c-11.2-34.9-86.9-106.7-90.3-111.5c-8.7-11.2-6.2-16.2 0-26.2c.1-.1 72-101.3 79.4-135.6"
@@ -318,7 +327,7 @@ export const VKIcon = ({ className, color }: { className?: string; color?: boole
     </svg>
 )
 
-export const XIcon = ({ className, color }: { className?: string; color?: boolean }) => (
+export const XIcon: ProviderIcon = ({ className, color }) => (
     <svg className={className} viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
         <path
             d="M389.2 48h70.6L305.6 224.2L487 464H345L233.7 318.6L106.5 464H35.8l164.9-188.5L26.8 48h145.6l100.5 132.9zm-24.8 373.8h39.1L151.1 88h-42z"

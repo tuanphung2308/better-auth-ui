@@ -3,7 +3,7 @@ import { useFormStatus } from "react-dom"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import type { socialProviders } from "../../lib/social-providers"
+import type { SocialProvider } from "../../lib/social-providers"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
 
@@ -11,14 +11,16 @@ export function ProviderButton({
     className,
     isLoading,
     localization,
-    socialLayout,
-    socialProvider
+    other = false,
+    provider,
+    socialLayout
 }: {
     className?: string
     isLoading?: boolean
     localization: Partial<AuthLocalization>
+    other?: boolean
+    provider: SocialProvider
     socialLayout: "auto" | "horizontal" | "grid" | "vertical"
-    socialProvider: (typeof socialProviders)[number]
 }) {
     const { pending } = useFormStatus()
     const { colorIcons, noColorIcons } = useContext(AuthUIContext)
@@ -28,26 +30,26 @@ export function ProviderButton({
             className={cn(socialLayout === "vertical" ? "w-full" : "grow", className)}
             disabled={pending || isLoading}
             formNoValidate
-            name="provider"
-            value={socialProvider.provider}
+            name={other ? "otherProvider" : "provider"}
+            value={provider.provider}
             variant="outline"
         >
             {colorIcons ? (
-                <socialProvider.icon color />
+                <provider.icon color />
             ) : noColorIcons ? (
-                <socialProvider.icon />
+                <provider.icon />
             ) : (
                 <>
-                    <socialProvider.icon className="dark:hidden" color />
-                    <socialProvider.icon className="hidden dark:block" />
+                    <provider.icon className="dark:hidden" color />
+                    <provider.icon className="hidden dark:block" />
                 </>
             )}
 
-            {socialLayout === "grid" && <>{socialProvider.name}</>}
+            {socialLayout === "grid" && <>{provider.name}</>}
 
             {socialLayout === "vertical" && (
                 <>
-                    {localization.signInWith} {socialProvider.name}
+                    {localization.signInWith} {provider.name}
                 </>
             )}
         </Button>

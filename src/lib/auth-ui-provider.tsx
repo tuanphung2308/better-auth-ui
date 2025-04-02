@@ -14,7 +14,7 @@ import { useListPasskeys } from "../hooks/use-list-passkeys"
 import type { AuthClient } from "../types/auth-client"
 import { type AuthLocalization, authLocalization } from "./auth-localization"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
-import type { SocialProvider } from "./social-providers"
+import type { Provider, SocialProvider } from "./social-providers"
 
 const DefaultLink = ({
     href,
@@ -90,11 +90,6 @@ type DefaultMutates = {
     revokeSession: AuthClient["revokeSession"]
     setActiveSession: AuthClient["multiSession"]["setActive"]
     revokeDeviceSession: AuthClient["multiSession"]["revoke"]
-}
-
-export type OtherProvider = {
-    id: string
-    icon?: ReactNode
 }
 
 export type AuthUIContextType = {
@@ -213,12 +208,12 @@ export type AuthUIContextType = {
      * Array of social providers to enable
      * @remarks `SocialProvider[]`
      */
-    providers?: SocialProvider[]
+    providers?: Provider[]
     /**
      * Custom OAuth Providers
      * @default false
      */
-    otherProviders?: OtherProvider[]
+    otherProviders?: SocialProvider[]
     /**
      * Enable or disable remember me support
      * @default false

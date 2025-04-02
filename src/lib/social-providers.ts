@@ -9,6 +9,7 @@ import {
     KickIcon,
     LinkedInIcon,
     MicrosoftIcon,
+    type ProviderIcon,
     RedditIcon,
     RobloxIcon,
     SpotifyIcon,
@@ -106,4 +107,10 @@ export const socialProviders = [
     }
 ] as const
 
-export type SocialProvider = (typeof socialProviders)[number]["provider"]
+export type Provider = (typeof socialProviders)[number]["provider"]
+
+export type SocialProvider = {
+    provider: string
+    name: string
+    icon: ProviderIcon
+}
