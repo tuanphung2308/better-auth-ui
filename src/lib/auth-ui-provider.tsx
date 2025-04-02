@@ -52,7 +52,6 @@ const defaultToast: RenderToast = ({ variant = "default", message }) => {
 
 export type TLink = React.ComponentType<{
     href: string
-    to: unknown
     className?: string
     children: ReactNode
 }>
