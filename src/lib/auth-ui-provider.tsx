@@ -7,9 +7,10 @@ import { useListDeviceSessions } from "../hooks/use-list-device-sessions"
 import { useListSessions } from "../hooks/use-list-sessions"
 import { useSession } from "../hooks/use-session"
 
+import type { createAuthClient } from "better-auth/react"
 import { toast } from "sonner"
 import { useListPasskeys } from "../hooks/use-list-passkeys"
-import type { AuthClient, MultiSessionAuthClient, PasskeyAuthClient } from "../types/auth-client"
+import type { AuthClient } from "../types/auth-client"
 import { type AuthLocalization, authLocalization } from "./auth-localization"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
 import type { SocialProvider } from "./social-providers"
@@ -84,10 +85,10 @@ const defaultHooks = {
 type DefaultMutates = {
     updateUser: AuthClient["updateUser"]
     unlinkAccount: AuthClient["unlinkAccount"]
-    deletePasskey: PasskeyAuthClient["passkey"]["deletePasskey"]
+    deletePasskey: AuthClient["passkey"]["deletePasskey"]
     revokeSession: AuthClient["revokeSession"]
-    setActiveSession: MultiSessionAuthClient["multiSession"]["setActive"]
-    revokeDeviceSession: MultiSessionAuthClient["multiSession"]["revoke"]
+    setActiveSession: AuthClient["multiSession"]["setActive"]
+    revokeDeviceSession: AuthClient["multiSession"]["revoke"]
 }
 
 export type OtherProvider = {
@@ -280,7 +281,7 @@ export type AuthUIProviderProps = {
      * @default Required
      * @remarks `AuthClient`
      */
-    authClient: AuthClient
+    authClient: Omit<ReturnType<typeof createAuthClient>, "signUp">
     /**
      * Customize the paths for the auth views
      * @default authViewPaths
@@ -336,11 +337,11 @@ export const AuthUIProvider = ({
 
     mutates = mutates || {
         updateUser: authClient.updateUser,
-        deletePasskey: (authClient as PasskeyAuthClient).passkey.deletePasskey,
+        deletePasskey: authClient.passkey.deletePasskey,
         unlinkAccount: authClient.unlinkAccount,
         revokeSession: authClient.revokeSession,
-        setActiveSession: (authClient as MultiSessionAuthClient).multiSession.setActive,
-        revokeDeviceSession: (authClient as MultiSessionAuthClient).multiSession.revoke
+        setActiveSession: authClient.multiSession.setActive,
+        revokeDeviceSession: authClient.multiSession.revoke
     }
 
     avatarSize = uploadAvatar ? 256 : 128

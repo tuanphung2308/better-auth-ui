@@ -5,7 +5,6 @@ import { useContext, useState } from "react"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
-import type { PasskeyAuthClient } from "../../types/auth-client"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import type { SettingsCardClassNames } from "./settings-card"
@@ -35,14 +34,13 @@ export function PasskeysCard({
     refetch
 }: PasskeysCardProps) {
     const {
-        authClient: contextAuthClient,
+        authClient,
         hooks: { useListPasskeys },
         mutates: { deletePasskey },
         localization: authLocalization,
         optimistic,
         toast
     } = useContext(AuthUIContext)
-    const authClient = contextAuthClient as PasskeyAuthClient
 
     localization = { ...authLocalization, ...localization }
 

@@ -12,9 +12,7 @@ export function useListDeviceSessions() {
     const initialized = useRef(false)
 
     const refetch = useCallback(async () => {
-        const { data, error } =
-            // @ts-expect-error Optional plugin
-            await authClient.multiSession.listDeviceSessions()
+        const { data, error } = await authClient.multiSession.listDeviceSessions()
 
         if (error) toast({ variant: "error", message: error.message || error.statusText })
 

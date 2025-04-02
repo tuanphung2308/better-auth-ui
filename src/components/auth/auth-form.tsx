@@ -185,7 +185,6 @@ export function AuthForm({
         }
 
         if (formData.get("passkey")) {
-            // @ts-expect-error Optional plugin
             const response = await authClient.signIn.passkey()
             const error = response?.error
             if (error) {
@@ -321,7 +320,7 @@ export function AuthForm({
                     }
                 })
 
-                // @ts-expect-error We omit signUp from the authClient type to support additional fields
+                // @ts-ignore
                 const { data, error } = await authClient.signUp.email(params)
 
                 if (error) {
