@@ -9,12 +9,13 @@ import { useListSessions } from "../hooks/use-list-sessions"
 import { useSession } from "../hooks/use-session"
 
 import type { createAuthClient } from "better-auth/react"
+import type { SocialProvider } from "better-auth/social-providers"
 import { toast } from "sonner"
 import { useListPasskeys } from "../hooks/use-list-passkeys"
 import type { AuthClient } from "../types/auth-client"
 import { type AuthLocalization, authLocalization } from "./auth-localization"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
-import type { Provider, SocialProvider } from "./social-providers"
+import type { Provider } from "./social-providers"
 
 const DefaultLink = ({
     href,
@@ -208,12 +209,12 @@ export type AuthUIContextType = {
      * Array of social providers to enable
      * @remarks `SocialProvider[]`
      */
-    providers?: Provider[]
+    providers?: SocialProvider[]
     /**
      * Custom OAuth Providers
      * @default false
      */
-    otherProviders?: SocialProvider[]
+    otherProviders?: Provider[]
     /**
      * Enable or disable remember me support
      * @default false

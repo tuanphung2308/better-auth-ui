@@ -6,12 +6,13 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
-import { type Provider, socialProviders } from "../../lib/social-providers"
+import { socialProviders } from "../../lib/social-providers"
 import { cn, isValidEmail } from "../../lib/utils"
 import { Checkbox } from "../ui/checkbox"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
+import type { SocialProvider } from "better-auth/social-providers"
 import { PasswordInput } from "../password-input"
 import { ActionButton } from "./action-button"
 import { MagicLinkButton } from "./magic-link-button"
@@ -148,7 +149,7 @@ export function AuthForm({
     }, [isLoading, error, navigate, sessionData, getRedirectTo, toast])
 
     const formAction = async (formData: FormData) => {
-        const provider = formData.get("provider") as Provider
+        const provider = formData.get("provider") as SocialProvider
 
         if (provider) {
             const { error } = await authClient.signIn.social({

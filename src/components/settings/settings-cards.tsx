@@ -55,6 +55,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         localization: authLocalization,
         multiSession,
         nameRequired,
+        otherProviders,
         passkey,
         providers,
         settingsFields,
@@ -225,7 +226,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         />
                     )}
 
-                    {providers?.length && (
+                    {(providers?.length || otherProviders?.length) && (
                         <ProvidersCard
                             accounts={accounts}
                             classNames={classNames?.card}

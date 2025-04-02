@@ -3,7 +3,7 @@ import { useFormStatus } from "react-dom"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import type { SocialProvider } from "../../lib/social-providers"
+import type { Provider } from "../../lib/social-providers"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
 
@@ -19,7 +19,7 @@ export function ProviderButton({
     isLoading?: boolean
     localization: Partial<AuthLocalization>
     other?: boolean
-    provider: SocialProvider
+    provider: Provider
     socialLayout: "auto" | "horizontal" | "grid" | "vertical"
 }) {
     const { pending } = useFormStatus()
@@ -34,16 +34,17 @@ export function ProviderButton({
             value={provider.provider}
             variant="outline"
         >
-            {colorIcons ? (
-                <provider.icon color />
-            ) : noColorIcons ? (
-                <provider.icon />
-            ) : (
-                <>
-                    <provider.icon className="dark:hidden" color />
-                    <provider.icon className="hidden dark:block" />
-                </>
-            )}
+            {provider.icon &&
+                (colorIcons ? (
+                    <provider.icon variant="color" />
+                ) : noColorIcons ? (
+                    <provider.icon />
+                ) : (
+                    <>
+                        <provider.icon className="dark:hidden" variant="color" />
+                        <provider.icon className="hidden dark:block" />
+                    </>
+                ))}
 
             {socialLayout === "grid" && <>{provider.name}</>}
 

@@ -1,16 +1,13 @@
 "use client"
-
-import type { SocialProvider } from "better-auth/social-providers"
-import { Loader2 } from "lucide-react"
-import { useContext, useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useRef } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { socialProviders } from "../../lib/social-providers"
 import { cn } from "../../lib/utils"
-import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 
+import { ProviderCard } from "./provider-card"
 import type { SettingsCardClassNames } from "./settings-card"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
 
@@ -40,15 +37,15 @@ export function ProvidersCard({
     const {
         authClient,
         colorIcons,
-        hooks,
+        hooks: { useListAccounts },
         mutates: { unlinkAccount },
         localization: authLocalization,
         noColorIcons,
         optimistic,
         providers,
+        otherProviders,
         toast
     } = useContext(AuthUIContext)
-    const { useListAccounts } = hooks
 
     localization = { ...authLocalization, ...localization }
 
@@ -59,7 +56,6 @@ export function ProvidersCard({
         refetch = result.refetch
     }
 
-    const [actionLoading, setActionLoading] = useState<string | null>(null)
     const hasShownLinkedToast = useRef(false)
 
     useEffect(() => {
@@ -77,38 +73,6 @@ export function ProvidersCard({
             }, 0)
         }
     }, [localization.providerLinkSuccess, toast])
-
-    const handleLink = async (provider: SocialProvider) => {
-        setActionLoading(provider)
-        const callbackURL = `${window.location.pathname}?providerLinked=true`
-        const { error } = await authClient.linkSocial({ provider, callbackURL })
-
-        if (error) {
-            toast({ variant: "error", message: error.message || error.statusText })
-            setActionLoading(null)
-        }
-    }
-
-    const handleUnlink = async ({
-        accountId,
-        providerId
-    }: {
-        accountId: string
-        providerId: string
-    }) => {
-        if (!optimistic) setActionLoading(providerId)
-
-        const { error } = await unlinkAccount({ accountId, providerId })
-
-        if (error) {
-            toast({ variant: "error", message: error.message || error.statusText })
-        } else {
-            toast({ variant: "success", message: localization.providerUnlinkSuccess! })
-            refetch?.()
-        }
-
-        setActionLoading(null)
-    }
 
     if (isPending) {
         return <ProvidersCardSkeleton className={className} classNames={classNames} />
@@ -133,59 +97,25 @@ export function ProvidersCard({
                     )
                     if (!socialProvider) return null
 
-                    const account = accounts?.find((acc) => acc.provider === provider)
-                    const isLinked = !!account
-
-                    const isButtonLoading = actionLoading === provider || actionLoading === provider
-
                     return (
-                        <Card
+                        <ProviderCard
                             key={provider}
-                            className={cn("flex items-center gap-3 px-4 py-3", classNames?.cell)}
-                        >
-                            {colorIcons ? (
-                                <socialProvider.icon className="size-4" color />
-                            ) : noColorIcons ? (
-                                <socialProvider.icon className="size-4" />
-                            ) : (
-                                <>
-                                    <socialProvider.icon className="size-4 dark:hidden" color />
-                                    <socialProvider.icon className="hidden size-4 dark:block" />
-                                </>
-                            )}
+                            classNames={classNames}
+                            provider={socialProvider}
+                            accounts={accounts}
+                        />
+                    )
+                })}
 
-                            <span className="text-sm">{socialProvider.name}</span>
-
-                            <Button
-                                className={cn("relative ms-auto", classNames?.button)}
-                                disabled={isButtonLoading}
-                                size="sm"
-                                type="button"
-                                variant={isLinked ? "outline" : "default"}
-                                onClick={() => {
-                                    if (actionLoading) return
-
-                                    if (isLinked) {
-                                        handleUnlink({
-                                            accountId: account.accountId,
-                                            providerId: provider
-                                        })
-                                    } else {
-                                        handleLink(provider)
-                                    }
-                                }}
-                            >
-                                <span className={isButtonLoading ? "opacity-0" : "opacity-100"}>
-                                    {isLinked ? localization.unlink : localization.link}
-                                </span>
-
-                                {isButtonLoading && (
-                                    <span className="absolute">
-                                        <Loader2 className="animate-spin" />
-                                    </span>
-                                )}
-                            </Button>
-                        </Card>
+                {otherProviders?.map((provider) => {
+                    return (
+                        <ProviderCard
+                            key={provider.provider}
+                            classNames={classNames}
+                            provider={provider}
+                            accounts={accounts}
+                            other
+                        />
                     )
                 })}
             </CardContent>
