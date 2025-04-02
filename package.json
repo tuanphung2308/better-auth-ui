@@ -43,17 +43,8 @@
             }
         }
     },
-    "files": [
-        "src",
-        "dist"
-    ],
-    "keywords": [
-        "typescript",
-        "react",
-        "better-auth",
-        "shadcn",
-        "nextjs"
-    ],
+    "files": ["src", "dist"],
+    "keywords": ["typescript", "react", "better-auth", "shadcn", "nextjs"],
     "author": "daveycodez",
     "license": "MIT",
     "devDependencies": {
@@ -71,15 +62,15 @@
         "@react-email/components": "^0.0.35",
         "@tanstack/react-query": "^5.71.1",
         "@types/node": "^22.13.17",
-        "@types/react": "^19.0.12",
-        "@types/react-dom": "^19.0.4",
+        "@types/react": "^19.0.14",
+        "@types/react-dom": "^19.0.6",
         "better-auth": "^1.2.5",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "dotenv": "^16.4.7",
         "esbuild-plugin-preserve-directives": "^0.0.11",
         "ignore": "^7.0.3",
-        "lucide-react": "^0.486.0",
+        "lucide-react": "^0.487.0",
         "next": "^15.2.4",
         "nodemon": "^3.1.9",
         "react-router": "^7.4.1",
