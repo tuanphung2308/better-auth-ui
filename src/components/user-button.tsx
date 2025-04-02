@@ -13,7 +13,7 @@ import { Fragment, type ReactNode, useContext, useEffect, useState } from "react
 import type { AuthLocalization } from "../lib/auth-localization"
 import { AuthUIContext } from "../lib/auth-ui-provider"
 import { cn } from "../lib/utils"
-import type { User } from "../types/user"
+import type { User as UserType } from "../types/user"
 
 import type { Session } from "better-auth"
 import { Button } from "./ui/button"
@@ -24,7 +24,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "./ui/dropdown-menu"
-import { Skeleton } from "./ui/skeleton"
+import { User, type UserClassNames } from "./user"
 import { UserAvatar, type UserAvatarClassNames } from "./user-avatar"
 
 export interface UserButtonClassNames {
@@ -33,10 +33,12 @@ export interface UserButtonClassNames {
     trigger?: {
         base?: string
         avatar?: UserAvatarClassNames
+        user?: UserClassNames
         skeleton?: string
     }
     content?: {
         base?: string
+        user?: UserClassNames
         avatar?: UserAvatarClassNames
         menuItem?: string
         separator?: string
@@ -66,7 +68,7 @@ export interface UserButtonProps {
 
 type DeviceSession = {
     session: Session
-    user: User
+    user: UserType
 }
 
 export function UserButton({
@@ -79,7 +81,7 @@ export function UserButton({
 }: UserButtonProps) {
     const {
         basePath,
-        hooks,
+        hooks: { useSession, useListDeviceSessions },
         mutates: { setActiveSession },
         localization: authLocalization,
         multiSession,
@@ -89,7 +91,6 @@ export function UserButton({
         onSessionChange,
         Link
     } = useContext(AuthUIContext)
-    const { useSession, useListDeviceSessions } = hooks
 
     localization = { ...authLocalization, ...localization }
 
@@ -103,125 +104,84 @@ export function UserButton({
     }
 
     const { data: sessionData, isPending: sessionPending } = useSession()
-    const user = sessionData?.user as User
+    const user = sessionData?.user as UserType
     const [activeSessionPending, setActiveSessionPending] = useState(false)
 
-    const isPending =
-        (sessionData && deviceSessionsPending) || sessionPending || activeSessionPending
+    const isPending = sessionPending || activeSessionPending
+
+    const switchAccount = async (sessionToken: string) => {
+        setActiveSessionPending(true)
+        const { error } = await setActiveSession({ sessionToken })
+
+        if (error) {
+            toast({ variant: "error", message: error.message || error.statusText })
+        } else {
+            onSessionChange?.()
+        }
+    }
 
     // biome-ignore lint/correctness/useExhaustiveDependencies:
     useEffect(() => {
         if (!multiSession) return
 
         setActiveSessionPending(false)
-    }, [sessionData])
+    }, [sessionData, multiSession])
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger
                 asChild={size === "full"}
                 className={cn(size === "icon" && "rounded-full", classNames?.trigger?.base)}
-                disabled={isPending}
             >
                 {size === "icon" ? (
-                    isPending ? (
-                        <Skeleton
-                            className={cn(
-                                "size-8 rounded-full",
-                                className,
-                                classNames?.base,
-                                classNames?.skeleton,
-                                classNames?.trigger?.skeleton
-                            )}
-                        />
-                    ) : (
-                        <UserAvatar
-                            className={cn("size-8", className, classNames?.base)}
-                            classNames={classNames?.trigger?.avatar}
-                            user={user}
-                        />
-                    )
+                    <UserAvatar
+                        isPending={isPending}
+                        className={cn("size-8", className, classNames?.base)}
+                        classNames={classNames?.trigger?.avatar}
+                        user={user}
+                    />
                 ) : (
-                    <Button className={cn("!px-3 h-12", className)} variant="outline">
-                        <>
-                            {isPending ? (
-                                <Skeleton
-                                    className={cn(
-                                        "size-8 rounded-full",
-                                        classNames?.skeleton,
-                                        classNames?.trigger?.skeleton
-                                    )}
-                                />
-                            ) : (
-                                <UserAvatar classNames={classNames?.content?.avatar} user={user} />
-                            )}
+                    <Button
+                        className={cn("h-fit", className, classNames?.trigger?.base)}
+                        variant="outline"
+                    >
+                        <User
+                            user={user}
+                            isPending={isPending}
+                            classNames={classNames?.trigger?.user}
+                        />
 
-                            <div className="flex grow flex-col truncate text-left">
-                                <div className="truncate font-medium text-sm">
-                                    {isPending ? (
-                                        <Skeleton
-                                            className={cn("h-3 w-20", classNames?.skeleton)}
-                                        />
-                                    ) : (
-                                        user?.name || user?.email || localization.account
-                                    )}
-                                </div>
-
-                                {isPending ? (
-                                    <Skeleton
-                                        className={cn("mt-1 h-3 w-32", classNames?.skeleton)}
-                                    />
-                                ) : (
-                                    user?.name && (
-                                        <div className="!font-light truncate text-muted-foreground text-xs">
-                                            {user?.email}
-                                        </div>
-                                    )
-                                )}
-                            </div>
-
-                            <ChevronsUpDown className="ml-auto size-4" />
-                        </>
+                        <ChevronsUpDown className="ml-auto" />
                     </Button>
                 )}
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
-                className={cn(
-                    "me-3 max-w-64",
-                    size === "full" && "min-w-48",
-                    classNames?.content?.base
-                )}
+                className={cn("max-w-64", classNames?.content?.base)}
                 onCloseAutoFocus={(e) => e.preventDefault()}
             >
-                {user && !user.isAnonymous ? (
-                    <div className="flex items-center gap-2 p-2">
-                        <UserAvatar classNames={classNames?.content?.avatar} user={user} />
-
-                        <div className="flex flex-col truncate">
-                            <div className="truncate font-medium text-sm">
-                                {user.name || user.email}
-                            </div>
-
-                            {user.name && (
-                                <div className="!font-light truncate text-muted-foreground text-xs">
-                                    {user.email}
-                                </div>
-                            )}
+                <div className={cn("p-2", classNames?.content?.menuItem)}>
+                    {(user && !user.isAnonymous) || isPending ? (
+                        <User
+                            user={user}
+                            isPending={isPending}
+                            classNames={classNames?.content?.user}
+                        />
+                    ) : (
+                        <div className="-my-1 text-muted-foreground text-xs">
+                            {localization.account}
                         </div>
-                    </div>
-                ) : (
-                    <div className="!font-light px-2 py-1 text-muted-foreground text-xs">
-                        {localization.account}
-                    </div>
-                )}
+                    )}
+                </div>
 
                 <DropdownMenuSeparator className={classNames?.content?.separator} />
 
                 {additionalLinks?.map(
-                    ({ href, icon, label, signedIn }) =>
-                        (!signedIn || !!sessionData) && (
-                            <Link href={href} to={href} key={href}>
+                    ({ href, icon, label, signedIn }, index) =>
+                        (signedIn === undefined ||
+                            (signedIn && !!sessionData) ||
+                            (!signedIn && !sessionData)) && (
+                            <Link key={index} href={href}>
                                 <DropdownMenuItem className={classNames?.content?.menuItem}>
                                     {icon}
 
@@ -233,10 +193,7 @@ export function UserButton({
 
                 {!user || user.isAnonymous ? (
                     <>
-                        <Link
-                            href={`${basePath}/${viewPaths.signIn}`}
-                            to={`${basePath}/${viewPaths.signIn}`}
-                        >
+                        <Link href={`${basePath}/${viewPaths.signIn}`}>
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <LogInIcon />
 
@@ -244,10 +201,7 @@ export function UserButton({
                             </DropdownMenuItem>
                         </Link>
 
-                        <Link
-                            href={`${basePath}/${viewPaths.signUp}`}
-                            to={`${basePath}/${viewPaths.signUp}`}
-                        >
+                        <Link href={`${basePath}/${viewPaths.signUp}`}>
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <UserRoundPlus />
 
@@ -258,10 +212,7 @@ export function UserButton({
                 ) : (
                     <>
                         {!disableDefaultLinks && (
-                            <Link
-                                href={settingsUrl || `${basePath}/${viewPaths.settings}`}
-                                to={settingsUrl || `${basePath}/${viewPaths.settings}`}
-                            >
+                            <Link href={settingsUrl || `${basePath}/${viewPaths.settings}`}>
                                 <DropdownMenuItem className={classNames?.content?.menuItem}>
                                     <SettingsIcon />
 
@@ -270,10 +221,7 @@ export function UserButton({
                             </Link>
                         )}
 
-                        <Link
-                            href={`${basePath}/${viewPaths.signOut}`}
-                            to={`${basePath}/${viewPaths.signOut}`}
-                        >
+                        <Link href={`${basePath}/${viewPaths.signOut}`}>
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <LogOutIcon />
 
@@ -287,45 +235,28 @@ export function UserButton({
                     <>
                         <DropdownMenuSeparator className={classNames?.content?.separator} />
 
+                        {!deviceSessions && deviceSessionsPending && (
+                            <>
+                                <DropdownMenuItem
+                                    disabled
+                                    className={classNames?.content?.menuItem}
+                                >
+                                    <User isPending={true} classNames={classNames?.content?.user} />
+                                </DropdownMenuItem>
+
+                                <DropdownMenuSeparator className={classNames?.content?.separator} />
+                            </>
+                        )}
+
                         {deviceSessions
                             ?.filter((sessionData) => sessionData.user.id !== user?.id)
                             .map(({ session, user }) => (
                                 <Fragment key={session.id}>
                                     <DropdownMenuItem
                                         className={classNames?.content?.menuItem}
-                                        onClick={async () => {
-                                            setActiveSessionPending(true)
-                                            const { error } = await setActiveSession({
-                                                sessionToken: session.token
-                                            })
-                                            if (error) {
-                                                toast({
-                                                    variant: "error",
-                                                    message: error.message || error.statusText
-                                                })
-                                            } else {
-                                                onSessionChange?.()
-                                            }
-                                        }}
+                                        onClick={() => switchAccount(session.token)}
                                     >
-                                        <div className="flex items-center gap-2 truncate">
-                                            <UserAvatar
-                                                classNames={classNames?.content?.avatar}
-                                                user={user}
-                                            />
-
-                                            <div className="flex flex-col truncate">
-                                                <div className="truncate font-medium text-sm">
-                                                    {user.name || user.email}
-                                                </div>
-
-                                                {user.name && (
-                                                    <div className="!font-light truncate text-muted-foreground text-xs">
-                                                        {user.email}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
+                                        <User user={user} classNames={classNames?.content?.user} />
                                     </DropdownMenuItem>
 
                                     <DropdownMenuSeparator
@@ -334,10 +265,7 @@ export function UserButton({
                                 </Fragment>
                             ))}
 
-                        <Link
-                            href={`${basePath}/${viewPaths.signIn}`}
-                            to={`${basePath}/${viewPaths.signIn}`}
-                        >
+                        <Link href={`${basePath}/${viewPaths.signIn}`}>
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <PlusCircleIcon />
 
