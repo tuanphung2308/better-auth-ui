@@ -1,4 +1,5 @@
 "use client"
+
 import type React from "react"
 import { type ReactNode, createContext } from "react"
 
@@ -335,13 +336,14 @@ export const AuthUIProvider = ({
     replace = replace || navigate || defaultReplace
     navigate = navigate || defaultNavigate
 
-    mutates = mutates || {
+    mutates = {
         updateUser: authClient.updateUser,
         deletePasskey: authClient.passkey.deletePasskey,
         unlinkAccount: authClient.unlinkAccount,
         revokeSession: authClient.revokeSession,
         setActiveSession: authClient.multiSession.setActive,
-        revokeDeviceSession: authClient.multiSession.revoke
+        revokeDeviceSession: authClient.multiSession.revoke,
+        ...mutates
     }
 
     avatarSize = uploadAvatar ? 256 : 128
