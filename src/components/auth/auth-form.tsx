@@ -525,7 +525,6 @@ export function AuthForm({
                                         classNames?.forgotPasswordLink
                                     )}
                                     href={`${basePath}/${viewPaths.forgotPassword}`}
-                                    to={`${basePath}/${viewPaths.forgotPassword}`}
                                 >
                                     {localization.forgotPasswordLink}
                                 </Link>

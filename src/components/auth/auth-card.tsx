@@ -150,7 +150,6 @@ export function AuthCard({
                     <Link
                         className={cn("text-foreground underline", classNames?.footerLink)}
                         href={`${basePath}/${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
-                        to={`${basePath}/${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
                     >
                         {view === "signIn" ? localization.signUp : localization.signIn}
                     </Link>
