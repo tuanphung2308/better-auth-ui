@@ -1,11 +1,11 @@
-import type { ReactNode } from "react"
+import type { ComponentType } from "react"
 
 export interface ProviderIconProps {
     className?: string
     variant?: "default" | "color"
 }
 
-export type ProviderIcon = (props: ProviderIconProps) => ReactNode
+export type ProviderIcon = ComponentType<ProviderIconProps>
 
 export const AppleIcon: ProviderIcon = ({ className }) => (
     <svg className={className} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">

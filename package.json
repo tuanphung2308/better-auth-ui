@@ -41,6 +41,16 @@
                 "types": "./dist/tanstack.d.cts",
                 "default": "./dist/tanstack.cjs"
             }
+        },
+        "./instantdb": {
+            "import": {
+                "types": "./dist/instantdb.d.ts",
+                "default": "./dist/instantdb.js"
+            },
+            "require": {
+                "types": "./dist/instantdb.d.cts",
+                "default": "./dist/instantdb.cjs"
+            }
         }
     },
     "files": ["src", "dist"],
@@ -49,7 +59,6 @@
     "license": "MIT",
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
-        "@daveyplate/better-auth-tanstack": "^1.2.33",
         "@radix-ui/react-checkbox": "^1.1.4",
         "@radix-ui/react-context": "^1.1.1",
         "@radix-ui/react-dialog": "^1.1.6",
@@ -64,7 +73,6 @@
         "@types/node": "^22.14.0",
         "@types/react": "^19.1.0",
         "@types/react-dom": "^19.1.1",
-        "better-auth": "^1.2.5",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "dotenv": "^16.4.7",
@@ -84,7 +92,8 @@
         "ua-parser-js": "^2.0.3"
     },
     "peerDependencies": {
-        "@daveyplate/better-auth-tanstack": "^1.2.30",
+        "@daveyplate/better-auth-tanstack": "^1.2.33",
+        "@instantdb/react": "^0.18.2",
         "@radix-ui/react-avatar": ">=1.1.0",
         "@radix-ui/react-checkbox": ">=1.1.0",
         "@radix-ui/react-context": ">=1.1.0",
@@ -112,5 +121,8 @@
     "pnpm": {
         "overrides": {}
     },
-    "packageManager": "pnpm@10.7.1"
+    "packageManager": "pnpm@10.7.1",
+    "dependencies": {
+        "@instantdb/core": "^0.18.2"
+    }
 }

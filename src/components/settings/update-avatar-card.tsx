@@ -163,6 +163,7 @@ export function UpdateAvatarCard({
                         />
                     ) : (
                         <UserAvatar
+                            key={(user || sessionData?.user)?.image}
                             className="size-20 text-2xl"
                             classNames={classNames?.avatar}
                             user={user || sessionData?.user}

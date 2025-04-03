@@ -65,7 +65,7 @@ export function ChangeEmailCard({
             if (sessionData?.user.emailVerified) {
                 toast({ message: localization.emailVerifyChange! })
             } else {
-                refetch()
+                refetch?.()
             }
         }
 

@@ -6,7 +6,8 @@ export default defineConfig((env) => {
         entry: {
             index: "./src/index.ts",
             server: "./src/server.ts",
-            tanstack: "./src/tanstack.ts"
+            tanstack: "./src/tanstack.ts",
+            instantdb: "./src/instantdb.ts"
         },
         format: ["esm", "cjs"],
         splitting: true,

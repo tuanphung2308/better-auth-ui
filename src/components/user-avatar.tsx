@@ -45,7 +45,7 @@ export function UserAvatar({
     }
 
     return (
-        <Avatar key={src} className={cn(className, classNames?.base)} {...props}>
+        <Avatar className={cn("bg-muted", className, classNames?.base)} {...props}>
             <AvatarImage
                 alt={name || "Avatar"}
                 className={classNames?.image}
@@ -56,7 +56,7 @@ export function UserAvatar({
                 }
             />
 
-            <AvatarFallback className={cn("uppercase", classNames?.fallback)} delayMs={200}>
+            <AvatarFallback className={cn("uppercase", classNames?.fallback)} delayMs={600}>
                 {firstTwoCharacters(name) || (
                     <UserIcon className={cn("w-[55%]", classNames?.fallbackIcon)} />
                 )}

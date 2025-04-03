@@ -6,7 +6,7 @@ type AuthHook<T> = {
     data?: T | null
     error?: FetchError | null
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    refetch: () => Promise<any> | any
+    refetch?: () => Promise<any> | any
 }
 
 export type AuthHooks = {
