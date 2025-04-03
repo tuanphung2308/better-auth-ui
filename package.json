@@ -1,7 +1,7 @@
 {
     "name": "@daveyplate/better-auth-ui",
     "homepage": "https://better-auth-ui.com",
-    "version": "1.3.4",
+    "version": "1.3.5",
     "description": "Plug & play shadcn/ui components for better-auth",
     "scripts": {
         "build": "tsup --clean --dts",
@@ -87,12 +87,12 @@
         "tsc-watch": "^6.2.1",
         "tsup": "^8.4.0",
         "tsx": "^4.19.3",
-        "turbo": "^2.4.4",
+        "turbo": "^2.5.0",
         "typescript": "^5.8.2",
         "ua-parser-js": "^2.0.3"
     },
     "peerDependencies": {
-        "@daveyplate/better-auth-tanstack": "^1.2.33",
+        "@daveyplate/better-auth-tanstack": "^1.3.0",
         "@instantdb/react": "^0.18.2",
         "@radix-ui/react-avatar": ">=1.1.0",
         "@radix-ui/react-checkbox": ">=1.1.0",
