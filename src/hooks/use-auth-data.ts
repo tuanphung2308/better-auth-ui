@@ -1,33 +1,40 @@
-import type { Session } from "better-auth/types"
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
+import type { FetchError } from "../types/fetch-error"
 
-export function useListSessions() {
+export function useAuthData<T>({
+    queryFn
+}: {
+    queryFn: () => Promise<{ data: T | null; error?: FetchError | null }>
+}) {
     const { authClient, toast } = useContext(AuthUIContext)
-    const { data: sessionData } = authClient.useSession()
+    const { data: sessionData, isPending: sessionPending } = authClient.useSession()
 
-    const [data, setData] = useState<Session[] | null>(null)
+    const [data, setData] = useState<T | null>(null)
     const [isPending, setIsPending] = useState(true)
     const initialized = useRef(false)
 
     const refetch = useCallback(async () => {
-        const { data, error } = await authClient.listSessions()
+        const { data, error } = await queryFn()
 
         if (error) toast({ variant: "error", message: error.message || error.statusText })
 
         setData(data)
         setIsPending(false)
-    }, [authClient, toast])
+    }, [queryFn, toast])
 
     useEffect(() => {
-        if (!sessionData) return
+        if (!sessionData) {
+            setIsPending(sessionPending)
+            return
+        }
 
         if (initialized.current) return
 
         initialized.current = true
         refetch()
-    }, [refetch, sessionData])
+    }, [refetch, sessionData, sessionPending])
 
     return {
         data,

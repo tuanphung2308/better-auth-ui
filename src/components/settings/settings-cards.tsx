@@ -8,7 +8,6 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 
 import type { Session, User } from "better-auth"
-import type { Passkey } from "better-auth/plugins/passkey"
 import { KeyIcon, UserIcon } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { AccountsCard } from "./accounts-card"
@@ -77,24 +76,24 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         refetch: refetchSessions
     } = useListSessions()
 
-    let passkeys: Passkey[] | undefined = undefined
+    let passkeys: { id: string; createdAt: Date }[] | undefined | null = undefined
     let passkeysPending: boolean | undefined = undefined
     let refetchPasskeys: (() => void) | undefined = undefined
 
     if (passkey) {
         const result = useListPasskeys()
-        passkeys = result.data as Passkey[]
+        passkeys = result.data
         passkeysPending = result.isPending
         refetchPasskeys = result.refetch
     }
 
-    let deviceSessions: { user: User; session: Session }[] | undefined = undefined
+    let deviceSessions: { user: User; session: Session }[] | undefined | null = undefined
     let deviceSessionsPending: boolean | undefined = undefined
     let refetchDeviceSessions: (() => void) | undefined = undefined
 
     if (multiSession) {
         const result = useListDeviceSessions()
-        deviceSessions = result.data as { user: User; session: Session }[]
+        deviceSessions = result.data
         deviceSessionsPending = result.isPending
         refetchDeviceSessions = result.refetch
     }

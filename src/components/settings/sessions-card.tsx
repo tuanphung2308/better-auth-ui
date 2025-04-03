@@ -25,7 +25,7 @@ export interface SessionsCardProps {
     localization?: AuthLocalization
     sessions?: Session[] | null
     skipHook?: boolean
-    refetch?: () => void
+    refetch?: () => Promise<void>
 }
 
 export function SessionsCard({
@@ -50,7 +50,7 @@ export function SessionsCard({
 
     localization = { ...authLocalization, ...localization }
 
-    if (isPending === undefined && sessions === undefined) {
+    if (!skipHook) {
         const result = useListSessions()
         sessions = result.data
         isPending = result.isPending
@@ -74,7 +74,7 @@ export function SessionsCard({
         if (error) {
             toast({ variant: "error", message: error.message || error.statusText })
         } else if (!optimistic) {
-            refetch?.()
+            await refetch?.()
         }
 
         setActionLoading(null)

@@ -1,8 +1,13 @@
 import { AuthQueryContext, createAuthHooks } from "@daveyplate/better-auth-tanstack"
-import { useIsRestoring, useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { type ReactNode, useContext } from "react"
 
-import { AuthUIProvider, type AuthUIProviderProps } from "../../lib/auth-ui-provider"
+import {
+    type AuthHooks,
+    type AuthMutates,
+    AuthUIProvider,
+    type AuthUIProviderProps
+} from "../../lib/auth-ui-provider"
 
 export function AuthUIProviderTanstack({
     children,
@@ -14,13 +19,8 @@ export function AuthUIProviderTanstack({
     children: ReactNode
 } & AuthUIProviderProps) {
     const {
-        useListAccounts,
         useUnlinkAccount,
-        useListDeviceSessions,
-        useListSessions,
-        useSession,
         useUpdateUser,
-        useListPasskeys,
         useDeletePasskey,
         useRevokeSession,
         useRevokeDeviceSession,
@@ -36,36 +36,26 @@ export function AuthUIProviderTanstack({
     const { setActiveSessionAsync } = useSetActiveSession()
     const { sessionKey } = useContext(AuthQueryContext)
 
-    const hooks = {
-        useIsRestoring,
-        useListAccounts,
-        useListDeviceSessions,
-        useListSessions,
-        useListPasskeys,
-        useSession
-    }
+    const hooks: AuthHooks = createAuthHooks(authClient)
 
-    const mutates = {
-        updateUser: (params: Parameters<typeof updateUserAsync>[0]) =>
-            updateUserAsync({ fetchOptions: { throw: false }, ...params }),
-        unlinkAccount: (params: Parameters<typeof unlinkAccountAsync>[0]) =>
+    const mutates: AuthMutates = {
+        updateUser: (params) => updateUserAsync({ fetchOptions: { throw: false }, ...params }),
+        unlinkAccount: (params) =>
             unlinkAccountAsync({ fetchOptions: { throw: false }, ...params }),
-        deletePasskey: (params: Parameters<typeof deletePasskeyAsync>[0]) =>
+        deletePasskey: (params) =>
             deletePasskeyAsync({ fetchOptions: { throw: false }, ...params }),
-        revokeSession: (params: Parameters<typeof revokeSessionAsync>[0]) =>
+        revokeSession: (params) =>
             revokeSessionAsync({ fetchOptions: { throw: false }, ...params }),
-        setActiveSession: (params: Parameters<typeof setActiveSessionAsync>[0]) =>
+        setActiveSession: (params) =>
             setActiveSessionAsync({ fetchOptions: { throw: false }, ...params }),
-        revokeDeviceSession: (params: Parameters<typeof revokeDeviceSessionAsync>[0]) =>
+        revokeDeviceSession: (params) =>
             revokeDeviceSessionAsync({ fetchOptions: { throw: false }, ...params })
     }
 
     return (
         <AuthUIProvider
             authClient={authClient}
-            // @ts-ignore
             hooks={hooks}
-            // @ts-ignore
             mutates={mutates}
             onSessionChange={async () => {
                 await queryClient.refetchQueries({ queryKey: sessionKey })

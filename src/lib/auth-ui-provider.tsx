@@ -3,16 +3,13 @@
 import type React from "react"
 import { type ReactNode, createContext } from "react"
 
-import { useListAccounts } from "../hooks/use-list-accounts"
-import { useListDeviceSessions } from "../hooks/use-list-device-sessions"
-import { useListSessions } from "../hooks/use-list-sessions"
-import { useSession } from "../hooks/use-session"
-
+import type { Session, User } from "better-auth"
 import type { createAuthClient } from "better-auth/react"
 import type { SocialProvider } from "better-auth/social-providers"
 import { toast } from "sonner"
-import { useListPasskeys } from "../hooks/use-list-passkeys"
+import { useAuthData } from "../hooks/use-auth-data"
 import type { AuthClient } from "../types/auth-client"
+import type { FetchError } from "../types/fetch-error"
 import { type AuthLocalization, authLocalization } from "./auth-localization"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
 import type { Provider } from "./social-providers"
@@ -43,7 +40,7 @@ type ToastVariant = "default" | "success" | "error" | "info" | "warning"
 export type RenderToast = ({
     variant,
     message
-}: { variant?: ToastVariant; message: string }) => void
+}: { variant?: ToastVariant; message?: string }) => void
 
 const defaultToast: RenderToast = ({ variant = "default", message }) => {
     if (variant === "default") {
@@ -75,22 +72,32 @@ export interface AdditionalFields {
     [key: string]: AdditionalField
 }
 
-const defaultHooks = {
-    useSession,
-    useListAccounts,
-    useListDeviceSessions,
-    useListSessions,
-    useListPasskeys,
-    useIsRestoring: () => false
+export type TAuthHook<T> = {
+    isPending: boolean
+    data?: T | null
+    error?: FetchError | null
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    refetch: () => Promise<any> | any
 }
 
-type DefaultMutates = {
-    updateUser: AuthClient["updateUser"]
-    unlinkAccount: AuthClient["unlinkAccount"]
-    deletePasskey: AuthClient["passkey"]["deletePasskey"]
-    revokeSession: AuthClient["revokeSession"]
-    setActiveSession: AuthClient["multiSession"]["setActive"]
-    revokeDeviceSession: AuthClient["multiSession"]["revoke"]
+export interface AuthHooks {
+    useSession: () => TAuthHook<{ session: Session; user: User }>
+    useListAccounts: () => TAuthHook<{ accountId: string; provider: string }[]>
+    useListDeviceSessions: () => TAuthHook<{ session: Session; user: User }[]>
+    useListSessions: () => TAuthHook<Session[]>
+    useListPasskeys: () => TAuthHook<{ id: string; createdAt: Date }[]>
+    useIsRestoring?: () => boolean
+}
+
+type MutateFn<T = Record<string, unknown>> = (params: T) => Promise<{ error?: FetchError | null }>
+
+export interface AuthMutates {
+    deletePasskey: MutateFn<{ id: string }>
+    revokeDeviceSession: MutateFn<{ sessionToken: string }>
+    revokeSession: MutateFn<{ token: string }>
+    setActiveSession: MutateFn<{ sessionToken: string }>
+    updateUser: MutateFn
+    unlinkAccount: MutateFn<{ providerId: string; accountId?: string }>
 }
 
 export type AuthUIContextType = {
@@ -166,7 +173,7 @@ export type AuthUIContextType = {
     /**
      * @internal
      */
-    hooks: typeof defaultHooks
+    hooks: AuthHooks
     localization: AuthLocalization
     /**
      * Enable or disable magic link support
@@ -179,7 +186,7 @@ export type AuthUIContextType = {
      */
     multiSession?: boolean
     /** @internal */
-    mutates: DefaultMutates
+    mutates: AuthMutates
     /**
      * Enable or disable name requirement for sign up
      * @default true
@@ -280,6 +287,10 @@ export type AuthUIProviderProps = {
      */
     authClient: Omit<ReturnType<typeof createAuthClient>, "signUp">
     /**
+     * ADVANCED: Custom hooks for fetching auth data
+     */
+    hooks?: Partial<AuthHooks>
+    /**
      * Customize the paths for the auth views
      * @default authViewPaths
      * @remarks `AuthViewPaths`
@@ -296,9 +307,11 @@ export type AuthUIProviderProps = {
      * @remarks `AuthLocalization`
      */
     localization?: AuthLocalization
-    /** @internal */
-    mutates?: DefaultMutates
-} & Partial<Omit<AuthUIContextType, "viewPaths" | "localization" | "mutates" | "toast">>
+    /**
+     * ADVANCED: Custom mutates for updating auth data
+     */
+    mutates?: Partial<AuthMutates>
+} & Partial<Omit<AuthUIContextType, "viewPaths" | "localization" | "mutates" | "toast" | "hooks">>
 
 export const AuthUIContext = createContext<AuthUIContextType>({} as unknown as AuthUIContextType)
 
@@ -308,11 +321,11 @@ export const AuthUIProvider = ({
     avatarExtension = "png",
     avatarSize,
     basePath = "/auth",
-    redirectTo: defaultRedirectTo = "/",
+    redirectTo = "/",
     credentials = true,
     forgotPassword = true,
     freshAge = 60 * 60 * 24,
-    hooks = defaultHooks,
+    hooks,
     mutates,
     localization,
     nameRequired = true,
@@ -329,42 +342,45 @@ export const AuthUIProvider = ({
 }: {
     children: ReactNode
 } & AuthUIProviderProps) => {
-    replace = replace || navigate || defaultReplace
-    navigate = navigate || defaultNavigate
-
-    mutates = {
-        updateUser: authClient.updateUser,
+    const defaultMutates: AuthMutates = {
         deletePasskey: authClient.passkey.deletePasskey,
-        unlinkAccount: authClient.unlinkAccount,
+        revokeDeviceSession: authClient.multiSession.revoke,
         revokeSession: authClient.revokeSession,
         setActiveSession: authClient.multiSession.setActive,
-        revokeDeviceSession: authClient.multiSession.revoke,
-        ...mutates
+        updateUser: authClient.updateUser,
+        unlinkAccount: authClient.unlinkAccount
     }
 
-    avatarSize = uploadAvatar ? 256 : 128
+    const defaultHooks: AuthHooks = {
+        useSession: authClient.useSession,
+        useListAccounts: () => useAuthData({ queryFn: authClient.listAccounts }),
+        useListDeviceSessions: () =>
+            useAuthData({ queryFn: authClient.multiSession.listDeviceSessions }),
+        useListSessions: () => useAuthData({ queryFn: authClient.listSessions }),
+        useListPasskeys: authClient.useListPasskeys
+    }
 
     return (
         <AuthUIContext.Provider
             value={{
                 authClient,
                 avatarExtension,
-                avatarSize,
+                avatarSize: avatarSize || (uploadAvatar ? 256 : 128),
                 basePath: basePath === "/" ? "" : basePath,
-                redirectTo: defaultRedirectTo,
+                redirectTo,
                 credentials,
                 forgotPassword,
                 freshAge,
-                hooks,
-                mutates,
+                hooks: { ...defaultHooks, ...hooks },
+                mutates: { ...defaultMutates, ...mutates },
                 localization: { ...authLocalization, ...localization },
                 nameRequired,
                 settingsFields,
                 signUp,
                 signUpFields,
                 toast,
-                navigate,
-                replace,
+                navigate: navigate || defaultNavigate,
+                replace: replace || navigate || defaultReplace,
                 viewPaths: { ...authViewPaths, ...viewPaths },
                 uploadAvatar,
                 Link,

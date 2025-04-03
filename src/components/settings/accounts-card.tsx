@@ -10,7 +10,6 @@ import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 
 import type { Session, User } from "better-auth"
-import { useSession } from "../../hooks/use-session"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -46,7 +45,7 @@ export function AccountsCard({
 }: AccountsCardProps) {
     const {
         basePath,
-        hooks,
+        hooks: { useSession, useListDeviceSessions },
         mutates: { revokeDeviceSession, setActiveSession },
         localization: authLocalization,
         optimistic,
@@ -54,7 +53,6 @@ export function AccountsCard({
         viewPaths,
         navigate
     } = useContext(AuthUIContext)
-    const { useListDeviceSessions } = hooks
 
     localization = { ...authLocalization, ...localization }
 

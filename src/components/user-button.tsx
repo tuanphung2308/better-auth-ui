@@ -94,7 +94,7 @@ export function UserButton({
 
     localization = { ...authLocalization, ...localization }
 
-    let deviceSessions: DeviceSession[] | null = null
+    let deviceSessions: DeviceSession[] | undefined | null = null
     let deviceSessionsPending = false
 
     if (multiSession) {

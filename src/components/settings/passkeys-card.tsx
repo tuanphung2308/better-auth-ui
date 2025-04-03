@@ -1,4 +1,3 @@
-import type { Passkey } from "better-auth/plugins/passkey"
 import { FingerprintIcon, Loader2 } from "lucide-react"
 import { useContext, useState } from "react"
 
@@ -19,7 +18,7 @@ export interface PasskeysCardProps {
      * @remarks `AuthLocalization`
      */
     localization?: AuthLocalization
-    passkeys?: Passkey[]
+    passkeys?: { id: string; createdAt: Date }[] | null
     skipHook?: boolean
     refetch?: () => void
 }
@@ -46,7 +45,7 @@ export function PasskeysCard({
 
     if (!skipHook) {
         const result = useListPasskeys()
-        passkeys = result.data as Passkey[]
+        passkeys = result.data
         isPending = result.isPending
         refetch = result.refetch
     }

@@ -83,7 +83,7 @@ export function AuthForm({
 
     localization = { ...authLocalization, ...localization }
 
-    const isRestoring = useIsRestoring()
+    const isRestoring = useIsRestoring?.()
 
     const signingOut = useRef(false)
     const isRedirecting = useRef(false)
