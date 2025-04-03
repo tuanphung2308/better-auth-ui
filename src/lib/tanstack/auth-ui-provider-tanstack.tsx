@@ -1,13 +1,10 @@
 import { AuthQueryContext, createAuthHooks } from "@daveyplate/better-auth-tanstack"
 import { useQueryClient } from "@tanstack/react-query"
-import { type ReactNode, useContext } from "react"
+import { useContext } from "react"
 
-import {
-    type AuthHooks,
-    type AuthMutates,
-    AuthUIProvider,
-    type AuthUIProviderProps
-} from "../../lib/auth-ui-provider"
+import { AuthUIProvider, type AuthUIProviderProps } from "../../lib/auth-ui-provider"
+import type { AuthHooks } from "../../types/auth-hooks"
+import type { AuthMutates } from "../../types/auth-mutates"
 
 export function AuthUIProviderTanstack({
     children,
@@ -15,9 +12,7 @@ export function AuthUIProviderTanstack({
     onSessionChange,
     optimistic = true,
     ...props
-}: {
-    children: ReactNode
-} & AuthUIProviderProps) {
+}: AuthUIProviderProps) {
     const {
         useUnlinkAccount,
         useUpdateUser,

@@ -3,8 +3,9 @@
 import { type ReactNode, useContext } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext, type FieldType } from "../../lib/auth-ui-provider"
+import { AuthUIContext } from "../../lib/auth-ui-provider"
 
+import type { FieldType } from "../../types/additional-fields"
 import { SettingsCard, type SettingsCardClassNames } from "./settings-card"
 
 export function UpdateFieldCard({

@@ -1,28 +1,21 @@
 "use client"
 
-import type React from "react"
-import { type ReactNode, createContext } from "react"
-
-import type { Session, User } from "better-auth"
 import type { createAuthClient } from "better-auth/react"
 import type { SocialProvider } from "better-auth/social-providers"
+import { type ReactNode, createContext } from "react"
 import { toast } from "sonner"
 import { useAuthData } from "../hooks/use-auth-data"
+import type { AdditionalFields } from "../types/additional-fields"
 import type { AuthClient } from "../types/auth-client"
-import type { FetchError } from "../types/fetch-error"
+import type { AuthHooks } from "../types/auth-hooks"
+import type { AuthMutates } from "../types/auth-mutates"
+import type { Link } from "../types/link"
+import type { RenderToast } from "../types/render-toast"
 import { type AuthLocalization, authLocalization } from "./auth-localization"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
 import type { Provider } from "./social-providers"
 
-const DefaultLink = ({
-    href,
-    className,
-    children
-}: {
-    href: string
-    className?: string
-    children: ReactNode
-}) => (
+const DefaultLink: Link = ({ href, className, children }) => (
     <a className={className} href={href}>
         {children}
     </a>
@@ -36,68 +29,12 @@ const defaultReplace = (href: string) => {
     window.location.replace(href)
 }
 
-type ToastVariant = "default" | "success" | "error" | "info" | "warning"
-export type RenderToast = ({
-    variant,
-    message
-}: { variant?: ToastVariant; message?: string }) => void
-
 const defaultToast: RenderToast = ({ variant = "default", message }) => {
     if (variant === "default") {
         toast(message)
     } else {
         toast[variant](message)
     }
-}
-
-export type TLink = React.ComponentType<{
-    href: string
-    className?: string
-    children: ReactNode
-}>
-
-export type FieldType = "string" | "number" | "boolean"
-
-export interface AdditionalField {
-    description?: ReactNode
-    instructions?: ReactNode
-    label: ReactNode
-    placeholder?: string
-    required?: boolean
-    type: FieldType
-    validate?: (value: string) => Promise<boolean>
-}
-
-export interface AdditionalFields {
-    [key: string]: AdditionalField
-}
-
-export type TAuthHook<T> = {
-    isPending: boolean
-    data?: T | null
-    error?: FetchError | null
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    refetch: () => Promise<any> | any
-}
-
-export interface AuthHooks {
-    useSession: () => TAuthHook<{ session: Session; user: User }>
-    useListAccounts: () => TAuthHook<{ accountId: string; provider: string }[]>
-    useListDeviceSessions: () => TAuthHook<{ session: Session; user: User }[]>
-    useListSessions: () => TAuthHook<Session[]>
-    useListPasskeys: () => TAuthHook<{ id: string; createdAt: Date }[]>
-    useIsRestoring?: () => boolean
-}
-
-type MutateFn<T = Record<string, unknown>> = (params: T) => Promise<{ error?: FetchError | null }>
-
-export interface AuthMutates {
-    deletePasskey: MutateFn<{ id: string }>
-    revokeDeviceSession: MutateFn<{ sessionToken: string }>
-    revokeSession: MutateFn<{ token: string }>
-    setActiveSession: MutateFn<{ sessionToken: string }>
-    updateUser: MutateFn
-    unlinkAccount: MutateFn<{ providerId: string; accountId?: string }>
 }
 
 export type AuthUIContextType = {
@@ -276,10 +213,11 @@ export type AuthUIContextType = {
      * Custom link component for navigation
      * @default <a>
      */
-    Link: TLink
+    Link: Link
 }
 
 export type AuthUIProviderProps = {
+    children: ReactNode
     /**
      * Your better-auth createAuthClient
      * @default Required
@@ -339,9 +277,7 @@ export const AuthUIProvider = ({
     uploadAvatar,
     Link = DefaultLink,
     ...props
-}: {
-    children: ReactNode
-} & AuthUIProviderProps) => {
+}: AuthUIProviderProps) => {
     const defaultMutates: AuthMutates = {
         deletePasskey: authClient.passkey.deletePasskey,
         revokeDeviceSession: authClient.multiSession.revoke,

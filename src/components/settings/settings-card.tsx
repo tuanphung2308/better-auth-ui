@@ -3,7 +3,7 @@
 import { Loader2 } from "lucide-react"
 import { type ReactNode, useActionState, useContext, useState } from "react"
 
-import { AuthUIContext, type FieldType } from "../../lib/auth-ui-provider"
+import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import type { FetchError } from "../../types/fetch-error"
 import { Button } from "../ui/button"
@@ -12,6 +12,7 @@ import { Checkbox } from "../ui/checkbox"
 import { Input } from "../ui/input"
 import type { UserAvatarClassNames } from "../user-avatar"
 
+import type { FieldType } from "../../types/additional-fields"
 import { SettingsCardSkeleton } from "./skeletons/settings-card-skeleton"
 
 export type SettingsCardClassNames = {
