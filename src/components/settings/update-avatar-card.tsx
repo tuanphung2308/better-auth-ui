@@ -80,7 +80,8 @@ export function UpdateAvatarCard({
         uploadAvatar,
         avatarSize,
         avatarExtension,
-        toast
+        toast,
+        user
     } = useContext(AuthUIContext)
 
     localization = { ...authLocalization, ...localization }
@@ -164,7 +165,7 @@ export function UpdateAvatarCard({
                         <UserAvatar
                             className="size-20 text-2xl"
                             classNames={classNames?.avatar}
-                            user={sessionData?.user}
+                            user={user || sessionData?.user}
                         />
                     )}
                 </button>

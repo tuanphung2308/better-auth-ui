@@ -1,5 +1,6 @@
 "use client"
 
+import type { User } from "better-auth"
 import type { createAuthClient } from "better-auth/react"
 import type { SocialProvider } from "better-auth/social-providers"
 import { type ReactNode, createContext } from "react"
@@ -184,6 +185,7 @@ export type AuthUIContextType = {
      */
     signUpFields?: string[]
     toast: RenderToast
+    user?: Omit<User, "createdAt" | "updatedAt">
     /**
      * Enable or disable username support
      * @default false

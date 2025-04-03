@@ -89,6 +89,7 @@ export function UserButton({
         toast,
         viewPaths,
         onSessionChange,
+        user: contextUser,
         Link
     } = useContext(AuthUIContext)
 
@@ -104,7 +105,7 @@ export function UserButton({
     }
 
     const { data: sessionData, isPending: sessionPending } = useSession()
-    const user = sessionData?.user as UserType
+    const user = (contextUser || sessionData?.user) as UserType
     const [activeSessionPending, setActiveSessionPending] = useState(false)
 
     const isPending = sessionPending || activeSessionPending

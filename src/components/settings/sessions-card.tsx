@@ -113,15 +113,16 @@ export function SessionsCard({
                                 <LaptopIcon className="size-4" />
                             )}
 
-                            <span className="text-sm">
-                                {session.id === sessionData?.session?.id ? (
-                                    localization.currentSession
-                                ) : (
-                                    <>
-                                        {parser.os.name}, {parser.browser.name}
-                                    </>
-                                )}
-                            </span>
+                            <div className="flex flex-col">
+                                <span className="font-semibold text-sm">
+                                    {session.id === sessionData?.session?.id
+                                        ? localization.currentSession
+                                        : session?.ipAddress}
+                                </span>
+                                <span className="text-muted-foreground text-xs">
+                                    {parser.os.name}, {parser.browser.name}
+                                </span>
+                            </div>
 
                             <Button
                                 className={cn("relative ms-auto", classNames?.button)}
