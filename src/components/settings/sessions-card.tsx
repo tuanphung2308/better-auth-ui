@@ -41,7 +41,6 @@ export function SessionsCard({
         hooks: { useListSessions, useSession },
         mutates: { revokeSession },
         localization: authLocalization,
-        optimistic,
         navigate,
         toast,
         basePath,
@@ -67,17 +66,16 @@ export function SessionsCard({
             return
         }
 
-        if (!optimistic) setActionLoading(token)
+        setActionLoading(token)
 
         const { error } = await revokeSession({ token })
 
         if (error) {
             toast({ variant: "error", message: error.message || error.statusText })
-        } else if (!optimistic) {
+            setActionLoading(null)
+        } else {
             await refetch?.()
         }
-
-        setActionLoading(null)
     }
 
     if (isPending) {

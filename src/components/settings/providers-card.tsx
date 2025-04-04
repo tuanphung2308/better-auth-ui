@@ -35,13 +35,8 @@ export function ProvidersCard({
     refetch
 }: ProvidersCardProps) {
     const {
-        authClient,
-        colorIcons,
         hooks: { useListAccounts },
-        mutates: { unlinkAccount },
         localization: authLocalization,
-        noColorIcons,
-        optimistic,
         providers,
         otherProviders,
         toast

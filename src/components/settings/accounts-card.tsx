@@ -31,7 +31,7 @@ export interface AccountsCardProps {
      */
     localization?: Partial<AuthLocalization>
     skipHook?: boolean
-    refetch?: () => void
+    refetch?: () => Promise<void>
 }
 
 export function AccountsCard({
@@ -48,7 +48,6 @@ export function AccountsCard({
         hooks: { useSession, useListDeviceSessions },
         mutates: { revokeDeviceSession, setActiveSession },
         localization: authLocalization,
-        optimistic,
         toast,
         viewPaths,
         navigate
@@ -69,17 +68,16 @@ export function AccountsCard({
     const [actionLoading, setActionLoading] = useState<string | null>(null)
 
     const handleRevoke = async (sessionToken: string) => {
-        if (!optimistic) setActionLoading(sessionToken)
+        setActionLoading(sessionToken)
 
         const { error } = await revokeDeviceSession({ sessionToken })
 
         if (error) {
             toast({ variant: "error", message: error.message || error.statusText })
+            setActionLoading(null)
         } else {
-            refetch?.()
+            await refetch?.()
         }
-
-        setActionLoading(null)
     }
 
     const handleSetActiveSession = async (sessionToken: string) => {

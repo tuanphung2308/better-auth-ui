@@ -78,7 +78,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
 
     let passkeys: { id: string; createdAt: Date }[] | undefined | null = undefined
     let passkeysPending: boolean | undefined = undefined
-    let refetchPasskeys: (() => void) | undefined = undefined
+    let refetchPasskeys: (() => Promise<void>) | undefined = undefined
 
     if (passkey) {
         const result = useListPasskeys()
@@ -89,7 +89,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
 
     let deviceSessions: { user: User; session: Session }[] | undefined | null = undefined
     let deviceSessionsPending: boolean | undefined = undefined
-    let refetchDeviceSessions: (() => void) | undefined = undefined
+    let refetchDeviceSessions: (() => Promise<void>) | undefined = undefined
 
     if (multiSession) {
         const result = useListDeviceSessions()

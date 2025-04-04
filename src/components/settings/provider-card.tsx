@@ -43,7 +43,6 @@ export function ProviderCard({
         mutates: { unlinkAccount },
         localization: authLocalization,
         noColorIcons,
-        optimistic,
         toast
     } = useContext(AuthUIContext)
 
@@ -82,7 +81,7 @@ export function ProviderCard({
     }
 
     const handleUnlink = async () => {
-        if (!optimistic) setIsLoading(true)
+        setIsLoading(true)
 
         const { error } = await unlinkAccount({
             accountId: account?.accountId,
@@ -91,12 +90,11 @@ export function ProviderCard({
 
         if (error) {
             toast({ variant: "error", message: error.message || error.statusText })
+            setIsLoading(false)
         } else {
             toast({ variant: "success", message: localization.providerUnlinkSuccess! })
             refetch?.()
         }
-
-        setIsLoading(false)
     }
 
     return (

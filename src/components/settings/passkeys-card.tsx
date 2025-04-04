@@ -20,7 +20,7 @@ export interface PasskeysCardProps {
     localization?: AuthLocalization
     passkeys?: { id: string; createdAt: Date }[] | null
     skipHook?: boolean
-    refetch?: () => void
+    refetch?: () => Promise<void>
 }
 
 export function PasskeysCard({
@@ -37,7 +37,6 @@ export function PasskeysCard({
         hooks: { useListPasskeys },
         mutates: { deletePasskey },
         localization: authLocalization,
-        optimistic,
         toast
     } = useContext(AuthUIContext)
 
@@ -61,24 +60,23 @@ export function PasskeysCard({
         if (error) {
             toast({ variant: "error", message: error.message || error.statusText })
         } else {
-            refetch?.()
+            await refetch?.()
         }
 
         setIsLoading(false)
     }
 
     const handleDeletePasskey = async (id: string) => {
-        if (!optimistic) setActionLoading(id)
+        setActionLoading(id)
 
         const response = await deletePasskey({ id })
         const error = response?.error
         if (error) {
             toast({ variant: "error", message: error.message || error.statusText })
+            setActionLoading(null)
         } else {
             refetch?.()
         }
-
-        setActionLoading(null)
     }
 
     if (isPending) {
