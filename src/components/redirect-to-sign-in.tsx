@@ -1,6 +1,6 @@
 import { useAuthenticate } from "../hooks/use-authenticate"
 
 export function RedirectToSignIn() {
-    useAuthenticate("signIn")
+    useAuthenticate({ authView: "signIn" })
     return null
 }
