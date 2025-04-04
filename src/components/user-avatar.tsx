@@ -31,7 +31,7 @@ export function UserAvatar({
     const name = user?.name || user?.fullName || user?.firstName || user?.email
     const src = (user?.image || user?.avatar || user?.avatarUrl) as string
 
-    if (isPending) {
+    if (!user && isPending) {
         return (
             <Skeleton
                 className={cn(
