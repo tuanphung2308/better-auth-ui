@@ -1,5 +1,5 @@
 import { AuthQueryContext, createAuthHooks } from "@daveyplate/better-auth-tanstack"
-import { useQueryClient } from "@tanstack/react-query"
+import { useIsRestoring, useQueryClient } from "@tanstack/react-query"
 import type { createAuthClient } from "better-auth/react"
 import { useContext } from "react"
 import type { AuthHooks } from "../../types/auth-hooks"
@@ -55,7 +55,7 @@ export function useTanstackOptions({
     }
 
     return {
-        hooks,
+        hooks: { ...hooks, useIsRestoring },
         mutates,
         onSessionChange,
         optimistic: true
