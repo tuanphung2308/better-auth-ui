@@ -35,7 +35,7 @@ export function UserAvatar({
         return (
             <Skeleton
                 className={cn(
-                    "size-8 flex-shrink-0 rounded-full",
+                    "size-8 shrink-0 rounded-full",
                     className,
                     classNames?.base,
                     classNames?.skeleton
@@ -49,14 +49,13 @@ export function UserAvatar({
             <AvatarImage
                 alt={name || "Avatar"}
                 className={classNames?.image}
-                src={
-                    user && !user.isAnonymous
-                        ? ((user.image || user.avatar || user.avatarUrl) as string)
-                        : undefined
-                }
+                src={user && !user.isAnonymous ? src : undefined}
             />
 
-            <AvatarFallback className={cn("uppercase", classNames?.fallback)} delayMs={600}>
+            <AvatarFallback
+                className={cn("uppercase", classNames?.fallback)}
+                delayMs={src ? 600 : undefined}
+            >
                 {firstTwoCharacters(name) || (
                     <UserIcon className={cn("w-[55%]", classNames?.fallbackIcon)} />
                 )}
