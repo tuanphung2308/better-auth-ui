@@ -10,8 +10,6 @@ type ModelNames = {
     [key in Namespace]: string
 }
 
-const now = Date.now().toLocaleString()
-
 export function useInstantOptions({
     db,
     sessionData,
@@ -19,7 +17,7 @@ export function useInstantOptions({
     usePlural,
     modelNames
 }: {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    // biome-ignore lint/suspicious/noExplicitAny:
     db: InstantReactWebDatabase<any>
     sessionData?: { session: Session; user: User } | null
     isPending: boolean
