@@ -31,21 +31,16 @@ export function useTanstackOptions({
     const hooks: AuthHooks = createAuthHooks(authClient)
 
     const mutates: AuthMutates = {
-        // @ts-ignore
         updateUser: (params) => updateUserAsync({ fetchOptions: { throw: false }, ...params }),
         unlinkAccount: (params) =>
-            // @ts-ignore
             unlinkAccountAsync({ fetchOptions: { throw: false }, ...params }),
         deletePasskey: (params) =>
-            // @ts-ignore
             deletePasskeyAsync({ fetchOptions: { throw: false }, ...params }),
         revokeSession: (params) =>
-            // @ts-ignore
             revokeSessionAsync({ fetchOptions: { throw: false }, ...params }),
         setActiveSession: (params) =>
             setActiveSessionAsync({ fetchOptions: { throw: false }, ...params }),
         revokeDeviceSession: (params) =>
-            // @ts-ignore
             revokeDeviceSessionAsync({ fetchOptions: { throw: false }, ...params })
     }
 
