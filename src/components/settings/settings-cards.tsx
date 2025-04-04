@@ -98,13 +98,6 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         refetchDeviceSessions = result.refetch
     }
 
-    const isPending =
-        sessionPending ||
-        accountsPending ||
-        sessionsPending ||
-        passkeysPending ||
-        deviceSessionsPending
-
     return (
         <div
             className={cn(
@@ -136,7 +129,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                     {avatar && (
                         <UpdateAvatarCard
                             classNames={classNames?.card}
-                            isPending={isPending}
+                            isPending={sessionPending}
                             localization={localization}
                         />
                     )}
@@ -144,7 +137,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                     {username && (
                         <UpdateUsernameCard
                             classNames={classNames?.card}
-                            isPending={isPending}
+                            isPending={sessionPending}
                             localization={localization}
                         />
                     )}
@@ -152,14 +145,14 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                     {(settingsFields?.includes("name") || nameRequired) && (
                         <UpdateNameCard
                             classNames={classNames?.card}
-                            isPending={isPending}
+                            isPending={sessionPending}
                             localization={localization}
                         />
                     )}
 
                     <ChangeEmailCard
                         classNames={classNames?.card}
-                        isPending={isPending}
+                        isPending={sessionPending}
                         localization={localization}
                     />
 
@@ -188,7 +181,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                                 description={description}
                                 field={field}
                                 instructions={instructions}
-                                isPending={isPending}
+                                isPending={sessionPending}
                                 label={label}
                                 localization={localization}
                                 placeholder={placeholder}
@@ -203,7 +196,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         <AccountsCard
                             classNames={classNames?.card}
                             deviceSessions={deviceSessions}
-                            isPending={isPending}
+                            isPending={deviceSessionsPending}
                             localization={localization}
                             refetch={refetchDeviceSessions}
                             skipHook
@@ -219,7 +212,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         <ChangePasswordCard
                             accounts={accounts}
                             classNames={classNames?.card}
-                            isPending={isPending}
+                            isPending={sessionPending}
                             localization={localization}
                             skipHook
                         />
@@ -229,7 +222,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         <ProvidersCard
                             accounts={accounts}
                             classNames={classNames?.card}
-                            isPending={isPending}
+                            isPending={accountsPending}
                             localization={localization}
                             refetch={refetchAccounts}
                             skipHook
@@ -239,7 +232,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                     {passkey && (
                         <PasskeysCard
                             classNames={classNames?.card}
-                            isPending={isPending}
+                            isPending={passkeysPending}
                             localization={localization}
                             passkeys={passkeys}
                             refetch={refetchPasskeys}
@@ -249,7 +242,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
 
                     <SessionsCard
                         classNames={classNames?.card}
-                        isPending={isPending}
+                        isPending={sessionsPending}
                         localization={localization}
                         sessions={sessions}
                         refetch={refetchSessions}
@@ -260,7 +253,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         <DeleteAccountCard
                             accounts={accounts}
                             classNames={classNames?.card}
-                            isPending={isPending}
+                            isPending={sessionPending}
                             localization={localization}
                             skipHook
                         />
