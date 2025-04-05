@@ -394,15 +394,21 @@ export function AuthForm({
         }
     }, [view])
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    useEffect(() => {
+        if (view !== "signOut" || sessionData) return
+
+        replace(`${basePath}/${viewPaths.signIn}`)
+    }, [sessionData])
+
     useEffect(() => {
         if (view !== "signOut" || signingOut.current) return
 
         signingOut.current = true
         authClient.signOut().finally(async () => {
-            replace(`${basePath}/${viewPaths.signIn}`)
             onSessionChange?.()
         })
-    }, [view, authClient, basePath, replace, viewPaths.signIn, onSessionChange])
+    }, [view, authClient, onSessionChange])
 
     useEffect(() => {
         if (view !== "resetPassword" || checkingResetPasswordToken.current) return
