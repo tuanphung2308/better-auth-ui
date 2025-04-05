@@ -4,6 +4,7 @@ import { useContext, useState } from "react"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
+import type { AuthClient } from "../../types/auth-client"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import type { SettingsCardClassNames } from "./settings-card"
@@ -55,7 +56,7 @@ export function PasskeysCard({
     const addPasskey = async () => {
         setIsLoading(true)
 
-        const response = await authClient.passkey.addPasskey()
+        const response = await (authClient as AuthClient).passkey.addPasskey()
         const error = response?.error
         if (error) {
             toast({ variant: "error", message: error.message || error.statusText })

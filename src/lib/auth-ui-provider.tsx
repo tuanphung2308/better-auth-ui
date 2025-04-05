@@ -1,12 +1,12 @@
 "use client"
 
 import type { User } from "better-auth"
-import type { createAuthClient } from "better-auth/react"
 import type { SocialProvider } from "better-auth/social-providers"
 import { type ReactNode, createContext } from "react"
 import { toast } from "sonner"
 import { useAuthData } from "../hooks/use-auth-data"
 import type { AdditionalFields } from "../types/additional-fields"
+import type { AnyAuthClient } from "../types/any-auth-client"
 import type { AuthClient } from "../types/auth-client"
 import type { AuthHooks } from "../types/auth-hooks"
 import type { AuthMutates } from "../types/auth-mutates"
@@ -39,7 +39,7 @@ const defaultToast: RenderToast = ({ variant = "default", message }) => {
 }
 
 export type AuthUIContextType = {
-    authClient: AuthClient
+    authClient: AnyAuthClient
     /**
      * Additional fields for users
      */
@@ -225,7 +225,7 @@ export type AuthUIProviderProps = {
      * @default Required
      * @remarks `AuthClient`
      */
-    authClient: Omit<ReturnType<typeof createAuthClient>, "signUp">
+    authClient: AnyAuthClient
     /**
      * ADVANCED: Custom hooks for fetching auth data
      */
@@ -281,10 +281,10 @@ export const AuthUIProvider = ({
     ...props
 }: AuthUIProviderProps) => {
     const defaultMutates: AuthMutates = {
-        deletePasskey: authClient.passkey.deletePasskey,
-        revokeDeviceSession: authClient.multiSession.revoke,
-        revokeSession: authClient.revokeSession,
-        setActiveSession: authClient.multiSession.setActive,
+        deletePasskey: (authClient as AuthClient).passkey.deletePasskey,
+        revokeDeviceSession: (authClient as AuthClient).multiSession.revoke,
+        revokeSession: (authClient as AuthClient).revokeSession,
+        setActiveSession: (authClient as AuthClient).multiSession.setActive,
         updateUser: authClient.updateUser,
         unlinkAccount: authClient.unlinkAccount
     }
@@ -293,9 +293,9 @@ export const AuthUIProvider = ({
         useSession: authClient.useSession,
         useListAccounts: () => useAuthData({ queryFn: authClient.listAccounts }),
         useListDeviceSessions: () =>
-            useAuthData({ queryFn: authClient.multiSession.listDeviceSessions }),
+            useAuthData({ queryFn: (authClient as AuthClient).multiSession.listDeviceSessions }),
         useListSessions: () => useAuthData({ queryFn: authClient.listSessions }),
-        useListPasskeys: authClient.useListPasskeys
+        useListPasskeys: (authClient as AuthClient).useListPasskeys
     }
 
     return (

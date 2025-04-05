@@ -11,6 +11,7 @@ import { Button } from "../ui/button"
 import { Card } from "../ui/card"
 
 import type { Provider } from "../../lib/social-providers"
+import type { AuthClient } from "../../types/auth-client"
 import type { SettingsCardClassNames } from "./settings-card"
 
 export interface ProviderCardProps {
@@ -58,7 +59,7 @@ export function ProviderCard({
         const callbackURL = `${window.location.pathname}?providerLinked=true`
 
         if (other) {
-            const { error } = await authClient.oauth2.link({
+            const { error } = await (authClient as AuthClient).oauth2.link({
                 providerId: provider.provider as SocialProvider,
                 callbackURL
             })

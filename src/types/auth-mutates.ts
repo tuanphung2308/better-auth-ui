@@ -1,6 +1,5 @@
-import type { FetchError } from "./fetch-error"
-
-type MutateFn<T = Record<string, unknown>> = (params: T) => Promise<{ error?: FetchError | null }>
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+type MutateFn<T = Record<string, unknown>> = (params: T) => Promise<any>
 
 export interface AuthMutates {
     deletePasskey: MutateFn<{ id: string }>

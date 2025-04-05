@@ -13,6 +13,7 @@ import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
 import type { SocialProvider } from "better-auth/social-providers"
+import type { AuthClient } from "../../types/auth-client"
 import { PasswordInput } from "../password-input"
 import { ActionButton } from "./action-button"
 import { MagicLinkButton } from "./magic-link-button"
@@ -185,7 +186,7 @@ export function AuthForm({
         }
 
         if (formData.get("passkey")) {
-            const response = await authClient.signIn.passkey()
+            const response = await (authClient as AuthClient).signIn.passkey()
             const error = response?.error
             if (error) {
                 toast({ variant: "error", message: error.message || error.statusText })
