@@ -21,7 +21,12 @@ export interface UserProps {
 export function User({ user, className, classNames, isPending }: UserProps) {
     return (
         <div className={cn("flex items-center gap-2 truncate", className, classNames?.base)}>
-            <UserAvatar isPending={isPending} user={user} classNames={classNames?.avatar} />
+            <UserAvatar
+                isPending={isPending}
+                user={user}
+                className="my-0.5"
+                classNames={classNames?.avatar}
+            />
 
             <div className="flex flex-col truncate text-left">
                 {isPending ? (
