@@ -152,11 +152,21 @@ export function UserButton({
                         className={cn("h-fit", className, classNames?.trigger?.base)}
                         variant="outline"
                     >
-                        <User
-                            user={user}
-                            isPending={isPending}
-                            classNames={classNames?.trigger?.user}
-                        />
+                        {(user && !user.isAnonymous) || isPending ? (
+                            <User
+                                user={user}
+                                isPending={isPending}
+                                classNames={classNames?.trigger?.user}
+                            />
+                        ) : (
+                            <div className="flex items-center gap-2 truncate">
+                                <UserAvatar className={cn("my-0.5", classNames?.trigger?.avatar)} />
+
+                                <span className="truncate font-medium text-sm">
+                                    {localization?.account}
+                                </span>
+                            </div>
+                        )}
 
                         <ChevronsUpDown className="ml-auto" />
                     </Button>
