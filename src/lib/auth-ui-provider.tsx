@@ -9,7 +9,7 @@ import type { AdditionalFields } from "../types/additional-fields"
 import type { AnyAuthClient } from "../types/any-auth-client"
 import type { AuthClient } from "../types/auth-client"
 import type { AuthHooks } from "../types/auth-hooks"
-import type { AuthMutates } from "../types/auth-mutates"
+import type { AuthMutators } from "../types/auth-mutators"
 import type { Link } from "../types/link"
 import type { RenderToast } from "../types/render-toast"
 import { type AuthLocalization, authLocalization } from "./auth-localization"
@@ -124,7 +124,7 @@ export type AuthUIContextType = {
      */
     multiSession?: boolean
     /** @internal */
-    mutates: AuthMutates
+    mutators: AuthMutators
     /**
      * Enable or disable name requirement for sign up
      * @default true
@@ -248,10 +248,10 @@ export type AuthUIProviderProps = {
      */
     localization?: AuthLocalization
     /**
-     * ADVANCED: Custom mutates for updating auth data
+     * ADVANCED: Custom mutators for updating auth data
      */
-    mutates?: Partial<AuthMutates>
-} & Partial<Omit<AuthUIContextType, "viewPaths" | "localization" | "mutates" | "toast" | "hooks">>
+    mutators?: Partial<AuthMutators>
+} & Partial<Omit<AuthUIContextType, "viewPaths" | "localization" | "mutators" | "toast" | "hooks">>
 
 export const AuthUIContext = createContext<AuthUIContextType>({} as unknown as AuthUIContextType)
 
@@ -266,7 +266,7 @@ export const AuthUIProvider = ({
     forgotPassword = true,
     freshAge = 60 * 60 * 24,
     hooks,
-    mutates,
+    mutators,
     localization,
     nameRequired = true,
     settingsFields = ["name"],
@@ -280,13 +280,37 @@ export const AuthUIProvider = ({
     Link = DefaultLink,
     ...props
 }: AuthUIProviderProps) => {
-    const defaultMutates: AuthMutates = {
-        deletePasskey: (authClient as AuthClient).passkey.deletePasskey,
-        revokeDeviceSession: (authClient as AuthClient).multiSession.revoke,
-        revokeSession: (authClient as AuthClient).revokeSession,
-        setActiveSession: (authClient as AuthClient).multiSession.setActive,
-        updateUser: authClient.updateUser,
-        unlinkAccount: authClient.unlinkAccount
+    const defaultMutates: AuthMutators = {
+        deletePasskey: (params) =>
+            (authClient as AuthClient).passkey.deletePasskey({
+                ...params,
+                fetchOptions: { throw: true }
+            }),
+        revokeDeviceSession: (params) =>
+            (authClient as AuthClient).multiSession.revoke({
+                ...params,
+                fetchOptions: { throw: true }
+            }),
+        revokeSession: (params) =>
+            (authClient as AuthClient).revokeSession({
+                ...params,
+                fetchOptions: { throw: true }
+            }),
+        setActiveSession: (params) =>
+            (authClient as AuthClient).multiSession.setActive({
+                ...params,
+                fetchOptions: { throw: true }
+            }),
+        updateUser: (params) =>
+            authClient.updateUser({
+                ...params,
+                fetchOptions: { throw: true }
+            }),
+        unlinkAccount: (params) =>
+            authClient.unlinkAccount({
+                ...params,
+                fetchOptions: { throw: true }
+            })
     }
 
     const defaultHooks: AuthHooks = {
@@ -310,7 +334,7 @@ export const AuthUIProvider = ({
                 forgotPassword,
                 freshAge,
                 hooks: { ...defaultHooks, ...hooks },
-                mutates: { ...defaultMutates, ...mutates },
+                mutators: { ...defaultMutates, ...mutators },
                 localization: { ...authLocalization, ...localization },
                 nameRequired,
                 settingsFields,

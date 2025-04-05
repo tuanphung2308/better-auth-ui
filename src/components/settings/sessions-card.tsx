@@ -11,6 +11,7 @@ import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 
 import type { Session } from "better-auth"
+import type { FetchError } from "../../types/fetch-error"
 import type { SettingsCardClassNames } from "./settings-card"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
 
@@ -39,7 +40,7 @@ export function SessionsCard({
 }: SessionsCardProps) {
     const {
         hooks: { useListSessions, useSession },
-        mutates: { revokeSession },
+        mutators: { revokeSession },
         localization: authLocalization,
         navigate,
         toast,
@@ -68,13 +69,15 @@ export function SessionsCard({
 
         setActionLoading(token)
 
-        const { error } = await revokeSession({ token })
-
-        if (error) {
-            toast({ variant: "error", message: error.message || error.statusText })
+        try {
+            await revokeSession({ token })
+            refetch?.()
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: (error as Error).message || (error as FetchError).statusText
+            })
             setActionLoading(null)
-        } else {
-            await refetch?.()
         }
     }
 

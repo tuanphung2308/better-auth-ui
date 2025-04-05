@@ -5,6 +5,7 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
+import type { FetchError } from "../../types/fetch-error"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import type { SettingsCardClassNames } from "./settings-card"
@@ -36,7 +37,7 @@ export function PasskeysCard({
     const {
         authClient,
         hooks: { useListPasskeys },
-        mutates: { deletePasskey },
+        mutators: { deletePasskey },
         localization: authLocalization,
         toast
     } = useContext(AuthUIContext)
@@ -70,13 +71,15 @@ export function PasskeysCard({
     const handleDeletePasskey = async (id: string) => {
         setActionLoading(id)
 
-        const response = await deletePasskey({ id })
-        const error = response?.error
-        if (error) {
-            toast({ variant: "error", message: error.message || error.statusText })
-            setActionLoading(null)
-        } else {
+        try {
+            await deletePasskey({ id })
             refetch?.()
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: (error as Error).message || (error as FetchError).statusText
+            })
+            setActionLoading(null)
         }
     }
 

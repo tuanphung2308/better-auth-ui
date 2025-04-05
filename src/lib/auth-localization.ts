@@ -187,15 +187,6 @@ export const authLocalization = {
     /** @default "Connect your account with a third-party service." */
     providersDescription: "Connect your account with a third-party service.",
 
-    /** @default "Provider linked successfully." */
-    providerLinkSuccess: "Provider linked successfully.",
-
-    /** @default "Provider unlinked successfully." */
-    providerUnlinkSuccess: "Provider unlinked successfully.",
-
-    /** @default "Could not load account info" */
-    providersLoadingError: "Could not load account info",
-
     /** @default "Remember me" */
     rememberMe: "Remember me",
 

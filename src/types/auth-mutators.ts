@@ -1,7 +1,6 @@
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-type MutateFn<T = Record<string, unknown>> = (params: T) => Promise<any>
+type MutateFn<T = Record<string, unknown>> = (params: T) => Promise<unknown> | Promise<void>
 
-export interface AuthMutates {
+export interface AuthMutators {
     deletePasskey: MutateFn<{ id: string }>
     revokeDeviceSession: MutateFn<{ sessionToken: string }>
     revokeSession: MutateFn<{ token: string }>

@@ -9,6 +9,7 @@ import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/
 import { Skeleton } from "../ui/skeleton"
 import { UserAvatar } from "../user-avatar"
 
+import type { FetchError } from "../../types/fetch-error"
 import type { SettingsCardClassNames } from "./settings-card"
 import { UpdateAvatarCardSkeleton } from "./skeletons/update-avatar-card-skeleton"
 
@@ -74,7 +75,7 @@ export function UpdateAvatarCard({
 }: UpdateAvatarCardProps) {
     const {
         hooks: { useSession },
-        mutates: { updateUser },
+        mutators: { updateUser },
         localization: authLocalization,
         optimistic,
         uploadAvatar,
@@ -116,10 +117,13 @@ export function UpdateAvatarCard({
 
         if (optimistic && !uploadAvatar) setLoading(false)
 
-        const { error } = await updateUser({ image })
-
-        if (error) {
-            toast({ variant: "error", message: error.message || error.statusText })
+        try {
+            await updateUser({ image })
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: (error as Error).message || (error as FetchError).statusText
+            })
         }
 
         setLoading(false)

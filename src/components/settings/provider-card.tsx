@@ -12,6 +12,7 @@ import { Card } from "../ui/card"
 
 import type { Provider } from "../../lib/social-providers"
 import type { AuthClient } from "../../types/auth-client"
+import type { FetchError } from "../../types/fetch-error"
 import type { SettingsCardClassNames } from "./settings-card"
 
 export interface ProviderCardProps {
@@ -41,7 +42,7 @@ export function ProviderCard({
     const {
         authClient,
         colorIcons,
-        mutates: { unlinkAccount },
+        mutators: { unlinkAccount },
         localization: authLocalization,
         noColorIcons,
         toast
@@ -84,17 +85,18 @@ export function ProviderCard({
     const handleUnlink = async () => {
         setIsLoading(true)
 
-        const { error } = await unlinkAccount({
-            accountId: account?.accountId,
-            providerId: provider.provider
-        })
-
-        if (error) {
-            toast({ variant: "error", message: error.message || error.statusText })
-            setIsLoading(false)
-        } else {
-            toast({ variant: "success", message: localization.providerUnlinkSuccess! })
+        try {
+            await unlinkAccount({
+                accountId: account?.accountId,
+                providerId: provider.provider
+            })
             refetch?.()
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: (error as Error).message || (error as FetchError).statusText
+            })
+            setIsLoading(false)
         }
     }
 

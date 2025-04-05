@@ -60,7 +60,7 @@ export function SettingsCard({
     saveLabel?: ReactNode
     label?: ReactNode
     type?: FieldType
-    formAction: (formData: FormData) => Promise<{ error?: FetchError | null }>
+    formAction: (formData: FormData) => Promise<unknown> | Promise<void>
 }) {
     let { optimistic } = useContext(AuthUIContext)
     const { localization: authLocalization, toast } = useContext(AuthUIContext)
@@ -76,15 +76,16 @@ export function SettingsCard({
     const performAction = async (_: Record<string, string>, formData: FormData) => {
         const formDataObject = Object.fromEntries(formData.entries())
 
-        const { error } = await formAction(formData)
-
-        if (error)
+        try {
+            await formAction(formData)
+            setDisabled(true)
+        } catch (error) {
             toast({
                 variant: "error",
-                message: error.message || error.statusText || "Unknown Error"
+                message: (error as Error).message || (error as FetchError).statusText
             })
-
-        setDisabled(!error)
+            setDisabled(false)
+        }
 
         return formDataObject as Record<string, string>
     }

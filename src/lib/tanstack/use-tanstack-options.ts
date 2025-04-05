@@ -3,7 +3,7 @@ import { useIsRestoring, useQueryClient } from "@tanstack/react-query"
 import type { createAuthClient } from "better-auth/react"
 import { useContext } from "react"
 import type { AuthHooks } from "../../types/auth-hooks"
-import type { AuthMutates } from "../../types/auth-mutates"
+import type { AuthMutators } from "../../types/auth-mutators"
 
 export function useTanstackOptions({
     authClient
@@ -30,18 +30,13 @@ export function useTanstackOptions({
 
     const hooks: AuthHooks = createAuthHooks(authClient)
 
-    const mutates: AuthMutates = {
-        updateUser: (params) => updateUserAsync({ fetchOptions: { throw: false }, ...params }),
-        unlinkAccount: (params) =>
-            unlinkAccountAsync({ fetchOptions: { throw: false }, ...params }),
-        deletePasskey: (params) =>
-            deletePasskeyAsync({ fetchOptions: { throw: false }, ...params }),
-        revokeSession: (params) =>
-            revokeSessionAsync({ fetchOptions: { throw: false }, ...params }),
-        setActiveSession: (params) =>
-            setActiveSessionAsync({ fetchOptions: { throw: false }, ...params }),
-        revokeDeviceSession: (params) =>
-            revokeDeviceSessionAsync({ fetchOptions: { throw: false }, ...params })
+    const mutators: AuthMutators = {
+        updateUser: updateUserAsync,
+        unlinkAccount: unlinkAccountAsync,
+        deletePasskey: deletePasskeyAsync,
+        revokeSession: revokeSessionAsync,
+        setActiveSession: setActiveSessionAsync,
+        revokeDeviceSession: revokeDeviceSessionAsync
     }
 
     const onSessionChange = async () => {
@@ -56,7 +51,7 @@ export function useTanstackOptions({
 
     return {
         hooks: { ...hooks, useIsRestoring },
-        mutates,
+        mutators,
         onSessionChange,
         optimistic: true
     }

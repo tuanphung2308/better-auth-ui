@@ -39,7 +39,7 @@ export function UpdateFieldCard({
 }) {
     const {
         hooks: { useSession },
-        mutates: { updateUser },
+        mutators: { updateUser },
         localization: authLocalization
     } = useContext(AuthUIContext)
 
@@ -58,7 +58,7 @@ export function UpdateFieldCard({
             }
         }
 
-        const { error } = await updateUser({
+        await updateUser({
             [field]:
                 type === "number"
                     ? Number.parseFloat(value)
@@ -66,8 +66,6 @@ export function UpdateFieldCard({
                       ? value === "on"
                       : value
         })
-
-        return { error }
     }
 
     return (

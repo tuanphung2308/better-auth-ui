@@ -5,17 +5,17 @@ export function AuthUIProviderTanstack({
     children,
     authClient,
     hooks: hooksProp,
-    mutates: mutatesProp,
+    mutators: mutatorsProp,
     onSessionChange: onSessionChangeProp,
     ...props
 }: AuthUIProviderProps) {
-    const { hooks, mutates, onSessionChange, optimistic } = useTanstackOptions({ authClient })
+    const { hooks, mutators, onSessionChange, optimistic } = useTanstackOptions({ authClient })
 
     return (
         <AuthUIProvider
             authClient={authClient}
             hooks={{ ...hooks, ...hooksProp }}
-            mutates={{ ...mutates, ...mutatesProp }}
+            mutators={{ ...mutators, ...mutatorsProp }}
             onSessionChange={async () => {
                 await onSessionChange()
                 await onSessionChangeProp?.()

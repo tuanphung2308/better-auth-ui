@@ -16,6 +16,7 @@ import { cn } from "../lib/utils"
 import type { User as UserType } from "../types/user"
 
 import type { Session } from "better-auth"
+import type { FetchError } from "../types/fetch-error"
 import { Button } from "./ui/button"
 import {
     DropdownMenu,
@@ -82,7 +83,7 @@ export function UserButton({
     const {
         basePath,
         hooks: { useSession, useListDeviceSessions },
-        mutates: { setActiveSession },
+        mutators: { setActiveSession },
         localization: authLocalization,
         multiSession,
         settingsUrl,
@@ -112,12 +113,16 @@ export function UserButton({
 
     const switchAccount = async (sessionToken: string) => {
         setActiveSessionPending(true)
-        const { error } = await setActiveSession({ sessionToken })
 
-        if (error) {
-            toast({ variant: "error", message: error.message || error.statusText })
-        } else {
+        try {
+            await setActiveSession({ sessionToken })
             onSessionChange?.()
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: (error as Error).message || (error as FetchError).statusText
+            })
+            setActiveSessionPending(false)
         }
     }
 
@@ -136,6 +141,7 @@ export function UserButton({
             >
                 {size === "icon" ? (
                     <UserAvatar
+                        key={user?.image || user?.avatarUrl || user?.avatar}
                         isPending={isPending}
                         className={cn("size-8", className, classNames?.base)}
                         classNames={classNames?.trigger?.avatar}

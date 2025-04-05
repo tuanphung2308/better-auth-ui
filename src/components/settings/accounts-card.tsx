@@ -10,6 +10,7 @@ import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 
 import type { Session, User } from "better-auth"
+import type { FetchError } from "../../types/fetch-error"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -46,7 +47,7 @@ export function AccountsCard({
     const {
         basePath,
         hooks: { useSession, useListDeviceSessions },
-        mutates: { revokeDeviceSession, setActiveSession },
+        mutators: { revokeDeviceSession, setActiveSession },
         localization: authLocalization,
         toast,
         viewPaths,
@@ -70,25 +71,30 @@ export function AccountsCard({
     const handleRevoke = async (sessionToken: string) => {
         setActionLoading(sessionToken)
 
-        const { error } = await revokeDeviceSession({ sessionToken })
-
-        if (error) {
-            toast({ variant: "error", message: error.message || error.statusText })
+        try {
+            await revokeDeviceSession({ sessionToken })
+            refetch?.()
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: (error as Error).message || (error as FetchError).statusText
+            })
             setActionLoading(null)
-        } else {
-            await refetch?.()
         }
     }
 
     const handleSetActiveSession = async (sessionToken: string) => {
         setActionLoading(sessionToken)
 
-        const { error } = await setActiveSession({ sessionToken })
-
-        if (error) {
-            toast({ variant: "error", message: error.message || error.statusText })
-        } else {
+        try {
+            await setActiveSession({ sessionToken })
             refetch?.()
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: (error as Error).message || (error as FetchError).statusText
+            })
+            setActionLoading(null)
         }
     }
 

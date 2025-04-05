@@ -51,23 +51,21 @@ export function ProvidersCard({
         refetch = result.refetch
     }
 
-    const hasShownLinkedToast = useRef(false)
+    const hasRefetched = useRef(false)
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search)
-        if (params.get("providerLinked") && !hasShownLinkedToast.current) {
-            hasShownLinkedToast.current = true
-            setTimeout(() => {
-                toast({ variant: "success", message: localization.providerLinkSuccess! })
+        if (params.get("providerLinked") && !hasRefetched.current) {
+            hasRefetched.current = true
+            refetch?.()
 
-                // Remove the parameter from URL
-                params.delete("providerLinked")
-                const query = params.toString()
-                const url = `${window.location.pathname}${query ? `?${query}` : ""}`
-                window.history.replaceState(null, "", url)
-            }, 0)
+            // Remove the parameter from URL
+            params.delete("providerLinked")
+            const query = params.toString()
+            const url = `${window.location.pathname}${query ? `?${query}` : ""}`
+            window.history.replaceState(null, "", url)
         }
-    }, [localization.providerLinkSuccess, toast])
+    }, [refetch])
 
     if (isPending) {
         return <ProvidersCardSkeleton className={className} classNames={classNames} />
