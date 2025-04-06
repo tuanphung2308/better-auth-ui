@@ -649,55 +649,57 @@ export function AuthForm({
                 )}
             </div>
 
-            <div className="flex items-center gap-2">
-                <Separator className="!w-auto grow" />
-                <span className="flex-shrink-0 text-muted-foreground text-sm">
-                    {localization.orContinueWith}
-                </span>
-                <Separator className="!w-auto grow" />
-            </div>
-
             {!["forgotPassword", "resetPassword"].includes(view) &&
                 (providers?.length || otherProviders?.length) && (
-                    <div
-                        className={cn(
-                            "flex w-full items-center gap-4",
-                            "justify-between",
-                            socialLayout === "horizontal" && "flex-wrap",
-                            socialLayout === "vertical" && "flex-col",
-                            socialLayout === "grid" && "grid grid-cols-2"
-                        )}
-                    >
-                        {providers?.map((provider) => {
-                            const socialProvider = socialProviders.find(
-                                (socialProvider) => socialProvider.provider === provider
-                            )
-                            if (!socialProvider) return null
+                    <>
+                        <div className="flex items-center gap-2">
+                            <Separator className="!w-auto grow" />
+                            <span className="flex-shrink-0 text-muted-foreground text-sm">
+                                {localization.orContinueWith}
+                            </span>
+                            <Separator className="!w-auto grow" />
+                        </div>
 
-                            return (
+                        <div
+                            className={cn(
+                                "flex w-full items-center gap-4",
+                                "justify-between",
+                                socialLayout === "horizontal" && "flex-wrap",
+                                socialLayout === "vertical" && "flex-col",
+                                socialLayout === "grid" && "grid grid-cols-2"
+                            )}
+                        >
+                            {providers?.map((provider) => {
+                                const socialProvider = socialProviders.find(
+                                    (socialProvider) => socialProvider.provider === provider
+                                )
+                                if (!socialProvider) return null
+
+                                return (
+                                    <ProviderButton
+                                        key={provider}
+                                        className={classNames?.providerButton}
+                                        isLoading={isLoading}
+                                        localization={localization}
+                                        socialLayout={socialLayout}
+                                        provider={socialProvider}
+                                    />
+                                )
+                            })}
+
+                            {otherProviders?.map((provider) => (
                                 <ProviderButton
-                                    key={provider}
+                                    key={provider.provider}
                                     className={classNames?.providerButton}
                                     isLoading={isLoading}
                                     localization={localization}
                                     socialLayout={socialLayout}
-                                    provider={socialProvider}
+                                    provider={provider}
+                                    other
                                 />
-                            )
-                        })}
-
-                        {otherProviders?.map((provider) => (
-                            <ProviderButton
-                                key={provider.provider}
-                                className={classNames?.providerButton}
-                                isLoading={isLoading}
-                                localization={localization}
-                                socialLayout={socialLayout}
-                                provider={provider}
-                                other
-                            />
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    </>
                 )}
 
             {passkey && (
