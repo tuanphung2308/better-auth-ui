@@ -81,8 +81,7 @@ export function UpdateAvatarCard({
         uploadAvatar,
         avatarSize,
         avatarExtension,
-        toast,
-        user
+        toast
     } = useContext(AuthUIContext)
 
     localization = { ...authLocalization, ...localization }
@@ -136,7 +135,7 @@ export function UpdateAvatarCard({
     }
 
     return (
-        <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
+        <Card className={cn("w-full pb-0", className, classNames?.base)}>
             <input
                 ref={fileInputRef}
                 accept="image/*"
@@ -150,7 +149,7 @@ export function UpdateAvatarCard({
             />
 
             <div className="flex justify-between">
-                <CardHeader className={cn(classNames?.header)}>
+                <CardHeader className={cn("grow self-start", classNames?.header)}>
                     <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                         {localization.avatar}
                     </CardTitle>
@@ -160,24 +159,27 @@ export function UpdateAvatarCard({
                     </CardDescription>
                 </CardHeader>
 
-                <button className={cn("my-5 me-6")} type="button" onClick={openFileDialog}>
+                <button className={cn("me-6")} type="button" onClick={openFileDialog}>
                     {loading ? (
                         <Skeleton
                             className={cn("size-20 rounded-full", classNames?.avatar?.base)}
                         />
                     ) : (
                         <UserAvatar
-                            key={(user || sessionData?.user)?.image}
+                            key={sessionData?.user.image}
                             className="size-20 text-2xl"
                             classNames={classNames?.avatar}
-                            user={user || sessionData?.user}
+                            user={sessionData?.user}
                         />
                     )}
                 </button>
             </div>
 
             <CardFooter
-                className={cn("border-t bg-muted py-4.5 dark:bg-transparent", classNames?.footer)}
+                className={cn(
+                    "rounded-b-xl border-t bg-muted pb-6 dark:bg-transparent",
+                    classNames?.footer
+                )}
             >
                 <CardDescription
                     className={cn(

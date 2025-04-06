@@ -88,7 +88,7 @@ export function PasskeysCard({
     }
 
     return (
-        <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
+        <Card className={cn("w-full pb-0", className, classNames?.base)}>
             <CardHeader className={classNames?.header}>
                 <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                     {localization.passkeys}
@@ -100,7 +100,7 @@ export function PasskeysCard({
             </CardHeader>
 
             {!!passkeys?.length && (
-                <CardContent className={cn("flex flex-col gap-3", classNames?.content)}>
+                <CardContent className={cn("flex flex-col gap-4", classNames?.content)}>
                     {passkeys?.map((passkey) => {
                         const isButtonLoading = actionLoading === passkey.id
 
@@ -108,7 +108,7 @@ export function PasskeysCard({
                             <Card
                                 key={passkey.id}
                                 className={cn(
-                                    "flex items-center gap-3 px-4 py-3",
+                                    "flex-row items-center gap-3 px-4 py-3",
                                     classNames?.cell
                                 )}
                             >
@@ -145,7 +145,7 @@ export function PasskeysCard({
 
             <CardFooter
                 className={cn(
-                    "flex flex-col justify-between gap-4 border-t bg-muted py-4 md:flex-row md:py-3 dark:bg-transparent",
+                    "flex flex-col justify-between gap-4 rounded-b-xl border-t bg-muted pb-6 md:flex-row dark:bg-transparent",
                     classNames?.footer
                 )}
             >

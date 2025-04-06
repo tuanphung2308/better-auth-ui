@@ -15,6 +15,7 @@ import { Label } from "../ui/label"
 import type { SocialProvider } from "better-auth/social-providers"
 import type { AuthClient } from "../../types/auth-client"
 import { PasswordInput } from "../password-input"
+import { Separator } from "../ui/separator"
 import { ActionButton } from "./action-button"
 import { MagicLinkButton } from "./magic-link-button"
 import { PasskeyButton } from "./passkey-button"
@@ -93,7 +94,7 @@ export function AuthForm({
     if (socialLayout === "auto") {
         socialLayout = !credentials
             ? "vertical"
-            : providers && providers.length > 3
+            : providers && providers.length > 2
               ? "horizontal"
               : "vertical"
     }
@@ -458,7 +459,7 @@ export function AuthForm({
     if (["signOut", "callback"].includes(view)) return <Loader2 className="animate-spin" />
 
     return (
-        <form action={formAction} className={cn("grid w-full gap-4", className, classNames?.base)}>
+        <form action={formAction} className={cn("grid w-full gap-6", className, classNames?.base)}>
             {credentials &&
                 view === "signUp" &&
                 (nameRequired || signUpFields?.includes("name")) && (
@@ -628,29 +629,39 @@ export function AuthForm({
                         )
                     })}
 
-            {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) && (
-                <ActionButton
-                    authView={view}
-                    className={classNames?.actionButton}
-                    isLoading={isLoading}
-                    localization={localization}
-                />
-            )}
+            <div className="flex flex-col gap-4">
+                {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) && (
+                    <ActionButton
+                        authView={view}
+                        className={classNames?.actionButton}
+                        isLoading={isLoading}
+                        localization={localization}
+                    />
+                )}
 
-            {magicLink && credentials && view !== "resetPassword" && (
-                <MagicLinkButton
-                    className={classNames?.secondaryButton}
-                    isLoading={isLoading}
-                    localization={localization}
-                    view={view}
-                />
-            )}
+                {magicLink && credentials && view !== "resetPassword" && (
+                    <MagicLinkButton
+                        className={classNames?.secondaryButton}
+                        isLoading={isLoading}
+                        localization={localization}
+                        view={view}
+                    />
+                )}
+            </div>
+
+            <div className="flex items-center gap-2">
+                <Separator className="!w-auto grow" />
+                <span className="flex-shrink-0 text-muted-foreground text-sm">
+                    {localization.orContinueWith}
+                </span>
+                <Separator className="!w-auto grow" />
+            </div>
 
             {!["forgotPassword", "resetPassword"].includes(view) &&
                 (providers?.length || otherProviders?.length) && (
                     <div
                         className={cn(
-                            "flex w-full items-center gap-2",
+                            "flex w-full items-center gap-4",
                             "justify-between",
                             socialLayout === "horizontal" && "flex-wrap",
                             socialLayout === "vertical" && "flex-col",

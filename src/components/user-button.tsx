@@ -90,7 +90,6 @@ export function UserButton({
         toast,
         viewPaths,
         onSessionChange,
-        user: contextUser,
         Link
     } = useContext(AuthUIContext)
 
@@ -106,7 +105,7 @@ export function UserButton({
     }
 
     const { data: sessionData, isPending: sessionPending } = useSession()
-    const user = (contextUser || sessionData?.user) as UserType
+    const user = sessionData?.user as UserType
     const [activeSessionPending, setActiveSessionPending] = useState(false)
 
     const isPending = sessionPending || activeSessionPending
@@ -141,7 +140,7 @@ export function UserButton({
             >
                 {size === "icon" ? (
                     <UserAvatar
-                        key={user?.image || user?.avatarUrl || user?.avatar}
+                        key={user?.image}
                         isPending={isPending}
                         className={cn("size-8", className, classNames?.base)}
                         classNames={classNames?.trigger?.avatar}
@@ -149,7 +148,11 @@ export function UserButton({
                     />
                 ) : (
                     <Button
-                        className={cn("h-fit", className, classNames?.trigger?.base)}
+                        className={cn(
+                            "h-fit justify-between",
+                            className,
+                            classNames?.trigger?.base
+                        )}
                         variant="outline"
                     >
                         {(user && !user.isAnonymous) || isPending ? (
@@ -168,7 +171,7 @@ export function UserButton({
                             </div>
                         )}
 
-                        <ChevronsUpDown className="ml-auto" />
+                        <ChevronsUpDown />
                     </Button>
                 )}
             </DropdownMenuTrigger>

@@ -97,7 +97,7 @@ export function SettingsCard({
     }
 
     return (
-        <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
+        <Card className={cn("w-full pb-0", className, classNames?.base)}>
             <form action={action}>
                 {type === "boolean" ? (
                     <CardHeader className={classNames?.header}>
@@ -123,7 +123,7 @@ export function SettingsCard({
                 ) : (
                     <>
                         <CardHeader className={classNames?.header}>
-                            <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                            <CardTitle className={cn("text-lg", classNames?.title)}>
                                 {label}
                             </CardTitle>
 
@@ -134,7 +134,7 @@ export function SettingsCard({
                             </CardDescription>
                         </CardHeader>
 
-                        <CardContent className={classNames?.content}>
+                        <CardContent className={cn("py-6", classNames?.content)}>
                             <Input
                                 key={`${defaultValue}`}
                                 className={classNames?.input}
@@ -153,7 +153,7 @@ export function SettingsCard({
 
                 <CardFooter
                     className={cn(
-                        "flex flex-col justify-between gap-4 border-t bg-muted py-4 md:flex-row md:py-3 dark:bg-transparent",
+                        "flex flex-col justify-between gap-4 rounded-b-xl border-t bg-muted pb-6 md:flex-row dark:bg-transparent",
                         classNames?.footer
                     )}
                 >

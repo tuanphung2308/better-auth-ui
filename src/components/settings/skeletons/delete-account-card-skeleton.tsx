@@ -11,22 +11,16 @@ export function DeleteAccountCardSkeleton({
     classNames?: SettingsCardClassNames
 }) {
     return (
-        <Card
-            className={cn(
-                "w-full overflow-hidden border-destructive/40",
-                className,
-                classNames?.base
-            )}
-        >
-            <CardHeader className={cn("space-y-2", classNames?.header)}>
-                <Skeleton className={cn("h-5 w-32 md:h-6", classNames?.skeleton)} />
-                <Skeleton className={cn("h-4 w-11/12", classNames?.skeleton)} />
-                <Skeleton className={cn("-mt-2 h-4 w-3/4", classNames?.skeleton)} />
+        <Card className={cn("w-full border-destructive/40 pb-0", className, classNames?.base)}>
+            <CardHeader className={cn("mt-1 gap-3.5", classNames?.header)}>
+                <Skeleton className={cn("h-5 w-32 md:h-5.5", classNames?.skeleton)} />
+                <Skeleton className={cn("md:3.5 h-3 w-11/12", classNames?.skeleton)} />
+                <Skeleton className={cn("-mt-1.5 md:3.5 mb-0.5 h-3 w-3/4", classNames?.skeleton)} />
             </CardHeader>
 
             <CardFooter
                 className={cn(
-                    "flex border-destructive/30 border-t bg-destructive/10 py-4 md:py-3",
+                    "flex rounded-b-xl border-destructive/30 border-t bg-destructive/10 pb-6",
                     classNames?.footer
                 )}
             >

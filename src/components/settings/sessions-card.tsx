@@ -97,7 +97,7 @@ export function SessionsCard({
                 </CardDescription>
             </CardHeader>
 
-            <CardContent className={cn("flex flex-col gap-3", classNames?.content)}>
+            <CardContent className={cn("flex flex-col gap-4", classNames?.content)}>
                 {sessions?.map((session) => {
                     const parser = UAParser(session.userAgent as string)
 
@@ -106,7 +106,10 @@ export function SessionsCard({
                     return (
                         <Card
                             key={session.id}
-                            className={cn("flex items-center gap-3 px-4 py-3", classNames?.cell)}
+                            className={cn(
+                                "flex-row items-center gap-3 px-4 py-3",
+                                classNames?.cell
+                            )}
                         >
                             {parser.device.type === "mobile" ? (
                                 <SmartphoneIcon className="size-4" />

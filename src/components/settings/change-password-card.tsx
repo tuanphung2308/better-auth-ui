@@ -117,7 +117,7 @@ export function ChangePasswordCard({
 
     if (!credentialsLinked) {
         return (
-            <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
+            <Card className={cn("w-full pb-0 text-start", className, classNames?.base)}>
                 <CardHeader className={classNames?.header}>
                     <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                         {localization.changePassword}
@@ -130,7 +130,7 @@ export function ChangePasswordCard({
 
                 <CardFooter
                     className={cn(
-                        "flex justify-center border-t bg-muted py-4 md:justify-end md:py-3 dark:bg-transparent",
+                        "flex justify-center rounded-b-xl border-t bg-muted pb-6 md:justify-end dark:bg-transparent",
                         classNames?.footer
                     )}
                 >
@@ -151,7 +151,7 @@ export function ChangePasswordCard({
     }
 
     return (
-        <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
+        <Card className={cn("w-full pb-0 text-start", className, classNames?.base)}>
             <form action={action}>
                 <CardHeader className={classNames?.header}>
                     <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
@@ -163,7 +163,7 @@ export function ChangePasswordCard({
                     </CardDescription>
                 </CardHeader>
 
-                <CardContent className={cn("grid gap-4", classNames?.content)}>
+                <CardContent className={cn("grid gap-6 py-6", classNames?.content)}>
                     <div className="grid gap-2">
                         <Label className={classNames?.label} htmlFor="currentPassword">
                             {localization.currentPassword}
@@ -218,7 +218,7 @@ export function ChangePasswordCard({
 
                 <CardFooter
                     className={cn(
-                        "flex flex-col justify-between gap-4 border-t bg-muted py-4 md:flex-row md:py-3 dark:bg-transparent",
+                        "flex flex-col justify-between gap-4 rounded-b-xl border-t bg-muted pb-6 md:flex-row dark:bg-transparent",
                         classNames?.footer
                     )}
                 >

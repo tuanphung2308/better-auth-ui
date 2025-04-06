@@ -154,6 +154,9 @@ export const authLocalization = {
     /** @default "New Password" */
     newPasswordPlaceholder: "New Password",
 
+    /** @default "Or continue with" */
+    orContinueWith: "Or continue with",
+
     /** @default "Passkey" */
     passkey: "Passkey",
 

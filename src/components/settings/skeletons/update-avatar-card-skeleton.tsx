@@ -11,20 +11,20 @@ export function UpdateAvatarCardSkeleton({
     classNames?: SettingsCardClassNames
 }) {
     return (
-        <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
+        <Card className={cn("w-full pb-0", className, classNames?.base)}>
             <div className="flex justify-between">
-                <CardHeader className={cn("grow space-y-2", classNames?.header)}>
+                <CardHeader className={cn("mt-1 grow space-y-2 self-start", classNames?.header)}>
                     <Skeleton
-                        className={cn("mt-0.5 h-5 w-24 md:mt-0 md:h-6", classNames?.skeleton)}
+                        className={cn("mt-0.5 h-5 w-24 md:mt-0 md:h-5.5", classNames?.skeleton)}
                     />
 
                     <div className="flex flex-col space-y-1.5">
-                        <Skeleton className={cn("h-3 w-5/6 md:h-4", classNames?.skeleton)} />
+                        <Skeleton className={cn("h-3 w-5/6 md:h-3.5", classNames?.skeleton)} />
                         <Skeleton className={cn("h-3 w-2/3 md:hidden", classNames?.skeleton)} />
                     </div>
                 </CardHeader>
 
-                <div className="my-5 me-6">
+                <div className="me-6">
                     <Skeleton
                         className={cn(
                             "size-20 rounded-full",
@@ -36,7 +36,10 @@ export function UpdateAvatarCardSkeleton({
             </div>
 
             <CardFooter
-                className={cn("border-t bg-muted py-4.5 dark:bg-transparent", classNames?.footer)}
+                className={cn(
+                    "rounded-b-xl border-t bg-muted pb-6 dark:bg-transparent",
+                    classNames?.footer
+                )}
             >
                 <Skeleton
                     className={cn(

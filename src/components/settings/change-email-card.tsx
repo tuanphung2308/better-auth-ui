@@ -90,7 +90,7 @@ export function ChangeEmailCard({
             />
 
             {emailVerification && sessionData?.user && !sessionData?.user.emailVerified && (
-                <Card className={cn("w-full overflow-hidden", classNames?.base)}>
+                <Card className={cn("w-full pb-0", classNames?.base)}>
                     <CardHeader className={classNames?.header}>
                         <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                             {localization.verifyYourEmail}
@@ -103,7 +103,7 @@ export function ChangeEmailCard({
 
                     <CardFooter
                         className={cn(
-                            "flex flex-col justify-between gap-4 border-t bg-muted py-4 md:flex-row md:py-3 dark:bg-transparent",
+                            "flex flex-col justify-between gap-4 rounded-b-xl border-t bg-muted pb-6 md:flex-row dark:bg-transparent",
                             classNames?.footer
                         )}
                     >

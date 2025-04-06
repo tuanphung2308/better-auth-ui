@@ -23,7 +23,7 @@ export function ProvidersCardSkeleton({
                 {(providers || [""]).map((provider) => (
                     <Card
                         key={provider}
-                        className={cn("flex items-center gap-3 px-4 py-3", classNames?.cell)}
+                        className={cn("flex-row items-center gap-3 px-4 py-3", classNames?.cell)}
                     >
                         <Skeleton className={cn("size-4 rounded-full", classNames?.skeleton)} />
                         <Skeleton className={cn("h-4 w-24", classNames?.skeleton)} />

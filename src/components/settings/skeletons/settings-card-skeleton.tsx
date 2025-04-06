@@ -11,19 +11,19 @@ export function SettingsCardSkeleton({
     classNames?: SettingsCardClassNames
 }) {
     return (
-        <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
-            <CardHeader className={cn("space-y-2", classNames?.header)}>
-                <Skeleton className={cn("h-5 w-1/3 md:h-6", classNames?.skeleton)} />
-                <Skeleton className={cn("h-4 w-2/3", classNames?.skeleton)} />
+        <Card className={cn("w-full pb-0", className, classNames?.base)}>
+            <CardHeader className={cn("mt-1 gap-3.5", classNames?.header)}>
+                <Skeleton className={cn("h-5 w-1/3 md:h-5.5", classNames?.skeleton)} />
+                <Skeleton className={cn("h-3 w-2/3 md:h-3.5", classNames?.skeleton)} />
             </CardHeader>
 
-            <CardContent className={cn("space-y-2", classNames?.content)}>
+            <CardContent className={cn(classNames?.content)}>
                 <Skeleton className={cn("h-9 w-full", classNames?.skeleton)} />
             </CardContent>
 
             <CardFooter
                 className={cn(
-                    "flex flex-col justify-between gap-4 border-t bg-muted py-4 md:flex-row md:py-3 dark:bg-transparent",
+                    "flex flex-col justify-between gap-4 border-t bg-muted pb-6 md:flex-row dark:bg-transparent",
                     classNames?.footer
                 )}
             >

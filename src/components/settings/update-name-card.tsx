@@ -28,8 +28,7 @@ export function UpdateNameCard({
     const {
         hooks: { useSession },
         localization: authLocalization,
-        nameRequired,
-        user
+        nameRequired
     } = useContext(AuthUIContext)
     localization = { ...authLocalization, ...localization }
 
@@ -39,7 +38,7 @@ export function UpdateNameCard({
         <UpdateFieldCard
             className={className}
             classNames={classNames}
-            defaultValue={user?.name || sessionData?.user.name}
+            defaultValue={sessionData?.user.name}
             description={localization.nameDescription}
             field="name"
             instructions={localization.nameInstructions}

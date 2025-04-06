@@ -17,7 +17,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
-import { UserAvatar } from "../user-avatar"
+import { User as UserView } from "../user"
 import type { SettingsCardClassNames } from "./settings-card"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
 
@@ -110,7 +110,7 @@ export function AccountsCard({
     }
 
     return (
-        <Card className={cn("w-full overflow-hidden", className, classNames?.base)}>
+        <Card className={cn("w-full pb-0", className, classNames?.base)}>
             <CardHeader className={classNames?.header}>
                 <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                     {localization.accounts}
@@ -121,36 +121,17 @@ export function AccountsCard({
                 </CardDescription>
             </CardHeader>
 
-            <CardContent className={cn("flex flex-col gap-3", classNames?.content)}>
+            <CardContent className={cn("flex flex-col gap-4", classNames?.content)}>
                 {deviceSessions?.map((deviceSession) => {
                     const isButtonLoading = actionLoading === deviceSession.session.token
 
                     return (
                         <Card
                             key={deviceSession.session.id}
-                            className={cn("flex items-center gap-3 px-4 py-3", classNames?.cell)}
+                            className={cn("flex-row p-4", classNames?.cell)}
                         >
                             <div className="flex items-center gap-2 truncate">
-                                <UserAvatar
-                                    user={deviceSession.user}
-                                    classNames={classNames?.avatar}
-                                />
-
-                                <div className="flex flex-col truncate">
-                                    <div className="truncate font-medium text-sm">
-                                        {deviceSession.user.name ||
-                                            // @ts-ignore
-                                            deviceSession.user.username ||
-                                            deviceSession.user.email}
-                                    </div>
-                                    {(deviceSession.user.name ||
-                                        // @ts-ignore
-                                        deviceSession.user.username) && (
-                                        <div className="!font-light truncate text-muted-foreground text-xs">
-                                            {deviceSession.user.email}
-                                        </div>
-                                    )}
-                                </div>
+                                <UserView user={deviceSession.user} />
                             </div>
 
                             <DropdownMenu>
@@ -216,13 +197,18 @@ export function AccountsCard({
 
             <CardFooter
                 className={cn(
-                    "flex flex-col justify-between gap-4 border-t bg-muted py-4 md:flex-row md:py-3 dark:bg-transparent",
+                    "flex-col justify-between gap-4 rounded-b-xl border-t bg-muted pb-6 md:flex-row dark:bg-transparent",
                     classNames?.footer
                 )}
             >
-                <CardDescription className={cn("text-xs md:text-sm", classNames?.instructions)}>
+                <span
+                    className={cn(
+                        "text-muted-foreground text-xs md:text-sm",
+                        classNames?.instructions
+                    )}
+                >
                     {localization.accountsInstructions}
-                </CardDescription>
+                </span>
 
                 <Button
                     className={classNames?.button}

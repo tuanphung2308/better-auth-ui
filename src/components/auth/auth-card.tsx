@@ -112,7 +112,7 @@ export function AuthCard({
             : localization[`${view}Description` as keyof typeof localization]
 
     return (
-        <Card className={cn("w-full max-w-sm", className, classNames?.base)}>
+        <Card className={cn("w-full max-w-sm text-start", className, classNames?.base)}>
             <CardHeader className={classNames?.header}>
                 <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                     {localization[view as keyof typeof localization]}

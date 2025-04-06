@@ -101,7 +101,7 @@ export function ProviderCard({
     }
 
     return (
-        <Card className={cn("flex items-center gap-3 px-4 py-3", className, classNames?.cell)}>
+        <Card className={cn("flex-row items-center gap-3 px-4 py-3", className, classNames?.cell)}>
             {provider.icon &&
                 (colorIcons ? (
                     <provider.icon className="size-4" variant="color" />

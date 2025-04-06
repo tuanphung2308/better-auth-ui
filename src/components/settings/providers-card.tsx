@@ -83,7 +83,7 @@ export function ProvidersCard({
                 </CardDescription>
             </CardHeader>
 
-            <CardContent className={cn("flex flex-col gap-3", classNames?.content)}>
+            <CardContent className={cn("flex flex-col gap-4", classNames?.content)}>
                 {providers?.map((provider) => {
                     const socialProvider = socialProviders.find(
                         (socialProvider) => socialProvider.provider === provider
