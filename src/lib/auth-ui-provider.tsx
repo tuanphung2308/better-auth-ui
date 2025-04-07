@@ -64,6 +64,10 @@ export type AuthUIContextType = {
      */
     basePath: string
     /**
+     * Base URL for auth client callbacks
+     */
+    baseURL?: string
+    /**
      * Force color icons for both light and dark themes
      * @default false
      */
@@ -259,6 +263,7 @@ export const AuthUIProvider = ({
     avatarExtension = "png",
     avatarSize,
     basePath = "/auth",
+    baseURL = "",
     redirectTo = "/",
     credentials = true,
     forgotPassword = true,
@@ -327,6 +332,7 @@ export const AuthUIProvider = ({
                 avatarExtension,
                 avatarSize: avatarSize || (uploadAvatar ? 256 : 128),
                 basePath: basePath === "/" ? "" : basePath,
+                baseURL,
                 redirectTo,
                 credentials,
                 forgotPassword,
