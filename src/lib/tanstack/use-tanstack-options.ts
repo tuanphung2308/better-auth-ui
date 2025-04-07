@@ -1,14 +1,14 @@
 import { AuthQueryContext, createAuthHooks } from "@daveyplate/better-auth-tanstack"
 import { useIsRestoring, useQueryClient } from "@tanstack/react-query"
-import type { createAuthClient } from "better-auth/react"
 import { useContext } from "react"
+import type { AnyAuthClient } from "../../types/any-auth-client"
 import type { AuthHooks } from "../../types/auth-hooks"
 import type { AuthMutators } from "../../types/auth-mutators"
 
 export function useTanstackOptions({
     authClient
 }: {
-    authClient: Omit<ReturnType<typeof createAuthClient>, "signUp">
+    authClient: AnyAuthClient
 }) {
     const {
         useUnlinkAccount,
