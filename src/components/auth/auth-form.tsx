@@ -82,7 +82,12 @@ export function AuthForm({
         Link
     } = useContext(AuthUIContext)
 
-    const { data: sessionData, error } = useSession()
+    const {
+        data: sessionData,
+        error: sessionError,
+        isPending: sessionPending,
+        refetch: refetchSession
+    } = useSession()
 
     localization = { ...authLocalization, ...localization }
 
@@ -132,26 +137,47 @@ export function AuthForm({
 
     const successRef = useRef(false)
 
-    const onSuccess = useCallback(() => {
-        onSessionChange?.()
-        successRef.current = true
+    const onSuccess = useCallback(async () => {
         setIsLoading(true)
-    }, [onSessionChange])
 
-    useEffect(() => {
-        if (!isLoading || !successRef.current) return
+        const data = await refetchSession?.()
+        console.log("data", data)
+        await onSessionChange?.()
 
-        if (error) {
-            setIsLoading(false)
-            toast({ variant: "error", message: error.message || error.statusText })
-            successRef.current = false
-            return
-        }
+        navigate(getRedirectTo())
+    }, [refetchSession, onSessionChange, navigate, getRedirectTo])
 
-        if (sessionData) {
-            navigate(getRedirectTo())
-        }
-    }, [isLoading, error, navigate, sessionData, getRedirectTo, toast])
+    // useEffect(() => {
+    //     if (!isLoading || !successRef.current || sessionPending) return
+
+    //     if (sessionError) {
+    //         setIsLoading(false)
+    //         toast({ variant: "error", message: sessionError.message || sessionError.statusText })
+    //         successRef.current = false
+
+    //         if (view === "callback") {
+    //             replace(`${basePath}/${viewPaths.signIn}`)
+    //         }
+
+    //         return
+    //     }
+
+    //     if (sessionData) {
+    //         navigate(getRedirectTo())
+    //     }
+    // }, [
+    //     basePath,
+    //     viewPaths,
+    //     replace,
+    //     view,
+    //     isLoading,
+    //     sessionError,
+    //     sessionPending,
+    //     navigate,
+    //     sessionData,
+    //     getRedirectTo,
+    //     toast
+    // ])
 
     const formAction = async (formData: FormData) => {
         const provider = formData.get("provider") as SocialProvider
@@ -254,6 +280,7 @@ export function AuthForm({
                     email,
                     ...params
                 })
+
                 if (error) {
                     toast({ variant: "error", message: error.message || error.statusText })
                 } else {
