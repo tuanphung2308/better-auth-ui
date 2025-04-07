@@ -135,49 +135,15 @@ export function AuthForm({
         [baseURL, callbackURL, persistClient, viewPaths, basePath, getRedirectTo]
     )
 
-    const successRef = useRef(false)
-
     const onSuccess = useCallback(async () => {
         setIsLoading(true)
 
-        const data = await refetchSession?.()
-        console.log("data", data)
+        await refetchSession?.()
         await onSessionChange?.()
 
         navigate(getRedirectTo())
+        setIsLoading(false)
     }, [refetchSession, onSessionChange, navigate, getRedirectTo])
-
-    // useEffect(() => {
-    //     if (!isLoading || !successRef.current || sessionPending) return
-
-    //     if (sessionError) {
-    //         setIsLoading(false)
-    //         toast({ variant: "error", message: sessionError.message || sessionError.statusText })
-    //         successRef.current = false
-
-    //         if (view === "callback") {
-    //             replace(`${basePath}/${viewPaths.signIn}`)
-    //         }
-
-    //         return
-    //     }
-
-    //     if (sessionData) {
-    //         navigate(getRedirectTo())
-    //     }
-    // }, [
-    //     basePath,
-    //     viewPaths,
-    //     replace,
-    //     view,
-    //     isLoading,
-    //     sessionError,
-    //     sessionPending,
-    //     navigate,
-    //     sessionData,
-    //     getRedirectTo,
-    //     toast
-    // ])
 
     const formAction = async (formData: FormData) => {
         const provider = formData.get("provider") as SocialProvider
@@ -422,21 +388,16 @@ export function AuthForm({
         }
     }, [view])
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-    useEffect(() => {
-        if (view !== "signOut" || sessionData) return
-
-        replace(`${basePath}/${viewPaths.signIn}`)
-    }, [sessionData])
-
     useEffect(() => {
         if (view !== "signOut" || signingOut.current) return
 
         signingOut.current = true
         authClient.signOut().finally(async () => {
-            onSessionChange?.()
+            await refetchSession?.()
+            await onSessionChange?.()
+            replace(`${basePath}/${viewPaths.signIn}`)
         })
-    }, [view, authClient, onSessionChange])
+    }, [view, authClient, onSessionChange, refetchSession, replace, basePath, viewPaths])
 
     useEffect(() => {
         if (view !== "resetPassword" || checkingResetPasswordToken.current) return
