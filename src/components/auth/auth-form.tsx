@@ -122,9 +122,9 @@ export function AuthForm({
         () =>
             callbackURL ||
             (persistClient
-                ? `${window.location.pathname.replace(viewPaths[view], viewPaths.callback)}?redirectTo=${getRedirectTo()}`
+                ? `${basePath}/${viewPaths.callback}?redirectTo=${getRedirectTo()}`
                 : getRedirectTo()),
-        [callbackURL, persistClient, view, viewPaths, getRedirectTo]
+        [callbackURL, persistClient, viewPaths, basePath, getRedirectTo]
     )
 
     const successRef = useRef(false)
@@ -340,10 +340,7 @@ export function AuthForm({
             case "forgotPassword": {
                 const { error } = await authClient.forgetPassword({
                     email: email,
-                    redirectTo: window.location.pathname.replace(
-                        viewPaths.forgotPassword,
-                        viewPaths.resetPassword
-                    )
+                    redirectTo: `${basePath}/${viewPaths.resetPassword}`
                 })
 
                 if (error) {
