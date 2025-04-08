@@ -101,8 +101,8 @@ export function AuthForm({
         socialLayout = !credentials
             ? "vertical"
             : providers && providers.length > 2
-                ? "horizontal"
-                : "vertical"
+              ? "horizontal"
+              : "vertical"
     }
 
     const path = pathname?.split("/").pop()
@@ -126,10 +126,11 @@ export function AuthForm({
 
     const getCallbackURL = useCallback(
         () =>
-            `${baseURL}${callbackURL ||
-            (persistClient
-                ? `${basePath}/${viewPaths.callback}?redirectTo=${getRedirectTo()}`
-                : getRedirectTo())
+            `${baseURL}${
+                callbackURL ||
+                (persistClient
+                    ? `${basePath}/${viewPaths.callback}?redirectTo=${getRedirectTo()}`
+                    : getRedirectTo())
             }`,
         [baseURL, callbackURL, persistClient, viewPaths, basePath, getRedirectTo]
     )
@@ -312,8 +313,8 @@ export function AuthForm({
                             additionalField.type === "number"
                                 ? Number.parseFloat(value)
                                 : additionalField.type === "boolean"
-                                    ? value === "on"
-                                    : value
+                                  ? value === "on"
+                                  : value
                     }
                 })
 
