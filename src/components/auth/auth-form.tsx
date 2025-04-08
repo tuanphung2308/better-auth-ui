@@ -101,8 +101,8 @@ export function AuthForm({
         socialLayout = !credentials
             ? "vertical"
             : providers && providers.length > 2
-              ? "horizontal"
-              : "vertical"
+                ? "horizontal"
+                : "vertical"
     }
 
     const path = pathname?.split("/").pop()
@@ -126,11 +126,10 @@ export function AuthForm({
 
     const getCallbackURL = useCallback(
         () =>
-            `${baseURL}${
-                callbackURL ||
-                (persistClient
-                    ? `${basePath}/${viewPaths.callback}?redirectTo=${getRedirectTo()}`
-                    : getRedirectTo())
+            `${baseURL}${callbackURL ||
+            (persistClient
+                ? `${basePath}/${viewPaths.callback}?redirectTo=${getRedirectTo()}`
+                : getRedirectTo())
             }`,
         [baseURL, callbackURL, persistClient, viewPaths, basePath, getRedirectTo]
     )
@@ -313,8 +312,8 @@ export function AuthForm({
                             additionalField.type === "number"
                                 ? Number.parseFloat(value)
                                 : additionalField.type === "boolean"
-                                  ? value === "on"
-                                  : value
+                                    ? value === "on"
+                                    : value
                     }
                 })
 
@@ -640,14 +639,15 @@ export function AuthForm({
             {!["forgotPassword", "resetPassword"].includes(view) &&
                 (providers?.length || otherProviders?.length) && (
                     <>
-                        <div className="flex items-center gap-2">
-                            <Separator className="!w-auto grow" />
-                            <span className="flex-shrink-0 text-muted-foreground text-sm">
-                                {localization.orContinueWith}
-                            </span>
-                            <Separator className="!w-auto grow" />
-                        </div>
-
+                        {credentials && (
+                            <div className="flex items-center gap-2">
+                                <Separator className="!w-auto grow" />
+                                <span className="flex-shrink-0 text-muted-foreground text-sm">
+                                    {localization.orContinueWith}
+                                </span>
+                                <Separator className="!w-auto grow" />
+                            </div>
+                        )}
                         <div
                             className={cn(
                                 "flex w-full items-center gap-4",
