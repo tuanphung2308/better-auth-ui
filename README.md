@@ -14,6 +14,8 @@ Plug & play shadcn/ui auth components for [better-auth](https://better-auth.com)
 
 [Demo](https://newtech.dev/auth/login) - [Documentation](https://better-auth-ui.com)
 
+[Buy me a coffee](https://buymeacoffee.com/daveycodez)
+
 ---
 
 ### Sign In

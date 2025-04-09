@@ -1,5 +1,5 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared"
-import { ExternalLink, Twitter } from "lucide-react"
+import { CoffeeIcon, ExternalLink, Twitter } from "lucide-react"
 
 /**
  * Shared layout configurations
@@ -46,6 +46,13 @@ export const baseOptions: BaseLayoutProps = {
             text: "Twitter",
             type: "icon",
             icon: <Twitter />,
+            external: true
+        },
+        {
+            url: "https://buymeacoffee.com/daveycodez",
+            text: "Buy me a coffee",
+            type: "icon",
+            icon: <CoffeeIcon />,
             external: true
         }
     ]
