@@ -37,7 +37,7 @@ export function useListSessions({
     )
 
     const sessions = useMemo(() => {
-        if (data?.[modelName]?.length) {
+        if (data?.[modelName]) {
             return data[modelName].map((session) => ({
                 ...session,
                 expiresAt: new Date(session.expiresAt as string),
@@ -47,5 +47,5 @@ export function useListSessions({
         }
     }, [data, modelName])
 
-    return { data: sessions, isPending: isPending || authLoading || isLoading }
+    return { data: sessions, isPending: !sessions && (isPending || authLoading || isLoading) }
 }

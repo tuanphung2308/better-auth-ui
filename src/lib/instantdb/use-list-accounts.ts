@@ -23,7 +23,7 @@ export function useListAccounts({
     )
 
     const accounts = useMemo(() => {
-        if (data?.[modelName]?.length) {
+        if (data?.[modelName]) {
             return data[modelName].map((account) => ({
                 accountId: account.accountId as string,
                 provider: account.providerId as string
