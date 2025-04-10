@@ -42,6 +42,13 @@ export const baseOptions: BaseLayoutProps = {
             external: true
         },
         {
+            url: "https://betterauthui.featurebase.app/roadmap",
+            text: "Roadmap",
+            type: "button",
+            icon: <ExternalLink />,
+            external: true
+        },
+        {
             url: "https://x.com/daveycodez",
             text: "Twitter",
             type: "icon",
