@@ -41,7 +41,7 @@ export const authLocalization = {
     /** @default "Your password has been changed." */
     changePasswordSuccess: "Your password has been changed.",
 
-    /** @default "Change Password" */
+    /** @default "Confirm Password" */
     confirmPassword: "Confirm Password",
 
     /** @default "Confirm Password" */
