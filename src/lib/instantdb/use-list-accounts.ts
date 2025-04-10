@@ -33,7 +33,7 @@ export function useListAccounts({
 
     return {
         data: accounts,
-        isPending: isPending || authLoading || isLoading,
+        isPending: !accounts && (isPending || authLoading || isLoading),
         error
     }
 }
