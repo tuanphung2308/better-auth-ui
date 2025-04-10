@@ -76,7 +76,10 @@ export function ChangePasswordCard({
         setIsSetPasswordLoading(false)
 
         if (error) {
-            toast({ variant: "error", message: error.message || error.statusText })
+            toast({
+                variant: "error",
+                message: error.message || error.statusText || localization.requestFailed
+            })
         } else {
             toast({ variant: "success", message: localization.setPasswordEmailSent! })
         }
@@ -101,7 +104,10 @@ export function ChangePasswordCard({
         })
 
         if (error) {
-            toast({ variant: "error", message: error.message || error.statusText })
+            toast({
+                variant: "error",
+                message: error.message || error.statusText || localization.requestFailed
+            })
         } else {
             toast({ variant: "success", message: localization.changePasswordSuccess! })
         }

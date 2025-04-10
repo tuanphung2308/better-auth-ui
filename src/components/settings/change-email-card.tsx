@@ -124,7 +124,10 @@ export function ChangeEmailCard({
                                 if (error) {
                                     toast({
                                         variant: "error",
-                                        message: error.message || error.statusText
+                                        message:
+                                            error.message ||
+                                            error.statusText ||
+                                            localization.requestFailed
                                     })
                                     setResendDisabled(false)
                                 } else {

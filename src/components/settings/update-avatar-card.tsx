@@ -121,7 +121,10 @@ export function UpdateAvatarCard({
         } catch (error) {
             toast({
                 variant: "error",
-                message: (error as Error).message || (error as FetchError).statusText
+                message:
+                    (error as Error).message ||
+                    (error as FetchError).statusText ||
+                    localization.requestFailed
             })
         }
 

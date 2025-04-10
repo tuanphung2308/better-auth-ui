@@ -66,7 +66,10 @@ export function ProviderCard({
             })
 
             if (error) {
-                toast({ variant: "error", message: error.message || error.statusText })
+                toast({
+                    variant: "error",
+                    message: error.message || error.statusText || localization.requestFailed
+                })
             }
         } else {
             const { error } = await authClient.linkSocial({
@@ -75,7 +78,10 @@ export function ProviderCard({
             })
 
             if (error) {
-                toast({ variant: "error", message: error.message || error.statusText })
+                toast({
+                    variant: "error",
+                    message: error.message || error.statusText || localization.requestFailed
+                })
             }
         }
 
@@ -94,7 +100,10 @@ export function ProviderCard({
         } catch (error) {
             toast({
                 variant: "error",
-                message: (error as Error).message || (error as FetchError).statusText
+                message:
+                    (error as Error).message ||
+                    (error as FetchError).statusText ||
+                    localization.requestFailed
             })
             setIsLoading(false)
         }

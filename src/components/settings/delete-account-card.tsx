@@ -88,7 +88,10 @@ export function DeleteAccountCard({
         const { error } = await authClient.deleteUser(params)
 
         if (error) {
-            toast({ variant: "error", message: error.message || error.statusText })
+            toast({
+                variant: "error",
+                message: error.message || error.statusText || localization.requestFailed
+            })
         } else {
             if (deleteAccountVerification) {
                 toast({ message: localization.deleteAccountEmail! })

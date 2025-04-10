@@ -155,7 +155,10 @@ export function AuthForm({
             })
 
             if (error) {
-                toast({ variant: "error", message: error.message || error.statusText })
+                toast({
+                    variant: "error",
+                    message: error.message || error.statusText || localization.requestFailed
+                })
             } else {
                 setIsLoading(true)
             }
@@ -173,7 +176,10 @@ export function AuthForm({
             })
 
             if (error) {
-                toast({ variant: "error", message: error.message || error.statusText })
+                toast({
+                    variant: "error",
+                    message: error.message || error.statusText || localization.requestFailed
+                })
             } else {
                 setIsLoading(true)
             }
@@ -185,7 +191,10 @@ export function AuthForm({
             const response = await (authClient as AuthClient).signIn.passkey()
             const error = response?.error
             if (error) {
-                toast({ variant: "error", message: error.message || error.statusText })
+                toast({
+                    variant: "error",
+                    message: error.message || error.statusText || localization.requestFailed
+                })
             } else {
                 onSuccess()
             }
@@ -207,7 +216,10 @@ export function AuthForm({
                     })
 
                     if (error) {
-                        toast({ variant: "error", message: error.message || error.statusText })
+                        toast({
+                            variant: "error",
+                            message: error.message || error.statusText || localization.requestFailed
+                        })
                     } else {
                         toast({ variant: "success", message: localization.magicLinkEmail! })
                     }
@@ -233,7 +245,11 @@ export function AuthForm({
                         })
 
                         if (error) {
-                            toast({ variant: "error", message: error.message || error.statusText })
+                            toast({
+                                variant: "error",
+                                message:
+                                    error.message || error.statusText || localization.requestFailed
+                            })
                         } else {
                             onSuccess()
                         }
@@ -248,7 +264,10 @@ export function AuthForm({
                 })
 
                 if (error) {
-                    toast({ variant: "error", message: error.message || error.statusText })
+                    toast({
+                        variant: "error",
+                        message: error.message || error.statusText || localization.requestFailed
+                    })
                 } else {
                     onSuccess()
                 }
@@ -264,7 +283,10 @@ export function AuthForm({
                 })
 
                 if (error) {
-                    toast({ variant: "error", message: error.message || error.statusText })
+                    toast({
+                        variant: "error",
+                        message: error.message || error.statusText || localization.requestFailed
+                    })
                 } else {
                     toast({ variant: "success", message: localization.magicLinkEmail! })
                 }
@@ -322,7 +344,10 @@ export function AuthForm({
                 const { data, error } = await authClient.signUp.email(params)
 
                 if (error) {
-                    toast({ variant: "error", message: error.message || error.statusText })
+                    toast({
+                        variant: "error",
+                        message: error.message || error.statusText || localization.requestFailed
+                    })
                 } else if (data.token) {
                     onSuccess()
                 } else {
@@ -340,7 +365,10 @@ export function AuthForm({
                 })
 
                 if (error) {
-                    toast({ variant: "error", message: error.message || error.statusText })
+                    toast({
+                        variant: "error",
+                        message: error.message || error.statusText || localization.requestFailed
+                    })
                 } else {
                     toast({ variant: "success", message: localization.forgotPasswordEmail! })
                     navigate(`${basePath}/${viewPaths.signIn}`)
@@ -367,7 +395,10 @@ export function AuthForm({
                 })
 
                 if (error) {
-                    toast({ variant: "error", message: error.message || error.statusText })
+                    toast({
+                        variant: "error",
+                        message: error.message || error.statusText || localization.requestFailed
+                    })
                 } else {
                     toast({ variant: "success", message: localization.resetPasswordSuccess! })
                     navigate(`${basePath}/${viewPaths.signIn}`)

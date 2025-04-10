@@ -211,6 +211,9 @@ export const authLocalization = {
     /** @default "Password reset successfully" */
     resetPasswordSuccess: "Password reset successfully",
 
+    /** @default "Request failed" */
+    requestFailed: "Request failed",
+
     /** @default "Revoke" */
     revoke: "Revoke",
 

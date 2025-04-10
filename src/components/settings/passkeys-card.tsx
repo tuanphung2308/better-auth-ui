@@ -60,7 +60,10 @@ export function PasskeysCard({
         const response = await (authClient as AuthClient).passkey.addPasskey()
         const error = response?.error
         if (error) {
-            toast({ variant: "error", message: error.message || error.statusText })
+            toast({
+                variant: "error",
+                message: error.message || error.statusText || localization.requestFailed
+            })
         } else {
             await refetch?.()
         }
@@ -77,7 +80,10 @@ export function PasskeysCard({
         } catch (error) {
             toast({
                 variant: "error",
-                message: (error as Error).message || (error as FetchError).statusText
+                message:
+                    (error as Error).message ||
+                    (error as FetchError).statusText ||
+                    localization.requestFailed
             })
             setActionLoading(null)
         }

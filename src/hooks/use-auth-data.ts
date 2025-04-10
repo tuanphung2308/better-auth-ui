@@ -8,7 +8,7 @@ export function useAuthData<T>({
 }: {
     queryFn: () => Promise<{ data: T | null; error?: FetchError | null }>
 }) {
-    const { authClient, toast } = useContext(AuthUIContext)
+    const { authClient, toast, localization } = useContext(AuthUIContext)
     const { data: sessionData, isPending: sessionPending } = authClient.useSession()
 
     const [data, setData] = useState<T | null>(null)
@@ -18,11 +18,15 @@ export function useAuthData<T>({
     const refetch = useCallback(async () => {
         const { data, error } = await queryFn()
 
-        if (error) toast({ variant: "error", message: error.message || error.statusText })
+        if (error)
+            toast({
+                variant: "error",
+                message: error.message || error.statusText || localization.requestFailed
+            })
 
         setData(data)
         setIsPending(false)
-    }, [queryFn, toast])
+    }, [queryFn, toast, localization])
 
     useEffect(() => {
         if (!sessionData) {
