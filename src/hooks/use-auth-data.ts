@@ -27,6 +27,7 @@ export function useAuthData<T>({
     useEffect(() => {
         if (!sessionData) {
             setIsPending(sessionPending)
+            initialized.current = false
             return
         }
 
