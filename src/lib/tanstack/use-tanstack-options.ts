@@ -31,12 +31,45 @@ export function useTanstackOptions({
     const hooks: AuthHooks = createAuthHooks(authClient)
 
     const mutators: AuthMutators = {
-        updateUser: updateUserAsync,
-        unlinkAccount: unlinkAccountAsync,
-        deletePasskey: deletePasskeyAsync,
-        revokeSession: revokeSessionAsync,
-        setActiveSession: setActiveSessionAsync,
-        revokeDeviceSession: revokeDeviceSessionAsync
+        updateUser: async (params) => {
+            const { error } = await updateUserAsync({ ...params, fetchOptions: { throw: false } })
+            if (error) throw error
+        },
+        unlinkAccount: async (params) => {
+            const { error } = await unlinkAccountAsync({
+                ...params,
+                fetchOptions: { throw: false }
+            })
+            if (error) throw error
+        },
+        deletePasskey: async (params) => {
+            const { error } = await deletePasskeyAsync({
+                ...params,
+                fetchOptions: { throw: false }
+            })
+            if (error) throw error
+        },
+        revokeSession: async (params) => {
+            const { error } = await revokeSessionAsync({
+                ...params,
+                fetchOptions: { throw: false }
+            })
+            if (error) throw error
+        },
+        setActiveSession: async (params) => {
+            const { error } = await setActiveSessionAsync({
+                ...params,
+                fetchOptions: { throw: false }
+            })
+            if (error) throw error
+        },
+        revokeDeviceSession: async (params) => {
+            const { error } = await revokeDeviceSessionAsync({
+                ...params,
+                fetchOptions: { throw: false }
+            })
+            if (error) throw error
+        }
     }
 
     const onSessionChange = async () => {
