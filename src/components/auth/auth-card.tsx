@@ -63,7 +63,7 @@ export function AuthCard({
         localization: authLocalization,
         magicLink,
         replace,
-        settingsUrl,
+        settingsURL,
         signUp,
         viewPaths,
         Link
@@ -81,10 +81,10 @@ export function AuthCard({
             "signIn") as AuthView)
 
     useEffect(() => {
-        if (view === "settings" && settingsUrl) {
-            replace(settingsUrl)
+        if (view === "settings" && settingsURL) {
+            replace(settingsURL)
         }
-    }, [replace, settingsUrl, view])
+    }, [replace, settingsURL, view])
 
     if (["signOut", "callback"].includes(view)) {
         return (
@@ -100,8 +100,8 @@ export function AuthCard({
     }
 
     if (view === "settings")
-        return settingsUrl ? (
-            <Loader2 className="animate-spin" />
+        return settingsURL ? (
+            <Loader2 className="mx-auto my-auto animate-spin self-center justify-self-center" />
         ) : (
             <SettingsCards className={cn(className)} classNames={classNames?.settings} />
         )

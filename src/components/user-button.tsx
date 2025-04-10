@@ -86,7 +86,7 @@ export function UserButton({
         mutators: { setActiveSession },
         localization: authLocalization,
         multiSession,
-        settingsUrl,
+        settingsURL,
         toast,
         viewPaths,
         onSessionChange,
@@ -232,7 +232,7 @@ export function UserButton({
                 ) : (
                     <>
                         {!disableDefaultLinks && (
-                            <Link href={settingsUrl || `${basePath}/${viewPaths.settings}`}>
+                            <Link href={settingsURL || `${basePath}/${viewPaths.settings}`}>
                                 <DropdownMenuItem className={classNames?.content?.menuItem}>
                                     <SettingsIcon />
 
