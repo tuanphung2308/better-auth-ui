@@ -8,7 +8,6 @@ export interface UserClassNames {
     avatar?: UserAvatarClassNames
     p?: string
     small?: string
-    size?: "sm" | "md" | "lg"
 }
 
 export interface UserProps {
