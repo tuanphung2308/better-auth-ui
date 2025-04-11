@@ -20,7 +20,7 @@ export function DeleteAccountCardSkeleton({
 
             <CardFooter
                 className={cn(
-                    "flex rounded-b-xl border-destructive/30 border-t bg-destructive/10 pb-6",
+                    "!py-4 flex rounded-b-xl border-destructive/30 border-t bg-destructive/10",
                     classNames?.footer
                 )}
             >

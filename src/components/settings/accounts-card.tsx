@@ -197,7 +197,7 @@ export function AccountsCard({
 
             <CardFooter
                 className={cn(
-                    "flex-col justify-between gap-4 rounded-b-xl border-t bg-muted pb-6 md:flex-row dark:bg-transparent",
+                    "!py-4 flex-col justify-between gap-4 rounded-b-xl border-t bg-muted md:flex-row dark:bg-transparent",
                     classNames?.footer
                 )}
             >

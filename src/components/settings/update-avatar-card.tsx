@@ -176,7 +176,7 @@ export function UpdateAvatarCard({
 
             <CardFooter
                 className={cn(
-                    "rounded-b-xl border-t bg-muted pb-6 dark:bg-transparent",
+                    "!py-4 md:!py-5 rounded-b-xl border-t bg-muted dark:bg-transparent",
                     classNames?.footer
                 )}
             >
