@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+When asked to make a commit, simply execute git add -a & git commit -m "Short relevant commit info" and NOTHING ELSE. Commit message should be <50 characters.
