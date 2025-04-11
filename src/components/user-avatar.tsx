@@ -2,7 +2,7 @@ import { UserIcon } from "lucide-react"
 import type { ComponentProps } from "react"
 
 import { cn } from "../lib/utils"
-import type { User } from "../types/user"
+import type { Profile } from "../types/profile"
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Skeleton } from "./ui/skeleton"
@@ -16,7 +16,7 @@ export interface UserAvatarClassNames {
 }
 
 export interface UserAvatarProps {
-    user?: User
+    user?: Profile
     classNames?: UserAvatarClassNames
     isPending?: boolean
 }

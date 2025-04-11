@@ -1,5 +1,5 @@
 import { cn } from "../lib/utils"
-import type { User as UserType } from "../types/user"
+import type { Profile } from "../types/profile"
 import { Skeleton } from "./ui/skeleton"
 import { UserAvatar, type UserAvatarClassNames } from "./user-avatar"
 
@@ -14,10 +14,10 @@ export interface UserProps {
     className?: string
     classNames?: UserClassNames
     isPending?: boolean
-    user?: UserType
+    user?: Profile
 }
 
-export function User({ user, className, classNames, isPending }: UserProps) {
+export function UserView({ user, className, classNames, isPending }: UserProps) {
     return (
         <div className={cn("flex items-center gap-2 truncate", className, classNames?.base)}>
             <UserAvatar

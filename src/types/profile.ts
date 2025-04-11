@@ -1,4 +1,4 @@
-export type User = {
+export type Profile = {
     id?: string | number
     email?: string | null
     name?: string | null

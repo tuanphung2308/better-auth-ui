@@ -318,7 +318,7 @@ export const AuthUIProvider = ({
     }
 
     const defaultHooks: AuthHooks = {
-        useSession: authClient.useSession,
+        useSession: (authClient as AuthClient).useSession,
         useListAccounts: () => useAuthData({ queryFn: authClient.listAccounts }),
         useListDeviceSessions: () =>
             useAuthData({ queryFn: (authClient as AuthClient).multiSession.listDeviceSessions }),

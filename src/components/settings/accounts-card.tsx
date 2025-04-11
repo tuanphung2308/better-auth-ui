@@ -17,7 +17,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
-import { User as UserView } from "../user"
+import { UserView } from "../user-view"
 import type { SettingsCardClassNames } from "./settings-card"
 import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
 

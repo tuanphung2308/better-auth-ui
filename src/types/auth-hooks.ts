@@ -1,4 +1,4 @@
-import type { Session, User } from "better-auth"
+import type { Session, User } from "./auth-client"
 import type { FetchError } from "./fetch-error"
 
 type AuthHook<T> = {
