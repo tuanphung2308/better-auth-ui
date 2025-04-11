@@ -31,6 +31,7 @@ export function useAuthData<T>({
     useEffect(() => {
         if (!sessionData) {
             setIsPending(sessionPending)
+            setData(null) // Reset data when session is null
             initialized.current = false
             return
         }
