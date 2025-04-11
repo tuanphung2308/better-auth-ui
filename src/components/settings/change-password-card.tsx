@@ -10,6 +10,7 @@ import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { Label } from "../ui/label"
 
+import { getErrorMessage } from "../../lib/get-error-message"
 import { PasswordInput } from "../password-input"
 import type { SettingsCardClassNames } from "./settings-card"
 import { ChangePasswordCardSkeleton } from "./skeletons/change-password-card-skeleton"
@@ -78,7 +79,7 @@ export function ChangePasswordCard({
         if (error) {
             toast({
                 variant: "error",
-                message: error.message || error.statusText || localization.requestFailed
+                message: getErrorMessage(error) || localization.requestFailed
             })
         } else {
             toast({ variant: "success", message: localization.setPasswordEmailSent! })
@@ -106,7 +107,7 @@ export function ChangePasswordCard({
         if (error) {
             toast({
                 variant: "error",
-                message: error.message || error.statusText || localization.requestFailed
+                message: getErrorMessage(error) || localization.requestFailed
             })
         } else {
             toast({ variant: "success", message: localization.changePasswordSuccess! })

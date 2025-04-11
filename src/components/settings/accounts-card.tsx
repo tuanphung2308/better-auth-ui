@@ -10,7 +10,7 @@ import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 
 import type { Session, User } from "better-auth"
-import type { FetchError } from "../../types/fetch-error"
+import { getErrorMessage } from "../../lib/get-error-message"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -77,10 +77,7 @@ export function AccountsCard({
         } catch (error) {
             toast({
                 variant: "error",
-                message:
-                    (error as Error).message ||
-                    (error as FetchError).statusText ||
-                    localization.requestFailed
+                message: getErrorMessage(error) || localization.requestFailed
             })
             setActionLoading(null)
         }
@@ -95,10 +92,7 @@ export function AccountsCard({
         } catch (error) {
             toast({
                 variant: "error",
-                message:
-                    (error as Error).message ||
-                    (error as FetchError).statusText ||
-                    localization.requestFailed
+                message: getErrorMessage(error) || localization.requestFailed
             })
             setActionLoading(null)
         }

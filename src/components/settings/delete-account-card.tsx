@@ -18,6 +18,7 @@ import {
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
+import { getErrorMessage } from "../../lib/get-error-message"
 import type { SettingsCardClassNames } from "./settings-card"
 import { DeleteAccountCardSkeleton } from "./skeletons/delete-account-card-skeleton"
 
@@ -90,7 +91,7 @@ export function DeleteAccountCard({
         if (error) {
             toast({
                 variant: "error",
-                message: error.message || error.statusText || localization.requestFailed
+                message: getErrorMessage(error) || localization.requestFailed
             })
         } else {
             if (deleteAccountVerification) {

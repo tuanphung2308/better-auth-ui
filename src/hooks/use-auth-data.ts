@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
+import { getErrorMessage } from "../lib/get-error-message"
 import type { FetchError } from "../types/fetch-error"
 
 export function useAuthData<T>({
@@ -21,7 +22,7 @@ export function useAuthData<T>({
         if (error)
             toast({
                 variant: "error",
-                message: error.message || error.statusText || localization.requestFailed
+                message: getErrorMessage(error) || localization.requestFailed
             })
 
         setData(data)

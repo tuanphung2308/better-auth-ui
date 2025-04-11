@@ -5,13 +5,13 @@ import { type ReactNode, useActionState, useContext, useState } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
-import type { FetchError } from "../../types/fetch-error"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { Checkbox } from "../ui/checkbox"
 import { Input } from "../ui/input"
 import type { UserAvatarClassNames } from "../user-avatar"
 
+import { getErrorMessage } from "../../lib/get-error-message"
 import type { FieldType } from "../../types/additional-fields"
 import { SettingsCardSkeleton } from "./skeletons/settings-card-skeleton"
 
@@ -82,10 +82,7 @@ export function SettingsCard({
         } catch (error) {
             toast({
                 variant: "error",
-                message:
-                    (error as Error).message ||
-                    (error as FetchError).statusText ||
-                    localization.requestFailed
+                message: getErrorMessage(error) || localization.requestFailed
             })
             setDisabled(false)
         }

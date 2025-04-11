@@ -13,6 +13,7 @@ import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
 import type { SocialProvider } from "better-auth/social-providers"
+import { getErrorMessage } from "../../lib/get-error-message"
 import type { AuthClient } from "../../types/auth-client"
 import { PasswordInput } from "../password-input"
 import { Separator } from "../ui/separator"
@@ -157,7 +158,7 @@ export function AuthForm({
             if (error) {
                 toast({
                     variant: "error",
-                    message: error.message || error.statusText || localization.requestFailed
+                    message: getErrorMessage(error) || localization.requestFailed
                 })
             } else {
                 setIsLoading(true)
@@ -178,7 +179,7 @@ export function AuthForm({
             if (error) {
                 toast({
                     variant: "error",
-                    message: error.message || error.statusText || localization.requestFailed
+                    message: getErrorMessage(error) || localization.requestFailed
                 })
             } else {
                 setIsLoading(true)
@@ -193,7 +194,7 @@ export function AuthForm({
             if (error) {
                 toast({
                     variant: "error",
-                    message: error.message || error.statusText || localization.requestFailed
+                    message: getErrorMessage(error) || localization.requestFailed
                 })
             } else {
                 onSuccess()
@@ -218,7 +219,7 @@ export function AuthForm({
                     if (error) {
                         toast({
                             variant: "error",
-                            message: error.message || error.statusText || localization.requestFailed
+                            message: getErrorMessage(error) || localization.requestFailed
                         })
                     } else {
                         toast({ variant: "success", message: localization.magicLinkEmail! })
@@ -247,8 +248,7 @@ export function AuthForm({
                         if (error) {
                             toast({
                                 variant: "error",
-                                message:
-                                    error.message || error.statusText || localization.requestFailed
+                                message: getErrorMessage(error) || localization.requestFailed
                             })
                         } else {
                             onSuccess()
@@ -266,7 +266,7 @@ export function AuthForm({
                 if (error) {
                     toast({
                         variant: "error",
-                        message: error.message || error.statusText || localization.requestFailed
+                        message: getErrorMessage(error) || localization.requestFailed
                     })
                 } else {
                     onSuccess()
@@ -285,7 +285,7 @@ export function AuthForm({
                 if (error) {
                     toast({
                         variant: "error",
-                        message: error.message || error.statusText || localization.requestFailed
+                        message: getErrorMessage(error) || localization.requestFailed
                     })
                 } else {
                     toast({ variant: "success", message: localization.magicLinkEmail! })
@@ -346,7 +346,7 @@ export function AuthForm({
                 if (error) {
                     toast({
                         variant: "error",
-                        message: error.message || error.statusText || localization.requestFailed
+                        message: getErrorMessage(error) || localization.requestFailed
                     })
                 } else if (data.token) {
                     onSuccess()
@@ -367,7 +367,7 @@ export function AuthForm({
                 if (error) {
                     toast({
                         variant: "error",
-                        message: error.message || error.statusText || localization.requestFailed
+                        message: getErrorMessage(error) || localization.requestFailed
                     })
                 } else {
                     toast({ variant: "success", message: localization.forgotPasswordEmail! })
@@ -397,7 +397,7 @@ export function AuthForm({
                 if (error) {
                     toast({
                         variant: "error",
-                        message: error.message || error.statusText || localization.requestFailed
+                        message: getErrorMessage(error) || localization.requestFailed
                     })
                 } else {
                     toast({ variant: "success", message: localization.resetPasswordSuccess! })

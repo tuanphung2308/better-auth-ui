@@ -4,12 +4,11 @@ import { useContext, useRef, useState } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
+import { getErrorMessage } from "../../lib/get-error-message"
 import { cn } from "../../lib/utils"
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { Skeleton } from "../ui/skeleton"
 import { UserAvatar } from "../user-avatar"
-
-import type { FetchError } from "../../types/fetch-error"
 import type { SettingsCardClassNames } from "./settings-card"
 import { UpdateAvatarCardSkeleton } from "./skeletons/update-avatar-card-skeleton"
 
@@ -121,10 +120,7 @@ export function UpdateAvatarCard({
         } catch (error) {
             toast({
                 variant: "error",
-                message:
-                    (error as Error).message ||
-                    (error as FetchError).statusText ||
-                    localization.requestFailed
+                message: getErrorMessage(error) || localization.requestFailed
             })
         }
 

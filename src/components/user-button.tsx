@@ -12,10 +12,10 @@ import { Fragment, type ReactNode, useContext, useEffect, useState } from "react
 
 import type { AuthLocalization } from "../lib/auth-localization"
 import { AuthUIContext } from "../lib/auth-ui-provider"
+import { getErrorMessage } from "../lib/get-error-message"
 import { cn } from "../lib/utils"
 
 import type { Session, User } from "better-auth"
-import type { FetchError } from "../types/fetch-error"
 import { Button } from "./ui/button"
 import {
     DropdownMenu,
@@ -118,10 +118,7 @@ export function UserButton({
         } catch (error) {
             toast({
                 variant: "error",
-                message:
-                    (error as Error).message ||
-                    (error as FetchError).statusText ||
-                    localization.requestFailed
+                message: getErrorMessage(error) || localization.requestFailed
             })
             setActiveSessionPending(false)
         }

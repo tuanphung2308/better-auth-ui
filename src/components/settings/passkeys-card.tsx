@@ -3,9 +3,9 @@ import { useContext, useState } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
+import { getErrorMessage } from "../../lib/get-error-message"
 import { cn } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
-import type { FetchError } from "../../types/fetch-error"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import type { SettingsCardClassNames } from "./settings-card"
@@ -62,7 +62,7 @@ export function PasskeysCard({
         if (error) {
             toast({
                 variant: "error",
-                message: error.message || error.statusText || localization.requestFailed
+                message: getErrorMessage(error) || localization.requestFailed
             })
         } else {
             await refetch?.()
@@ -80,10 +80,7 @@ export function PasskeysCard({
         } catch (error) {
             toast({
                 variant: "error",
-                message:
-                    (error as Error).message ||
-                    (error as FetchError).statusText ||
-                    localization.requestFailed
+                message: getErrorMessage(error) || localization.requestFailed
             })
             setActionLoading(null)
         }

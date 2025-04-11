@@ -6,6 +6,7 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 
 import { Loader2 } from "lucide-react"
+import { getErrorMessage } from "../../lib/get-error-message"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
@@ -125,9 +126,7 @@ export function ChangeEmailCard({
                                     toast({
                                         variant: "error",
                                         message:
-                                            error.message ||
-                                            error.statusText ||
-                                            localization.requestFailed
+                                            getErrorMessage(error) || localization.requestFailed
                                     })
                                     setResendDisabled(false)
                                 } else {

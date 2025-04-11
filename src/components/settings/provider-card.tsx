@@ -10,9 +10,9 @@ import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
 import { Card } from "../ui/card"
 
+import { getErrorMessage } from "../../lib/get-error-message"
 import type { Provider } from "../../lib/social-providers"
 import type { AuthClient } from "../../types/auth-client"
-import type { FetchError } from "../../types/fetch-error"
 import type { SettingsCardClassNames } from "./settings-card"
 
 export interface ProviderCardProps {
@@ -68,7 +68,7 @@ export function ProviderCard({
             if (error) {
                 toast({
                     variant: "error",
-                    message: error.message || error.statusText || localization.requestFailed
+                    message: getErrorMessage(error) || localization.requestFailed
                 })
             }
         } else {
@@ -80,7 +80,7 @@ export function ProviderCard({
             if (error) {
                 toast({
                     variant: "error",
-                    message: error.message || error.statusText || localization.requestFailed
+                    message: getErrorMessage(error) || localization.requestFailed
                 })
             }
         }
@@ -100,10 +100,7 @@ export function ProviderCard({
         } catch (error) {
             toast({
                 variant: "error",
-                message:
-                    (error as Error).message ||
-                    (error as FetchError).statusText ||
-                    localization.requestFailed
+                message: getErrorMessage(error) || localization.requestFailed
             })
             setIsLoading(false)
         }
