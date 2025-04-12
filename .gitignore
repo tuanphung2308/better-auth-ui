@@ -131,3 +131,4 @@ dist
 .turbo
 .DS_Store
 .source
+.vscode
