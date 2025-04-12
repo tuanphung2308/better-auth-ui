@@ -75,11 +75,9 @@ export function useTanstackOptions({
     const onSessionChange = async () => {
         await queryClient.refetchQueries({ queryKey: sessionKey })
 
-        setTimeout(() =>
-            queryClient.invalidateQueries({
-                predicate: (query) => query.queryKey !== sessionKey
-            })
-        )
+        queryClient.invalidateQueries({
+            predicate: (query) => query.queryKey !== sessionKey
+        })
     }
 
     return {

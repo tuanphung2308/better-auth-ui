@@ -71,6 +71,16 @@ type DeviceSession = {
     user: User
 }
 
+/**
+ * Displays an interactive user button with dropdown menu functionality
+ *
+ * Renders a user interface element that can be displayed as either an icon or full button:
+ * - Shows a user avatar or placeholder when in icon mode
+ * - Displays user name and email with dropdown indicator in full mode
+ * - Provides dropdown menu with authentication options (sign in/out, settings, etc.)
+ * - Supports multi-session functionality for switching between accounts
+ * - Can be customized with additional links and styling options
+ */
 export function UserButton({
     className,
     classNames,

@@ -17,6 +17,15 @@ export interface UserProps {
     user?: Profile
 }
 
+/**
+ * Displays user information with avatar and details in a compact view
+ *
+ * Renders a user's profile information with appropriate fallbacks:
+ * - Shows avatar alongside user name and email when available
+ * - Shows loading skeletons when isPending is true
+ * - Falls back to generic "User" text when neither name nor email is available
+ * - Supports customization through classNames prop
+ */
 export function UserView({ user, className, classNames, isPending }: UserProps) {
     return (
         <div className={cn("flex items-center gap-2 truncate", className, classNames?.base)}>
