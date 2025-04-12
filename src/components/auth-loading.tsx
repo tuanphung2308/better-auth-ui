@@ -9,7 +9,5 @@ export function AuthLoading({ children }: { children: ReactNode }) {
     } = useContext(AuthUIContext)
     const { isPending } = useSession()
 
-    if (!isPending) return null
-
-    return <>{children}</>
+    return isPending ? children : null
 }
