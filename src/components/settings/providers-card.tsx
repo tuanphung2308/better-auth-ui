@@ -5,11 +5,11 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { socialProviders } from "../../lib/social-providers"
 import { cn } from "../../lib/utils"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
-
-import { ProviderCard } from "./provider-card"
+import { CardContent } from "../ui/card"
+import { ProviderCell } from "./provider-cell"
+import { SettingsCard } from "./settings-card"
 import type { SettingsCardClassNames } from "./settings-card"
-import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
+import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
 export interface ProvidersCardProps {
     className?: string
@@ -38,8 +38,7 @@ export function ProvidersCard({
         hooks: { useListAccounts },
         localization: authLocalization,
         providers,
-        otherProviders,
-        toast
+        otherProviders
     } = useContext(AuthUIContext)
 
     localization = { ...authLocalization, ...localization }
@@ -67,51 +66,48 @@ export function ProvidersCard({
         }
     }, [refetch])
 
-    if (isPending) {
-        return <ProvidersCardSkeleton className={className} classNames={classNames} />
-    }
-
     return (
-        <Card className={cn("w-full", className, classNames?.base)}>
-            <CardHeader className={classNames?.header}>
-                <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                    {localization.providers}
-                </CardTitle>
+        <SettingsCard
+            className={className}
+            classNames={classNames}
+            title={localization.providers}
+            description={localization.providersDescription}
+            isPending={isPending}
+        >
+            <CardContent className={cn("grid gap-4", classNames?.content)}>
+                {isPending ? (
+                    <SettingsCellSkeleton classNames={classNames} />
+                ) : (
+                    <>
+                        {providers?.map((provider) => {
+                            const socialProvider = socialProviders.find(
+                                (socialProvider) => socialProvider.provider === provider
+                            )
 
-                <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
-                    {localization.providersDescription}
-                </CardDescription>
-            </CardHeader>
+                            if (!socialProvider) return null
 
-            <CardContent className={cn("flex flex-col gap-4", classNames?.content)}>
-                {providers?.map((provider) => {
-                    const socialProvider = socialProviders.find(
-                        (socialProvider) => socialProvider.provider === provider
-                    )
-                    if (!socialProvider) return null
+                            return (
+                                <ProviderCell
+                                    key={provider}
+                                    classNames={classNames}
+                                    provider={socialProvider}
+                                    accounts={accounts}
+                                />
+                            )
+                        })}
 
-                    return (
-                        <ProviderCard
-                            key={provider}
-                            classNames={classNames}
-                            provider={socialProvider}
-                            accounts={accounts}
-                        />
-                    )
-                })}
-
-                {otherProviders?.map((provider) => {
-                    return (
-                        <ProviderCard
-                            key={provider.provider}
-                            classNames={classNames}
-                            provider={provider}
-                            accounts={accounts}
-                            other
-                        />
-                    )
-                })}
+                        {otherProviders?.map((provider) => (
+                            <ProviderCell
+                                key={provider.provider}
+                                classNames={classNames}
+                                provider={provider}
+                                accounts={accounts}
+                                other
+                            />
+                        ))}
+                    </>
+                )}
             </CardContent>
-        </Card>
+        </SettingsCard>
     )
 }

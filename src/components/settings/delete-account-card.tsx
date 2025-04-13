@@ -3,6 +3,7 @@ import { useActionState, useContext } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
+import { getErrorMessage } from "../../lib/get-error-message"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
@@ -17,8 +18,6 @@ import {
 } from "../ui/dialog"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-
-import { getErrorMessage } from "../../lib/get-error-message"
 import type { SettingsCardClassNames } from "./settings-card"
 import { DeleteAccountCardSkeleton } from "./skeletons/delete-account-card-skeleton"
 

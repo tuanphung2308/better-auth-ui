@@ -6,31 +6,26 @@ import { useContext, useState } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn } from "../../lib/utils"
-import { Button } from "../ui/button"
-import { Card } from "../ui/card"
-
 import { getErrorMessage } from "../../lib/get-error-message"
 import type { Provider } from "../../lib/social-providers"
+import { cn } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
+import { Button } from "../ui/button"
+import { Card } from "../ui/card"
 import type { SettingsCardClassNames } from "./settings-card"
 
-export interface ProviderCardProps {
+export interface ProviderCellProps {
     className?: string
     classNames?: SettingsCardClassNames
     accounts?: { accountId: string; provider: string }[] | null
     isPending?: boolean
-    /**
-     * @default authLocalization
-     * @remarks `AuthLocalization`
-     */
     localization?: Partial<AuthLocalization>
     other?: boolean
     provider: Provider
     refetch?: () => void
 }
 
-export function ProviderCard({
+export function ProviderCell({
     className,
     classNames,
     accounts,
@@ -38,7 +33,7 @@ export function ProviderCard({
     other,
     provider,
     refetch
-}: ProviderCardProps) {
+}: ProviderCellProps) {
     const {
         authClient,
         colorIcons,
@@ -96,12 +91,14 @@ export function ProviderCard({
                 accountId: account?.accountId,
                 providerId: provider.provider
             })
+
             refetch?.()
         } catch (error) {
             toast({
                 variant: "error",
                 message: getErrorMessage(error) || localization.requestFailed
             })
+
             setIsLoading(false)
         }
     }
@@ -129,8 +126,6 @@ export function ProviderCard({
                 type="button"
                 variant={isLinked ? "outline" : "default"}
                 onClick={() => {
-                    if (isLoading) return
-
                     if (isLinked) {
                         handleUnlink()
                     } else {

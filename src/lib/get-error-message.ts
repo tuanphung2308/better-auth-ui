@@ -1,17 +1,15 @@
+import { BetterFetchError } from "@better-fetch/fetch"
 import type { FetchError } from "../types/fetch-error"
 
-/**
- * Extracts an error message from any error object, with specific handling for FetchError
- */
 export function getErrorMessage(error: unknown): string | undefined {
-    if (!error) return undefined
-
-    // Handle Error objects
-    if (error instanceof Error) {
-        return error.message
+    if (error instanceof BetterFetchError) {
+        return error.error.message || error.error.statusText
     }
 
-    // Handle FetchError objects
+    if (error instanceof Error) {
+        return error.message || error.name
+    }
+
     const fetchError = error as FetchError
-    return fetchError.message || fetchError.statusText
+    return fetchError?.message || fetchError?.statusText
 }

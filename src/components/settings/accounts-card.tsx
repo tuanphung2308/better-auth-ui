@@ -1,25 +1,16 @@
 "use client"
 
-import { EllipsisIcon, Loader2, LogOutIcon, RepeatIcon } from "lucide-react"
-import { useContext, useEffect, useState } from "react"
+import type { Session, User } from "better-auth"
+import { useContext } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
-import { Button } from "../ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
-
-import type { Session, User } from "better-auth"
-import { getErrorMessage } from "../../lib/get-error-message"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger
-} from "../ui/dropdown-menu"
-import { UserView } from "../user-view"
+import { CardContent } from "../ui/card"
+import { AccountCell } from "./account-cell"
 import type { SettingsCardClassNames } from "./settings-card"
-import { ProvidersCardSkeleton } from "./skeletons/providers-card-skeleton"
+import { SettingsCard } from "./settings-card"
+import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
 export interface AccountsCardProps {
     className?: string
@@ -47,9 +38,7 @@ export function AccountsCard({
     const {
         basePath,
         hooks: { useSession, useListDeviceSessions },
-        mutators: { revokeDeviceSession, setActiveSession },
         localization: authLocalization,
-        toast,
         viewPaths,
         navigate
     } = useContext(AuthUIContext)
@@ -66,158 +55,33 @@ export function AccountsCard({
     const { data: sessionData } = useSession()
     const session = sessionData?.session
 
-    const [actionLoading, setActionLoading] = useState<string | null>(null)
-
-    const handleRevoke = async (sessionToken: string) => {
-        setActionLoading(sessionToken)
-
-        try {
-            await revokeDeviceSession({ sessionToken })
-            refetch?.()
-        } catch (error) {
-            toast({
-                variant: "error",
-                message: getErrorMessage(error) || localization.requestFailed
-            })
-            setActionLoading(null)
-        }
-    }
-
-    const handleSetActiveSession = async (sessionToken: string) => {
-        setActionLoading(sessionToken)
-
-        try {
-            await setActiveSession({ sessionToken })
-            refetch?.()
-        } catch (error) {
-            toast({
-                variant: "error",
-                message: getErrorMessage(error) || localization.requestFailed
-            })
-            setActionLoading(null)
-        }
-    }
-
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-    useEffect(() => {
-        if (actionLoading) window.scrollTo({ top: 0 })
-
-        setActionLoading(null)
-    }, [session])
-
-    if (isPending) {
-        return <ProvidersCardSkeleton className={className} classNames={classNames} />
-    }
-
     return (
-        <Card className={cn("w-full pb-0", className, classNames?.base)}>
-            <CardHeader className={classNames?.header}>
-                <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                    {localization.accounts}
-                </CardTitle>
-
-                <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
-                    {localization.accountsDescription}
-                </CardDescription>
-            </CardHeader>
-
-            <CardContent className={cn("flex flex-col gap-4", classNames?.content)}>
-                {deviceSessions?.map((deviceSession) => {
-                    const isButtonLoading = actionLoading === deviceSession.session.token
-
-                    return (
-                        <Card
+        <SettingsCard
+            className={className}
+            classNames={classNames}
+            title={localization.accounts}
+            description={localization.accountsDescription}
+            actionLabel={localization.addAccount}
+            formAction={() => navigate(`${basePath}/${viewPaths.signIn}`)}
+            instructions={localization.accountsInstructions}
+            isPending={isPending}
+        >
+            <CardContent className={cn("grid gap-4", classNames?.content)}>
+                {isPending ? (
+                    <SettingsCellSkeleton classNames={classNames} />
+                ) : (
+                    deviceSessions?.map((deviceSession) => (
+                        <AccountCell
                             key={deviceSession.session.id}
-                            className={cn("flex-row p-4", classNames?.cell)}
-                        >
-                            <div className="flex items-center gap-2 truncate">
-                                <UserView user={deviceSession.user} />
-                            </div>
-
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button
-                                        className={cn("relative ms-auto", classNames?.button)}
-                                        disabled={!!actionLoading}
-                                        size="icon"
-                                        type="button"
-                                        variant="outline"
-                                    >
-                                        <span
-                                            className={
-                                                isButtonLoading ? "opacity-0" : "opacity-100"
-                                            }
-                                        >
-                                            <EllipsisIcon />
-                                        </span>
-
-                                        {isButtonLoading && (
-                                            <span className="absolute">
-                                                <Loader2 className="animate-spin" />
-                                            </span>
-                                        )}
-                                    </Button>
-                                </DropdownMenuTrigger>
-
-                                <DropdownMenuContent>
-                                    {deviceSession.session.id !== session?.id && (
-                                        <DropdownMenuItem
-                                            onClick={() =>
-                                                handleSetActiveSession(deviceSession.session.token)
-                                            }
-                                        >
-                                            <RepeatIcon />
-
-                                            {localization.switchAccount}
-                                        </DropdownMenuItem>
-                                    )}
-
-                                    <DropdownMenuItem
-                                        onClick={() => {
-                                            if (deviceSession.session.id === session?.id) {
-                                                navigate(`${basePath}/${viewPaths.signOut}`)
-                                                return
-                                            }
-
-                                            handleRevoke(deviceSession.session.token)
-                                        }}
-                                    >
-                                        <LogOutIcon />
-
-                                        {deviceSession.session.id === session?.id
-                                            ? localization.signOut
-                                            : localization.revoke}
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </Card>
-                    )
-                })}
-            </CardContent>
-
-            <CardFooter
-                className={cn(
-                    "!py-4 flex-col justify-between gap-4 rounded-b-xl border-t bg-muted md:flex-row dark:bg-transparent",
-                    classNames?.footer
+                            classNames={classNames}
+                            deviceSession={deviceSession}
+                            activeSessionId={session?.id}
+                            localization={localization}
+                            refetch={refetch}
+                        />
+                    ))
                 )}
-            >
-                <span
-                    className={cn(
-                        "text-muted-foreground text-xs md:text-sm",
-                        classNames?.instructions
-                    )}
-                >
-                    {localization.accountsInstructions}
-                </span>
-
-                <Button
-                    className={classNames?.button}
-                    size="sm"
-                    onClick={() => navigate(`${basePath}/${viewPaths.signIn}`)}
-                >
-                    {localization.addAccount}
-                </Button>
-            </CardFooter>
-        </Card>
+            </CardContent>
+        </SettingsCard>
     )
 }
