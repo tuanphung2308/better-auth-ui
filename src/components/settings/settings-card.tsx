@@ -41,6 +41,11 @@ export interface SettingsCardProps {
     formAction?: (formData: FormData) => Promise<unknown> | Promise<void> | void
     localization?: AuthLocalization
     optimistic?: boolean
+    /**
+     * The variant of the card
+     * @default "default"
+     */
+    variant?: "default" | "destructive"
 }
 
 export function SettingsCard({
@@ -50,13 +55,14 @@ export function SettingsCard({
     instructions,
     actionLabel,
     isSubmitting: externalIsSubmitting,
-    disabled: externalDisabled,
+    disabled,
     isPending,
     className,
     classNames,
     formAction,
     localization,
-    optimistic
+    optimistic,
+    variant = "default"
 }: SettingsCardProps) {
     const { localization: authLocalization, toast } = useContext(AuthUIContext)
 
@@ -79,7 +85,14 @@ export function SettingsCard({
 
     return (
         <form action={internalAction}>
-            <Card className={cn("w-full pb-0 text-start", className, classNames?.base)}>
+            <Card
+                className={cn(
+                    "w-full pb-0 text-start",
+                    variant === "destructive" && "border-destructive/40",
+                    className,
+                    classNames?.base
+                )}
+            >
                 <SettingsCardHeader
                     title={title}
                     description={description}
@@ -90,13 +103,14 @@ export function SettingsCard({
                 {children}
 
                 <SettingsCardFooter
-                    actionLabel={actionLabel || localization.save}
-                    disabled={externalDisabled || isSubmitting || externalIsSubmitting}
+                    actionLabel={actionLabel}
+                    disabled={disabled}
                     isSubmitting={isSubmitting || externalIsSubmitting}
                     isPending={isPending}
                     instructions={instructions}
                     classNames={classNames}
                     optimistic={optimistic}
+                    variant={variant}
                 />
             </Card>
         </form>

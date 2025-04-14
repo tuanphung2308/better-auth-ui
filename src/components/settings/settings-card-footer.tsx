@@ -36,6 +36,11 @@ export interface SettingsCardFooterProps {
     classNames?: SettingsCardClassNames
     className?: string
     optimistic?: boolean
+    /**
+     * The variant of the footer
+     * @default "default"
+     */
+    variant?: "default" | "destructive"
 }
 
 export function SettingsCardFooter({
@@ -46,12 +51,16 @@ export function SettingsCardFooter({
     instructions,
     classNames,
     className,
-    optimistic
+    optimistic,
+    variant = "default"
 }: SettingsCardFooterProps) {
     return (
         <CardFooter
             className={cn(
-                "!py-4 flex flex-col justify-between gap-4 rounded-b-xl border-t bg-muted md:flex-row dark:bg-transparent",
+                "!py-4 flex flex-col justify-between gap-4 rounded-b-xl border-t md:flex-row",
+                variant === "default"
+                    ? "bg-muted dark:bg-transparent"
+                    : "border-destructive/30 bg-destructive/10",
                 className,
                 classNames?.footer
             )}
@@ -90,6 +99,7 @@ export function SettingsCardFooter({
                             disabled={disabled || isSubmitting}
                             size="sm"
                             type="submit"
+                            variant={variant === "destructive" ? "destructive" : "default"}
                         >
                             <span className={cn(!optimistic && isSubmitting && "opacity-0")}>
                                 {actionLabel}
