@@ -46,7 +46,7 @@ export function ProviderButton({
                     </>
                 ))}
 
-            {socialLayout === "grid" && <>{provider.name}</>}
+            {socialLayout === "grid" && provider.name}
 
             {socialLayout === "vertical" && (
                 <>

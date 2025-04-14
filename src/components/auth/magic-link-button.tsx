@@ -28,9 +28,7 @@ export function MagicLinkButton({
             disabled={pending || isLoading}
             type="button"
             variant="secondary"
-            onClick={() => {
-                navigate(view === "magicLink" ? viewPaths.signIn : viewPaths.magicLink)
-            }}
+            onClick={() => navigate(view === "magicLink" ? viewPaths.signIn : viewPaths.magicLink)}
         >
             {view === "magicLink" ? <LockIcon /> : <MailIcon />}
             {localization.signInWith}{" "}

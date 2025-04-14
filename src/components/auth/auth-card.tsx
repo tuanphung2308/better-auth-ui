@@ -81,9 +81,7 @@ export function AuthCard({
             "signIn") as AuthView)
 
     useEffect(() => {
-        if (view === "settings" && settingsURL) {
-            replace(settingsURL)
-        }
+        if (view === "settings" && settingsURL) replace(settingsURL)
     }, [replace, settingsURL, view])
 
     if (["signOut", "callback"].includes(view)) {

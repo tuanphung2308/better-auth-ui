@@ -3,6 +3,7 @@ import { useFormStatus } from "react-dom"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { cn } from "../../lib/utils"
+import type { AuthView } from "../../server"
 import { Button } from "../ui/button"
 
 export function ActionButton({
@@ -14,7 +15,7 @@ export function ActionButton({
     className?: string
     isLoading?: boolean
     localization: Partial<AuthLocalization>
-    authView: string
+    authView: AuthView
 }) {
     const { pending } = useFormStatus()
 
