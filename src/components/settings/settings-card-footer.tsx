@@ -35,7 +35,8 @@ export function SettingsCardFooter({
     return (
         <CardFooter
             className={cn(
-                "!py-4 flex flex-col justify-between gap-4 rounded-b-xl border-t md:flex-row",
+                "flex flex-col justify-between gap-4 rounded-b-xl md:flex-row",
+                (actionLabel || instructions) && "!py-4 border-t",
                 variant === "default"
                     ? "bg-muted dark:bg-transparent"
                     : "border-destructive/30 bg-destructive/10",
