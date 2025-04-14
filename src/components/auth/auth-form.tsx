@@ -1,21 +1,20 @@
 "use client"
 
+import type { SocialProvider } from "better-auth/social-providers"
 import { Loader2 } from "lucide-react"
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
+import { getErrorMessage } from "../../lib/get-error-message"
 import { socialProviders } from "../../lib/social-providers"
 import { cn, isValidEmail } from "../../lib/utils"
+import type { AuthClient } from "../../types/auth-client"
+import { PasswordInput } from "../password-input"
 import { Checkbox } from "../ui/checkbox"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-
-import type { SocialProvider } from "better-auth/social-providers"
-import { getErrorMessage } from "../../lib/get-error-message"
-import type { AuthClient } from "../../types/auth-client"
-import { PasswordInput } from "../password-input"
 import { Separator } from "../ui/separator"
 import { ActionButton } from "./action-button"
 import { MagicLinkButton } from "./magic-link-button"
@@ -33,6 +32,17 @@ export type AuthFormClassNames = {
     secondaryButton?: string
 }
 
+export interface AuthFormProps {
+    className?: string
+    classNames?: AuthFormClassNames
+    callbackURL?: string
+    localization?: Partial<AuthLocalization>
+    pathname?: string
+    redirectTo?: string
+    socialLayout?: "auto" | "horizontal" | "grid" | "vertical"
+    view?: AuthView
+}
+
 export function AuthForm({
     className,
     classNames,
@@ -42,16 +52,7 @@ export function AuthForm({
     redirectTo,
     socialLayout = "auto",
     view
-}: {
-    className?: string
-    classNames?: AuthFormClassNames
-    callbackURL?: string
-    localization?: Partial<AuthLocalization>
-    pathname?: string
-    redirectTo?: string
-    socialLayout?: "auto" | "horizontal" | "grid" | "vertical"
-    view?: AuthView
-}) {
+}: AuthFormProps) {
     const [isLoading, setIsLoading] = useState(false)
 
     const {
