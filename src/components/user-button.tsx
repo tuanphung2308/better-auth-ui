@@ -1,5 +1,6 @@
 "use client"
 
+import type { Session, User } from "better-auth"
 import {
     ChevronsUpDown,
     LogInIcon,
@@ -14,8 +15,6 @@ import type { AuthLocalization } from "../lib/auth-localization"
 import { AuthUIContext } from "../lib/auth-ui-provider"
 import { getErrorMessage } from "../lib/get-error-message"
 import { cn } from "../lib/utils"
-
-import type { Session, User } from "better-auth"
 import { Button } from "./ui/button"
 import {
     DropdownMenu,

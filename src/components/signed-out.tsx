@@ -1,7 +1,6 @@
 "use client"
 
 import { type ReactNode, useContext } from "react"
-
 import { AuthUIContext } from "../lib/auth-ui-provider"
 
 /**
