@@ -101,7 +101,11 @@ export function AuthCard({
         return settingsURL ? (
             <Loader2 className="mx-auto my-auto animate-spin self-center justify-self-center" />
         ) : (
-            <SettingsCards className={cn(className)} classNames={classNames?.settings} />
+            <SettingsCards
+                localization={localization}
+                className={cn(className)}
+                classNames={classNames?.settings}
+            />
         )
 
     const description =
