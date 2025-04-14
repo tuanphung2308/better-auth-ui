@@ -11,10 +11,6 @@ export interface UpdateUsernameCardProps {
     className?: string
     classNames?: SettingsCardClassNames
     isPending?: boolean
-    /**
-     * @default authLocalization
-     * @remarks `AuthLocalization`
-     */
     localization?: AuthLocalization
 }
 
@@ -29,10 +25,7 @@ export function UpdateUsernameCard({
     localization = { ...authLocalization, ...localization }
 
     const { data: sessionData } = useSession()
-
-    const defaultValue =
-        // @ts-expect-error Optional plugin
-        sessionData?.user.displayUsername || sessionData?.user.username
+    const defaultValue = sessionData?.user.displayUsername || sessionData?.user.username
 
     return (
         <UpdateFieldCard
@@ -47,7 +40,7 @@ export function UpdateUsernameCard({
             label={localization.username}
             localization={localization}
             placeholder={localization.usernamePlaceholder}
-            required={true}
+            required
         />
     )
 }

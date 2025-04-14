@@ -41,10 +41,6 @@ export interface SettingsCardProps {
     formAction?: (formData: FormData) => Promise<unknown> | Promise<void> | void
     localization?: AuthLocalization
     optimistic?: boolean
-    /**
-     * The variant of the card
-     * @default "default"
-     */
     variant?: "default" | "destructive"
 }
 

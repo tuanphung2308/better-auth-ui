@@ -10,36 +10,14 @@ import { Skeleton } from "../ui/skeleton"
 import type { SettingsCardClassNames } from "./settings-card"
 
 export interface SettingsCardFooterProps {
-    /**
-     * Label for the action button
-     */
     actionLabel?: ReactNode
-    /**
-     * Whether the action button should be disabled
-     */
     disabled?: boolean
-    /**
-     * Whether the action is being submitted
-     */
     isSubmitting?: boolean
-    /**
-     * Whether the card is in a loading state and should show skeletons
-     */
     isPending?: boolean
-    /**
-     * Instructions text to show in the footer
-     */
     instructions?: ReactNode
-    /**
-     * Class names for styling
-     */
     classNames?: SettingsCardClassNames
     className?: string
     optimistic?: boolean
-    /**
-     * The variant of the footer
-     * @default "default"
-     */
     variant?: "default" | "destructive"
 }
 

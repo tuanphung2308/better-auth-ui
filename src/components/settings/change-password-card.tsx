@@ -17,10 +17,6 @@ export interface ChangePasswordCardProps {
     classNames?: SettingsCardClassNames
     accounts?: { provider: string }[] | null
     isPending?: boolean
-    /**
-     * @default authLocalization
-     * @remarks `AuthLocalization`
-     */
     localization?: AuthLocalization
     skipHook?: boolean
 }

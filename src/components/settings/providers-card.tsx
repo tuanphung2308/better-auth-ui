@@ -16,10 +16,6 @@ export interface ProvidersCardProps {
     classNames?: SettingsCardClassNames
     accounts?: { accountId: string; provider: string }[] | null
     isPending?: boolean
-    /**
-     * @default authLocalization
-     * @remarks `AuthLocalization`
-     */
     localization?: Partial<AuthLocalization>
     skipHook?: boolean
     refetch?: () => void

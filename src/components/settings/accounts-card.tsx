@@ -17,10 +17,6 @@ export interface AccountsCardProps {
     classNames?: SettingsCardClassNames
     deviceSessions?: { user: User; session: Session }[] | null
     isPending?: boolean
-    /**
-     * @default authLocalization
-     * @remarks `AuthLocalization`
-     */
     localization?: Partial<AuthLocalization>
     skipHook?: boolean
     refetch?: () => Promise<void>

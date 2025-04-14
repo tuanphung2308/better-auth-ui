@@ -11,6 +11,22 @@ import { Input } from "../ui/input"
 import { Skeleton } from "../ui/skeleton"
 import { SettingsCard, type SettingsCardClassNames } from "./settings-card"
 
+export interface UpdateFieldCardProps {
+    className?: string
+    classNames?: SettingsCardClassNames
+    defaultValue?: unknown
+    description?: ReactNode
+    instructions?: ReactNode
+    isPending?: boolean
+    localization?: Partial<AuthLocalization>
+    field: string
+    placeholder?: string
+    required?: boolean
+    label?: ReactNode
+    type?: FieldType
+    validate?: (value: string) => boolean | Promise<boolean>
+}
+
 export function UpdateFieldCard({
     className,
     classNames,
@@ -25,21 +41,7 @@ export function UpdateFieldCard({
     label,
     type,
     validate
-}: {
-    className?: string
-    classNames?: SettingsCardClassNames
-    defaultValue?: unknown
-    description?: ReactNode
-    instructions?: ReactNode
-    isPending?: boolean
-    localization?: Partial<AuthLocalization>
-    field: string
-    placeholder?: string
-    required?: boolean
-    label?: ReactNode
-    type?: FieldType
-    validate?: (value: string) => boolean | Promise<boolean>
-}) {
+}: UpdateFieldCardProps) {
     const {
         hooks: { useSession },
         mutators: { updateUser },

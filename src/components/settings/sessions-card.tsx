@@ -16,10 +16,6 @@ export interface SessionsCardProps {
     className?: string
     classNames?: SettingsCardClassNames
     isPending?: boolean
-    /**
-     * @default authLocalization
-     * @remarks `AuthLocalization`
-     */
     localization?: Partial<AuthLocalization>
     sessions?: Session[] | null
     skipHook?: boolean

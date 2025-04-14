@@ -11,10 +11,6 @@ export interface UpdateNameCardProps {
     className?: string
     classNames?: SettingsCardClassNames
     isPending?: boolean
-    /**
-     * @default authLocalization
-     * @remarks `AuthLocalization`
-     */
     localization?: AuthLocalization
 }
 

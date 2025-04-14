@@ -11,10 +11,6 @@ export interface DeleteAccountCardProps {
     classNames?: SettingsCardClassNames
     accounts?: { provider: string }[] | null
     isPending?: boolean
-    /**
-     * @default authLocalization
-     * @remarks `AuthLocalization`
-     */
     localization?: AuthLocalization
     skipHook?: boolean
 }
@@ -41,8 +37,6 @@ export function DeleteAccountCard({
         isPending = result.isPending
     }
 
-    const { isPending: sessionPending } = useSession()
-
     return (
         <>
             <SettingsCard
@@ -53,7 +47,7 @@ export function DeleteAccountCard({
                 className={className}
                 classNames={classNames}
                 variant="destructive"
-                isPending={isPending || sessionPending}
+                isPending={isPending}
             />
 
             <DeleteAccountDialog

@@ -16,10 +16,6 @@ export interface PasskeysCardProps {
     className?: string
     classNames?: SettingsCardClassNames
     isPending?: boolean
-    /**
-     * @default authLocalization
-     * @remarks `AuthLocalization`
-     */
     localization?: AuthLocalization
     passkeys?: { id: string; createdAt: Date }[] | null
     skipHook?: boolean

@@ -36,10 +36,6 @@ export type SettingsCardsClassNames = {
 export interface SettingsCardsProps {
     className?: string
     classNames?: SettingsCardsClassNames
-    /**
-     * @default authLocalization
-     * @remarks `AuthLocalization`
-     */
     localization?: AuthLocalization
 }
 
@@ -176,7 +172,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             validate
                         } = additionalField
 
-                        // @ts-expect-error Custom fields are not typed
+                        // @ts-ignore Custom fields are not typed
                         const defaultValue = sessionData?.user[field] as unknown
 
                         return (
