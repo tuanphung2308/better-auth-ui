@@ -8,9 +8,8 @@ export function useListSessions({
     db,
     modelNames,
     usePlural,
-    useSession
+    isPending
 }: UseInstantOptionsProps): ReturnType<AuthHooks["useListSessions"]> {
-    const { isPending } = useSession()
     const { user: authUser, isLoading: authLoading } = db.useAuth()
 
     const modelName = getModelName({

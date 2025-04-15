@@ -7,9 +7,8 @@ export function useListAccounts({
     db,
     modelNames,
     usePlural,
-    useSession
+    isPending
 }: UseInstantOptionsProps): ReturnType<AuthHooks["useListAccounts"]> {
-    const { isPending } = useSession()
     const { user: authUser, isLoading: authLoading } = db.useAuth()
 
     const modelName = getModelName({
