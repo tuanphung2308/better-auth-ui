@@ -60,7 +60,7 @@ export function AuthCard({
     const {
         basePath,
         credentials,
-        localization: authLocalization,
+        localization: contextLocalization,
         magicLink,
         replace,
         settingsURL,
@@ -69,7 +69,7 @@ export function AuthCard({
         Link
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     if (path && !Object.values(viewPaths).includes(path)) {
         console.error(`Invalid auth view: ${path}`)
@@ -89,9 +89,7 @@ export function AuthCard({
             <AuthForm
                 callbackURL={callbackURL}
                 classNames={classNames?.form}
-                localization={localization}
                 redirectTo={redirectTo}
-                socialLayout={socialLayout}
                 view={view}
             />
         )

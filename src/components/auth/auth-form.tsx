@@ -61,11 +61,11 @@ export function AuthForm({
         basePath,
         baseURL,
         confirmPassword: confirmPasswordEnabled,
-        redirectTo: defaultRedirectTo,
+        redirectTo: contextRedirectTo,
         credentials,
         forgotPassword,
         hooks: { useIsRestoring, useSession },
-        localization: authLocalization,
+        localization: contextLocalization,
         magicLink,
         nameRequired,
         navigate,
@@ -84,14 +84,9 @@ export function AuthForm({
         Link
     } = useContext(AuthUIContext)
 
-    const {
-        data: sessionData,
-        error: sessionError,
-        isPending: sessionPending,
-        refetch: refetchSession
-    } = useSession()
+    localization = { ...contextLocalization, ...localization }
 
-    localization = { ...authLocalization, ...localization }
+    const { refetch: refetchSession } = useSession()
 
     const isRestoring = useIsRestoring?.()
 
@@ -122,8 +117,8 @@ export function AuthForm({
         () =>
             redirectTo ||
             new URLSearchParams(window.location.search).get("redirectTo") ||
-            defaultRedirectTo,
-        [defaultRedirectTo, redirectTo]
+            contextRedirectTo,
+        [contextRedirectTo, redirectTo]
     )
 
     const getCallbackURL = useCallback(

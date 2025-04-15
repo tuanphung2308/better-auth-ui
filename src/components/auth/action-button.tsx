@@ -24,7 +24,7 @@ export function ActionButton({
             {pending || isLoading ? (
                 <Loader2 className="animate-spin" />
             ) : (
-                localization[`${authView}Action` as keyof typeof localization]
+                localization[`${authView}Action` as keyof typeof localization] || "Submit"
             )}
         </Button>
     )
