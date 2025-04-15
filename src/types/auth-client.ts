@@ -1,6 +1,7 @@
 import type {
     anonymousClient,
     genericOAuthClient,
+    magicLinkClient,
     multiSessionClient,
     passkeyClient,
     usernameClient
@@ -12,7 +13,7 @@ type PasskeyClientPlugin = ReturnType<typeof passkeyClient>
 type GenericOAuthClientPlugin = ReturnType<typeof genericOAuthClient>
 type AnonymousClientPlugin = ReturnType<typeof anonymousClient>
 type UsernameClientPlugin = ReturnType<typeof usernameClient>
-
+type MagicLinkClientPlugin = ReturnType<typeof magicLinkClient>
 export type AuthClient = ReturnType<
     typeof createAuthClient<{
         plugins: [
@@ -20,7 +21,8 @@ export type AuthClient = ReturnType<
             PasskeyClientPlugin,
             GenericOAuthClientPlugin,
             AnonymousClientPlugin,
-            UsernameClientPlugin
+            UsernameClientPlugin,
+            MagicLinkClientPlugin
         ]
     }>
 >

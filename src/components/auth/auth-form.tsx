@@ -3,7 +3,6 @@
 import type { SocialProvider } from "better-auth/social-providers"
 import { Loader2 } from "lucide-react"
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
-
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
@@ -150,263 +149,199 @@ export function AuthForm({
     const formAction = async (formData: FormData) => {
         const provider = formData.get("provider") as SocialProvider
 
-        if (provider) {
-            const { error } = await authClient.signIn.social({
-                provider,
-                callbackURL: getCallbackURL()
-            })
-
-            if (error) {
-                toast({
-                    variant: "error",
-                    message: getErrorMessage(error) || localization.requestFailed
+        try {
+            if (provider) {
+                await authClient.signIn.social({
+                    provider,
+                    callbackURL: getCallbackURL(),
+                    fetchOptions: { throw: true }
                 })
-            } else {
+
                 setIsLoading(true)
+                return
             }
 
-            return
-        }
+            const otherProvider = formData.get("otherProvider") as string
 
-        const otherProvider = formData.get("otherProvider") as string
-
-        if (otherProvider) {
-            // @ts-ignore
-            const { error } = await authClient.signIn.oauth2({
-                providerId: otherProvider,
-                callbackURL: getCallbackURL()
-            })
-
-            if (error) {
-                toast({
-                    variant: "error",
-                    message: getErrorMessage(error) || localization.requestFailed
+            if (otherProvider) {
+                await (authClient as AuthClient).signIn.oauth2({
+                    providerId: otherProvider,
+                    callbackURL: getCallbackURL(),
+                    fetchOptions: { throw: true }
                 })
-            } else {
+
                 setIsLoading(true)
+                return
             }
 
-            return
-        }
-
-        if (formData.get("passkey")) {
-            const response = await (authClient as AuthClient).signIn.passkey()
-            const error = response?.error
-            if (error) {
-                toast({
-                    variant: "error",
-                    message: getErrorMessage(error) || localization.requestFailed
-                })
-            } else {
+            if (formData.get("passkey")) {
+                await (authClient as AuthClient).signIn.passkey({ fetchOptions: { throw: true } })
                 onSuccess()
+                return
             }
 
-            return
-        }
+            let email = formData.get("email") as string
+            const password = formData.get("password") as string
+            const name = formData.get("name") || ("" as string)
 
-        let email = formData.get("email") as string
-        const password = formData.get("password") as string
-        const name = formData.get("name") || ("" as string)
-
-        switch (view) {
-            case "signIn": {
-                if (!credentials) {
-                    // @ts-expect-error Optional plugin
-                    const { error } = await authClient.signIn.magicLink({
-                        email,
-                        callbackURL: getCallbackURL()
-                    })
-
-                    if (error) {
-                        toast({
-                            variant: "error",
-                            message: getErrorMessage(error) || localization.requestFailed
+            switch (view) {
+                case "signIn": {
+                    if (!credentials) {
+                        await (authClient as AuthClient).signIn.magicLink({
+                            email,
+                            callbackURL: getCallbackURL(),
+                            fetchOptions: { throw: true }
                         })
-                    } else {
+
                         toast({ variant: "success", message: localization.magicLinkEmail! })
+                        return
                     }
 
-                    return
-                }
+                    const params = {
+                        password,
+                        rememberMe: !rememberMe || formData.has("rememberMe")
+                    }
 
-                const params = {
-                    password,
-                    rememberMe: !rememberMe || formData.has("rememberMe")
-                }
+                    if (usernamePlugin) {
+                        const username = formData.get("username") as string
 
-                if (usernamePlugin) {
-                    const username = formData.get("username") as string
-
-                    if (isValidEmail(username)) {
-                        email = username
-                    } else {
-                        // @ts-expect-error Optional plugin
-                        const { error } = await authClient.signIn.username({
-                            username,
-                            ...params
-                        })
-
-                        if (error) {
-                            toast({
-                                variant: "error",
-                                message: getErrorMessage(error) || localization.requestFailed
-                            })
+                        if (isValidEmail(username)) {
+                            email = username
                         } else {
-                            onSuccess()
-                        }
-
-                        return
-                    }
-                }
-
-                const { error } = await authClient.signIn.email({
-                    email,
-                    ...params
-                })
-
-                if (error) {
-                    toast({
-                        variant: "error",
-                        message: getErrorMessage(error) || localization.requestFailed
-                    })
-                } else {
-                    onSuccess()
-                }
-
-                break
-            }
-
-            case "magicLink": {
-                // @ts-expect-error Optional plugin
-                const { error } = await authClient.signIn.magicLink({
-                    email,
-                    callbackURL: getCallbackURL()
-                })
-
-                if (error) {
-                    toast({
-                        variant: "error",
-                        message: getErrorMessage(error) || localization.requestFailed
-                    })
-                } else {
-                    toast({ variant: "success", message: localization.magicLinkEmail! })
-                }
-
-                break
-            }
-
-            case "signUp": {
-                if (confirmPasswordEnabled) {
-                    const confirmPassword = formData.get("confirmPassword") as string
-                    if (password !== confirmPassword) {
-                        toast({ variant: "error", message: localization.passwordsDoNotMatch! })
-                        return
-                    }
-                }
-
-                const params = {
-                    email,
-                    password,
-                    name,
-                    callbackURL: getCallbackURL()
-                } as Record<string, unknown>
-
-                if (usernamePlugin) {
-                    params.username = formData.get("username")
-                }
-
-                signUpFields?.map((field) => {
-                    if (field === "name") return
-
-                    const additionalField = additionalFields?.[field]
-                    if (!additionalField) return
-
-                    if (formData.has(field)) {
-                        const value = formData.get(field) as string
-
-                        if (additionalField.validate && !additionalField.validate(value)) {
-                            toast({
-                                variant: "error",
-                                message: `${localization.failedToValidate} ${field}`
+                            await (authClient as AuthClient).signIn.username({
+                                username,
+                                ...params,
+                                fetchOptions: { throw: true }
                             })
+
+                            onSuccess()
                             return
                         }
-
-                        params[field] =
-                            additionalField.type === "number"
-                                ? Number.parseFloat(value)
-                                : additionalField.type === "boolean"
-                                  ? value === "on"
-                                  : value
                     }
-                })
 
-                // @ts-ignore
-                const { data, error } = await authClient.signUp.email(params)
-
-                if (error) {
-                    toast({
-                        variant: "error",
-                        message: getErrorMessage(error) || localization.requestFailed
+                    await authClient.signIn.email({
+                        email,
+                        ...params,
+                        fetchOptions: { throw: true }
                     })
-                } else if (data.token) {
+
                     onSuccess()
-                } else {
-                    navigate(`${basePath}/${viewPaths.signIn}`)
-                    toast({ variant: "success", message: localization.signUpEmail! })
+                    break
                 }
 
-                break
-            }
-
-            case "forgotPassword": {
-                const { error } = await authClient.forgetPassword({
-                    email: email,
-                    redirectTo: `${baseURL}${basePath}/${viewPaths.resetPassword}`
-                })
-
-                if (error) {
-                    toast({
-                        variant: "error",
-                        message: getErrorMessage(error) || localization.requestFailed
+                case "magicLink": {
+                    await (authClient as AuthClient).signIn.magicLink({
+                        email,
+                        callbackURL: getCallbackURL(),
+                        fetchOptions: { throw: true }
                     })
-                } else {
-                    toast({ variant: "success", message: localization.forgotPasswordEmail! })
-                    navigate(`${basePath}/${viewPaths.signIn}`)
+
+                    toast({ variant: "success", message: localization.magicLinkEmail! })
+                    break
                 }
 
-                break
-            }
-
-            case "resetPassword": {
-                if (confirmPasswordEnabled) {
-                    const confirmPassword = formData.get("confirmPassword") as string
-                    if (password !== confirmPassword) {
-                        toast({ variant: "error", message: localization.passwordsDoNotMatch! })
-                        return
+                case "signUp": {
+                    if (confirmPasswordEnabled) {
+                        const confirmPassword = formData.get("confirmPassword") as string
+                        if (password !== confirmPassword) {
+                            toast({ variant: "error", message: localization.passwordsDoNotMatch! })
+                            return
+                        }
                     }
-                }
 
-                const searchParams = new URLSearchParams(window.location.search)
-                const token = searchParams.get("token") as string
+                    const params = {
+                        email,
+                        password,
+                        name,
+                        callbackURL: getCallbackURL()
+                    } as Record<string, unknown>
 
-                const { error } = await authClient.resetPassword({
-                    newPassword: password,
-                    token
-                })
+                    if (usernamePlugin) {
+                        params.username = formData.get("username")
+                    }
 
-                if (error) {
-                    toast({
-                        variant: "error",
-                        message: getErrorMessage(error) || localization.requestFailed
+                    signUpFields?.map((field) => {
+                        if (field === "name") return
+
+                        const additionalField = additionalFields?.[field]
+                        if (!additionalField) return
+
+                        if (formData.has(field)) {
+                            const value = formData.get(field) as string
+
+                            if (additionalField.validate && !additionalField.validate(value)) {
+                                toast({
+                                    variant: "error",
+                                    message: `${localization.failedToValidate} ${field}`
+                                })
+                                return
+                            }
+
+                            params[field] =
+                                additionalField.type === "number"
+                                    ? Number.parseFloat(value)
+                                    : additionalField.type === "boolean"
+                                      ? value === "on"
+                                      : value
+                        }
                     })
-                } else {
-                    toast({ variant: "success", message: localization.resetPasswordSuccess! })
-                    navigate(`${basePath}/${viewPaths.signIn}`)
+
+                    const data = await (authClient as AuthClient).signUp.email({
+                        ...params,
+                        email: params.email as string,
+                        name: params.name as string,
+                        password: params.password as string,
+                        fetchOptions: { throw: true }
+                    })
+
+                    if (data.token) {
+                        onSuccess()
+                    } else {
+                        navigate(`${basePath}/${viewPaths.signIn}`)
+                        toast({ variant: "success", message: localization.signUpEmail! })
+                    }
+
+                    break
                 }
 
-                break
+                case "forgotPassword": {
+                    await authClient.forgetPassword({
+                        email: email,
+                        redirectTo: `${baseURL}${basePath}/${viewPaths.resetPassword}`,
+                        fetchOptions: { throw: true }
+                    })
+
+                    toast({ variant: "success", message: localization.forgotPasswordEmail! })
+                    break
+                }
+
+                case "resetPassword": {
+                    if (confirmPasswordEnabled) {
+                        const confirmPassword = formData.get("confirmPassword") as string
+                        if (password !== confirmPassword) {
+                            toast({ variant: "error", message: localization.passwordsDoNotMatch! })
+                            return
+                        }
+                    }
+
+                    const searchParams = new URLSearchParams(window.location.search)
+                    const token = searchParams.get("token") as string
+
+                    await authClient.resetPassword({
+                        newPassword: password,
+                        token,
+                        fetchOptions: { throw: true }
+                    })
+
+                    toast({ variant: "success", message: localization.resetPasswordSuccess! })
+                    break
+                }
             }
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: getErrorMessage(error) || localization.requestFailed
+            })
         }
     }
 
