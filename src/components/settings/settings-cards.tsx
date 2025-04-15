@@ -49,6 +49,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         additionalFields,
         avatar,
         credentials,
+        changeEmail,
         deleteUser,
         hooks,
         localization: authLocalization,
@@ -150,11 +151,11 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         />
                     )}
 
-                    <ChangeEmailCard
+                    {changeEmail && <ChangeEmailCard
                         classNames={classNames?.card}
                         isPending={sessionPending}
                         localization={localization}
-                    />
+                    />}
 
                     {settingsFields?.map((field) => {
                         const additionalField = additionalFields?.[field]

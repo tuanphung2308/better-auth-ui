@@ -93,6 +93,11 @@ export type AuthUIContextType = {
      */
     deleteAccountVerification?: boolean
     /**
+     * Enable or disable user change email support
+     * @default false
+     */
+    changeEmail?: boolean
+    /**
      * Enable or disable user account deletion
      * @default false
      */
