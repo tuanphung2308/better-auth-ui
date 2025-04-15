@@ -3,6 +3,7 @@
 import type { SocialProvider } from "better-auth/social-providers"
 import { Loader2 } from "lucide-react"
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
+
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"

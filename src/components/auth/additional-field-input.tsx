@@ -1,4 +1,3 @@
-"use client"
 import { cn } from "../../lib/utils"
 import type { AdditionalField } from "../../types/additional-fields"
 import { Checkbox } from "../ui/checkbox"

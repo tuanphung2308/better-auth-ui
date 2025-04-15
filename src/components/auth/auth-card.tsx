@@ -9,7 +9,6 @@ import type { AuthView } from "../../lib/auth-view-paths"
 import { cn } from "../../lib/utils"
 import { SettingsCards, type SettingsCardsClassNames } from "../settings/settings-cards"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
-
 import { AuthForm, type AuthFormClassNames } from "./auth-form"
 
 export interface AuthCardClassNames {
