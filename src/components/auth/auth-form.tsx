@@ -144,7 +144,10 @@ export function AuthForm({
         await onSessionChange?.()
 
         navigate(getRedirectTo())
-        setIsLoading(false)
+
+        setTimeout(() => {
+            setIsLoading(false)
+        }, 5000)
     }, [refetchSession, onSessionChange, navigate, getRedirectTo])
 
     const formAction = async (formData: FormData) => {
