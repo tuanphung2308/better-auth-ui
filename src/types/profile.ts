@@ -1,5 +1,5 @@
-export type User = {
-    id?: unknown
+export type Profile = {
+    id?: string | number
     email?: string | null
     name?: string | null
     firstName?: string | null

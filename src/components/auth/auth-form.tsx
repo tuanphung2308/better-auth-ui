@@ -1,25 +1,27 @@
 "use client"
 
+import type { SocialProvider } from "better-auth/social-providers"
 import { Loader2 } from "lucide-react"
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
+import { getErrorMessage } from "../../lib/get-error-message"
 import { socialProviders } from "../../lib/social-providers"
 import { cn, isValidEmail } from "../../lib/utils"
-import { Checkbox } from "../ui/checkbox"
+import type { AuthClient } from "../../types/auth-client"
+import { ConfirmPasswordInput } from "../confirm-password-input"
+import { PasswordInput } from "../password-input"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-
-import type { SocialProvider } from "better-auth/social-providers"
-import type { AuthClient } from "../../types/auth-client"
-import { PasswordInput } from "../password-input"
 import { Separator } from "../ui/separator"
 import { ActionButton } from "./action-button"
+import { AdditionalFieldInput } from "./additional-field-input"
 import { MagicLinkButton } from "./magic-link-button"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
+import { RememberMeCheckbox } from "./remember-me-checkbox"
 
 export type AuthFormClassNames = {
     base?: string
@@ -32,6 +34,17 @@ export type AuthFormClassNames = {
     secondaryButton?: string
 }
 
+export interface AuthFormProps {
+    className?: string
+    classNames?: AuthFormClassNames
+    callbackURL?: string
+    localization?: Partial<AuthLocalization>
+    pathname?: string
+    redirectTo?: string
+    socialLayout?: "auto" | "horizontal" | "grid" | "vertical"
+    view?: AuthView
+}
+
 export function AuthForm({
     className,
     classNames,
@@ -41,16 +54,7 @@ export function AuthForm({
     redirectTo,
     socialLayout = "auto",
     view
-}: {
-    className?: string
-    classNames?: AuthFormClassNames
-    callbackURL?: string
-    localization?: Partial<AuthLocalization>
-    pathname?: string
-    redirectTo?: string
-    socialLayout?: "auto" | "horizontal" | "grid" | "vertical"
-    view?: AuthView
-}) {
+}: AuthFormProps) {
     const [isLoading, setIsLoading] = useState(false)
 
     const {
@@ -59,11 +63,11 @@ export function AuthForm({
         basePath,
         baseURL,
         confirmPassword: confirmPasswordEnabled,
-        redirectTo: defaultRedirectTo,
+        redirectTo: contextRedirectTo,
         credentials,
         forgotPassword,
         hooks: { useIsRestoring, useSession },
-        localization: authLocalization,
+        localization: contextLocalization,
         magicLink,
         nameRequired,
         navigate,
@@ -82,14 +86,9 @@ export function AuthForm({
         Link
     } = useContext(AuthUIContext)
 
-    const {
-        data: sessionData,
-        error: sessionError,
-        isPending: sessionPending,
-        refetch: refetchSession
-    } = useSession()
+    localization = { ...contextLocalization, ...localization }
 
-    localization = { ...authLocalization, ...localization }
+    const { refetch: refetchSession } = useSession()
 
     const isRestoring = useIsRestoring?.()
 
@@ -120,8 +119,8 @@ export function AuthForm({
         () =>
             redirectTo ||
             new URLSearchParams(window.location.search).get("redirectTo") ||
-            defaultRedirectTo,
-        [defaultRedirectTo, redirectTo]
+            contextRedirectTo,
+        [contextRedirectTo, redirectTo]
     )
 
     const getCallbackURL = useCallback(
@@ -142,239 +141,208 @@ export function AuthForm({
         await onSessionChange?.()
 
         navigate(getRedirectTo())
-        setIsLoading(false)
+
+        setTimeout(() => {
+            setIsLoading(false)
+        }, 5000)
     }, [refetchSession, onSessionChange, navigate, getRedirectTo])
 
     const formAction = async (formData: FormData) => {
         const provider = formData.get("provider") as SocialProvider
 
-        if (provider) {
-            const { error } = await authClient.signIn.social({
-                provider,
-                callbackURL: getCallbackURL()
-            })
+        try {
+            if (provider) {
+                await authClient.signIn.social({
+                    provider,
+                    callbackURL: getCallbackURL(),
+                    fetchOptions: { throw: true }
+                })
 
-            if (error) {
-                toast({ variant: "error", message: error.message || error.statusText })
-            } else {
                 setIsLoading(true)
+                return
             }
 
-            return
-        }
+            const otherProvider = formData.get("otherProvider") as string
 
-        const otherProvider = formData.get("otherProvider") as string
+            if (otherProvider) {
+                await (authClient as AuthClient).signIn.oauth2({
+                    providerId: otherProvider,
+                    callbackURL: getCallbackURL(),
+                    fetchOptions: { throw: true }
+                })
 
-        if (otherProvider) {
-            // @ts-ignore
-            const { error } = await authClient.signIn.oauth2({
-                providerId: otherProvider,
-                callbackURL: getCallbackURL()
-            })
-
-            if (error) {
-                toast({ variant: "error", message: error.message || error.statusText })
-            } else {
                 setIsLoading(true)
+                return
             }
 
-            return
-        }
-
-        if (formData.get("passkey")) {
-            const response = await (authClient as AuthClient).signIn.passkey()
-            const error = response?.error
-            if (error) {
-                toast({ variant: "error", message: error.message || error.statusText })
-            } else {
+            if (formData.get("passkey")) {
+                await (authClient as AuthClient).signIn.passkey({ fetchOptions: { throw: true } })
                 onSuccess()
+                return
             }
 
-            return
-        }
+            let email = formData.get("email") as string
+            const password = formData.get("password") as string
+            const name = formData.get("name") || ("" as string)
 
-        let email = formData.get("email") as string
-        const password = formData.get("password") as string
-        const name = formData.get("name") || ("" as string)
-
-        switch (view) {
-            case "signIn": {
-                if (!credentials) {
-                    // @ts-expect-error Optional plugin
-                    const { error } = await authClient.signIn.magicLink({
-                        email,
-                        callbackURL: getCallbackURL()
-                    })
-
-                    if (error) {
-                        toast({ variant: "error", message: error.message || error.statusText })
-                    } else {
-                        toast({ variant: "success", message: localization.magicLinkEmail! })
-                    }
-
-                    return
-                }
-
-                const params = {
-                    password,
-                    rememberMe: !rememberMe || formData.has("rememberMe")
-                }
-
-                if (usernamePlugin) {
-                    const username = formData.get("username") as string
-
-                    if (isValidEmail(username)) {
-                        email = username
-                    } else {
-                        // @ts-expect-error Optional plugin
-                        const { error } = await authClient.signIn.username({
-                            username,
-                            ...params
+            switch (view) {
+                case "signIn": {
+                    if (!credentials) {
+                        await (authClient as AuthClient).signIn.magicLink({
+                            email,
+                            callbackURL: getCallbackURL(),
+                            fetchOptions: { throw: true }
                         })
 
-                        if (error) {
-                            toast({ variant: "error", message: error.message || error.statusText })
+                        toast({ variant: "success", message: localization.magicLinkEmail! })
+                        return
+                    }
+
+                    const params = {
+                        password,
+                        rememberMe: !rememberMe || formData.has("rememberMe")
+                    }
+
+                    if (usernamePlugin) {
+                        const username = formData.get("username") as string
+
+                        if (isValidEmail(username)) {
+                            email = username
                         } else {
-                            onSuccess()
-                        }
-
-                        return
-                    }
-                }
-
-                const { error } = await authClient.signIn.email({
-                    email,
-                    ...params
-                })
-
-                if (error) {
-                    toast({ variant: "error", message: error.message || error.statusText })
-                } else {
-                    onSuccess()
-                }
-
-                break
-            }
-
-            case "magicLink": {
-                // @ts-expect-error Optional plugin
-                const { error } = await authClient.signIn.magicLink({
-                    email,
-                    callbackURL: getCallbackURL()
-                })
-
-                if (error) {
-                    toast({ variant: "error", message: error.message || error.statusText })
-                } else {
-                    toast({ variant: "success", message: localization.magicLinkEmail! })
-                }
-
-                break
-            }
-
-            case "signUp": {
-                if (confirmPasswordEnabled) {
-                    const confirmPassword = formData.get("confirmPassword") as string
-                    if (password !== confirmPassword) {
-                        toast({ variant: "error", message: localization.passwordsDoNotMatch! })
-                        return
-                    }
-                }
-
-                const params = {
-                    email,
-                    password,
-                    name,
-                    callbackURL: getCallbackURL()
-                } as Record<string, unknown>
-
-                if (usernamePlugin) {
-                    params.username = formData.get("username")
-                }
-
-                signUpFields?.map((field) => {
-                    if (field === "name") return
-
-                    const additionalField = additionalFields?.[field]
-                    if (!additionalField) return
-
-                    if (formData.has(field)) {
-                        const value = formData.get(field) as string
-
-                        if (additionalField.validate && !additionalField.validate(value)) {
-                            toast({
-                                variant: "error",
-                                message: `${localization.failedToValidate} ${field}`
+                            await (authClient as AuthClient).signIn.username({
+                                username,
+                                ...params,
+                                fetchOptions: { throw: true }
                             })
+
+                            onSuccess()
                             return
                         }
-
-                        params[field] =
-                            additionalField.type === "number"
-                                ? Number.parseFloat(value)
-                                : additionalField.type === "boolean"
-                                  ? value === "on"
-                                  : value
                     }
-                })
 
-                // @ts-ignore
-                const { data, error } = await authClient.signUp.email(params)
+                    await authClient.signIn.email({
+                        email,
+                        ...params,
+                        fetchOptions: { throw: true }
+                    })
 
-                if (error) {
-                    toast({ variant: "error", message: error.message || error.statusText })
-                } else if (data.token) {
                     onSuccess()
-                } else {
-                    navigate(`${basePath}/${viewPaths.signIn}`)
-                    toast({ variant: "success", message: localization.signUpEmail! })
+                    break
                 }
 
-                break
-            }
+                case "magicLink": {
+                    await (authClient as AuthClient).signIn.magicLink({
+                        email,
+                        callbackURL: getCallbackURL(),
+                        fetchOptions: { throw: true }
+                    })
 
-            case "forgotPassword": {
-                const { error } = await authClient.forgetPassword({
-                    email: email,
-                    redirectTo: `${baseURL}${basePath}/${viewPaths.resetPassword}`
-                })
-
-                if (error) {
-                    toast({ variant: "error", message: error.message || error.statusText })
-                } else {
-                    toast({ variant: "success", message: localization.forgotPasswordEmail! })
-                    navigate(`${basePath}/${viewPaths.signIn}`)
+                    toast({ variant: "success", message: localization.magicLinkEmail! })
+                    break
                 }
 
-                break
-            }
-
-            case "resetPassword": {
-                if (confirmPasswordEnabled) {
-                    const confirmPassword = formData.get("confirmPassword") as string
-                    if (password !== confirmPassword) {
-                        toast({ variant: "error", message: localization.passwordsDoNotMatch! })
-                        return
+                case "signUp": {
+                    if (confirmPasswordEnabled) {
+                        const confirmPassword = formData.get("confirmPassword") as string
+                        if (password !== confirmPassword) {
+                            toast({ variant: "error", message: localization.passwordsDoNotMatch! })
+                            return
+                        }
                     }
+
+                    const params = {
+                        email,
+                        password,
+                        name,
+                        callbackURL: getCallbackURL()
+                    } as Record<string, unknown>
+
+                    if (usernamePlugin) {
+                        params.username = formData.get("username")
+                    }
+
+                    signUpFields?.map((field) => {
+                        if (field === "name") return
+
+                        const additionalField = additionalFields?.[field]
+                        if (!additionalField) return
+
+                        if (formData.has(field)) {
+                            const value = formData.get(field) as string
+
+                            if (additionalField.validate && !additionalField.validate(value)) {
+                                toast({
+                                    variant: "error",
+                                    message: `${localization.failedToValidate} ${field}`
+                                })
+                                return
+                            }
+
+                            params[field] =
+                                additionalField.type === "number"
+                                    ? Number.parseFloat(value)
+                                    : additionalField.type === "boolean"
+                                      ? value === "on"
+                                      : value
+                        }
+                    })
+
+                    const data = await (authClient as AuthClient).signUp.email({
+                        ...params,
+                        email: params.email as string,
+                        name: params.name as string,
+                        password: params.password as string,
+                        fetchOptions: { throw: true }
+                    })
+
+                    if (data.token) {
+                        onSuccess()
+                    } else {
+                        navigate(`${basePath}/${viewPaths.signIn}`)
+                        toast({ variant: "success", message: localization.signUpEmail! })
+                    }
+
+                    break
                 }
 
-                const searchParams = new URLSearchParams(window.location.search)
-                const token = searchParams.get("token") as string
+                case "forgotPassword": {
+                    await authClient.forgetPassword({
+                        email: email,
+                        redirectTo: `${baseURL}${basePath}/${viewPaths.resetPassword}`,
+                        fetchOptions: { throw: true }
+                    })
 
-                const { error } = await authClient.resetPassword({
-                    newPassword: password,
-                    token
-                })
+                    toast({ variant: "success", message: localization.forgotPasswordEmail! })
+                    break
+                }
 
-                if (error) {
-                    toast({ variant: "error", message: error.message || error.statusText })
-                } else {
+                case "resetPassword": {
+                    if (confirmPasswordEnabled) {
+                        const confirmPassword = formData.get("confirmPassword") as string
+                        if (password !== confirmPassword) {
+                            toast({ variant: "error", message: localization.passwordsDoNotMatch! })
+                            return
+                        }
+                    }
+
+                    const searchParams = new URLSearchParams(window.location.search)
+                    const token = searchParams.get("token") as string
+
+                    await authClient.resetPassword({
+                        newPassword: password,
+                        token,
+                        fetchOptions: { throw: true }
+                    })
+
                     toast({ variant: "success", message: localization.resetPasswordSuccess! })
-                    navigate(`${basePath}/${viewPaths.signIn}`)
+                    break
                 }
-
-                break
             }
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: getErrorMessage(error) || localization.requestFailed
+            })
         }
     }
 
@@ -542,34 +510,12 @@ export function AuthForm({
                     </div>
 
                     {confirmPasswordEnabled && ["signUp", "resetPassword"].includes(view) && (
-                        <div className="grid gap-2">
-                            <div className="flex items-center">
-                                <Label className={classNames?.label} htmlFor="password">
-                                    {localization.confirmPassword}
-                                </Label>
-                            </div>
-
-                            <PasswordInput
-                                id="confirmPassword"
-                                name="confirmPassword"
-                                autoComplete="new-password"
-                                className={classNames?.input}
-                                enableToggle
-                                placeholder={localization.confirmPasswordPlaceholder}
-                                required
-                            />
-                        </div>
+                        <ConfirmPasswordInput classNames={classNames} localization={localization} />
                     )}
                 </>
             )}
 
-            {view === "signIn" && rememberMe && (
-                <div className="flex items-center gap-2">
-                    <Checkbox id="rememberMe" name="rememberMe" />
-
-                    <Label htmlFor="rememberMe">{localization.rememberMe}</Label>
-                </div>
-            )}
+            {view === "signIn" && rememberMe && <RememberMeCheckbox localization={localization} />}
 
             {view === "signUp" &&
                 signUpFields
@@ -582,38 +528,13 @@ export function AuthForm({
                             return null
                         }
 
-                        return additionalField.type === "boolean" ? (
-                            <div key={field} className="flex items-center gap-2">
-                                <Checkbox
-                                    id={field}
-                                    name={field}
-                                    required={additionalField.required}
-                                />
-
-                                <Label className={cn(classNames?.label)} htmlFor={field}>
-                                    {additionalField?.label}
-                                </Label>
-                            </div>
-                        ) : (
-                            <div key={field} className="grid gap-2">
-                                <Label className={classNames?.label} htmlFor={field}>
-                                    {additionalField?.label}
-                                </Label>
-
-                                <Input
-                                    className={classNames?.input}
-                                    id={field}
-                                    name={field}
-                                    placeholder={
-                                        additionalField?.placeholder ||
-                                        (typeof additionalField?.label === "string"
-                                            ? additionalField?.label
-                                            : "")
-                                    }
-                                    required={additionalField?.required}
-                                    type={additionalField?.type === "number" ? "number" : "text"}
-                                />
-                            </div>
+                        return (
+                            <AdditionalFieldInput
+                                key={field}
+                                field={field}
+                                additionalField={additionalField}
+                                classNames={classNames}
+                            />
                         )
                     })}
 
@@ -643,12 +564,15 @@ export function AuthForm({
                         {credentials && (
                             <div className="flex items-center gap-2">
                                 <Separator className="!w-auto grow" />
+
                                 <span className="flex-shrink-0 text-muted-foreground text-sm">
                                     {localization.orContinueWith}
                                 </span>
+
                                 <Separator className="!w-auto grow" />
                             </div>
                         )}
+
                         <div
                             className={cn(
                                 "flex w-full items-center gap-4",

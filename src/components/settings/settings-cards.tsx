@@ -1,14 +1,13 @@
 "use client"
 
+import type { Session, User } from "better-auth"
+import { KeyIcon, UserIcon } from "lucide-react"
 import { useContext } from "react"
 
 import { useAuthenticate } from "../../hooks/use-authenticate"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
-
-import type { Session, User } from "better-auth"
-import { KeyIcon, UserIcon } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { AccountsCard } from "./accounts-card"
 import { ChangeEmailCard } from "./change-email-card"
@@ -37,14 +36,12 @@ export type SettingsCardsClassNames = {
 export interface SettingsCardsProps {
     className?: string
     classNames?: SettingsCardsClassNames
-    /**
-     * @default authLocalization
-     * @remarks `AuthLocalization`
-     */
     localization?: AuthLocalization
 }
 
 export function SettingsCards({ className, classNames, localization }: SettingsCardsProps) {
+    useAuthenticate()
+
     const {
         additionalFields,
         avatar,
@@ -60,16 +57,19 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         settingsFields,
         username
     } = useContext(AuthUIContext)
+
     localization = { ...authLocalization, ...localization }
+
     const { useListAccounts, useListDeviceSessions, useListPasskeys, useListSessions, useSession } =
         hooks
-    useAuthenticate()
     const { data: sessionData, isPending: sessionPending } = useSession()
+
     const {
         data: accounts,
         isPending: accountsPending,
         refetch: refetchAccounts
     } = useListAccounts()
+
     const {
         data: sessions,
         isPending: sessionsPending,
@@ -113,11 +113,13 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                 <TabsList className={cn("grid w-full grid-cols-2", classNames?.tabs?.list)}>
                     <TabsTrigger value="account" className={classNames?.tabs?.trigger}>
                         <UserIcon />
+
                         {localization.account}
                     </TabsTrigger>
 
                     <TabsTrigger value="security" className={classNames?.tabs?.trigger}>
                         <KeyIcon />
+
                         {localization.security}
                     </TabsTrigger>
                 </TabsList>
@@ -170,7 +172,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             validate
                         } = additionalField
 
-                        // @ts-expect-error Custom fields are not typed
+                        // @ts-ignore Custom fields are not typed
                         const defaultValue = sessionData?.user[field] as unknown
 
                         return (

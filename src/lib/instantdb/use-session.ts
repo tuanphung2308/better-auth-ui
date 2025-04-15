@@ -6,11 +6,11 @@ import type { UseInstantOptionsProps } from "./use-instant-options"
 
 export function useSession({
     db,
-    useSession,
+    sessionData,
+    isPending,
     usePlural,
     modelNames
 }: UseInstantOptionsProps): ReturnType<AuthHooks["useSession"]> {
-    const { data: sessionData, isPending, error: sessionError } = useSession()
     const { user: authUser, error } = db.useAuth()
 
     const modelName = getModelName({
@@ -42,7 +42,7 @@ export function useSession({
                   user: sessionData?.user.id === user?.id ? user : sessionData.user
               }
             : undefined,
-        isPending: isPending,
-        error: sessionError || error
+        isPending,
+        error
     }
 }

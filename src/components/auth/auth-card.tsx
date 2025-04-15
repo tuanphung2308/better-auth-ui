@@ -9,7 +9,6 @@ import type { AuthView } from "../../lib/auth-view-paths"
 import { cn } from "../../lib/utils"
 import { SettingsCards, type SettingsCardsClassNames } from "../settings/settings-cards"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
-
 import { AuthForm, type AuthFormClassNames } from "./auth-form"
 
 export interface AuthCardClassNames {
@@ -60,16 +59,16 @@ export function AuthCard({
     const {
         basePath,
         credentials,
-        localization: authLocalization,
+        localization: contextLocalization,
         magicLink,
         replace,
-        settingsUrl,
+        settingsURL,
         signUp,
         viewPaths,
         Link
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     if (path && !Object.values(viewPaths).includes(path)) {
         console.error(`Invalid auth view: ${path}`)
@@ -81,29 +80,29 @@ export function AuthCard({
             "signIn") as AuthView)
 
     useEffect(() => {
-        if (view === "settings" && settingsUrl) {
-            replace(settingsUrl)
-        }
-    }, [replace, settingsUrl, view])
+        if (view === "settings" && settingsURL) replace(settingsURL)
+    }, [replace, settingsURL, view])
 
     if (["signOut", "callback"].includes(view)) {
         return (
             <AuthForm
                 callbackURL={callbackURL}
                 classNames={classNames?.form}
-                localization={localization}
                 redirectTo={redirectTo}
-                socialLayout={socialLayout}
                 view={view}
             />
         )
     }
 
     if (view === "settings")
-        return settingsUrl ? (
-            <Loader2 className="animate-spin" />
+        return settingsURL ? (
+            <Loader2 className="mx-auto my-auto animate-spin self-center justify-self-center" />
         ) : (
-            <SettingsCards className={cn(className)} classNames={classNames?.settings} />
+            <SettingsCards
+                localization={localization}
+                className={cn(className)}
+                classNames={classNames?.settings}
+            />
         )
 
     const description =

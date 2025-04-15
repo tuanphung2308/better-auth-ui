@@ -1,5 +1,6 @@
 "use client"
 
+import type { Session, User } from "better-auth"
 import {
     ChevronsUpDown,
     LogInIcon,
@@ -12,11 +13,8 @@ import { Fragment, type ReactNode, useContext, useEffect, useState } from "react
 
 import type { AuthLocalization } from "../lib/auth-localization"
 import { AuthUIContext } from "../lib/auth-ui-provider"
+import { getErrorMessage } from "../lib/get-error-message"
 import { cn } from "../lib/utils"
-import type { User as UserType } from "../types/user"
-
-import type { Session } from "better-auth"
-import type { FetchError } from "../types/fetch-error"
 import { Button } from "./ui/button"
 import {
     DropdownMenu,
@@ -25,8 +23,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "./ui/dropdown-menu"
-import { User, type UserClassNames } from "./user"
 import { UserAvatar, type UserAvatarClassNames } from "./user-avatar"
+import { type UserClassNames, UserView } from "./user-view"
 
 export interface UserButtonClassNames {
     base?: string
@@ -69,9 +67,19 @@ export interface UserButtonProps {
 
 type DeviceSession = {
     session: Session
-    user: UserType
+    user: User
 }
 
+/**
+ * Displays an interactive user button with dropdown menu functionality
+ *
+ * Renders a user interface element that can be displayed as either an icon or full button:
+ * - Shows a user avatar or placeholder when in icon mode
+ * - Displays user name and email with dropdown indicator in full mode
+ * - Provides dropdown menu with authentication options (sign in/out, settings, etc.)
+ * - Supports multi-session functionality for switching between accounts
+ * - Can be customized with additional links and styling options
+ */
 export function UserButton({
     className,
     classNames,
@@ -86,7 +94,7 @@ export function UserButton({
         mutators: { setActiveSession },
         localization: authLocalization,
         multiSession,
-        settingsUrl,
+        settingsURL,
         toast,
         viewPaths,
         onSessionChange,
@@ -105,7 +113,7 @@ export function UserButton({
     }
 
     const { data: sessionData, isPending: sessionPending } = useSession()
-    const user = sessionData?.user as UserType
+    const user = sessionData?.user
     const [activeSessionPending, setActiveSessionPending] = useState(false)
 
     const isPending = sessionPending || activeSessionPending
@@ -119,7 +127,7 @@ export function UserButton({
         } catch (error) {
             toast({
                 variant: "error",
-                message: (error as Error).message || (error as FetchError).statusText
+                message: getErrorMessage(error) || localization.requestFailed
             })
             setActiveSessionPending(false)
         }
@@ -156,7 +164,7 @@ export function UserButton({
                         variant="outline"
                     >
                         {(user && !user.isAnonymous) || isPending ? (
-                            <User
+                            <UserView
                                 user={user}
                                 isPending={isPending}
                                 classNames={classNames?.trigger?.user}
@@ -182,7 +190,7 @@ export function UserButton({
             >
                 <div className={cn("p-2", classNames?.content?.menuItem)}>
                     {(user && !user.isAnonymous) || isPending ? (
-                        <User
+                        <UserView
                             user={user}
                             isPending={isPending}
                             classNames={classNames?.content?.user}
@@ -232,7 +240,7 @@ export function UserButton({
                 ) : (
                     <>
                         {!disableDefaultLinks && (
-                            <Link href={settingsUrl || `${basePath}/${viewPaths.settings}`}>
+                            <Link href={settingsURL || `${basePath}/${viewPaths.settings}`}>
                                 <DropdownMenuItem className={classNames?.content?.menuItem}>
                                     <SettingsIcon />
 
@@ -261,7 +269,10 @@ export function UserButton({
                                     disabled
                                     className={classNames?.content?.menuItem}
                                 >
-                                    <User isPending={true} classNames={classNames?.content?.user} />
+                                    <UserView
+                                        isPending={true}
+                                        classNames={classNames?.content?.user}
+                                    />
                                 </DropdownMenuItem>
 
                                 <DropdownMenuSeparator className={classNames?.content?.separator} />
@@ -276,7 +287,10 @@ export function UserButton({
                                         className={classNames?.content?.menuItem}
                                         onClick={() => switchAccount(session.token)}
                                     >
-                                        <User user={user} classNames={classNames?.content?.user} />
+                                        <UserView
+                                            user={user}
+                                            classNames={classNames?.content?.user}
+                                        />
                                     </DropdownMenuItem>
 
                                     <DropdownMenuSeparator

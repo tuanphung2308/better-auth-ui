@@ -7,9 +7,8 @@ export function useListAccounts({
     db,
     modelNames,
     usePlural,
-    useSession
+    isPending
 }: UseInstantOptionsProps): ReturnType<AuthHooks["useListAccounts"]> {
-    const { isPending } = useSession()
     const { user: authUser, isLoading: authLoading } = db.useAuth()
 
     const modelName = getModelName({
@@ -23,7 +22,7 @@ export function useListAccounts({
     )
 
     const accounts = useMemo(() => {
-        if (data?.[modelName]?.length) {
+        if (data?.[modelName]) {
             return data[modelName].map((account) => ({
                 accountId: account.accountId as string,
                 provider: account.providerId as string
@@ -33,7 +32,7 @@ export function useListAccounts({
 
     return {
         data: accounts,
-        isPending: isPending || authLoading || isLoading,
+        isPending: !accounts && (isPending || authLoading || isLoading),
         error
     }
 }

@@ -1,5 +1,5 @@
 import { cn } from "../lib/utils"
-import type { User as UserType } from "../types/user"
+import type { Profile } from "../types/profile"
 import { Skeleton } from "./ui/skeleton"
 import { UserAvatar, type UserAvatarClassNames } from "./user-avatar"
 
@@ -8,17 +8,25 @@ export interface UserClassNames {
     avatar?: UserAvatarClassNames
     p?: string
     small?: string
-    size?: "sm" | "md" | "lg"
 }
 
 export interface UserProps {
     className?: string
     classNames?: UserClassNames
     isPending?: boolean
-    user?: UserType
+    user?: Profile
 }
 
-export function User({ user, className, classNames, isPending }: UserProps) {
+/**
+ * Displays user information with avatar and details in a compact view
+ *
+ * Renders a user's profile information with appropriate fallbacks:
+ * - Shows avatar alongside user name and email when available
+ * - Shows loading skeletons when isPending is true
+ * - Falls back to generic "User" text when neither name nor email is available
+ * - Supports customization through classNames prop
+ */
+export function UserView({ user, className, classNames, isPending }: UserProps) {
     return (
         <div className={cn("flex items-center gap-2 truncate", className, classNames?.base)}>
             <UserAvatar

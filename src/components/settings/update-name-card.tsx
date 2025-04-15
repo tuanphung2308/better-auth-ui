@@ -4,7 +4,6 @@ import { useContext } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-
 import type { SettingsCardClassNames } from "./settings-card"
 import { UpdateFieldCard } from "./update-field-card"
 
@@ -12,10 +11,6 @@ export interface UpdateNameCardProps {
     className?: string
     classNames?: SettingsCardClassNames
     isPending?: boolean
-    /**
-     * @default authLocalization
-     * @remarks `AuthLocalization`
-     */
     localization?: AuthLocalization
 }
 

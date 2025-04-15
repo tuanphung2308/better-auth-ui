@@ -1,11 +1,11 @@
-import type { Session, User } from "better-auth"
+import type { Session, User } from "./auth-client"
 import type { FetchError } from "./fetch-error"
 
 type AuthHook<T> = {
     isPending: boolean
     data?: T | null
     error?: FetchError | null
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    // biome-ignore lint/suspicious/noExplicitAny:
     refetch?: () => Promise<any> | any
 }
 
