@@ -12,11 +12,11 @@ import { cn, isValidEmail } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
 import { ConfirmPasswordInput } from "../confirm-password-input"
 import { PasswordInput } from "../password-input"
-import { Checkbox } from "../ui/checkbox"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Separator } from "../ui/separator"
 import { ActionButton } from "./action-button"
+import { AdditionalFieldInput } from "./additional-field-input"
 import { MagicLinkButton } from "./magic-link-button"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
@@ -527,38 +527,13 @@ export function AuthForm({
                             return null
                         }
 
-                        return additionalField.type === "boolean" ? (
-                            <div key={field} className="flex items-center gap-2">
-                                <Checkbox
-                                    id={field}
-                                    name={field}
-                                    required={additionalField.required}
-                                />
-
-                                <Label className={cn(classNames?.label)} htmlFor={field}>
-                                    {additionalField?.label}
-                                </Label>
-                            </div>
-                        ) : (
-                            <div key={field} className="grid gap-2">
-                                <Label className={classNames?.label} htmlFor={field}>
-                                    {additionalField?.label}
-                                </Label>
-
-                                <Input
-                                    className={classNames?.input}
-                                    id={field}
-                                    name={field}
-                                    placeholder={
-                                        additionalField?.placeholder ||
-                                        (typeof additionalField?.label === "string"
-                                            ? additionalField?.label
-                                            : "")
-                                    }
-                                    required={additionalField?.required}
-                                    type={additionalField?.type === "number" ? "number" : "text"}
-                                />
-                            </div>
+                        return (
+                            <AdditionalFieldInput
+                                key={field}
+                                field={field}
+                                additionalField={additionalField}
+                                classNames={classNames}
+                            />
                         )
                     })}
 
@@ -588,12 +563,15 @@ export function AuthForm({
                         {credentials && (
                             <div className="flex items-center gap-2">
                                 <Separator className="!w-auto grow" />
+
                                 <span className="flex-shrink-0 text-muted-foreground text-sm">
                                     {localization.orContinueWith}
                                 </span>
+
                                 <Separator className="!w-auto grow" />
                             </div>
                         )}
+
                         <div
                             className={cn(
                                 "flex w-full items-center gap-4",
