@@ -25,7 +25,7 @@ export interface UseInstantOptionsProps {
 
 export function useInstantOptions({
     db,
-    usePlural,
+    usePlural = true,
     modelNames,
     sessionData,
     isPending,
