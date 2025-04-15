@@ -5,6 +5,7 @@ import { useContext, useState } from "react"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
+import { ConfirmPasswordInput } from "../confirm-password-input"
 import { PasswordInput } from "../password-input"
 import { CardContent } from "../ui/card"
 import { Label } from "../ui/label"
@@ -151,26 +152,19 @@ export function ChangePasswordCard({
                                 placeholder={localization.newPasswordPlaceholder}
                                 required
                                 enableToggle
-                                onChange={(e) => setDisabled(e.target.value === "")}
+                                onChange={(e) =>
+                                    !confirmPasswordEnabled && setDisabled(e.target.value === "")
+                                }
                             />
                         </div>
 
                         {confirmPasswordEnabled && (
-                            <div className="grid gap-2">
-                                <Label className={classNames?.label} htmlFor="confirmPassword">
-                                    {localization.confirmPassword}
-                                </Label>
-
-                                <PasswordInput
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                    className={classNames?.input}
-                                    autoComplete="current-password"
-                                    placeholder={localization.confirmPasswordPlaceholder}
-                                    required
-                                    onChange={() => setDisabled(false)}
-                                />
-                            </div>
+                            <ConfirmPasswordInput
+                                classNames={classNames}
+                                localization={localization}
+                                onChange={() => setDisabled(false)}
+                                autoComplete="current-password"
+                            />
                         )}
                     </>
                 )}

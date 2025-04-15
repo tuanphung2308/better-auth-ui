@@ -11,6 +11,7 @@ import { getErrorMessage } from "../../lib/get-error-message"
 import { socialProviders } from "../../lib/social-providers"
 import { cn, isValidEmail } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
+import { ConfirmPasswordInput } from "../confirm-password-input"
 import { PasswordInput } from "../password-input"
 import { Checkbox } from "../ui/checkbox"
 import { Input } from "../ui/input"
@@ -20,6 +21,7 @@ import { ActionButton } from "./action-button"
 import { MagicLinkButton } from "./magic-link-button"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
+import { RememberMeCheckbox } from "./remember-me-checkbox"
 
 export type AuthFormClassNames = {
     base?: string
@@ -572,34 +574,12 @@ export function AuthForm({
                     </div>
 
                     {confirmPasswordEnabled && ["signUp", "resetPassword"].includes(view) && (
-                        <div className="grid gap-2">
-                            <div className="flex items-center">
-                                <Label className={classNames?.label} htmlFor="password">
-                                    {localization.confirmPassword}
-                                </Label>
-                            </div>
-
-                            <PasswordInput
-                                id="confirmPassword"
-                                name="confirmPassword"
-                                autoComplete="new-password"
-                                className={classNames?.input}
-                                enableToggle
-                                placeholder={localization.confirmPasswordPlaceholder}
-                                required
-                            />
-                        </div>
+                        <ConfirmPasswordInput classNames={classNames} localization={localization} />
                     )}
                 </>
             )}
 
-            {view === "signIn" && rememberMe && (
-                <div className="flex items-center gap-2">
-                    <Checkbox id="rememberMe" name="rememberMe" />
-
-                    <Label htmlFor="rememberMe">{localization.rememberMe}</Label>
-                </div>
-            )}
+            {view === "signIn" && rememberMe && <RememberMeCheckbox localization={localization} />}
 
             {view === "signUp" &&
                 signUpFields
