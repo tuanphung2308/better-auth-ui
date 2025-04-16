@@ -1,5 +1,4 @@
 export * from "./components/auth/auth-card"
-export * from "./components/auth/auth-form"
 export * from "./components/auth-loading"
 export * from "./components/email/email-template"
 export * from "./components/password-input"

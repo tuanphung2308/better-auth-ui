@@ -30,7 +30,7 @@ export interface EmailTemplateClassNames {
 
 export interface EmailTemplateProps {
     classNames?: EmailTemplateClassNames
-    action: string
+    action?: string
     /** @default process.env.BASE_URL || process.env.NEXT_PUBLIC_BASE_URL */
     baseUrl?: string
     content: ReactNode
@@ -40,7 +40,7 @@ export interface EmailTemplateProps {
     preview?: string
     /** @default process.env.SITE_NAME || process.env.NEXT_PUBLIC_SITE_NAME */
     siteName?: string
-    url: string
+    url?: string
     /** @default "vercel" */
     variant?: "vercel"
 }
@@ -149,17 +149,19 @@ export const EmailTemplate = ({
                             {content}
                         </Text>
 
-                        <Section className="mt-[32px] mb-[32px] text-center">
-                            <Button
-                                className={cn(
-                                    "action-button rounded px-5 py-3 text-center font-semibold text-[12px] no-underline",
-                                    classNames?.button
-                                )}
-                                href={url}
-                            >
-                                {action}
-                            </Button>
-                        </Section>
+                        {action && url && (
+                            <Section className="mt-[32px] mb-[32px] text-center">
+                                <Button
+                                    className={cn(
+                                        "action-button rounded px-5 py-3 text-center font-semibold text-[12px] no-underline",
+                                        classNames?.button
+                                    )}
+                                    href={url}
+                                >
+                                    {action}
+                                </Button>
+                            </Section>
+                        )}
 
                         <Hr
                             className={cn(
