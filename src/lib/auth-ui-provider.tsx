@@ -94,6 +94,11 @@ export type AuthUIContextType = {
      */
     deleteAccountVerification?: boolean
     /**
+     * Enable or disable user change email support
+     * @default true
+     */
+    changeEmail?: boolean
+    /**
      * Enable or disable User Account deletion
      * @default false
      */
@@ -267,6 +272,7 @@ export const AuthUIProvider = ({
     baseURL = "",
     redirectTo = "/",
     credentials = true,
+    changeEmail = true,
     forgotPassword = true,
     freshAge = 60 * 60 * 24,
     hooks,
