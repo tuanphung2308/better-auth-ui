@@ -10,6 +10,7 @@ import type { AnyAuthClient } from "../types/any-auth-client"
 import type { AuthClient } from "../types/auth-client"
 import type { AuthHooks } from "../types/auth-hooks"
 import type { AuthMutators } from "../types/auth-mutators"
+import type { CaptchaProvider } from "../types/captcha-provider"
 import type { Link } from "../types/link"
 import type { RenderToast } from "../types/render-toast"
 import { type AuthLocalization, authLocalization } from "./auth-localization"
@@ -68,6 +69,13 @@ export type AuthUIContextType = {
      * Front end base URL for auth API callbacks
      */
     baseURL?: string
+    /**
+     * Captcha configuration
+     */
+    captcha?: {
+        siteKey: string
+        provider: CaptchaProvider
+    }
     /**
      * Force color icons for both light and dark themes
      * @default false
@@ -270,6 +278,7 @@ export const AuthUIProvider = ({
     avatarSize,
     basePath = "/auth",
     baseURL = "",
+    captcha,
     redirectTo = "/",
     credentials = true,
     changeEmail = true,
@@ -340,6 +349,7 @@ export const AuthUIProvider = ({
                 avatarSize: avatarSize || (uploadAvatar ? 256 : 128),
                 basePath: basePath === "/" ? "" : basePath,
                 baseURL,
+                captcha,
                 redirectTo,
                 credentials,
                 forgotPassword,
