@@ -39,7 +39,7 @@ export function useSession({
         data: sessionData
             ? {
                   session: sessionData.session,
-                  user: sessionData?.user.id === user?.id ? user : sessionData.user
+                  user: (sessionData?.user.id === user?.id ? user : sessionData.user) as User
               }
             : undefined,
         isPending,

@@ -138,6 +138,9 @@ export const authLocalization = {
     /** @default "Enter Backup Code" */
     enterBackupCode: "Enter Backup Code",
 
+    /** @default "Enable" */
+    enable: "Enable",
+
     /** @default "Enter Code" */
     enterTwoFactorCode: "Enter Code",
 
@@ -332,7 +335,7 @@ export const authLocalization = {
     switchAccount: "Switch Account",
 
     /** @default "Two-Factor Authentication" */
-    twoFactor: "Two-Factor Authentication",
+    twoFactor: "Two-Factor",
 
     /** @default "Add an extra layer of security to your account" */
     twoFactorDescription: "Add an extra layer of security to your account.",
