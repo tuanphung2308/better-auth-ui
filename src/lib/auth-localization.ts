@@ -29,6 +29,26 @@ export const authLocalization = {
     /** @default "An avatar is optional but strongly recommended." */
     avatarInstructions: "An avatar is optional but strongly recommended.",
 
+    /** @default "Back" */
+    back: "Back",
+
+    /** @default "Backup Codes" */
+    backupCodes: "Backup Codes",
+
+    /** @default "Save these codes in a safe place for account recovery" */
+    backupCodesDescription:
+        "Save these backup codes in a secure place. You can use them to access your account if you lose your two-factor authentication device.",
+
+    /** @default "Please enter your password to view your backup codes." */
+    backupCodesPasswordDescription: "Please enter your password to view your backup codes.",
+
+    /** @default "Enter one of your backup codes. Once used, each code can only be used once and will be invalidated after use." */
+    backupCodePlaceholder:
+        "Enter one of your backup codes. Once used, each code can only be used once and will be invalidated after use.",
+
+    /** @default "Cancel" */
+    cancel: "Cancel",
+
     /** @default "Change Password" */
     changePassword: "Change Password",
 
@@ -41,11 +61,20 @@ export const authLocalization = {
     /** @default "Your password has been changed." */
     changePasswordSuccess: "Your password has been changed.",
 
+    /** @default "Confirm" */
+    confirm: "Confirm",
+
     /** @default "Confirm Password" */
     confirmPassword: "Confirm Password",
 
     /** @default "Confirm Password" */
     confirmPasswordPlaceholder: "Confirm Password",
+
+    /** @default "Copied to clipboard" */
+    copied: "Copied to clipboard",
+
+    /** @default "Copy all codes" */
+    copyAllCodes: "Copy all codes",
 
     /** @default "Current Password" */
     currentPassword: "Current Password",
@@ -79,6 +108,9 @@ export const authLocalization = {
     /** @default "You must be recently logged in to delete your account." */
     deleteAccountNotFresh: "You must be recently logged in to delete your account.",
 
+    /** @default "Disable" */
+    disable: "Disable",
+
     /** @default "Choose a provider to login to your account" */
     disabledCredentialsDescription: "Choose a provider to login to your account",
 
@@ -103,6 +135,12 @@ export const authLocalization = {
     /** @default "Please check your email for the verification link." */
     emailVerification: "Please check your email for the verification link.",
 
+    /** @default "Enter Backup Code" */
+    enterBackupCode: "Enter Backup Code",
+
+    /** @default "Enter Code" */
+    enterTwoFactorCode: "Enter Code",
+
     /** @default "Failed to validate" */
     failedToValidate: "Failed to validate",
 
@@ -123,6 +161,9 @@ export const authLocalization = {
 
     /** @default "Link" */
     link: "Link",
+
+    /** @default "Invalid authentication code" */
+    invalidTwoFactorCode: "Invalid authentication code",
 
     /** @default "Magic Link" */
     magicLink: "Magic Link",
@@ -154,6 +195,9 @@ export const authLocalization = {
     /** @default "New Password" */
     newPasswordPlaceholder: "New Password",
 
+    /** @default "No TOTP URI received from server" */
+    noTotpUriError: "No TOTP URI received from server",
+
     /** @default "Or continue with" */
     orContinueWith: "Or continue with",
 
@@ -175,14 +219,17 @@ export const authLocalization = {
     /** @default "Enter your current password." */
     passwordDescription: "Enter your current password.",
 
-    /** @default "Passwords do not match." */
-    passwordsDoNotMatch: "Passwords do not match",
-
     /** @default "Please use 8 characters at minimum." */
     passwordInstructions: "Please use 8 characters at minimum.",
 
     /** @default "Password" */
     passwordPlaceholder: "Password",
+
+    /** @default "Password is required" */
+    passwordRequired: "Password is required",
+
+    /** @default "Passwords do not match." */
+    passwordsDoNotMatch: "Passwords do not match",
 
     /** @default "Providers" */
     providers: "Providers",
@@ -190,9 +237,18 @@ export const authLocalization = {
     /** @default "Connect your account with a third-party service." */
     providersDescription: "Connect your account with a third-party service.",
 
+    /** @default "QR code data is missing" */
+    qrCodeMissing: "QR code data is missing",
+    
     /** @default "Remember me" */
     rememberMe: "Remember me",
 
+    /** @default "Remember this device" */
+    rememberDevice: "Remember this device",
+
+    /** @default "Trust this device for 60 days" */
+    rememberDeviceDescription: "Trust this device for 60 days",
+    
     /** @default "Resend verification email" */
     resendVerificationEmail: "Resend Verification Email",
 
@@ -275,8 +331,68 @@ export const authLocalization = {
     /** @default "Switch Account" */
     switchAccount: "Switch Account",
 
+    /** @default "Two-Factor Authentication" */
+    twoFactor: "Two-Factor Authentication",
+
+    /** @default "Add an extra layer of security to your account" */
+    twoFactorDescription: "Add an extra layer of security to your account.",
+
+    /** @default "When signing in, you'll need to provide a code from your authenticator app in addition to your password." */
+    twoFactorEnabledInstructions:
+        "When signing in, you'll need to provide a code from your authenticator app in addition to your password.",
+
+    /** @default "Two-factor authentication enabled" */
+    twoFactorEnabled: "Two-factor authentication enabled",
+
+    /** @default "Please prepare your authenticator app to scan the QR code" */
+    twoFactorEnableInstructions: "Please prepare your authenticator app to scan the QR code",
+
+    /** @default "You will need to enter your password to disable 2FA" */
+    twoFactorDisableInstructions: "You will need to enter your password to disable 2FA",
+
+    /** @default "For security reasons, please enter your password to disable two-factor authentication." */
+    twoFactorDisableConfirmDescription:
+        "For security reasons, please enter your password to disable two-factor authentication.",
+
+    /** @default "Two-Factor Authentication disabled successfully" */
+    twoFactorDisabledSuccess: "Two-Factor Authentication disabled successfully",
+
+    /** @default "For security reasons, please enter your password to enable two-factor authentication." */
+    twoFactorConfirmPasswordDescription:
+        "For security reasons, please enter your password to enable two-factor authentication.",
+
+    /** @default "Two-Factor Authentication" */
+    twoFactorPrompt: "Two-Factor Authentication",
+
+    /** @default "Open your authenticator app to generate a code" */
+    twoFactorPromptDescription: "Open your authenticator app to generate a code",
+
+    /** @default "Two-Factor Recovery" */
+    twoFactorRecovery: "Two-Factor Recovery",
+
+    /** @default "Enter one of your backup codes to access your account" */
+    twoFactorRecoveryDescription: "Enter one of your backup codes to access your account",
+
+    /** @default "Two-Factor Setup" */
+    twoFactorSetup: "Two-Factor Setup",
+
+    /** @default "Scan the QR code with your authenticator app" */
+    twoFactorSetupDescription: "Scan the QR code with your authenticator app",
+
     /** @default "Unlink" */
     unlink: "Unlink",
+
+    /** @default "Forgot your authenticator?" */
+    forgotAuthenticator: "Forgot your authenticator?",
+
+    /** @default "Found your authenticator?" */
+    foundAuthenticator: "Found your authenticator?",
+
+    /** @default "Use a backup code" */
+    useBackupCode: "Use a backup code",
+
+    /** @default "Use authenticator code" */
+    useTwoFactorCode: "Use authenticator code",
 
     /** @default "Username" */
     username: "Username",

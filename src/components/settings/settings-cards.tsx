@@ -17,6 +17,7 @@ import { PasskeysCard } from "./passkeys-card"
 import { ProvidersCard } from "./providers-card"
 import { SessionsCard } from "./sessions-card"
 import type { SettingsCardClassNames } from "./settings-card"
+import { TwoFactorCard } from "./two-factor-card"
 import { UpdateAvatarCard } from "./update-avatar-card"
 import { UpdateFieldCard } from "./update-field-card"
 import { UpdateNameCard } from "./update-name-card"
@@ -56,7 +57,8 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         passkey,
         providers,
         settingsFields,
-        username
+        username,
+        twoFactor
     } = useContext(AuthUIContext)
 
     localization = { ...authLocalization, ...localization }
@@ -239,6 +241,17 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             localization={localization}
                             passkeys={passkeys}
                             refetch={refetchPasskeys}
+                            skipHook
+                        />
+                    )}
+                    
+                    {twoFactor && (
+                        <TwoFactorCard
+                            isPending={sessionPending}
+                            classNames={classNames?.card}
+                            localization={localization}
+                            twoFactorEnabled={(sessionData?.user as any)?.twoFactorEnabled}
+                            refetch={refetchSessions}
                             skipHook
                         />
                     )}
