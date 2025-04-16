@@ -93,8 +93,8 @@ export function DeleteAccountDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-md">
-                <form action={action} className="grid gap-4">
+            <form action={action}>
+                <DialogContent className="sm:max-w-md">
                     <DialogHeader>
                         <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                             {localization?.deleteAccount}
@@ -124,9 +124,17 @@ export function DeleteAccountDialog({
                         </div>
                     )}
 
-                    <DialogFooter>
+                    <DialogFooter className="justify-end">
                         <Button
-                            className={cn("mx-auto md:mx-0 md:ms-auto", classNames?.button)}
+                            type="button"
+                            variant="secondary"
+                            onClick={() => onOpenChange(false)}
+                        >
+                            {localization.cancel}
+                        </Button>
+
+                        <Button
+                            className={classNames?.button}
                             disabled={isSubmitting}
                             variant="destructive"
                         >
@@ -141,8 +149,8 @@ export function DeleteAccountDialog({
                             )}
                         </Button>
                     </DialogFooter>
-                </form>
-            </DialogContent>
+                </DialogContent>
+            </form>
         </Dialog>
     )
 }

@@ -334,7 +334,7 @@ export const authLocalization = {
     /** @default "Switch Account" */
     switchAccount: "Switch Account",
 
-    /** @default "Two-Factor Authentication" */
+    /** @default "Two-Factor" */
     twoFactor: "Two-Factor",
 
     /** @default "Add an extra layer of security to your account" */

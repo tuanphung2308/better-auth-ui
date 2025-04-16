@@ -1,13 +1,20 @@
 "use client"
 
 import { useContext, useState } from "react"
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn } from "../../lib/utils"
-import { PasswordInput } from "../password-input"
-import { BackupCodesDisplay } from "../two-factor/backup-codes-display"
-import { Button } from "../ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { cn } from "../../../lib/utils"
+import { PasswordInput } from "../../password-input"
+import { BackupCodesDisplay } from "../../two-factor/backup-codes-display"
+import { Button } from "../../ui/button"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle
+} from "../../ui/card"
 import {
     Dialog,
     DialogContent,
@@ -15,13 +22,13 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle
-} from "../ui/dialog"
-import { Label } from "../ui/label"
-import { Skeleton } from "../ui/skeleton"
-import { Switch } from "../ui/switch"
-import type { SettingsCardClassNames } from "./settings-card"
-import { SettingsCard } from "./settings-card"
-import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
+} from "../../ui/dialog"
+import { Label } from "../../ui/label"
+import { Skeleton } from "../../ui/skeleton"
+import { Switch } from "../../ui/switch"
+import type { SettingsCardClassNames } from "../settings-card"
+import { SettingsCard } from "../settings-card"
+import { SettingsCellSkeleton } from "../skeletons/settings-cell-skeleton"
 
 /**
  * Props for the TwoFactorCard component
