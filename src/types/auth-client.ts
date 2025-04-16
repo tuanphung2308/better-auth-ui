@@ -16,6 +16,7 @@ type AnonymousClientPlugin = ReturnType<typeof anonymousClient>
 type UsernameClientPlugin = ReturnType<typeof usernameClient>
 type MagicLinkClientPlugin = ReturnType<typeof magicLinkClient>
 type TwoFactorClientPlugin = ReturnType<typeof twoFactorClient>
+
 export type AuthClient = ReturnType<
     typeof createAuthClient<{
         plugins: [

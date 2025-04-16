@@ -23,12 +23,6 @@ export default function SettingsPage() {
 }
 ```
 
-## Reference
-
-The following props can be utilized to customize `<TwoFactorCard />`:
-
-<AutoTypeTable path="../src/components/settings/two-factor-card.tsx" name="TwoFactorCardProps" />
-
 ## Styling
 
 Customize the component appearance using Tailwind CSS classes through the `classNames` prop:
@@ -47,20 +41,6 @@ Customize the component appearance using Tailwind CSS classes through the `class
     }}
 />
 ```
-
-### Manual state control
-
-For advanced use cases, you can manually control the 2FA state:
-
-```tsx
-<TwoFactorCard
-    skipHook
-    twoFactorEnabled={user.twoFactorEnabled}
-    refetch={refetchUserData}
-/>
-```
-
----
 
 ## Localization
 
