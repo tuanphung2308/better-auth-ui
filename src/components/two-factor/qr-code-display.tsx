@@ -30,13 +30,13 @@ export function QrCodeDisplay({
 
     useEffect(() => {
         setMounted(true)
-    }, [uri])
+    }, [])
 
     // If URI is empty, display an error message
     if (!uri) {
         return (
-            <div className={cn("w-full max-w-[240px] mx-auto", className)}>
-                <div className="flex items-center justify-center text-center p-4 mx-auto">
+            <div className={cn("mx-auto w-full max-w-[240px]", className)}>
+                <div className="mx-auto flex items-center justify-center p-4 text-center">
                     <div className="text-destructive text-sm">{localization.qrCodeMissing}</div>
                 </div>
             </div>
@@ -44,7 +44,7 @@ export function QrCodeDisplay({
     }
 
     return (
-        <div className={cn("flex justify-center items-center w-full", className)}>
+        <div className={cn("flex w-full items-center justify-center", className)}>
             <div className="relative" style={{ width: size, height: size }}>
                 {!mounted ? (
                     <Skeleton className="h-full w-full rounded-md" />

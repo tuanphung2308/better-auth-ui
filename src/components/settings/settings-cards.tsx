@@ -155,11 +155,13 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         />
                     )}
 
-                    {changeEmail && <ChangeEmailCard
-                        classNames={classNames?.card}
-                        isPending={sessionPending}
-                        localization={localization}
-                    />}
+                    {changeEmail && (
+                        <ChangeEmailCard
+                            classNames={classNames?.card}
+                            isPending={sessionPending}
+                            localization={localization}
+                        />
+                    )}
 
                     {settingsFields?.map((field) => {
                         const additionalField = additionalFields?.[field]
@@ -244,16 +246,9 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             skipHook
                         />
                     )}
-                    
+
                     {twoFactor && (
-                        <TwoFactorCard
-                            isPending={sessionPending}
-                            classNames={classNames?.card}
-                            localization={localization}
-                            twoFactorEnabled={(sessionData?.user as any)?.twoFactorEnabled}
-                            refetch={refetchSessions}
-                            skipHook
-                        />
+                        <TwoFactorCard classNames={classNames?.card} localization={localization} />
                     )}
 
                     <SessionsCard

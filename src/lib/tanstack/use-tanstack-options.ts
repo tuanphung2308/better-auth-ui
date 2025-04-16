@@ -2,6 +2,7 @@ import { AuthQueryContext, createAuthHooks } from "@daveyplate/better-auth-tanst
 import { useIsRestoring, useQueryClient } from "@tanstack/react-query"
 import { useContext } from "react"
 import type { AnyAuthClient } from "../../types/any-auth-client"
+import type { AuthClient } from "../../types/auth-client"
 import type { AuthHooks } from "../../types/auth-hooks"
 import type { AuthMutators } from "../../types/auth-mutators"
 
@@ -28,7 +29,7 @@ export function useTanstackOptions({
     const { setActiveSessionAsync } = useSetActiveSession()
     const { sessionKey } = useContext(AuthQueryContext)
 
-    const hooks: AuthHooks = createAuthHooks(authClient)
+    const hooks: AuthHooks = createAuthHooks(authClient as AuthClient)
 
     const mutators: AuthMutators = {
         updateUser: async (params) => {

@@ -115,9 +115,8 @@ export function AuthCard({
     let footerLinkPath: string | undefined = undefined
 
     if (credentials && signUp && ["signIn", "signUp"].includes(view)) {
-        footerText = view === "signIn" 
-            ? localization.dontHaveAnAccount
-            : localization.alreadyHaveAnAccount
+        footerText =
+            view === "signIn" ? localization.dontHaveAnAccount : localization.alreadyHaveAnAccount
         footerLinkText = view === "signIn" ? localization.signUp : localization.signIn
         footerLinkPath = viewPaths[view === "signIn" ? "signUp" : "signIn"]
     } else if (view === "twoFactorPrompt") {
@@ -162,9 +161,7 @@ export function AuthCard({
                         classNames?.footer
                     )}
                 >
-                    {footerText && (
-                        <span>{footerText}</span>
-                    )}
+                    {footerText && <span>{footerText}</span>}
 
                     <Link
                         className={cn("text-foreground underline", classNames?.footerLink)}

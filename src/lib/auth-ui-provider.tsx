@@ -164,7 +164,7 @@ export type AuthUIContextType = {
      * @remarks `SocialProvider[]`
      */
     providers?: SocialProvider[]
-     /**
+    /**
      * Enable or disable two-factor authentication support
      * @default false
      */

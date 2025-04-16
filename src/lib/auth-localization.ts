@@ -239,7 +239,7 @@ export const authLocalization = {
 
     /** @default "QR code data is missing" */
     qrCodeMissing: "QR code data is missing",
-    
+
     /** @default "Remember me" */
     rememberMe: "Remember me",
 
@@ -248,7 +248,7 @@ export const authLocalization = {
 
     /** @default "Trust this device for 60 days" */
     rememberDeviceDescription: "Trust this device for 60 days",
-    
+
     /** @default "Resend verification email" */
     resendVerificationEmail: "Resend Verification Email",
 

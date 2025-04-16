@@ -1,10 +1,9 @@
 "use client"
 
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
-import type { User } from "../../types/auth-client"
 import { PasswordInput } from "../password-input"
 import { BackupCodesDisplay } from "../two-factor/backup-codes-display"
 import { Button } from "../ui/button"
@@ -21,9 +20,8 @@ import { Label } from "../ui/label"
 import { Skeleton } from "../ui/skeleton"
 import { Switch } from "../ui/switch"
 import type { SettingsCardClassNames } from "./settings-card"
-import { InputFieldSkeleton } from "./skeletons/input-field-skeleton"
-import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 import { SettingsCard } from "./settings-card"
+import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
 /**
  * Props for the TwoFactorCard component
@@ -32,40 +30,18 @@ import { SettingsCard } from "./settings-card"
 export interface TwoFactorCardProps {
     className?: string
     classNames?: SettingsCardClassNames
-    isPending?: boolean
     /**
      * @default authLocalization
      * @remarks `AuthLocalization`
      */
     localization?: AuthLocalization
-    /**
-     * Skip using internal hooks for fetching two factor data
-     * @default false
-     */
-    skipHook?: boolean
-    /**
-     * Is two factor authentication enabled (used with skipHook)
-     */
-    twoFactorEnabled?: boolean
-    /**
-     * Function to refresh data after changes
-     */
-    refetch?: () => Promise<void>
 }
 
 /**
  * TwoFactorCard component for enabling/disabling two-factor authentication
  * Displays the current 2FA status and provides controls to change it
  */
-export function TwoFactorCard({
-    className,
-    classNames,
-    isPending: propIsPending,
-    localization: propLocalization,
-    skipHook,
-    twoFactorEnabled: propTwoFactorEnabled,
-    refetch
-}: TwoFactorCardProps) {
+export function TwoFactorCard({ className, classNames, localization }: TwoFactorCardProps) {
     // Local state for managing loading states and dialogs
     const [isLoading, setIsLoading] = useState(false)
     const [showPasswordDialog, setShowPasswordDialog] = useState(false)
@@ -77,41 +53,23 @@ export function TwoFactorCard({
     const [isLoadingBackupCodes, setIsLoadingBackupCodes] = useState(false)
     const [showBackupCodesPasswordDialog, setShowBackupCodesPasswordDialog] = useState(false)
     const [backupCodesPassword, setBackupCodesPassword] = useState("")
-    const [localTwoFactorEnabled, setLocalTwoFactorEnabled] = useState(propTwoFactorEnabled)
 
     // Get required context values from AuthUIContext
     const {
         authClient,
         basePath,
         hooks: { useSession },
-        localization: authLocalization,
+        localization: contextLocalization,
         viewPaths,
         navigate,
         toast
     } = useContext(AuthUIContext)
 
-    // Merge localizations with defaults
-    const localization = { ...authLocalization, ...propLocalization }
+    localization = { ...contextLocalization, ...localization }
 
-    // Initialize state variables
-    const twoFactorEnabled = localTwoFactorEnabled
-    let isPending = propIsPending
-
-    // Update local state when prop changes
-    useEffect(() => {
-        setLocalTwoFactorEnabled(propTwoFactorEnabled)
-    }, [propTwoFactorEnabled])
-
-    // If not skipping hooks, use useSession to fetch user data
-    if (!skipHook) {
-        const { data: session, isPending: sessionPending } = useSession?.() || {
-            data: null,
-            isPending: false
-        }
-        const user = session?.user as User | undefined
-
-        isPending = sessionPending
-    }
+    const { data: sessionData, isPending, refetch } = useSession()
+    const user = sessionData?.user
+    const twoFactorEnabled = user?.twoFactorEnabled
 
     /**
      * Handle click on the enable button
@@ -156,10 +114,7 @@ export function TwoFactorCard({
                 sessionStorage.setItem("twoFactorSetupURI", response.data.totpURI)
                 sessionStorage.setItem("shouldRefreshAfterTwoFactorSetup", "true")
 
-                // Store reference to the callback function to refresh data
-                if (refetch) {
-                    sessionStorage.setItem("twoFactorRefetchFunction", "custom")
-                }
+                sessionStorage.setItem("twoFactorRefetchFunction", "custom")
 
                 // Redirect to setup page
                 navigate(`${basePath}/${viewPaths.twoFactorSetup}`)
@@ -218,7 +173,7 @@ export function TwoFactorCard({
                     variant: "success",
                     message: localization.twoFactorDisabledSuccess
                 })
-                setLocalTwoFactorEnabled(false)
+
                 // Refresh data after successful operation
                 await refetch?.()
             }
@@ -345,7 +300,7 @@ export function TwoFactorCard({
                     <div className="flex items-center gap-2">
                         <Switch
                             id="two-factor-toggle"
-                            checked={twoFactorEnabled}
+                            checked={!!twoFactorEnabled}
                             onCheckedChange={(checked: boolean) => {
                                 if (checked) {
                                     handleEnableClick()

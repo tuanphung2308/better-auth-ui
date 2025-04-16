@@ -13,6 +13,9 @@ import { cn, isValidEmail } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
 import { ConfirmPasswordInput } from "../confirm-password-input"
 import { PasswordInput } from "../password-input"
+import { QrCodeDisplay } from "../two-factor/qr-code-display"
+import { TwoFactorPrompt } from "../two-factor/two-factor-prompt"
+import { TwoFactorRecovery } from "../two-factor/two-factor-recovery"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Separator } from "../ui/separator"
@@ -22,9 +25,6 @@ import { MagicLinkButton } from "./magic-link-button"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
 import { RememberMeCheckbox } from "./remember-me-checkbox"
-import { TwoFactorPrompt } from "../two-factor/two-factor-prompt"
-import { TwoFactorRecovery } from "../two-factor/two-factor-recovery"
-import { QrCodeDisplay } from "../two-factor/qr-code-display"
 
 export type AuthFormClassNames = {
     base?: string
@@ -225,11 +225,11 @@ export function AuthForm({
                         }
                     }
 
-                    const response = await authClient.signIn.email({
+                    const response = (await authClient.signIn.email({
                         email,
                         ...params,
                         fetchOptions: { throw: true }
-                    }) as Awaited<ReturnType<AuthClient["signIn"]["email"]>>
+                    })) as Awaited<ReturnType<AuthClient["signIn"]["email"]>>
 
                     if (response.twoFactorRedirect) {
                         // Redirect to 2FA verification screen if required
@@ -356,16 +356,21 @@ export function AuthForm({
                     if (!/^[0-9]{6}$/.test(code)) {
                         toast({
                             variant: "error",
-                            message: localization.invalidTwoFactorCode || "Invalid authentication code format"
+                            message:
+                                localization.invalidTwoFactorCode ||
+                                "Invalid authentication code format"
                         })
-                        setErrorMessage(localization.invalidTwoFactorCode || "Invalid authentication code format")
+                        setErrorMessage(
+                            localization.invalidTwoFactorCode ||
+                                "Invalid authentication code format"
+                        )
                         return
                     }
 
-                    const { error } = await (authClient as AuthClient).twoFactor.verifyTotp({
+                    const { error } = (await (authClient as AuthClient).twoFactor.verifyTotp({
                         code,
                         trustDevice
-                    }) as Awaited<ReturnType<AuthClient["twoFactor"]["verifyTotp"]>>
+                    })) as Awaited<ReturnType<AuthClient["twoFactor"]["verifyTotp"]>>
 
                     if (error) {
                         const errorMsg = error.message || error.statusText
@@ -387,7 +392,8 @@ export function AuthForm({
 
                     // Validate code format before sending to API
                     if (!/^[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}$/.test(code)) {
-                        const errorMsg = localization.invalidTwoFactorCode || "Invalid backup code format";
+                        const errorMsg =
+                            localization.invalidTwoFactorCode || "Invalid backup code format"
                         toast({
                             variant: "error",
                             message: errorMsg
@@ -396,13 +402,13 @@ export function AuthForm({
                         return
                     }
 
-                    const { error } = await (authClient as AuthClient).twoFactor.verifyBackupCode({
+                    const { error } = (await (authClient as AuthClient).twoFactor.verifyBackupCode({
                         code,
                         trustDevice
-                    }) as Awaited<ReturnType<AuthClient["twoFactor"]["verifyBackupCode"]>>
+                    })) as Awaited<ReturnType<AuthClient["twoFactor"]["verifyBackupCode"]>>
 
                     if (error) {
-                        const errorMsg = error.message || error.statusText;
+                        const errorMsg = error.message || error.statusText
                         toast({
                             variant: "error",
                             message: errorMsg
@@ -422,12 +428,16 @@ export function AuthForm({
                     if (!/^[0-9]{6}$/.test(code)) {
                         toast({
                             variant: "error",
-                            message: localization.invalidTwoFactorCode || "Invalid authentication code format"
+                            message:
+                                localization.invalidTwoFactorCode ||
+                                "Invalid authentication code format"
                         })
                         return
                     }
 
-                    const { error } = await (authClient as AuthClient).twoFactor.verifyTotp({ code }) as Awaited<ReturnType<AuthClient["twoFactor"]["verifyTotp"]>>
+                    const { error } = (await (authClient as AuthClient).twoFactor.verifyTotp({
+                        code
+                    })) as Awaited<ReturnType<AuthClient["twoFactor"]["verifyTotp"]>>
 
                     if (error) {
                         toast({
@@ -442,7 +452,8 @@ export function AuthForm({
                         setTwoFactorUrl("")
 
                         // Check if we need to refresh session data after setup
-                        const shouldRefresh = sessionStorage.getItem("shouldRefreshAfterTwoFactorSetup") === "true"
+                        const shouldRefresh =
+                            sessionStorage.getItem("shouldRefreshAfterTwoFactorSetup") === "true"
                         if (shouldRefresh) {
                             sessionStorage.removeItem("shouldRefreshAfterTwoFactorSetup")
                             await refetchSession?.()
@@ -535,9 +546,9 @@ export function AuthForm({
             if (uri) {
                 setTwoFactorUrl(uri)
             } else {
-                toast({ 
-                    variant: "error", 
-                    message: localization.noTotpUriError || "No TOTP URI received from server" 
+                toast({
+                    variant: "error",
+                    message: localization.noTotpUriError || "No TOTP URI received from server"
                 })
                 navigate(`${basePath}/${viewPaths.settings}`)
             }
@@ -643,13 +654,19 @@ export function AuthForm({
                                 />
                             </div>
 
-                            {confirmPasswordEnabled && ["signUp", "resetPassword"].includes(view) && (
-                                <ConfirmPasswordInput classNames={classNames} localization={localization} />
-                            )}
+                            {confirmPasswordEnabled &&
+                                ["signUp", "resetPassword"].includes(view) && (
+                                    <ConfirmPasswordInput
+                                        classNames={classNames}
+                                        localization={localization}
+                                    />
+                                )}
                         </>
                     )}
 
-                    {view === "signIn" && rememberMe && <RememberMeCheckbox localization={localization} />}
+                    {view === "signIn" && rememberMe && (
+                        <RememberMeCheckbox localization={localization} />
+                    )}
 
                     {view === "signUp" &&
                         signUpFields
@@ -758,7 +775,7 @@ export function AuthForm({
                     )}
                 </>
             )}
-            
+
             {view === "twoFactorPrompt" && (
                 <TwoFactorPrompt
                     isSubmitting={false}
@@ -786,11 +803,11 @@ export function AuthForm({
                     localization={localization}
                 />
             )}
-            
+
             {view === "twoFactorSetup" && (
                 <div className="space-y-6">
-                    <QrCodeDisplay 
-                        uri={twoFactorUrl} 
+                    <QrCodeDisplay
+                        uri={twoFactorUrl}
                         className="mb-6"
                         localization={localization}
                     />

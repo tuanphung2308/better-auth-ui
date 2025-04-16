@@ -2,7 +2,7 @@
 
 import { AlertCircle, Info } from "lucide-react"
 import { useState } from "react"
-import { AuthLocalization } from "../../lib/auth-localization"
+import type { AuthLocalization } from "../../lib/auth-localization"
 import { cn } from "../../lib/utils"
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
 import { Checkbox } from "../ui/checkbox"
@@ -31,7 +31,8 @@ export const TwoFactorRecovery = ({
 
     const handleCodeChange = (newCode: string) => {
         setCode(newCode)
-        if (newCode.length === 11) { // Format standard pour les codes de secours: xxxxx-xxxxx
+        if (newCode.length === 11) {
+            // Format standard pour les codes de secours: xxxxx-xxxxx
             onSubmit(newCode, trustDevice)
         }
     }
@@ -74,7 +75,7 @@ export const TwoFactorRecovery = ({
                                 <TooltipTrigger asChild>
                                     <Label
                                         htmlFor="trust-device"
-                                        className="text-sm text-muted-foreground cursor-help"
+                                        className="cursor-help text-muted-foreground text-sm"
                                     >
                                         {localization.rememberDevice}
                                     </Label>
@@ -89,4 +90,4 @@ export const TwoFactorRecovery = ({
             </div>
         </div>
     )
-} 
+}
