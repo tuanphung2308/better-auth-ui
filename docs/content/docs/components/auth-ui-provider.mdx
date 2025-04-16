@@ -75,6 +75,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             return data.url
           }}
           settingsURL="/dashboard/settings"
+          twoFactor={["otp", "totp"]}
           Link={Link}
         >
           {children}
