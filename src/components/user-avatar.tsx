@@ -2,8 +2,7 @@ import { UserIcon } from "lucide-react"
 import type { ComponentProps } from "react"
 
 import { cn } from "../lib/utils"
-import type { User } from "../types/user"
-
+import type { Profile } from "../types/profile"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Skeleton } from "./ui/skeleton"
 
@@ -16,11 +15,19 @@ export interface UserAvatarClassNames {
 }
 
 export interface UserAvatarProps {
-    user?: User
+    user?: Profile
     classNames?: UserAvatarClassNames
     isPending?: boolean
 }
 
+/**
+ * Displays a user avatar with image and fallback support
+ *
+ * Renders a user's avatar image when available, with appropriate fallbacks:
+ * - Shows a skeleton when isPending is true
+ * - Displays first two characters of user's name when no image is available
+ * - Falls back to a generic user icon when neither image nor name is available
+ */
 export function UserAvatar({
     user,
     classNames,
@@ -29,7 +36,7 @@ export function UserAvatar({
     ...props
 }: UserAvatarProps & ComponentProps<typeof Avatar>) {
     const name = user?.name || user?.fullName || user?.firstName || user?.email
-    const src = (user?.image || user?.avatar || user?.avatarUrl) as string
+    const src = user?.image || user?.avatar || user?.avatarUrl
 
     if (isPending) {
         return (
@@ -49,7 +56,7 @@ export function UserAvatar({
             <AvatarImage
                 alt={name || "User image"}
                 className={classNames?.image}
-                src={user && !user.isAnonymous ? src : undefined}
+                src={src || undefined}
             />
 
             <AvatarFallback

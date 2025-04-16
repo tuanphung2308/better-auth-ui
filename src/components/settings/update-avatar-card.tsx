@@ -4,14 +4,14 @@ import { useContext, useRef, useState } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
+import { getErrorMessage } from "../../lib/get-error-message"
 import { cn } from "../../lib/utils"
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
+import { Card } from "../ui/card"
 import { Skeleton } from "../ui/skeleton"
 import { UserAvatar } from "../user-avatar"
-
-import type { FetchError } from "../../types/fetch-error"
 import type { SettingsCardClassNames } from "./settings-card"
-import { UpdateAvatarCardSkeleton } from "./skeletons/update-avatar-card-skeleton"
+import { SettingsCardFooter } from "./settings-card-footer"
+import { SettingsCardHeader } from "./settings-card-header"
 
 async function resizeAndCropImage(
     file: File,
@@ -70,7 +70,7 @@ export interface UpdateAvatarCardProps {
 export function UpdateAvatarCard({
     className,
     classNames,
-    isPending,
+    isPending: externalIsPending,
     localization
 }: UpdateAvatarCardProps) {
     const {
@@ -121,7 +121,7 @@ export function UpdateAvatarCard({
         } catch (error) {
             toast({
                 variant: "error",
-                message: (error as Error).message || (error as FetchError).statusText
+                message: getErrorMessage(error) || localization.requestFailed
             })
         }
 
@@ -130,12 +130,10 @@ export function UpdateAvatarCard({
 
     const openFileDialog = () => fileInputRef.current?.click()
 
-    if (isPending || sessionPending) {
-        return <UpdateAvatarCardSkeleton className={className} classNames={classNames} />
-    }
+    const isPending = externalIsPending || sessionPending
 
     return (
-        <Card className={cn("w-full pb-0", className, classNames?.base)}>
+        <Card className={cn("w-full pb-0 text-start", className, classNames?.base)}>
             <input
                 ref={fileInputRef}
                 accept="image/*"
@@ -149,18 +147,16 @@ export function UpdateAvatarCard({
             />
 
             <div className="flex justify-between">
-                <CardHeader className={cn("grow self-start", classNames?.header)}>
-                    <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {localization.avatar}
-                    </CardTitle>
-
-                    <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
-                        {localization.avatarDescription}
-                    </CardDescription>
-                </CardHeader>
+                <SettingsCardHeader
+                    className="grow self-start"
+                    title={localization.avatar}
+                    description={localization.avatarDescription}
+                    isPending={isPending}
+                    classNames={classNames}
+                />
 
                 <button className={cn("me-6")} type="button" onClick={openFileDialog}>
-                    {loading ? (
+                    {isPending || loading ? (
                         <Skeleton
                             className={cn("size-20 rounded-full", classNames?.avatar?.base)}
                         />
@@ -175,21 +171,13 @@ export function UpdateAvatarCard({
                 </button>
             </div>
 
-            <CardFooter
-                className={cn(
-                    "rounded-b-xl border-t bg-muted pb-6 dark:bg-transparent",
-                    classNames?.footer
-                )}
-            >
-                <CardDescription
-                    className={cn(
-                        "mx-auto text-center text-xs md:mx-0 md:text-left md:text-sm",
-                        classNames?.instructions
-                    )}
-                >
-                    {localization.avatarInstructions}
-                </CardDescription>
-            </CardFooter>
+            <SettingsCardFooter
+                className="!py-5"
+                instructions={localization.avatarInstructions}
+                classNames={classNames}
+                isPending={isPending}
+                isSubmitting={loading}
+            />
         </Card>
     )
 }

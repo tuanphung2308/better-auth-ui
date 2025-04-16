@@ -8,7 +8,7 @@ export type ModelNames = {
 export const getModelName = ({
     namespace,
     modelNames,
-    usePlural
+    usePlural = false
 }: {
     namespace: Namespace
     modelNames?: Partial<ModelNames>

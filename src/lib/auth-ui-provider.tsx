@@ -1,4 +1,5 @@
 "use client"
+
 import type { SocialProvider } from "better-auth/social-providers"
 import { type ReactNode, createContext } from "react"
 import { toast } from "sonner"
@@ -44,12 +45,12 @@ export type AuthUIContextType = {
      */
     additionalFields?: AdditionalFields
     /**
-     * Enable or disable avatar support
+     * Enable or disable Avatar support
      * @default false
      */
     avatar?: boolean
     /**
-     * File extension for avatar uploads
+     * File extension for Avatar uploads
      * @default "png"
      */
     avatarExtension: string
@@ -64,7 +65,7 @@ export type AuthUIContextType = {
      */
     basePath: string
     /**
-     * Base URL for auth client callbacks
+     * Front end base URL for auth API callbacks
      */
     baseURL?: string
     /**
@@ -73,17 +74,17 @@ export type AuthUIContextType = {
      */
     colorIcons?: boolean
     /**
-     * Enable or disable confirm password input
+     * Enable or disable the Confirm Password input
      * @default false
      */
     confirmPassword?: boolean
     /**
-     * Enable or disable credentials support
+     * Enable or disable Credentials support
      * @default true
      */
     credentials?: boolean
     /**
-     * Default redirect path after sign in
+     * Default redirect URL after authenticating
      * @default "/"
      */
     redirectTo: string
@@ -98,21 +99,21 @@ export type AuthUIContextType = {
      */
     changeEmail?: boolean
     /**
-     * Enable or disable user account deletion
+     * Enable or disable User Account deletion
      * @default false
      */
     deleteUser?: boolean
     /**
-     * Show verify email card for unverified emails
+     * Show Verify Email card for unverified emails
      */
     emailVerification?: boolean
     /**
-     * Enable or disable forgot password support
-     * @default false
+     * Enable or disable Forgot Password flow
+     * @default true
      */
     forgotPassword?: boolean
     /**
-     * Freshness age for session data
+     * Freshness age for Session data
      * @default 60 * 60 * 24
      */
     freshAge: number
@@ -122,19 +123,19 @@ export type AuthUIContextType = {
     hooks: AuthHooks
     localization: AuthLocalization
     /**
-     * Enable or disable magic link support
+     * Enable or disable Magic Link support
      * @default false
      */
     magicLink?: boolean
     /**
-     * Enable or disable multi-session support
+     * Enable or disable Multi Session support
      * @default false
      */
     multiSession?: boolean
     /** @internal */
     mutators: AuthMutators
     /**
-     * Enable or disable name requirement for sign up
+     * Enable or disable name requirement for Sign Up
      * @default true
      */
     nameRequired?: boolean
@@ -144,22 +145,22 @@ export type AuthUIContextType = {
      */
     noColorIcons?: boolean
     /**
-     * Perform some user updates optimistically
+     * Perform some User updates optimistically
      * @default false
      */
     optimistic?: boolean
     /**
-     * Enable or disable passkey support
+     * Enable or disable Passkey support
      * @default false
      */
     passkey?: boolean
     /**
-     * Enable or disable persisting the client with better-auth-tanstack
+     * Forces better-auth-tanstack to refresh the Session on the auth callback page
      * @default false
      */
     persistClient?: boolean
     /**
-     * Array of social providers to enable
+     * Array of Social Providers to enable
      * @remarks `SocialProvider[]`
      */
     providers?: SocialProvider[]
@@ -169,7 +170,7 @@ export type AuthUIContextType = {
      */
     otherProviders?: Provider[]
     /**
-     * Enable or disable remember me support
+     * Enable or disable Remember Me checkbox
      * @default false
      */
     rememberMe?: boolean
@@ -179,11 +180,11 @@ export type AuthUIContextType = {
      */
     settingsFields?: string[]
     /**
-     * Custom settings URL
+     * Custom Settings URL
      */
-    settingsUrl?: string
+    settingsURL?: string
     /**
-     * Enable or disable sign up support
+     * Enable or disable Sign Up form
      * @default true
      */
     signUp?: boolean
@@ -194,7 +195,7 @@ export type AuthUIContextType = {
     signUpFields?: string[]
     toast: RenderToast
     /**
-     * Enable or disable username support
+     * Enable or disable Username support
      * @default false
      */
     username?: boolean
@@ -205,7 +206,7 @@ export type AuthUIContextType = {
      */
     navigate: typeof defaultNavigate
     /**
-     * Called whenever the session changes
+     * Called whenever the Session changes
      */
     onSessionChange?: () => void | Promise<void>
     /**
@@ -214,12 +215,12 @@ export type AuthUIContextType = {
      */
     replace: typeof defaultReplace
     /**
-     * Upload an avatar image and return the URL string
+     * Upload an Avatar image and return the URL string
      * @remarks `(file: File) => Promise<string>`
      */
     uploadAvatar?: (file: File) => Promise<string | undefined | null>
     /**
-     * Custom link component for navigation
+     * Custom Link component for navigation
      * @default <a>
      */
     Link: Link
@@ -228,7 +229,7 @@ export type AuthUIContextType = {
 export type AuthUIProviderProps = {
     children: ReactNode
     /**
-     * Your better-auth createAuthClient
+     * Better Auth client returned from createAuthClient
      * @default Required
      * @remarks `AuthClient`
      */
@@ -244,12 +245,12 @@ export type AuthUIProviderProps = {
      */
     viewPaths?: Partial<AuthViewPaths>
     /**
-     * Render custom toasts
+     * Render custom Toasts
      * @default Sonner
      */
     toast?: RenderToast
     /**
-     * Customize the localization strings
+     * Customize the Localization strings
      * @default authLocalization
      * @remarks `AuthLocalization`
      */
@@ -323,7 +324,7 @@ export const AuthUIProvider = ({
     }
 
     const defaultHooks: AuthHooks = {
-        useSession: authClient.useSession,
+        useSession: (authClient as AuthClient).useSession,
         useListAccounts: () => useAuthData({ queryFn: authClient.listAccounts }),
         useListDeviceSessions: () =>
             useAuthData({ queryFn: (authClient as AuthClient).multiSession.listDeviceSessions }),

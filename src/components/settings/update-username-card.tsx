@@ -4,7 +4,6 @@ import { useContext } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-
 import type { SettingsCardClassNames } from "./settings-card"
 import { UpdateFieldCard } from "./update-field-card"
 
@@ -12,10 +11,6 @@ export interface UpdateUsernameCardProps {
     className?: string
     classNames?: SettingsCardClassNames
     isPending?: boolean
-    /**
-     * @default authLocalization
-     * @remarks `AuthLocalization`
-     */
     localization?: AuthLocalization
 }
 
@@ -30,10 +25,7 @@ export function UpdateUsernameCard({
     localization = { ...authLocalization, ...localization }
 
     const { data: sessionData } = useSession()
-
-    const defaultValue =
-        // @ts-expect-error Optional plugin
-        sessionData?.user.displayUsername || sessionData?.user.username
+    const defaultValue = sessionData?.user.displayUsername || sessionData?.user.username
 
     return (
         <UpdateFieldCard
@@ -48,7 +40,7 @@ export function UpdateUsernameCard({
             label={localization.username}
             localization={localization}
             placeholder={localization.usernamePlaceholder}
-            required={true}
+            required
         />
     )
 }

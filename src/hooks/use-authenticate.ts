@@ -17,15 +17,13 @@ export function useAuthenticate(options?: AuthenticateOptions) {
         replace
     } = useContext(AuthUIContext)
 
-    const { data, isPending } = useSession()
+    const { data: sessionData, isPending } = useSession()
 
     useEffect(() => {
-        if (!enabled) return
+        if (!enabled || isPending || sessionData) return
 
-        if (!isPending && !data) {
-            replace(
-                `${basePath}/${viewPaths[authView]}?redirectTo=${window.location.href.replace(window.location.origin, "")}`
-            )
-        }
-    }, [isPending, data, basePath, viewPaths, replace, authView, enabled])
+        replace(
+            `${basePath}/${viewPaths[authView]}?redirectTo=${window.location.href.replace(window.location.origin, "")}`
+        )
+    }, [isPending, sessionData, basePath, viewPaths, replace, authView, enabled])
 }
