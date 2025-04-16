@@ -13,9 +13,6 @@ import { cn, isValidEmail } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
 import { ConfirmPasswordInput } from "../confirm-password-input"
 import { PasswordInput } from "../password-input"
-import { QrCodeDisplay } from "../two-factor/qr-code-display"
-import { TwoFactorPrompt } from "../two-factor/two-factor-prompt"
-import { TwoFactorRecovery } from "../two-factor/two-factor-recovery"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Separator } from "../ui/separator"
@@ -98,7 +95,6 @@ export function AuthForm({
     const signingOut = useRef(false)
     const isRedirecting = useRef(false)
     const checkingResetPasswordToken = useRef(false)
-    const [twoFactorUrl, setTwoFactorUrl] = useState<string>("")
     const [errorMessage, setErrorMessage] = useState<string>("")
 
     if (socialLayout === "auto") {
@@ -348,123 +344,6 @@ export function AuthForm({
                     toast({ variant: "success", message: localization.resetPasswordSuccess! })
                     break
                 }
-                case "twoFactorPrompt": {
-                    const code = formData.get("twoFactorCode") as string
-                    const trustDevice = formData.has("trustDevice")
-
-                    // Validate code format before sending to API
-                    if (!/^[0-9]{6}$/.test(code)) {
-                        toast({
-                            variant: "error",
-                            message:
-                                localization.invalidTwoFactorCode ||
-                                "Invalid authentication code format"
-                        })
-                        setErrorMessage(
-                            localization.invalidTwoFactorCode ||
-                                "Invalid authentication code format"
-                        )
-                        return
-                    }
-
-                    const { error } = (await (authClient as AuthClient).twoFactor.verifyTotp({
-                        code,
-                        trustDevice
-                    })) as Awaited<ReturnType<AuthClient["twoFactor"]["verifyTotp"]>>
-
-                    if (error) {
-                        const errorMsg = error.message || error.statusText
-                        toast({
-                            variant: "error",
-                            message: errorMsg
-                        })
-                        setErrorMessage(errorMsg)
-                    } else {
-                        onSuccess()
-                    }
-
-                    break
-                }
-
-                case "twoFactorRecovery": {
-                    const code = formData.get("twoFactorCode") as string
-                    const trustDevice = formData.has("trustDevice")
-
-                    // Validate code format before sending to API
-                    if (!/^[a-zA-Z0-9]{5}-[a-zA-Z0-9]{5}$/.test(code)) {
-                        const errorMsg =
-                            localization.invalidTwoFactorCode || "Invalid backup code format"
-                        toast({
-                            variant: "error",
-                            message: errorMsg
-                        })
-                        setErrorMessage(errorMsg)
-                        return
-                    }
-
-                    const { error } = (await (authClient as AuthClient).twoFactor.verifyBackupCode({
-                        code,
-                        trustDevice
-                    })) as Awaited<ReturnType<AuthClient["twoFactor"]["verifyBackupCode"]>>
-
-                    if (error) {
-                        const errorMsg = error.message || error.statusText
-                        toast({
-                            variant: "error",
-                            message: errorMsg
-                        })
-                        setErrorMessage(errorMsg)
-                    } else {
-                        onSuccess()
-                    }
-
-                    break
-                }
-
-                case "twoFactorSetup": {
-                    const code = formData.get("twoFactorCode") as string
-
-                    // Validate code format before sending to API
-                    if (!/^[0-9]{6}$/.test(code)) {
-                        toast({
-                            variant: "error",
-                            message:
-                                localization.invalidTwoFactorCode ||
-                                "Invalid authentication code format"
-                        })
-                        return
-                    }
-
-                    const { error } = (await (authClient as AuthClient).twoFactor.verifyTotp({
-                        code
-                    })) as Awaited<ReturnType<AuthClient["twoFactor"]["verifyTotp"]>>
-
-                    if (error) {
-                        toast({
-                            variant: "error",
-                            message: error.message || error.statusText
-                        })
-                    } else {
-                        toast({
-                            variant: "success",
-                            message: localization.twoFactorEnabled!
-                        })
-                        setTwoFactorUrl("")
-
-                        // Check if we need to refresh session data after setup
-                        const shouldRefresh =
-                            sessionStorage.getItem("shouldRefreshAfterTwoFactorSetup") === "true"
-                        if (shouldRefresh) {
-                            sessionStorage.removeItem("shouldRefreshAfterTwoFactorSetup")
-                            await refetchSession?.()
-                            await onSessionChange?.()
-                        }
-
-                        navigate(getRedirectTo())
-                    }
-
-                    break
-                }
             }
         } catch (error) {
             toast({
@@ -540,290 +419,215 @@ export function AuthForm({
         onSuccess()
     }, [isRestoring, view, replace, persistClient, getRedirectTo, onSuccess])
 
-    useEffect(() => {
-        if (view === "twoFactorSetup") {
-            const uri = sessionStorage.getItem("twoFactorSetupURI")
-            if (uri) {
-                setTwoFactorUrl(uri)
-            } else {
-                toast({
-                    variant: "error",
-                    message: localization.noTotpUriError || "No TOTP URI received from server"
-                })
-                navigate(`${basePath}/${viewPaths.settings}`)
-            }
-        }
-    }, [view, localization, toast, navigate, basePath, viewPaths])
-
     if (["signOut", "callback"].includes(view)) return <Loader2 className="animate-spin" />
 
     return (
         <form action={formAction} className={cn("grid w-full gap-6", className, classNames?.base)}>
-            {!["twoFactorSetup", "twoFactorPrompt", "twoFactorRecovery"].includes(view) && (
+            {credentials &&
+                view === "signUp" &&
+                (nameRequired || signUpFields?.includes("name")) && (
+                    <div className="grid gap-2">
+                        <Label className={classNames?.label} htmlFor="name">
+                            {localization.name}
+                        </Label>
+
+                        <Input
+                            className={classNames?.input}
+                            id="name"
+                            name="name"
+                            placeholder={localization.namePlaceholder}
+                            required={nameRequired}
+                        />
+                    </div>
+                )}
+
+            {credentials && usernamePlugin && ["signIn", "signUp"].includes(view) && (
+                <div className="grid gap-2">
+                    <Label className={classNames?.label} htmlFor="username">
+                        {localization.username}
+                    </Label>
+
+                    <Input
+                        className={classNames?.input}
+                        id="username"
+                        name="username"
+                        placeholder={
+                            view === "signIn"
+                                ? localization.usernameSignInPlaceholder
+                                : localization.usernamePlaceholder
+                        }
+                        required
+                    />
+                </div>
+            )}
+
+            {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) &&
+                ((!usernamePlugin && view !== "resetPassword") ||
+                    ["signUp", "magicLink", "forgotPassword"].includes(view)) && (
+                    <div className="grid gap-2">
+                        <Label className={classNames?.label} htmlFor="email">
+                            {localization.email}
+                        </Label>
+
+                        <Input
+                            className={classNames?.input}
+                            id="email"
+                            name="email"
+                            placeholder={localization.emailPlaceholder}
+                            required
+                            type="email"
+                        />
+                    </div>
+                )}
+
+            {credentials && ["signUp", "signIn", "resetPassword"].includes(view) && (
                 <>
-                    {credentials &&
-                        view === "signUp" &&
-                        (nameRequired || signUpFields?.includes("name")) && (
-                            <div className="grid gap-2">
-                                <Label className={classNames?.label} htmlFor="name">
-                                    {localization.name}
-                                </Label>
-
-                                <Input
-                                    className={classNames?.input}
-                                    id="name"
-                                    name="name"
-                                    placeholder={localization.namePlaceholder}
-                                    required={nameRequired}
-                                />
-                            </div>
-                        )}
-
-                    {credentials && usernamePlugin && ["signIn", "signUp"].includes(view) && (
-                        <div className="grid gap-2">
-                            <Label className={classNames?.label} htmlFor="username">
-                                {localization.username}
+                    <div className="grid gap-2">
+                        <div className="flex items-center">
+                            <Label className={classNames?.label} htmlFor="password">
+                                {localization.password}
                             </Label>
 
-                            <Input
-                                className={classNames?.input}
-                                id="username"
-                                name="username"
-                                placeholder={
-                                    view === "signIn"
-                                        ? localization.usernameSignInPlaceholder
-                                        : localization.usernamePlaceholder
-                                }
-                                required
-                            />
-                        </div>
-                    )}
-
-                    {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) &&
-                        ((!usernamePlugin && view !== "resetPassword") ||
-                            ["signUp", "magicLink", "forgotPassword"].includes(view)) && (
-                            <div className="grid gap-2">
-                                <Label className={classNames?.label} htmlFor="email">
-                                    {localization.email}
-                                </Label>
-
-                                <Input
-                                    className={classNames?.input}
-                                    id="email"
-                                    name="email"
-                                    placeholder={localization.emailPlaceholder}
-                                    required
-                                    type="email"
-                                />
-                            </div>
-                        )}
-
-                    {credentials && ["signUp", "signIn", "resetPassword"].includes(view) && (
-                        <>
-                            <div className="grid gap-2">
-                                <div className="flex items-center">
-                                    <Label className={classNames?.label} htmlFor="password">
-                                        {localization.password}
-                                    </Label>
-
-                                    {view === "signIn" && forgotPassword && (
-                                        <Link
-                                            className={cn(
-                                                "-my-1 ml-auto inline-block text-sm hover:underline",
-                                                classNames?.forgotPasswordLink
-                                            )}
-                                            href={`${basePath}/${viewPaths.forgotPassword}`}
-                                        >
-                                            {localization.forgotPasswordLink}
-                                        </Link>
+                            {view === "signIn" && forgotPassword && (
+                                <Link
+                                    className={cn(
+                                        "-my-1 ml-auto inline-block text-sm hover:underline",
+                                        classNames?.forgotPasswordLink
                                     )}
-                                </div>
+                                    href={`${basePath}/${viewPaths.forgotPassword}`}
+                                >
+                                    {localization.forgotPasswordLink}
+                                </Link>
+                            )}
+                        </div>
 
-                                <PasswordInput
-                                    id="password"
-                                    name="password"
-                                    autoComplete={
-                                        ["signUp", "resetPassword"].includes(view)
-                                            ? "new-password"
-                                            : "password"
-                                    }
-                                    className={classNames?.input}
-                                    enableToggle={view !== "signIn"}
-                                    placeholder={localization.passwordPlaceholder}
-                                    required
-                                />
-                            </div>
-
-                            {confirmPasswordEnabled &&
-                                ["signUp", "resetPassword"].includes(view) && (
-                                    <ConfirmPasswordInput
-                                        classNames={classNames}
-                                        localization={localization}
-                                    />
-                                )}
-                        </>
-                    )}
-
-                    {view === "signIn" && rememberMe && (
-                        <RememberMeCheckbox localization={localization} />
-                    )}
-
-                    {view === "signUp" &&
-                        signUpFields
-                            ?.filter((field) => field !== "name")
-                            .map((field) => {
-                                const additionalField = additionalFields?.[field]
-
-                                if (!additionalField) {
-                                    console.error(`Invalid additional field: ${field}`)
-                                    return null
-                                }
-
-                                return (
-                                    <AdditionalFieldInput
-                                        key={field}
-                                        field={field}
-                                        additionalField={additionalField}
-                                        classNames={classNames}
-                                    />
-                                )
-                            })}
-
-                    <div className="flex flex-col gap-4">
-                        {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) && (
-                            <ActionButton
-                                authView={view}
-                                className={classNames?.actionButton}
-                                isLoading={isLoading}
-                                localization={localization}
-                            />
-                        )}
-
-                        {magicLink && credentials && view !== "resetPassword" && (
-                            <MagicLinkButton
-                                className={classNames?.secondaryButton}
-                                isLoading={isLoading}
-                                localization={localization}
-                                view={view}
-                            />
-                        )}
+                        <PasswordInput
+                            id="password"
+                            name="password"
+                            autoComplete={
+                                ["signUp", "resetPassword"].includes(view)
+                                    ? "new-password"
+                                    : "password"
+                            }
+                            className={classNames?.input}
+                            enableToggle={view !== "signIn"}
+                            placeholder={localization.passwordPlaceholder}
+                            required
+                        />
                     </div>
 
-                    {!["forgotPassword", "resetPassword"].includes(view) &&
-                        (providers?.length || otherProviders?.length) && (
-                            <>
-                                {credentials && (
-                                    <div className="flex items-center gap-2">
-                                        <Separator className="!w-auto grow" />
-
-                                        <span className="flex-shrink-0 text-muted-foreground text-sm">
-                                            {localization.orContinueWith}
-                                        </span>
-
-                                        <Separator className="!w-auto grow" />
-                                    </div>
-                                )}
-
-                                <div
-                                    className={cn(
-                                        "flex w-full items-center gap-4",
-                                        "justify-between",
-                                        socialLayout === "horizontal" && "flex-wrap",
-                                        socialLayout === "vertical" && "flex-col",
-                                        socialLayout === "grid" && "grid grid-cols-2"
-                                    )}
-                                >
-                                    {providers?.map((provider) => {
-                                        const socialProvider = socialProviders.find(
-                                            (socialProvider) => socialProvider.provider === provider
-                                        )
-                                        if (!socialProvider) return null
-
-                                        return (
-                                            <ProviderButton
-                                                key={provider}
-                                                className={classNames?.providerButton}
-                                                isLoading={isLoading}
-                                                localization={localization}
-                                                socialLayout={socialLayout}
-                                                provider={socialProvider}
-                                            />
-                                        )
-                                    })}
-
-                                    {otherProviders?.map((provider) => (
-                                        <ProviderButton
-                                            key={provider.provider}
-                                            className={classNames?.providerButton}
-                                            isLoading={isLoading}
-                                            localization={localization}
-                                            socialLayout={socialLayout}
-                                            provider={provider}
-                                            other
-                                        />
-                                    ))}
-                                </div>
-                            </>
-                        )}
-
-                    {passkey && (
-                        <PasskeyButton
-                            className={classNames?.secondaryButton}
-                            isLoading={isLoading}
-                            localization={localization}
-                        />
+                    {confirmPasswordEnabled && ["signUp", "resetPassword"].includes(view) && (
+                        <ConfirmPasswordInput classNames={classNames} localization={localization} />
                     )}
                 </>
             )}
 
-            {view === "twoFactorPrompt" && (
-                <TwoFactorPrompt
-                    isSubmitting={false}
-                    error={errorMessage}
-                    onSubmit={(code, trustDevice) => {
-                        const formData = new FormData()
-                        formData.append("twoFactorCode", code)
-                        if (trustDevice) formData.append("trustDevice", "true")
-                        formAction(formData)
-                    }}
-                    localization={localization}
-                />
-            )}
+            {view === "signIn" && rememberMe && <RememberMeCheckbox localization={localization} />}
 
-            {view === "twoFactorRecovery" && (
-                <TwoFactorRecovery
-                    isSubmitting={false}
-                    error={errorMessage}
-                    onSubmit={(code, trustDevice) => {
-                        const formData = new FormData()
-                        formData.append("twoFactorCode", code)
-                        if (trustDevice) formData.append("trustDevice", "true")
-                        formAction(formData)
-                    }}
-                    localization={localization}
-                />
-            )}
+            {view === "signUp" &&
+                signUpFields
+                    ?.filter((field) => field !== "name")
+                    .map((field) => {
+                        const additionalField = additionalFields?.[field]
 
-            {view === "twoFactorSetup" && (
-                <div className="space-y-6">
-                    <QrCodeDisplay
-                        uri={twoFactorUrl}
-                        className="mb-6"
+                        if (!additionalField) {
+                            console.error(`Invalid additional field: ${field}`)
+                            return null
+                        }
+
+                        return (
+                            <AdditionalFieldInput
+                                key={field}
+                                field={field}
+                                additionalField={additionalField}
+                                classNames={classNames}
+                            />
+                        )
+                    })}
+
+            <div className="flex flex-col gap-4">
+                {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) && (
+                    <ActionButton
+                        authView={view}
+                        className={classNames?.actionButton}
+                        isLoading={isLoading}
                         localization={localization}
                     />
-                    <TwoFactorPrompt
-                        isSubmitting={isLoading}
-                        error={errorMessage}
-                        isSetup={true}
-                        onSubmit={(code, trustDevice) => {
-                            setIsLoading(true)
-                            const formData = new FormData()
-                            formData.append("twoFactorCode", code)
-                            formAction(formData)
-                        }}
+                )}
+
+                {magicLink && credentials && view !== "resetPassword" && (
+                    <MagicLinkButton
+                        className={classNames?.secondaryButton}
+                        isLoading={isLoading}
                         localization={localization}
+                        view={view}
                     />
-                </div>
+                )}
+            </div>
+
+            {!["forgotPassword", "resetPassword"].includes(view) &&
+                (providers?.length || otherProviders?.length) && (
+                    <>
+                        {credentials && (
+                            <div className="flex items-center gap-2">
+                                <Separator className="!w-auto grow" />
+
+                                <span className="flex-shrink-0 text-muted-foreground text-sm">
+                                    {localization.orContinueWith}
+                                </span>
+
+                                <Separator className="!w-auto grow" />
+                            </div>
+                        )}
+
+                        <div
+                            className={cn(
+                                "flex w-full items-center gap-4",
+                                "justify-between",
+                                socialLayout === "horizontal" && "flex-wrap",
+                                socialLayout === "vertical" && "flex-col",
+                                socialLayout === "grid" && "grid grid-cols-2"
+                            )}
+                        >
+                            {providers?.map((provider) => {
+                                const socialProvider = socialProviders.find(
+                                    (socialProvider) => socialProvider.provider === provider
+                                )
+                                if (!socialProvider) return null
+
+                                return (
+                                    <ProviderButton
+                                        key={provider}
+                                        className={classNames?.providerButton}
+                                        isLoading={isLoading}
+                                        localization={localization}
+                                        socialLayout={socialLayout}
+                                        provider={socialProvider}
+                                    />
+                                )
+                            })}
+
+                            {otherProviders?.map((provider) => (
+                                <ProviderButton
+                                    key={provider.provider}
+                                    className={classNames?.providerButton}
+                                    isLoading={isLoading}
+                                    localization={localization}
+                                    socialLayout={socialLayout}
+                                    provider={provider}
+                                    other
+                                />
+                            ))}
+                        </div>
+                    </>
+                )}
+
+            {passkey && (
+                <PasskeyButton
+                    className={classNames?.secondaryButton}
+                    isLoading={isLoading}
+                    localization={localization}
+                />
             )}
         </form>
     )
