@@ -37,6 +37,7 @@ export function TwoFactorCard({ className, classNames, localization }: TwoFactor
             description={localization.twoFactorDescription}
             title={localization.twoFactor}
             actionLabel={localization.enable}
+            instructions={localization.twoFactorInstructions}
         />
     )
 }

@@ -340,6 +340,9 @@ export const authLocalization = {
     /** @default "Add an extra layer of security to your account" */
     twoFactorDescription: "Add an extra layer of security to your account.",
 
+    /** @default "Please enter your password to enable 2FA" */
+    twoFactorInstructions: "Please enter your password to enable 2FA.",
+
     /** @default "When signing in, you'll need to provide a code from your authenticator app in addition to your password." */
     twoFactorEnabledInstructions:
         "When signing in, you'll need to provide a code from your authenticator app in addition to your password.",

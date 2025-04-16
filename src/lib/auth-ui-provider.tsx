@@ -16,6 +16,8 @@ import { type AuthLocalization, authLocalization } from "./auth-localization"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
 import type { Provider } from "./social-providers"
 
+type TwoFactorMethod = "otp" | "totp"
+
 const DefaultLink: Link = ({ href, className, children }) => (
     <a className={className} href={href}>
         {children}
@@ -165,11 +167,6 @@ export type AuthUIContextType = {
      */
     providers?: SocialProvider[]
     /**
-     * Enable or disable two-factor authentication support
-     * @default false
-     */
-    twoFactor?: boolean
-    /**
      * Custom OAuth Providers
      * @default false
      */
@@ -199,6 +196,11 @@ export type AuthUIContextType = {
      */
     signUpFields?: string[]
     toast: RenderToast
+    /**
+     * Enable or disable two-factor authentication support
+     * @default undefined
+     */
+    twoFactor?: TwoFactorMethod[]
     /**
      * Enable or disable Username support
      * @default false
