@@ -95,7 +95,6 @@ export function AuthForm({
     const signingOut = useRef(false)
     const isRedirecting = useRef(false)
     const checkingResetPasswordToken = useRef(false)
-    const [errorMessage, setErrorMessage] = useState<string>("")
 
     if (socialLayout === "auto") {
         socialLayout = !credentials
@@ -221,11 +220,11 @@ export function AuthForm({
                         }
                     }
 
-                    const response = (await authClient.signIn.email({
+                    const response = await (authClient as AuthClient).signIn.email({
                         email,
                         ...params,
                         fetchOptions: { throw: true }
-                    })) as Awaited<ReturnType<AuthClient["signIn"]["email"]>>
+                    })
 
                     if (response.twoFactorRedirect) {
                         // Redirect to 2FA verification screen if required
