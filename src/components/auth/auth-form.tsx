@@ -220,11 +220,11 @@ export function AuthForm({
                         }
                     }
 
-                    const response = await (authClient as AuthClient).signIn.email({
+                    const response = (await authClient.signIn.email({
                         email,
                         ...params,
                         fetchOptions: { throw: true }
-                    })
+                    })) as Awaited<ReturnType<AuthClient["signIn"]["email"]>>
 
                     if (response.twoFactorRedirect) {
                         // Redirect to 2FA verification screen if required
