@@ -39,9 +39,6 @@ export const authLocalization = {
     backupCodesDescription:
         "Save these backup codes in a secure place. You can use them to access your account if you lose your two-factor authentication method.",
 
-    /** @default "Please enter your password to view your backup codes." */
-    backupCodesPasswordDescription: "Please enter your password to view your backup codes.",
-
     /** @default "Enter one of your backup codes. Once used, each code can only be used once and will be invalidated after use." */
     backupCodePlaceholder: "Backup Code",
 
@@ -206,9 +203,6 @@ export const authLocalization = {
     /** @default "New Password" */
     newPasswordPlaceholder: "New Password",
 
-    /** @default "No TOTP URI received from server" */
-    noTotpUriError: "No TOTP URI received from server",
-
     /** @default "One-Time Password" */
     oneTimePassword: "One-Time Password",
 
@@ -250,9 +244,6 @@ export const authLocalization = {
 
     /** @default "Connect your account with a third-party service." */
     providersDescription: "Connect your account with a third-party service.",
-
-    /** @default "QR code data is missing" */
-    qrCodeMissing: "QR code data is missing",
 
     /** @default "Recover Account" */
     recover: "Recover Account",
