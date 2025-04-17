@@ -42,9 +42,8 @@ export function TwoFactorForm({
     const { data: sessionData } = useSession()
     const isTwoFactorEnabled = sessionData?.user.twoFactorEnabled
 
-    const [method, setMethod] = useState<"totp" | "otp">(
-        twoFactor?.includes("totp") ? "totp" : "otp"
-    )
+    const [method, setMethod] = useState<"totp" | "otp">(twoFactor?.[0] || "totp")
+
     const [isSendingOtp, setIsSendingOtp] = useState(false)
     const [cooldownSeconds, setCooldownSeconds] = useState(0)
 
@@ -107,7 +106,7 @@ export function TwoFactorForm({
                 fetchOptions: { throw: true }
             })
 
-            if (!isTwoFactorEnabled) {
+            if (sessionData && !isTwoFactorEnabled) {
                 toast({
                     variant: "success",
                     message: localization.twoFactorEnabled
@@ -180,7 +179,7 @@ export function TwoFactorForm({
 
             <div className="grid gap-4">
                 <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    {isSubmitting && <Loader2 className="animate-spin" />}
                     {localization.twoFactorAction}
                 </Button>
 

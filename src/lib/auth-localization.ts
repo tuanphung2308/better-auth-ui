@@ -363,8 +363,8 @@ export const authLocalization = {
     /** @default "Verify code" */
     twoFactorAction: "Verify code",
 
-    /** @default "Please enter your one-time password to sign in" */
-    twoFactorDescription: "Please enter your one-time password to sign in",
+    /** @default "Please enter your one-time password to continue" */
+    twoFactorDescription: "Please enter your one-time password to continue",
 
     /** @default "Add an extra layer of security to your account." */
     twoFactorCardDescription: "Add an extra layer of security to your account.",

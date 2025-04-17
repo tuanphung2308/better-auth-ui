@@ -105,7 +105,7 @@ export function TwoFactorPasswordDialog({
             <Dialog open={open} onOpenChange={onOpenChange}>
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                        <DialogTitle>{localization.confirmPassword}</DialogTitle>
+                        <DialogTitle>{localization.twoFactor}</DialogTitle>
                         <DialogDescription>
                             {isTwoFactorEnabled
                                 ? localization.twoFactorDisableInstructions
@@ -135,11 +135,7 @@ export function TwoFactorPasswordDialog({
                                 {localization.cancel}
                             </Button>
 
-                            <Button
-                                type="submit"
-                                variant={isTwoFactorEnabled ? "destructive" : "default"}
-                                disabled={isLoading}
-                            >
+                            <Button type="submit" disabled={isLoading}>
                                 {isLoading && <Loader2 className="animate-spin" />}
                                 {isTwoFactorEnabled ? localization.disable : localization.enable}
                             </Button>
