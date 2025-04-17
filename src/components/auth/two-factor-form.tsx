@@ -36,6 +36,7 @@ export function TwoFactorForm({
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [trustDevice, setTrustDevice] = useState(false)
     const initialSendRef = useRef(false)
+    const formRef = useRef<HTMLFormElement>(null)
 
     const {
         basePath,
@@ -50,16 +51,17 @@ export function TwoFactorForm({
     const { data: sessionData } = useSession()
     const isTwoFactorEnabled = sessionData?.user.twoFactorEnabled
 
-    const [method, setMethod] = useState<"totp" | "otp">(twoFactor?.[0] || "totp")
+    const [method, setMethod] = useState<"totp" | "otp" | null>(
+        twoFactor?.length === 1 ? twoFactor[0] : null
+    )
+
     const [isSendingOtp, setIsSendingOtp] = useState(false)
     const [cooldownSeconds, setCooldownSeconds] = useState(0)
 
     useEffect(() => {
         if (!twoFactor?.length) return
-        if (!twoFactor?.includes("totp") && method === "totp") {
-            setMethod("otp")
-        } else if (!twoFactor?.includes("otp") && method === "otp") {
-            setMethod("totp")
+        if (twoFactor?.length === 1 && method === null) {
+            setMethod(twoFactor[0])
         }
     }, [twoFactor, method])
 
@@ -100,8 +102,6 @@ export function TwoFactorForm({
         e.preventDefault()
         if (isSubmitting) return
 
-        setCode("")
-
         try {
             setIsSubmitting(true)
 
@@ -125,6 +125,9 @@ export function TwoFactorForm({
 
             await onSuccess()
 
+            // Only clear code after successful submission
+            setCode("")
+
             setTimeout(() => {
                 setIsSubmitting(false)
             }, 5000)
@@ -135,8 +138,16 @@ export function TwoFactorForm({
             })
 
             setIsSubmitting(false)
+            setCode("")
         }
     }
+
+    // Auto-submit when 6 digits are entered
+    useEffect(() => {
+        if (code.length === 6 && !isSubmitting && method !== null) {
+            formRef.current?.requestSubmit()
+        }
+    }, [code, isSubmitting, method])
 
     // Render OTP input with correct separators based on otpSeparators value
     const renderOTPInput = () => {
@@ -199,6 +210,7 @@ export function TwoFactorForm({
 
     return (
         <form
+            ref={formRef}
             onSubmit={handleVerify}
             className={cn("grid w-full gap-6", className, classNames?.base)}
         >
@@ -213,81 +225,104 @@ export function TwoFactorForm({
                 </div>
             )}
 
-            <div className="space-y-3">
-                <div className="flex items-center">
-                    <Label className={classNames?.label} htmlFor="otp">
-                        {localization.oneTimePassword}
-                    </Label>
+            {method !== null && (
+                <>
+                    <div className="space-y-3">
+                        <div className="flex items-center">
+                            <Label className={classNames?.label} htmlFor="otp">
+                                {localization.oneTimePassword}
+                            </Label>
 
-                    <Link
-                        className={cn(
-                            "-my-1 ml-auto inline-block text-sm hover:underline",
-                            classNames?.forgotPasswordLink
-                        )}
-                        href={`${basePath}/${viewPaths.recover}`}
-                    >
-                        {localization.forgotAuthenticator}
-                    </Link>
-                </div>
+                            <Link
+                                className={cn(
+                                    "-my-1 ml-auto inline-block text-sm hover:underline",
+                                    classNames?.forgotPasswordLink
+                                )}
+                                href={`${basePath}/${viewPaths.recover}`}
+                            >
+                                {localization.forgotAuthenticator}
+                            </Link>
+                        </div>
 
-                <InputOTP
-                    maxLength={6}
-                    id="otp"
-                    value={code}
-                    onChange={setCode}
-                    containerClassName={classNames?.otpInputContainer}
-                    className={classNames?.otpInput}
-                >
-                    {renderOTPInput()}
-                </InputOTP>
-            </div>
+                        <InputOTP
+                            maxLength={6}
+                            id="otp"
+                            value={code}
+                            onChange={(newValue) => {
+                                setCode(newValue)
+                            }}
+                            containerClassName={classNames?.otpInputContainer}
+                            className={classNames?.otpInput}
+                            disabled={isSubmitting}
+                        >
+                            {renderOTPInput()}
+                        </InputOTP>
+                    </div>
 
-            <div className="flex items-center gap-2">
-                <Checkbox
-                    id="trustDevice"
-                    name="trustDevice"
-                    checked={trustDevice}
-                    onCheckedChange={(checked) => setTrustDevice(checked === true)}
-                />
+                    <div className="flex items-center gap-2">
+                        <Checkbox
+                            id="trustDevice"
+                            name="trustDevice"
+                            checked={trustDevice}
+                            onCheckedChange={(checked) => setTrustDevice(checked === true)}
+                        />
 
-                <Label htmlFor="trustDevice" className={classNames?.label}>
-                    {localization.trustDevice}
-                </Label>
-            </div>
+                        <Label htmlFor="trustDevice" className={classNames?.label}>
+                            {localization.trustDevice}
+                        </Label>
+                    </div>
+                </>
+            )}
 
             <div className="grid gap-4">
-                <Button type="submit" disabled={isSubmitting} className={classNames?.actionButton}>
-                    {isSubmitting && <Loader2 className="animate-spin" />}
-                    {localization.twoFactorAction}
-                </Button>
+                {method !== null && (
+                    <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className={classNames?.actionButton}
+                    >
+                        {isSubmitting && <Loader2 className="animate-spin" />}
+                        {localization.twoFactorAction}
+                    </Button>
+                )}
 
-                {method === "otp" && (
+                {method === "otp" && twoFactor?.includes("otp") && (
                     <Button
                         type="button"
                         variant="outline"
                         onClick={sendOtp}
-                        disabled={cooldownSeconds > 0 || isSendingOtp}
+                        disabled={cooldownSeconds > 0 || isSendingOtp || isSubmitting}
                         className={classNames?.providerButton}
                     >
                         {isSendingOtp ? <Loader2 className="animate-spin" /> : <SendIcon />}
-
                         {localization.resendCode}
-
                         {cooldownSeconds > 0 && ` (${cooldownSeconds}s)`}
                     </Button>
                 )}
 
-                {twoFactor && twoFactor.length > 1 && (
+                {method !== "otp" && twoFactor?.includes("otp") && (
                     <Button
                         type="button"
                         variant="secondary"
                         className={classNames?.secondaryButton}
-                        onClick={() => setMethod(method === "totp" ? "otp" : "totp")}
+                        onClick={() => setMethod("otp")}
+                        disabled={isSubmitting}
                     >
-                        {method === "otp" ? <QrCodeIcon /> : <SendIcon />}
-                        {method === "otp"
-                            ? localization.continueWithAuthenticator
-                            : localization.sendVerificationCode}
+                        <SendIcon />
+                        {localization.sendVerificationCode}
+                    </Button>
+                )}
+
+                {method !== "totp" && twoFactor?.includes("totp") && (
+                    <Button
+                        type="button"
+                        variant="secondary"
+                        className={classNames?.secondaryButton}
+                        onClick={() => setMethod("totp")}
+                        disabled={isSubmitting}
+                    >
+                        <QrCodeIcon />
+                        {localization.continueWithAuthenticator}
                     </Button>
                 )}
             </div>
