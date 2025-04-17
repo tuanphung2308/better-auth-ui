@@ -16,7 +16,8 @@ import {
     TikTokIcon,
     TwitchIcon,
     VKIcon,
-    XIcon
+    XIcon,
+    ZoomIcon
 } from "../components/provider-icons"
 
 export const socialProviders = [
@@ -104,6 +105,11 @@ export const socialProviders = [
         provider: "twitter",
         name: "X",
         icon: XIcon
+    },
+    {
+        provider: "zoom",
+        name: "Zoom",
+        icon: ZoomIcon
     }
 ] as const
 
