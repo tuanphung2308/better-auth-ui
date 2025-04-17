@@ -2,9 +2,9 @@
 
 import type { ReactNode } from "react"
 
-import { cn } from "../../lib/utils"
-import { CardDescription, CardHeader, CardTitle } from "../ui/card"
-import { Skeleton } from "../ui/skeleton"
+import { cn } from "../../../lib/utils"
+import { CardDescription, CardHeader, CardTitle } from "../../ui/card"
+import { Skeleton } from "../../ui/skeleton"
 import type { SettingsCardClassNames } from "./settings-card"
 
 export interface SettingsCardHeaderProps {

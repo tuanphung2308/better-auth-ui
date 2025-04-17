@@ -8,8 +8,8 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { CardContent } from "../ui/card"
 import { AccountCell } from "./account-cell"
-import type { SettingsCardClassNames } from "./settings-card"
-import { SettingsCard } from "./settings-card"
+import type { SettingsCardClassNames } from "./shared/settings-card"
+import { SettingsCard } from "./shared/settings-card"
 import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
 export interface AccountsCardProps {

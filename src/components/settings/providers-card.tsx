@@ -7,8 +7,7 @@ import { socialProviders } from "../../lib/social-providers"
 import { cn } from "../../lib/utils"
 import { CardContent } from "../ui/card"
 import { ProviderCell } from "./provider-cell"
-import { SettingsCard } from "./settings-card"
-import type { SettingsCardClassNames } from "./settings-card"
+import { SettingsCard, type SettingsCardClassNames } from "./shared/settings-card"
 import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
 export interface ProvidersCardProps {

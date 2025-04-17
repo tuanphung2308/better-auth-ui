@@ -16,7 +16,7 @@ import {
 } from "../ui/dialog"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-import type { SettingsCardClassNames } from "./settings-card"
+import type { SettingsCardClassNames } from "./shared/settings-card"
 
 export interface DeleteAccountDialogProps {
     open: boolean
