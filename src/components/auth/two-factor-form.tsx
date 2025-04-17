@@ -12,7 +12,7 @@ import { cn } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
 import { Button } from "../ui/button"
 import { Checkbox } from "../ui/checkbox"
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp"
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "../ui/input-otp"
 import { Label } from "../ui/label"
 import type { AuthFormClassNames } from "./auth-form"
 
@@ -21,13 +21,15 @@ export interface TwoFactorFormProps {
     classNames?: AuthFormClassNames
     localization: Partial<AuthLocalization>
     onSuccess: () => Promise<void>
+    otpSeparators?: 0 | 1 | 2
 }
 
 export function TwoFactorForm({
     className,
     classNames,
     localization,
-    onSuccess
+    onSuccess,
+    otpSeparators = 0
 }: TwoFactorFormProps) {
     const totpURI = useSearchParam("totpURI")
     const [code, setCode] = useState("")
@@ -96,7 +98,9 @@ export function TwoFactorForm({
 
     const handleVerify = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (isSubmitting || code.length !== 6) return
+        if (isSubmitting) return
+
+        setCode("")
 
         try {
             setIsSubmitting(true)
@@ -134,6 +138,65 @@ export function TwoFactorForm({
         }
     }
 
+    // Render OTP input with correct separators based on otpSeparators value
+    const renderOTPInput = () => {
+        if (otpSeparators === 0) {
+            return (
+                <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                </InputOTPGroup>
+            )
+        }
+
+        if (otpSeparators === 1) {
+            return (
+                <>
+                    <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                    </InputOTPGroup>
+
+                    <InputOTPSeparator />
+
+                    <InputOTPGroup>
+                        <InputOTPSlot index={3} />
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                    </InputOTPGroup>
+                </>
+            )
+        }
+
+        return (
+            <>
+                <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                </InputOTPGroup>
+
+                <InputOTPSeparator />
+
+                <InputOTPGroup>
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                </InputOTPGroup>
+
+                <InputOTPSeparator />
+
+                <InputOTPGroup>
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                </InputOTPGroup>
+            </>
+        )
+    }
+
     return (
         <form
             onSubmit={handleVerify}
@@ -142,7 +205,11 @@ export function TwoFactorForm({
             {twoFactor?.includes("totp") && totpURI && method === "totp" && (
                 <div className="space-y-3">
                     <Label className={classNames?.label}>{localization.twoFactorTotpLabel}</Label>
-                    <QRCode className="border shadow-xs" value={totpURI} />
+
+                    <QRCode
+                        className={cn("border shadow-xs", classNames?.qrCode)}
+                        value={totpURI}
+                    />
                 </div>
             )}
 
@@ -163,15 +230,15 @@ export function TwoFactorForm({
                     </Link>
                 </div>
 
-                <InputOTP maxLength={6} id="otp" value={code} onChange={setCode}>
-                    <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                        <InputOTPSlot index={3} />
-                        <InputOTPSlot index={4} />
-                        <InputOTPSlot index={5} />
-                    </InputOTPGroup>
+                <InputOTP
+                    maxLength={6}
+                    id="otp"
+                    value={code}
+                    onChange={setCode}
+                    containerClassName={classNames?.otpInputContainer}
+                    className={classNames?.otpInput}
+                >
+                    {renderOTPInput()}
                 </InputOTP>
             </div>
 

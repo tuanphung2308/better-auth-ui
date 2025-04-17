@@ -34,6 +34,9 @@ export type AuthFormClassNames = {
     description?: string
     providerButton?: string
     secondaryButton?: string
+    qrCode?: string
+    otpInput?: string
+    otpInputContainer?: string
 }
 
 export interface AuthFormProps {
@@ -45,6 +48,7 @@ export interface AuthFormProps {
     redirectTo?: string
     socialLayout?: "auto" | "horizontal" | "grid" | "vertical"
     view?: AuthView
+    otpSeparators?: 0 | 1 | 2
 }
 
 export function AuthForm({
@@ -55,7 +59,8 @@ export function AuthForm({
     pathname,
     redirectTo,
     socialLayout = "auto",
-    view
+    view,
+    otpSeparators = 0
 }: AuthFormProps) {
     const [isLoading, setIsLoading] = useState(false)
 
@@ -427,6 +432,7 @@ export function AuthForm({
                 classNames={classNames}
                 localization={localization}
                 onSuccess={onSuccess}
+                otpSeparators={otpSeparators}
             />
         )
     }

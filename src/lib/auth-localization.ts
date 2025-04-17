@@ -389,7 +389,10 @@ export const authLocalization = {
         "Please verify your email address. Check your inbox for the verification email. If you haven't received the email, click the button below to resend.",
 
     /** @default "Resend code" */
-    resendCode: "Resend code"
+    resendCode: "Resend code",
+
+    /** @default "Go back" */
+    goBack: "Go back"
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>

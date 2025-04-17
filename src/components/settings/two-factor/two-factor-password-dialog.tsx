@@ -27,9 +27,8 @@ interface TwoFactorPasswordDialogProps {
 export function TwoFactorPasswordDialog({
     open,
     onOpenChange,
-    isTwoFactorEnabled: isTwoFactorEnabledExternal
+    isTwoFactorEnabled
 }: TwoFactorPasswordDialogProps) {
-    const [isTwoFactorEnabled] = useState(isTwoFactorEnabledExternal)
     const { localization, authClient, basePath, viewPaths, navigate, toast, twoFactor } =
         useContext(AuthUIContext)
     const [isLoading, setIsLoading] = useState(false)

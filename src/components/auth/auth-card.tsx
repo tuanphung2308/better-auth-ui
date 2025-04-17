@@ -1,6 +1,6 @@
 "use client"
 
-import { Loader2 } from "lucide-react"
+import { ArrowLeftIcon, Loader2 } from "lucide-react"
 import { useContext, useEffect } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
@@ -42,6 +42,10 @@ export interface AuthCardProps {
      * @remarks `AuthView`
      */
     view?: AuthView
+    /**
+     * @default 0
+     */
+    otpSeparators?: 0 | 1 | 2
 }
 
 export function AuthCard({
@@ -52,7 +56,8 @@ export function AuthCard({
     pathname,
     redirectTo,
     socialLayout = "auto",
-    view
+    view,
+    otpSeparators = 0
 }: AuthCardProps) {
     const path = pathname?.split("/").pop()
 
@@ -90,6 +95,7 @@ export function AuthCard({
                 classNames={classNames?.form}
                 redirectTo={redirectTo}
                 view={view}
+                otpSeparators={otpSeparators}
             />
         )
     }
@@ -132,6 +138,7 @@ export function AuthCard({
                     redirectTo={redirectTo}
                     socialLayout={socialLayout}
                     view={view}
+                    otpSeparators={otpSeparators}
                 />
             </CardContent>
 
@@ -142,15 +149,23 @@ export function AuthCard({
                         classNames?.footer
                     )}
                 >
-                    {view === "signIn"
-                        ? localization.dontHaveAnAccount
-                        : localization.alreadyHaveAnAccount}
+                    {view === "signIn" ? (
+                        localization.dontHaveAnAccount
+                    ) : view === "signUp" ? (
+                        localization.alreadyHaveAnAccount
+                    ) : (
+                        <ArrowLeftIcon className="size-3" />
+                    )}
 
                     <Link
                         className={cn("text-foreground underline", classNames?.footerLink)}
                         href={`${basePath}/${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
                     >
-                        {view === "signIn" ? localization.signUp : localization.signIn}
+                        {view === "signIn"
+                            ? localization.signUp
+                            : view === "signUp"
+                              ? localization.signIn
+                              : localization.goBack}
                     </Link>
                 </CardFooter>
             )}

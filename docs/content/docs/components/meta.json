@@ -3,6 +3,9 @@
     "pages": [
         "auth-card",
         "auth-ui-provider",
+        "--- User ---",
+        "user-avatar",
+        "user-button",
         "--- Settings ---",
         "settings-card",
         "change-email-card",
@@ -10,6 +13,8 @@
         "delete-account-card",
         "providers-card",
         "session-card",
+        "sessions-card",
+        "two-factor-card",
         "update-avatar-card",
         "update-username-card",
         "--- Redirect ---",
