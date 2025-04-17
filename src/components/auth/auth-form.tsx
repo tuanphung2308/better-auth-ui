@@ -229,7 +229,6 @@ export function AuthForm({
                     })) as Awaited<ReturnType<AuthClient["signIn"]["email"]>>
 
                     if (response.twoFactorRedirect) {
-                        // Redirect to 2FA verification screen if required
                         navigate(`${basePath}/${viewPaths.twoFactor}`)
                     } else {
                         onSuccess()

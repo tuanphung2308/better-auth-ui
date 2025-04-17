@@ -29,9 +29,6 @@ export const authLocalization = {
     /** @default "An avatar is optional but strongly recommended." */
     avatarInstructions: "An avatar is optional but strongly recommended.",
 
-    /** @default "Back" */
-    back: "Back",
-
     /** @default "Backup Codes" */
     backupCodes: "Backup Codes",
 
@@ -62,9 +59,6 @@ export const authLocalization = {
 
     /** @default "Your password has been changed." */
     changePasswordSuccess: "Your password has been changed.",
-
-    /** @default "Confirm" */
-    confirm: "Confirm",
 
     /** @default "Confirm Password" */
     confirmPassword: "Confirm Password",
@@ -140,14 +134,8 @@ export const authLocalization = {
     /** @default "Please check your email for the verification link." */
     emailVerification: "Please check your email for the verification link.",
 
-    /** @default "Enter Backup Code" */
-    enterBackupCode: "Enter Backup Code",
-
     /** @default "Enable" */
     enable: "Enable",
-
-    /** @default "Enter Code" */
-    enterTwoFactorCode: "Enter Code",
 
     /** @default "Failed to validate" */
     failedToValidate: "Failed to validate",
@@ -169,9 +157,6 @@ export const authLocalization = {
 
     /** @default "Link" */
     link: "Link",
-
-    /** @default "Invalid authentication code" */
-    invalidTwoFactorCode: "Invalid authentication code",
 
     /** @default "Magic Link" */
     magicLink: "Magic Link",
@@ -233,9 +218,6 @@ export const authLocalization = {
     /** @default "Password" */
     passwordPlaceholder: "Password",
 
-    /** @default "Password is required" */
-    passwordRequired: "Password is required",
-
     /** @default "Passwords do not match." */
     passwordsDoNotMatch: "Passwords do not match",
 
@@ -256,12 +238,6 @@ export const authLocalization = {
 
     /** @default "Remember me" */
     rememberMe: "Remember me",
-
-    /** @default "Remember this device" */
-    rememberDevice: "Remember this device",
-
-    /** @default "Trust this device for 60 days" */
-    rememberDeviceDescription: "Trust this device for 60 days",
 
     /** @default "Resend verification email" */
     resendVerificationEmail: "Resend Verification Email",
@@ -360,47 +336,20 @@ export const authLocalization = {
     /** @default "Add an extra layer of security to your account." */
     twoFactorCardDescription: "Add an extra layer of security to your account.",
 
-    /** @default "Please enter the one-time password sent to you." */
-    twoFactorOtpDescription: "Please enter your one-time password sent to you.",
-
     /** @default "Please enter your password to disable 2FA." */
     twoFactorDisableInstructions: "Please enter your password to disable 2FA.",
 
     /** @default "Please enter your password to enable 2FA" */
     twoFactorEnableInstructions: "Please enter your password to enable 2FA.",
 
-    /** @default "When signing in, you'll need to provide a code from your authenticator app in addition to your password." */
-    twoFactorEnabledInstructions:
-        "When signing in, you'll need to provide a code from your authenticator app in addition to your password.",
-
     /** @default "Two-factor authentication enabled" */
     twoFactorEnabled: "Two-factor authentication enabled",
 
-    /** @default "For security reasons, please enter your password to disable two-factor authentication." */
-    twoFactorDisableConfirmDescription:
-        "For security reasons, please enter your password to disable two-factor authentication.",
-
-    /** @default "Two-Factor Authentication disabled successfully" */
-    twoFactorDisabledSuccess: "Two-Factor Authentication disabled successfully",
-
-    /** @default "For security reasons, please enter your password to enable two-factor authentication." */
-    twoFactorConfirmPasswordDescription:
-        "For security reasons, please enter your password to enable two-factor authentication.",
+    /** @default "Two-Factor Authentication disabled" */
+    twoFactorDisabled: "Two-Factor Authentication disabled",
 
     /** @default "Two-Factor Authentication" */
     twoFactorPrompt: "Two-Factor Authentication",
-
-    /** @default "Open your authenticator app to generate a code" */
-    twoFactorPromptDescription: "Open your authenticator app to generate a code",
-
-    /** @default "Two-Factor Recovery" */
-    twoFactorRecovery: "Two-Factor Recovery",
-
-    /** @default "Enter one of your backup codes to access your account" */
-    twoFactorRecoveryDescription: "Enter one of your backup codes to access your account",
-
-    /** @default "Two-Factor Setup" */
-    twoFactorSetup: "Two-Factor Setup",
 
     /** @default "Scan the QR Code with your Authenticator" */
     twoFactorTotpLabel: "Scan the QR Code with your Authenticator",
@@ -416,15 +365,6 @@ export const authLocalization = {
 
     /** @default "Forgot authenticator?" */
     forgotAuthenticator: "Forgot authenticator?",
-
-    /** @default "Found your authenticator?" */
-    foundAuthenticator: "Found your authenticator?",
-
-    /** @default "Use a backup code" */
-    useBackupCode: "Use a backup code",
-
-    /** @default "Use authenticator code" */
-    useTwoFactorCode: "Use authenticator code",
 
     /** @default "Username" */
     username: "Username",

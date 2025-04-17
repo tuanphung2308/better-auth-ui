@@ -27,8 +27,9 @@ interface TwoFactorPasswordDialogProps {
 export function TwoFactorPasswordDialog({
     open,
     onOpenChange,
-    isTwoFactorEnabled
+    isTwoFactorEnabled: isTwoFactorEnabledExternal
 }: TwoFactorPasswordDialogProps) {
+    const [isTwoFactorEnabled] = useState(isTwoFactorEnabledExternal)
     const { localization, authClient, basePath, viewPaths, navigate, toast, twoFactor } =
         useContext(AuthUIContext)
     const [isLoading, setIsLoading] = useState(false)
@@ -47,9 +48,13 @@ export function TwoFactorPasswordDialog({
                 fetchOptions: { throw: true }
             })
 
-            setBackupCodes(data.backupCodes)
-            setTotpURI(data.totpURI)
             onOpenChange(false)
+            setBackupCodes(data.backupCodes)
+
+            if (twoFactor?.includes("totp")) {
+                setTotpURI(data.totpURI)
+            }
+
             setTimeout(() => {
                 setShowBackupCodesDialog(true)
             }, 250)
@@ -76,7 +81,7 @@ export function TwoFactorPasswordDialog({
 
             toast({
                 variant: "success",
-                message: localization.twoFactorDisabledSuccess
+                message: localization.twoFactorDisabled
             })
 
             onOpenChange(false)

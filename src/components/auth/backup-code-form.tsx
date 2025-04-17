@@ -63,7 +63,9 @@ export function BackupCodeForm({
             className={cn("grid w-full gap-6", className, classNames?.base)}
         >
             <div className="space-y-2">
-                <Label htmlFor="backupCode">{localization.backupCode}</Label>
+                <Label htmlFor="backupCode" className={classNames?.label}>
+                    {localization.backupCode}
+                </Label>
 
                 <Input
                     id="backupCode"
@@ -72,11 +74,13 @@ export function BackupCodeForm({
                     onChange={(e) => setCode(e.target.value)}
                     placeholder={localization.backupCodePlaceholder}
                     autoComplete="one-time-code"
+                    className={classNames?.input}
                 />
             </div>
 
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting} className={classNames?.actionButton}>
                 {isSubmitting && <Loader2 className="animate-spin" />}
+
                 {localization.recoverAction}
             </Button>
         </form>

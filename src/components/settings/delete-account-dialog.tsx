@@ -124,7 +124,7 @@ export function DeleteAccountDialog({
                         </div>
                     )}
 
-                    <DialogFooter className="justify-end">
+                    <DialogFooter>
                         <Button
                             type="button"
                             variant="secondary"

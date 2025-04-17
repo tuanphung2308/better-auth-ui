@@ -32,7 +32,7 @@ export function BackupCodesDialog({ open, onOpenChange, backupCodes }: BackupCod
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[600px]" onOpenAutoFocus={(e) => e.preventDefault()}>
+            <DialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
                 <DialogHeader>
                     <DialogTitle>{localization.backupCodes}</DialogTitle>
                     <DialogDescription>{localization.backupCodesDescription}</DialogDescription>

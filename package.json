@@ -106,9 +106,7 @@
         "@radix-ui/react-primitive": ">=2.0.0",
         "@radix-ui/react-separator": ">=1.1.0",
         "@radix-ui/react-slot": ">=1.1.0",
-        "@radix-ui/react-switch": ">=1.1.0",
         "@radix-ui/react-tabs": ">=1.1.0",
-        "@radix-ui/react-tooltip": ">=1.2.0",
         "@radix-ui/react-use-callback-ref": ">=1.1.0",
         "@radix-ui/react-use-layout-effect": ">=1.1.0",
         "@react-email/components": ">=0.0.33",
@@ -118,7 +116,7 @@
         "clsx": ">=2.1.0",
         "input-otp": ">=1.4.0",
         "lucide-react": ">=0.469.0",
-        "qrcode.react": ">=4.2.0",
+        "react-qr-code": ">=2.0.0",
         "react": ">=18.0.0",
         "react-dom": ">=18.0.0",
         "sonner": ">=1.7.0",
@@ -129,8 +127,5 @@
     "pnpm": {
         "overrides": {}
     },
-    "packageManager": "pnpm@10.8.1",
-    "dependencies": {
-        "react-qr-code": "^2.0.15"
-    }
+    "packageManager": "pnpm@10.8.1"
 }

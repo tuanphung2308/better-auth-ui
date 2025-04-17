@@ -1,9 +1,9 @@
 "use client"
 
+import { Loader2, QrCodeIcon, SendIcon } from "lucide-react"
 import { useContext, useEffect, useRef, useState } from "react"
 import QRCode from "react-qr-code"
 
-import { Loader2, QrCodeIcon, SendIcon } from "lucide-react"
 import { useSearchParam } from "../../hooks/use-search-param"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
@@ -35,19 +35,25 @@ export function TwoFactorForm({
     const [trustDevice, setTrustDevice] = useState(false)
     const initialSendRef = useRef(false)
 
-    const { basePath, viewPaths, twoFactor, Link, authClient, toast } = useContext(AuthUIContext)
     const {
-        hooks: { useSession }
+        basePath,
+        hooks: { useSession },
+        viewPaths,
+        twoFactor,
+        Link,
+        authClient,
+        toast
     } = useContext(AuthUIContext)
+
     const { data: sessionData } = useSession()
     const isTwoFactorEnabled = sessionData?.user.twoFactorEnabled
 
     const [method, setMethod] = useState<"totp" | "otp">(twoFactor?.[0] || "totp")
-
     const [isSendingOtp, setIsSendingOtp] = useState(false)
     const [cooldownSeconds, setCooldownSeconds] = useState(0)
 
     useEffect(() => {
+        if (!twoFactor?.length) return
         if (!twoFactor?.includes("totp") && method === "totp") {
             setMethod("otp")
         } else if (!twoFactor?.includes("otp") && method === "otp") {
@@ -135,14 +141,16 @@ export function TwoFactorForm({
         >
             {twoFactor?.includes("totp") && totpURI && method === "totp" && (
                 <div className="space-y-3">
-                    <Label>{localization.twoFactorTotpLabel}</Label>
+                    <Label className={classNames?.label}>{localization.twoFactorTotpLabel}</Label>
                     <QRCode className="border shadow-xs" value={totpURI} />
                 </div>
             )}
 
             <div className="space-y-3">
                 <div className="flex items-center">
-                    <Label htmlFor="otp">{localization.oneTimePassword}</Label>
+                    <Label className={classNames?.label} htmlFor="otp">
+                        {localization.oneTimePassword}
+                    </Label>
 
                     <Link
                         className={cn(
@@ -174,11 +182,14 @@ export function TwoFactorForm({
                     checked={trustDevice}
                     onCheckedChange={(checked) => setTrustDevice(checked === true)}
                 />
-                <Label htmlFor="trustDevice">{localization.trustDevice}</Label>
+
+                <Label htmlFor="trustDevice" className={classNames?.label}>
+                    {localization.trustDevice}
+                </Label>
             </div>
 
             <div className="grid gap-4">
-                <Button type="submit" disabled={isSubmitting}>
+                <Button type="submit" disabled={isSubmitting} className={classNames?.actionButton}>
                     {isSubmitting && <Loader2 className="animate-spin" />}
                     {localization.twoFactorAction}
                 </Button>
@@ -189,9 +200,12 @@ export function TwoFactorForm({
                         variant="outline"
                         onClick={sendOtp}
                         disabled={cooldownSeconds > 0 || isSendingOtp}
+                        className={classNames?.providerButton}
                     >
                         {isSendingOtp ? <Loader2 className="animate-spin" /> : <SendIcon />}
+
                         {localization.resendCode}
+
                         {cooldownSeconds > 0 && ` (${cooldownSeconds}s)`}
                     </Button>
                 )}
@@ -200,6 +214,7 @@ export function TwoFactorForm({
                     <Button
                         type="button"
                         variant="secondary"
+                        className={classNames?.secondaryButton}
                         onClick={() => setMethod(method === "totp" ? "otp" : "totp")}
                     >
                         {method === "otp" ? <QrCodeIcon /> : <SendIcon />}
