@@ -348,7 +348,6 @@ export const AuthUIProvider = ({
                 redirectTo,
                 changeEmail,
                 credentials,
-                changeEmail,
                 forgotPassword,
                 freshAge,
                 hooks: { ...defaultHooks, ...hooks },
