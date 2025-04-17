@@ -43,8 +43,13 @@ export const authLocalization = {
     backupCodesPasswordDescription: "Please enter your password to view your backup codes.",
 
     /** @default "Enter one of your backup codes. Once used, each code can only be used once and will be invalidated after use." */
-    backupCodePlaceholder:
-        "Enter one of your backup codes. Once used, each code can only be used once and will be invalidated after use.",
+    backupCodePlaceholder: "Backup Code",
+
+    /** @default "Backup Code" */
+    backupCode: "Backup Code",
+
+    /** @default "Recover account" */
+    backupCodeAction: "Recover account",
 
     /** @default "Cancel" */
     cancel: "Cancel",
@@ -249,6 +254,15 @@ export const authLocalization = {
     /** @default "QR code data is missing" */
     qrCodeMissing: "QR code data is missing",
 
+    /** @default "Recover Account" */
+    recover: "Recover Account",
+
+    /** @default "Recover account" */
+    recoverAction: "Recover account",
+
+    /** @default "Please enter a backup code to access your account" */
+    recoverDescription: "Please enter a backup code to access your account",
+
     /** @default "Remember me" */
     rememberMe: "Remember me",
 
@@ -349,8 +363,8 @@ export const authLocalization = {
     /** @default "Verify code" */
     twoFactorAction: "Verify code",
 
-    /** @default "Please enter your one-time password to continue." */
-    twoFactorDescription: "Please enter your one-time password to continue.",
+    /** @default "Please enter your one-time password to sign in" */
+    twoFactorDescription: "Please enter your one-time password to sign in",
 
     /** @default "Add an extra layer of security to your account." */
     twoFactorCardDescription: "Add an extra layer of security to your account.",

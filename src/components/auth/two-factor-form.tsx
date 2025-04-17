@@ -3,12 +3,13 @@
 import { useContext, useEffect, useState } from "react"
 import QRCode from "react-qr-code"
 
-import { Loader2, MailIcon, QrCodeIcon, SendIcon } from "lucide-react"
+import { Loader2, QrCodeIcon, SendIcon } from "lucide-react"
 import { useSearchParam } from "../../hooks/use-search-param"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import type { AuthView } from "../../lib/auth-view-paths"
+import { getErrorMessage } from "../../lib/get-error-message"
 import { cn } from "../../lib/utils"
+import type { AuthClient } from "../../types/auth-client"
 import { Button } from "../ui/button"
 import { Checkbox } from "../ui/checkbox"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp"
@@ -18,21 +19,29 @@ import type { AuthFormClassNames } from "./auth-form"
 export interface TwoFactorFormProps {
     className?: string
     classNames?: AuthFormClassNames
-    callbackURL?: string
-    localization?: Partial<AuthLocalization>
-    view?: AuthView
-    redirectTo?: string
+    localization: Partial<AuthLocalization>
+    onSuccess: () => Promise<void>
 }
 
-export function TwoFactorForm({ className, classNames, localization }: TwoFactorFormProps) {
+export function TwoFactorForm({
+    className,
+    classNames,
+    localization,
+    onSuccess
+}: TwoFactorFormProps) {
     const totpURI = useSearchParam("totpURI")
+    const [code, setCode] = useState("")
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [trustDevice, setTrustDevice] = useState(false)
 
     const {
         basePath,
         viewPaths,
         localization: contextLocalization,
         twoFactor,
-        Link
+        Link,
+        authClient,
+        toast
     } = useContext(AuthUIContext)
 
     const [method, setMethod] = useState<"totp" | "otp">(
@@ -69,21 +78,55 @@ export function TwoFactorForm({ className, classNames, localization }: TwoFactor
 
         try {
             setIsSendingOtp(true)
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-            // const { data, error } = await (authClient as AuthClient).twoFactor.sendOtp()
+            await (authClient as AuthClient).twoFactor.sendOtp()
 
             setCooldownSeconds(60)
         } catch (error) {
             console.error("Failed to send OTP:", error)
+            toast?.({ variant: "error", message: "Failed to send verification code" })
         }
 
         setIsSendingOtp(false)
     }
 
-    localization = { ...contextLocalization, ...localization }
+    const handleVerify = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (isSubmitting || code.length !== 6) return
+
+        try {
+            setIsSubmitting(true)
+
+            const verifyMethod =
+                method === "totp"
+                    ? (authClient as AuthClient).twoFactor.verifyTotp
+                    : (authClient as AuthClient).twoFactor.verifyOtp
+
+            await verifyMethod({
+                code,
+                trustDevice,
+                fetchOptions: { throw: true }
+            })
+
+            await onSuccess()
+
+            setTimeout(() => {
+                setIsSubmitting(false)
+            }, 5000)
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: getErrorMessage(error) || localization?.requestFailed
+            })
+
+            setIsSubmitting(false)
+        }
+    }
 
     return (
-        <form className={cn("grid w-full gap-6", className, classNames?.base)}>
+        <form
+            onSubmit={handleVerify}
+            className={cn("grid w-full gap-6", className, classNames?.base)}
+        >
             {twoFactor?.includes("totp") && totpURI && method === "totp" && (
                 <div className="space-y-3">
                     <Label>{localization.twoFactorTotpLabel}</Label>
@@ -100,13 +143,13 @@ export function TwoFactorForm({ className, classNames, localization }: TwoFactor
                             "-my-1 ml-auto inline-block text-sm hover:underline",
                             classNames?.forgotPasswordLink
                         )}
-                        href={`${basePath}/${viewPaths.forgotPassword}`}
+                        href={`${basePath}/${viewPaths.recover}`}
                     >
                         {localization.forgotAuthenticator}
                     </Link>
                 </div>
 
-                <InputOTP maxLength={6} id="otp">
+                <InputOTP maxLength={6} id="otp" value={code} onChange={setCode}>
                     <InputOTPGroup>
                         <InputOTPSlot index={0} />
                         <InputOTPSlot index={1} />
@@ -119,12 +162,20 @@ export function TwoFactorForm({ className, classNames, localization }: TwoFactor
             </div>
 
             <div className="flex items-center gap-2">
-                <Checkbox id="trustDevice" name="trustDevice" />
+                <Checkbox
+                    id="trustDevice"
+                    name="trustDevice"
+                    checked={trustDevice}
+                    onCheckedChange={(checked) => setTrustDevice(checked === true)}
+                />
                 <Label htmlFor="trustDevice">{localization.trustDevice}</Label>
             </div>
 
             <div className="grid gap-4">
-                <Button type="submit">{localization.twoFactorAction}</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    {localization.twoFactorAction}
+                </Button>
 
                 {method === "otp" && (
                     <Button
@@ -145,8 +196,10 @@ export function TwoFactorForm({ className, classNames, localization }: TwoFactor
                         variant="secondary"
                         onClick={() => setMethod(method === "totp" ? "otp" : "totp")}
                     >
-                        {method === "otp" ? <QrCodeIcon /> : <MailIcon />}
-                        {method === "otp" ? "Continue with Authenticator" : "Send code via Email"}
+                        {method === "otp" ? <QrCodeIcon /> : <SendIcon />}
+                        {method === "otp"
+                            ? "Continue with Authenticator"
+                            : "Send verification code"}
                     </Button>
                 )}
             </div>

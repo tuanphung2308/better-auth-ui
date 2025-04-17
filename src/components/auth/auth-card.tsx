@@ -10,7 +10,6 @@ import { cn } from "../../lib/utils"
 import { SettingsCards, type SettingsCardsClassNames } from "../settings/settings-cards"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { AuthForm, type AuthFormClassNames } from "./auth-form"
-import { TwoFactorForm } from "./two-factor-form"
 
 export interface AuthCardClassNames {
     base?: string
@@ -126,24 +125,14 @@ export function AuthCard({
             </CardHeader>
 
             <CardContent className={classNames?.content}>
-                {view === "twoFactor" ? (
-                    <TwoFactorForm
-                        callbackURL={callbackURL}
-                        classNames={classNames?.form}
-                        localization={localization}
-                        redirectTo={redirectTo}
-                        view={view}
-                    />
-                ) : (
-                    <AuthForm
-                        callbackURL={callbackURL}
-                        classNames={classNames?.form}
-                        localization={localization}
-                        redirectTo={redirectTo}
-                        socialLayout={socialLayout}
-                        view={view}
-                    />
-                )}
+                <AuthForm
+                    callbackURL={callbackURL}
+                    classNames={classNames?.form}
+                    localization={localization}
+                    redirectTo={redirectTo}
+                    socialLayout={socialLayout}
+                    view={view}
+                />
             </CardContent>
 
             {credentials && signUp && (
