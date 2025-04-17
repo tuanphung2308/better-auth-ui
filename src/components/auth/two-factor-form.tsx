@@ -265,6 +265,7 @@ export function TwoFactorForm({
                             name="trustDevice"
                             checked={trustDevice}
                             onCheckedChange={(checked) => setTrustDevice(checked === true)}
+                            disabled={isSubmitting}
                         />
 
                         <Label htmlFor="trustDevice" className={classNames?.label}>
