@@ -455,7 +455,10 @@ export const authLocalization = {
 
     /** @default "Please verify your email address. Check your inbox for the verification email. If you haven't received the email, click the button below to resend." */
     verifyYourEmailDescription:
-        "Please verify your email address. Check your inbox for the verification email. If you haven't received the email, click the button below to resend."
+        "Please verify your email address. Check your inbox for the verification email. If you haven't received the email, click the button below to resend.",
+
+    /** @default "Resend code" */
+    resendCode: "Resend code"
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>

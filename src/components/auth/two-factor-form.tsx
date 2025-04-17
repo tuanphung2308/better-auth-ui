@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import QRCode from "react-qr-code"
 
 import { Loader2, QrCodeIcon, SendIcon } from "lucide-react"
@@ -33,6 +33,7 @@ export function TwoFactorForm({
     const [code, setCode] = useState("")
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [trustDevice, setTrustDevice] = useState(false)
+    const initialSendRef = useRef(false)
 
     const { basePath, viewPaths, twoFactor, Link, authClient, toast } = useContext(AuthUIContext)
 
@@ -51,7 +52,8 @@ export function TwoFactorForm({
     }, [twoFactor, method])
 
     useEffect(() => {
-        if (method === "otp" && cooldownSeconds <= 0) {
+        if (method === "otp" && cooldownSeconds <= 0 && !initialSendRef.current) {
+            initialSendRef.current = true
             sendOtp()
         }
     }, [method, cooldownSeconds])
@@ -179,7 +181,7 @@ export function TwoFactorForm({
                         disabled={cooldownSeconds > 0 || isSendingOtp}
                     >
                         {isSendingOtp ? <Loader2 className="animate-spin" /> : <SendIcon />}
-                        Resend code
+                        {localization.resendCode}
                         {cooldownSeconds > 0 && ` (${cooldownSeconds}s)`}
                     </Button>
                 )}
