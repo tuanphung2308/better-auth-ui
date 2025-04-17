@@ -358,8 +358,11 @@ export const authLocalization = {
     /** @default "Please enter the one-time password sent to you." */
     twoFactorOtpDescription: "Please enter your one-time password sent to you.",
 
+    /** @default "Please enter your password to disable 2FA." */
+    twoFactorDisableInstructions: "Please enter your password to disable 2FA.",
+
     /** @default "Please enter your password to enable 2FA" */
-    twoFactorInstructions: "Please enter your password to enable 2FA.",
+    twoFactorEnableInstructions: "Please enter your password to enable 2FA.",
 
     /** @default "When signing in, you'll need to provide a code from your authenticator app in addition to your password." */
     twoFactorEnabledInstructions:
@@ -367,12 +370,6 @@ export const authLocalization = {
 
     /** @default "Two-factor authentication enabled" */
     twoFactorEnabled: "Two-factor authentication enabled",
-
-    /** @default "Please prepare your authenticator app to scan the QR code" */
-    twoFactorEnableInstructions: "Please prepare your authenticator app to scan the QR code",
-
-    /** @default "You will need to enter your password to disable 2FA" */
-    twoFactorDisableInstructions: "You will need to enter your password to disable 2FA",
 
     /** @default "For security reasons, please enter your password to disable two-factor authentication." */
     twoFactorDisableConfirmDescription:

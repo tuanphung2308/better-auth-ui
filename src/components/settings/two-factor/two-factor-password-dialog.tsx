@@ -106,7 +106,11 @@ export function TwoFactorPasswordDialog({
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
                         <DialogTitle>{localization.confirmPassword}</DialogTitle>
-                        <DialogDescription>{localization.twoFactorInstructions}</DialogDescription>
+                        <DialogDescription>
+                            {isTwoFactorEnabled
+                                ? localization.twoFactorDisableInstructions
+                                : localization.twoFactorEnableInstructions}
+                        </DialogDescription>
                     </DialogHeader>
 
                     <form onSubmit={handleSubmit}>
