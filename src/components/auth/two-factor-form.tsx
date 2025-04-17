@@ -36,6 +36,11 @@ export function TwoFactorForm({
     const initialSendRef = useRef(false)
 
     const { basePath, viewPaths, twoFactor, Link, authClient, toast } = useContext(AuthUIContext)
+    const {
+        hooks: { useSession }
+    } = useContext(AuthUIContext)
+    const { data: sessionData } = useSession()
+    const isTwoFactorEnabled = sessionData?.user.twoFactorEnabled
 
     const [method, setMethod] = useState<"totp" | "otp">(
         twoFactor?.includes("totp") ? "totp" : "otp"
@@ -73,7 +78,6 @@ export function TwoFactorForm({
         try {
             setIsSendingOtp(true)
             await (authClient as AuthClient).twoFactor.sendOtp({ fetchOptions: { throw: true } })
-
             setCooldownSeconds(60)
         } catch (error) {
             toast({
@@ -103,6 +107,13 @@ export function TwoFactorForm({
                 fetchOptions: { throw: true }
             })
 
+            if (!isTwoFactorEnabled) {
+                toast({
+                    variant: "success",
+                    message: localization.twoFactorEnabled
+                })
+            }
+
             await onSuccess()
 
             setTimeout(() => {
@@ -126,7 +137,7 @@ export function TwoFactorForm({
             {twoFactor?.includes("totp") && totpURI && method === "totp" && (
                 <div className="space-y-3">
                     <Label>{localization.twoFactorTotpLabel}</Label>
-                    <QRCode value={totpURI} />
+                    <QRCode className="border shadow-xs" value={totpURI} />
                 </div>
             )}
 
