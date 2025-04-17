@@ -73,6 +73,8 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         refetch: refetchAccounts
     } = useListAccounts()
 
+    const credentialsLinked = accounts?.some((acc) => acc.provider === "credential")
+
     const {
         data: sessions,
         isPending: sessionsPending,
@@ -247,7 +249,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         />
                     )}
 
-                    {twoFactor && (
+                    {twoFactor && credentialsLinked && (
                         <TwoFactorCard classNames={classNames?.card} localization={localization} />
                     )}
 

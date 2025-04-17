@@ -31,17 +31,15 @@ export function TwoFactorCard({ className, classNames, localization }: TwoFactor
         hooks: { useSession }
     } = useContext(AuthUIContext)
 
-    // State for password dialog
     const [showPasswordDialog, setShowPasswordDialog] = useState(false)
 
-    // Merge localizations with context providing defaults
     localization = { ...contextLocalization, ...localization }
 
     const { data: sessionData, isPending } = useSession()
     const isTwoFactorEnabled = sessionData?.user.twoFactorEnabled
 
     return (
-        <>
+        <div>
             <SettingsCard
                 className={className}
                 classNames={classNames}
@@ -58,6 +56,6 @@ export function TwoFactorCard({ className, classNames, localization }: TwoFactor
                 onOpenChange={setShowPasswordDialog}
                 isTwoFactorEnabled={!!isTwoFactorEnabled}
             />
-        </>
+        </div>
     )
 }

@@ -228,7 +228,7 @@ export function AuthForm({
 
                     if (response.twoFactorRedirect) {
                         // Redirect to 2FA verification screen if required
-                        navigate(`${basePath}/${viewPaths.twoFactorPrompt}`)
+                        navigate(`${basePath}/${viewPaths.twoFactor}`)
                     } else {
                         onSuccess()
                     }

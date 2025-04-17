@@ -201,6 +201,9 @@ export const authLocalization = {
     /** @default "No TOTP URI received from server" */
     noTotpUriError: "No TOTP URI received from server",
 
+    /** @default "One-Time Password" */
+    oneTimePassword: "One-Time Password",
+
     /** @default "Or continue with" */
     orContinueWith: "Or continue with",
 
@@ -334,11 +337,23 @@ export const authLocalization = {
     /** @default "Switch Account" */
     switchAccount: "Switch Account",
 
+    /** @default "Trust this device" */
+    trustDevice: "Trust this device",
+
     /** @default "Two-Factor" */
     twoFactor: "Two-Factor",
 
-    /** @default "Add an extra layer of security to your account" */
-    twoFactorDescription: "Add an extra layer of security to your account.",
+    /** @default "Verify code" */
+    twoFactorAction: "Verify code",
+
+    /** @default "Please enter your one-time password to continue." */
+    twoFactorDescription: "Please enter your one-time password to continue.",
+
+    /** @default "Add an extra layer of security to your account." */
+    twoFactorCardDescription: "Add an extra layer of security to your account.",
+
+    /** @default "Please enter the one-time password sent to you." */
+    twoFactorOtpDescription: "Please enter your one-time password sent to you.",
 
     /** @default "Please enter your password to enable 2FA" */
     twoFactorInstructions: "Please enter your password to enable 2FA.",
@@ -383,13 +398,13 @@ export const authLocalization = {
     twoFactorSetup: "Two-Factor Setup",
 
     /** @default "Scan the QR code with your authenticator app" */
-    twoFactorSetupDescription: "Scan the QR code with your authenticator app",
+    twoFactorTotpLabel: "Scan the QR code with your authenticator app",
 
     /** @default "Unlink" */
     unlink: "Unlink",
 
-    /** @default "Forgot your authenticator?" */
-    forgotAuthenticator: "Forgot your authenticator?",
+    /** @default "Forgot authenticator?" */
+    forgotAuthenticator: "Forgot authenticator?",
 
     /** @default "Found your authenticator?" */
     foundAuthenticator: "Found your authenticator?",

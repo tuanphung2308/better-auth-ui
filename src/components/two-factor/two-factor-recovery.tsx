@@ -14,7 +14,7 @@ export interface TwoFactorRecoveryProps {
     error?: string
     isSubmitting?: boolean
     onSubmit: (code: string, trustDevice: boolean) => void
-    localization: AuthLocalization
+    localization?: Partial<AuthLocalization>
     className?: string
     onBackToPrompt?: () => void
 }
@@ -42,8 +42,8 @@ export const TwoFactorRecovery = ({
             <div className="space-y-2">
                 <Alert>
                     <Info className="h-4 w-4" />
-                    <AlertTitle>{localization.enterBackupCode}</AlertTitle>
-                    <AlertDescription>{localization.backupCodePlaceholder}</AlertDescription>
+                    <AlertTitle>{localization?.enterBackupCode}</AlertTitle>
+                    <AlertDescription>{localization?.backupCodePlaceholder}</AlertDescription>
                 </Alert>
 
                 {error && (
@@ -77,11 +77,11 @@ export const TwoFactorRecovery = ({
                                         htmlFor="trust-device"
                                         className="cursor-help text-muted-foreground text-sm"
                                     >
-                                        {localization.rememberDevice}
+                                        {localization?.rememberDevice}
                                     </Label>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    {localization.rememberDeviceDescription}
+                                    {localization?.rememberDeviceDescription}
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>

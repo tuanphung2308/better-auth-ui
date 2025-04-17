@@ -15,7 +15,7 @@ export interface TwoFactorPromptProps {
     isSubmitting?: boolean
     onSubmit: (code: string, trustDevice: boolean) => void
     onBackupCodeToggle?: (isBackupCode: boolean) => void
-    localization: AuthLocalization
+    localization?: Partial<AuthLocalization>
     className?: string
     isSetup?: boolean
 }
@@ -46,8 +46,8 @@ export const TwoFactorPrompt = ({
                 {isBackupCode && (
                     <Alert>
                         <Info className="h-4 w-4" />
-                        <AlertTitle>{localization.enterBackupCode}</AlertTitle>
-                        <AlertDescription>{localization.backupCodePlaceholder}</AlertDescription>
+                        <AlertTitle>{localization?.enterBackupCode}</AlertTitle>
+                        <AlertDescription>{localization?.backupCodePlaceholder}</AlertDescription>
                     </Alert>
                 )}
 
@@ -82,11 +82,11 @@ export const TwoFactorPrompt = ({
                                         htmlFor="trust-device"
                                         className="cursor-help text-muted-foreground text-sm"
                                     >
-                                        {localization.rememberDevice}
+                                        {localization?.rememberDevice}
                                     </Label>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    {localization.rememberDeviceDescription}
+                                    {localization?.rememberDeviceDescription}
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>

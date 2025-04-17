@@ -111,25 +111,6 @@ export function AuthCard({
             ? localization.disabledCredentialsDescription
             : localization[`${view}Description` as keyof typeof localization]
 
-    let footerText: string | undefined = undefined
-    let footerLinkText: string | undefined = undefined
-    let footerLinkPath: string | undefined = undefined
-
-    if (credentials && signUp && ["signIn", "signUp"].includes(view)) {
-        footerText =
-            view === "signIn" ? localization.dontHaveAnAccount : localization.alreadyHaveAnAccount
-        footerLinkText = view === "signIn" ? localization.signUp : localization.signIn
-        footerLinkPath = viewPaths[view === "signIn" ? "signUp" : "signIn"]
-    } else if (view === "twoFactorPrompt") {
-        footerText = localization.forgotAuthenticator
-        footerLinkText = localization.useBackupCode
-        footerLinkPath = viewPaths.twoFactorRecovery
-    } else if (view === "twoFactorRecovery") {
-        footerText = localization.foundAuthenticator
-        footerLinkText = localization.useTwoFactorCode
-        footerLinkPath = viewPaths.twoFactorPrompt
-    }
-
     return (
         <Card className={cn("w-full max-w-sm text-start", className, classNames?.base)}>
             <CardHeader className={classNames?.header}>
@@ -145,7 +126,7 @@ export function AuthCard({
             </CardHeader>
 
             <CardContent className={classNames?.content}>
-                {["twoFactorPrompt", "twoFactorRecovery", "twoFactorSetup"].includes(view) ? (
+                {view === "twoFactor" ? (
                     <TwoFactorForm
                         callbackURL={callbackURL}
                         classNames={classNames?.form}
@@ -165,20 +146,22 @@ export function AuthCard({
                 )}
             </CardContent>
 
-            {(footerText || footerLinkText) && (
+            {credentials && signUp && (
                 <CardFooter
                     className={cn(
                         "justify-center gap-1 text-muted-foreground text-sm",
                         classNames?.footer
                     )}
                 >
-                    {footerText && <span>{footerText}</span>}
+                    {view === "signIn"
+                        ? localization.dontHaveAnAccount
+                        : localization.alreadyHaveAnAccount}
 
                     <Link
                         className={cn("text-foreground underline", classNames?.footerLink)}
-                        href={`${basePath}/${footerLinkPath}`}
+                        href={`${basePath}/${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
                     >
-                        {footerLinkText}
+                        {view === "signIn" ? localization.signUp : localization.signIn}
                     </Link>
                 </CardFooter>
             )}

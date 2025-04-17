@@ -124,7 +124,7 @@ export function TwoFactorCard({ className, classNames, localization }: TwoFactor
                 sessionStorage.setItem("twoFactorRefetchFunction", "custom")
 
                 // Redirect to setup page
-                navigate(`${basePath}/${viewPaths.twoFactorSetup}`)
+                navigate(`${basePath}/${viewPaths.twoFactor}?setup`)
             } else {
                 toast({
                     variant: "error",
