@@ -341,6 +341,7 @@ export const AuthUIProvider = ({
                 basePath: basePath === "/" ? "" : basePath,
                 baseURL,
                 redirectTo,
+                changeEmail,
                 credentials,
                 forgotPassword,
                 freshAge,
