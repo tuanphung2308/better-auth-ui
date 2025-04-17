@@ -414,6 +414,12 @@ export const authLocalization = {
     /** @default "Scan the QR Code with your Authenticator" */
     twoFactorTotpLabel: "Scan the QR Code with your Authenticator",
 
+    /** @default "Continue with Authenticator" */
+    continueWithAuthenticator: "Continue with Authenticator",
+
+    /** @default "Send verification code" */
+    sendVerificationCode: "Send verification code",
+
     /** @default "Unlink" */
     unlink: "Unlink",
 

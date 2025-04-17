@@ -34,15 +34,7 @@ export function TwoFactorForm({
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [trustDevice, setTrustDevice] = useState(false)
 
-    const {
-        basePath,
-        viewPaths,
-        localization: contextLocalization,
-        twoFactor,
-        Link,
-        authClient,
-        toast
-    } = useContext(AuthUIContext)
+    const { basePath, viewPaths, twoFactor, Link, authClient, toast } = useContext(AuthUIContext)
 
     const [method, setMethod] = useState<"totp" | "otp">(
         twoFactor?.includes("totp") ? "totp" : "otp"
@@ -78,12 +70,14 @@ export function TwoFactorForm({
 
         try {
             setIsSendingOtp(true)
-            await (authClient as AuthClient).twoFactor.sendOtp()
+            await (authClient as AuthClient).twoFactor.sendOtp({ fetchOptions: { throw: true } })
 
             setCooldownSeconds(60)
         } catch (error) {
-            console.error("Failed to send OTP:", error)
-            toast?.({ variant: "error", message: "Failed to send verification code" })
+            toast({
+                variant: "error",
+                message: getErrorMessage(error) || localization?.requestFailed
+            })
         }
 
         setIsSendingOtp(false)
@@ -198,8 +192,8 @@ export function TwoFactorForm({
                     >
                         {method === "otp" ? <QrCodeIcon /> : <SendIcon />}
                         {method === "otp"
-                            ? "Continue with Authenticator"
-                            : "Send verification code"}
+                            ? localization.continueWithAuthenticator
+                            : localization.sendVerificationCode}
                     </Button>
                 )}
             </div>
