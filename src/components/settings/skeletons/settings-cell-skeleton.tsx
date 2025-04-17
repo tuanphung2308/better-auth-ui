@@ -3,7 +3,7 @@
 import { cn } from "../../../lib/utils"
 import { Card } from "../../ui/card"
 import { Skeleton } from "../../ui/skeleton"
-import type { SettingsCardClassNames } from "../settings-card"
+import type { SettingsCardClassNames } from "../shared/settings-card"
 
 export function SettingsCellSkeleton({ classNames }: { classNames?: SettingsCardClassNames }) {
     return (

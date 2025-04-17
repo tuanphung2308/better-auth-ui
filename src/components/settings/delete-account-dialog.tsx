@@ -16,7 +16,7 @@ import {
 } from "../ui/dialog"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-import type { SettingsCardClassNames } from "./settings-card"
+import type { SettingsCardClassNames } from "./shared/settings-card"
 
 export interface DeleteAccountDialogProps {
     open: boolean
@@ -93,8 +93,8 @@ export function DeleteAccountDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-md">
-                <form action={action} className="grid gap-4">
+            <form action={action}>
+                <DialogContent className="sm:max-w-md">
                     <DialogHeader>
                         <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                             {localization?.deleteAccount}
@@ -126,7 +126,15 @@ export function DeleteAccountDialog({
 
                     <DialogFooter>
                         <Button
-                            className={cn("mx-auto md:mx-0 md:ms-auto", classNames?.button)}
+                            type="button"
+                            variant="secondary"
+                            onClick={() => onOpenChange(false)}
+                        >
+                            {localization.cancel}
+                        </Button>
+
+                        <Button
+                            className={classNames?.button}
                             disabled={isSubmitting}
                             variant="destructive"
                         >
@@ -141,8 +149,8 @@ export function DeleteAccountDialog({
                             )}
                         </Button>
                     </DialogFooter>
-                </form>
-            </DialogContent>
+                </DialogContent>
+            </form>
         </Dialog>
     )
 }

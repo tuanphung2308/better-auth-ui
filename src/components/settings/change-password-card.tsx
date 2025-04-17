@@ -9,8 +9,7 @@ import { ConfirmPasswordInput } from "../confirm-password-input"
 import { PasswordInput } from "../password-input"
 import { CardContent } from "../ui/card"
 import { Label } from "../ui/label"
-import type { SettingsCardClassNames } from "./settings-card"
-import { SettingsCard } from "./settings-card"
+import { SettingsCard, type SettingsCardClassNames } from "./shared/settings-card"
 import { InputFieldSkeleton } from "./skeletons/input-field-skeleton"
 
 export interface ChangePasswordCardProps {

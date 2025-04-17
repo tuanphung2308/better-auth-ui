@@ -1,14 +1,14 @@
 "use client"
 
 import { type ReactNode, useContext, useState } from "react"
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn } from "../../lib/utils"
-import type { FieldType } from "../../types/additional-fields"
-import { CardContent } from "../ui/card"
-import { Checkbox } from "../ui/checkbox"
-import { Input } from "../ui/input"
-import { Skeleton } from "../ui/skeleton"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { cn } from "../../../lib/utils"
+import type { FieldType } from "../../../types/additional-fields"
+import { CardContent } from "../../ui/card"
+import { Checkbox } from "../../ui/checkbox"
+import { Input } from "../../ui/input"
+import { Skeleton } from "../../ui/skeleton"
 import { SettingsCard, type SettingsCardClassNames } from "./settings-card"
 
 export interface UpdateFieldCardProps {

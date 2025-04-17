@@ -2,12 +2,12 @@
 
 import { type ReactNode, useActionState, useContext } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { getErrorMessage } from "../../lib/get-error-message"
-import { cn } from "../../lib/utils"
-import { Card } from "../ui/card"
-import type { UserAvatarClassNames } from "../user-avatar"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { getErrorMessage } from "../../../lib/get-error-message"
+import { cn } from "../../../lib/utils"
+import { Card } from "../../ui/card"
+import type { UserAvatarClassNames } from "../../user-avatar"
 import { SettingsCardFooter } from "./settings-card-footer"
 import { SettingsCardHeader } from "./settings-card-header"
 

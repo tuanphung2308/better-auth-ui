@@ -1,4 +1,6 @@
 export const authViewPaths = {
+    /** @default "recover" */
+    recover: "recover",
     /** @default "callback" */
     callback: "callback",
     /** @default "forgot-password" */
@@ -14,7 +16,9 @@ export const authViewPaths = {
     /** @default "sign-out" */
     signOut: "sign-out",
     /** @default "sign-up" */
-    signUp: "sign-up"
+    signUp: "sign-up",
+    /** @default "two-factor" */
+    twoFactor: "two-factor"
 }
 
 export type AuthViewPaths = typeof authViewPaths

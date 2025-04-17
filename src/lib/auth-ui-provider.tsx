@@ -195,6 +195,11 @@ export type AuthUIContextType = {
     signUpFields?: string[]
     toast: RenderToast
     /**
+     * Enable or disable two-factor authentication support
+     * @default undefined
+     */
+    twoFactor?: ("otp" | "totp")[]
+    /**
      * Enable or disable Username support
      * @default false
      */
@@ -343,6 +348,7 @@ export const AuthUIProvider = ({
                 redirectTo,
                 changeEmail,
                 credentials,
+                changeEmail,
                 forgotPassword,
                 freshAge,
                 hooks: { ...defaultHooks, ...hooks },

@@ -8,8 +8,7 @@ import { cn } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
 import { CardContent } from "../ui/card"
 import { PasskeyCell } from "./passkey-cell"
-import type { SettingsCardClassNames } from "./settings-card"
-import { SettingsCard } from "./settings-card"
+import { SettingsCard, type SettingsCardClassNames } from "./shared/settings-card"
 import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
 export interface PasskeysCardProps {

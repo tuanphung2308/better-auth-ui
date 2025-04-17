@@ -3,10 +3,10 @@
 import { Loader2 } from "lucide-react"
 import type { ReactNode } from "react"
 
-import { cn } from "../../lib/utils"
-import { Button } from "../ui/button"
-import { CardDescription, CardFooter } from "../ui/card"
-import { Skeleton } from "../ui/skeleton"
+import { cn } from "../../../lib/utils"
+import { Button } from "../../ui/button"
+import { CardDescription, CardFooter } from "../../ui/card"
+import { Skeleton } from "../../ui/skeleton"
 import type { SettingsCardClassNames } from "./settings-card"
 
 export interface SettingsCardFooterProps {

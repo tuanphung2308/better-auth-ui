@@ -16,9 +16,10 @@ import { DeleteAccountCard } from "./delete-account-card"
 import { PasskeysCard } from "./passkeys-card"
 import { ProvidersCard } from "./providers-card"
 import { SessionsCard } from "./sessions-card"
-import type { SettingsCardClassNames } from "./settings-card"
+import type { SettingsCardClassNames } from "./shared/settings-card"
+import { UpdateFieldCard } from "./shared/update-field-card"
+import { TwoFactorCard } from "./two-factor/two-factor-card"
 import { UpdateAvatarCard } from "./update-avatar-card"
-import { UpdateFieldCard } from "./update-field-card"
 import { UpdateNameCard } from "./update-name-card"
 import { UpdateUsernameCard } from "./update-username-card"
 
@@ -56,7 +57,8 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         passkey,
         providers,
         settingsFields,
-        username
+        username,
+        twoFactor
     } = useContext(AuthUIContext)
 
     localization = { ...authLocalization, ...localization }
@@ -70,6 +72,8 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         isPending: accountsPending,
         refetch: refetchAccounts
     } = useListAccounts()
+
+    const credentialsLinked = accounts?.some((acc) => acc.provider === "credential")
 
     const {
         data: sessions,
@@ -243,6 +247,10 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             refetch={refetchPasskeys}
                             skipHook
                         />
+                    )}
+
+                    {twoFactor && credentialsLinked && (
+                        <TwoFactorCard classNames={classNames?.card} localization={localization} />
                     )}
 
                     <SessionsCard

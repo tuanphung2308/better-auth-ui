@@ -17,7 +17,7 @@ import {
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
 import { UserView } from "../user-view"
-import type { SettingsCardClassNames } from "./settings-card"
+import type { SettingsCardClassNames } from "./shared/settings-card"
 
 export interface AccountCellProps {
     className?: string

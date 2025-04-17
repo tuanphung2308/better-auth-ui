@@ -7,7 +7,7 @@ import { cn } from "../../lib/utils"
 import { CardContent } from "../ui/card"
 import { Input } from "../ui/input"
 import { Skeleton } from "../ui/skeleton"
-import { SettingsCard, type SettingsCardClassNames } from "./settings-card"
+import { SettingsCard, type SettingsCardClassNames } from "./shared/settings-card"
 
 export interface ChangeEmailCardProps {
     className?: string

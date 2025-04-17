@@ -1,5 +1,6 @@
 import type { InstantReactWebDatabase } from "@instantdb/react"
-import type { Session, User } from "../../types/auth-client"
+import type { User } from "better-auth"
+import type { Session } from "../../types/auth-client"
 import type { AuthHooks } from "../../types/auth-hooks"
 import type { AuthMutators } from "../../types/auth-mutators"
 import { useListAccounts } from "./use-list-accounts"

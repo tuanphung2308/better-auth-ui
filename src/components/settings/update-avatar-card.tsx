@@ -9,9 +9,9 @@ import { cn } from "../../lib/utils"
 import { Card } from "../ui/card"
 import { Skeleton } from "../ui/skeleton"
 import { UserAvatar } from "../user-avatar"
-import type { SettingsCardClassNames } from "./settings-card"
-import { SettingsCardFooter } from "./settings-card-footer"
-import { SettingsCardHeader } from "./settings-card-header"
+import type { SettingsCardClassNames } from "./shared/settings-card"
+import { SettingsCardFooter } from "./shared/settings-card-footer"
+import { SettingsCardHeader } from "./shared/settings-card-header"
 
 async function resizeAndCropImage(
     file: File,

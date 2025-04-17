@@ -3,8 +3,7 @@ import { useContext, useState } from "react"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { DeleteAccountDialog } from "./delete-account-dialog"
-import { SettingsCard } from "./settings-card"
-import type { SettingsCardClassNames } from "./settings-card"
+import { SettingsCard, type SettingsCardClassNames } from "./shared/settings-card"
 
 export interface DeleteAccountCardProps {
     className?: string

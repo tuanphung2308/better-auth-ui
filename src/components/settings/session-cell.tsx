@@ -11,7 +11,7 @@ import { getErrorMessage } from "../../lib/get-error-message"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
 import { Card } from "../ui/card"
-import type { SettingsCardClassNames } from "./settings-card"
+import type { SettingsCardClassNames } from "./shared/settings-card"
 
 export interface SessionCellProps {
     className?: string

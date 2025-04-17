@@ -18,10 +18,12 @@ import { Label } from "../ui/label"
 import { Separator } from "../ui/separator"
 import { ActionButton } from "./action-button"
 import { AdditionalFieldInput } from "./additional-field-input"
+import { BackupCodeForm } from "./backup-code-form"
 import { MagicLinkButton } from "./magic-link-button"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
 import { RememberMeCheckbox } from "./remember-me-checkbox"
+import { TwoFactorForm } from "./two-factor-form"
 
 export type AuthFormClassNames = {
     base?: string
@@ -220,13 +222,18 @@ export function AuthForm({
                         }
                     }
 
-                    await authClient.signIn.email({
+                    const response = (await authClient.signIn.email({
                         email,
                         ...params,
                         fetchOptions: { throw: true }
-                    })
+                    })) as Awaited<ReturnType<AuthClient["signIn"]["email"]>>
 
-                    onSuccess()
+                    if (response.twoFactorRedirect) {
+                        navigate(`${basePath}/${viewPaths.twoFactor}`)
+                    } else {
+                        onSuccess()
+                    }
+
                     break
                 }
 
@@ -413,6 +420,27 @@ export function AuthForm({
     }, [isRestoring, view, replace, persistClient, getRedirectTo, onSuccess])
 
     if (["signOut", "callback"].includes(view)) return <Loader2 className="animate-spin" />
+
+    if (view === "twoFactor") {
+        return (
+            <TwoFactorForm
+                classNames={classNames}
+                localization={localization}
+                onSuccess={onSuccess}
+            />
+        )
+    }
+
+    if (view === "recover") {
+        return (
+            <BackupCodeForm
+                className={className}
+                classNames={classNames}
+                localization={localization}
+                onSuccess={onSuccess}
+            />
+        )
+    }
 
     return (
         <form action={formAction} className={cn("grid w-full gap-6", className, classNames?.base)}>
