@@ -44,7 +44,7 @@ export function TwoFactorCard({ className, classNames, localization }: TwoFactor
                 className={className}
                 classNames={classNames}
                 isPending={isPending}
-                description={localization.twoFactorDescription}
+                description={localization.twoFactorCardDescription}
                 title={localization.twoFactor}
                 actionLabel={isTwoFactorEnabled ? localization.disable : localization.enable}
                 instructions={localization.twoFactorInstructions}

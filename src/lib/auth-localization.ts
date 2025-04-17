@@ -35,9 +35,9 @@ export const authLocalization = {
     /** @default "Backup Codes" */
     backupCodes: "Backup Codes",
 
-    /** @default "Save these codes in a safe place for account recovery" */
+    /** @default "Save these backup codes in a secure place. You can use them to access your account if you lose your two-factor authentication method." */
     backupCodesDescription:
-        "Save these backup codes in a secure place. You can use them to access your account if you lose your two-factor authentication device.",
+        "Save these backup codes in a secure place. You can use them to access your account if you lose your two-factor authentication method.",
 
     /** @default "Please enter your password to view your backup codes." */
     backupCodesPasswordDescription: "Please enter your password to view your backup codes.",
@@ -71,10 +71,13 @@ export const authLocalization = {
     confirmPasswordPlaceholder: "Confirm Password",
 
     /** @default "Copied to clipboard" */
-    copied: "Copied to clipboard",
+    copiedToClipboard: "Copied to clipboard",
 
     /** @default "Copy all codes" */
     copyAllCodes: "Copy all codes",
+
+    /** @default "Continue" */
+    continue: "Continue",
 
     /** @default "Current Password" */
     currentPassword: "Current Password",
@@ -340,8 +343,8 @@ export const authLocalization = {
     /** @default "Trust this device" */
     trustDevice: "Trust this device",
 
-    /** @default "Two-Factor" */
-    twoFactor: "Two-Factor",
+    /** @default "Two-Factor Authentication" */
+    twoFactor: "Two-Factor Authentication",
 
     /** @default "Verify code" */
     twoFactorAction: "Verify code",
@@ -397,8 +400,8 @@ export const authLocalization = {
     /** @default "Two-Factor Setup" */
     twoFactorSetup: "Two-Factor Setup",
 
-    /** @default "Scan the QR code with your authenticator app" */
-    twoFactorTotpLabel: "Scan the QR code with your authenticator app",
+    /** @default "Scan the QR Code with your Authenticator" */
+    twoFactorTotpLabel: "Scan the QR Code with your Authenticator",
 
     /** @default "Unlink" */
     unlink: "Unlink",

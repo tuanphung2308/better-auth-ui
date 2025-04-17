@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import QRCode from "react-qr-code"
 
 import { MailIcon, QrCodeIcon } from "lucide-react"
@@ -38,6 +38,14 @@ export function TwoFactorForm({ className, classNames, localization }: TwoFactor
     const [method, setMethod] = useState<"totp" | "otp">(
         twoFactor?.includes("totp") ? "totp" : "otp"
     )
+
+    useEffect(() => {
+        if (!twoFactor?.includes("totp") && method === "totp") {
+            setMethod("otp")
+        } else if (!twoFactor?.includes("otp") && method === "otp") {
+            setMethod("totp")
+        }
+    }, [twoFactor, method])
 
     localization = { ...contextLocalization, ...localization }
 
@@ -88,7 +96,7 @@ export function TwoFactorForm({ className, classNames, localization }: TwoFactor
                 {twoFactor && twoFactor.length > 1 && (
                     <Button
                         type="button"
-                        variant="outline"
+                        variant="secondary"
                         onClick={() => setMethod(method === "totp" ? "otp" : "totp")}
                     >
                         {method === "otp" ? <QrCodeIcon /> : <MailIcon />}
