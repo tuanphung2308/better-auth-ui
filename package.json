@@ -6,7 +6,7 @@
     "scripts": {
         "build": "tsup --clean --dts",
         "dev": "tsc-watch",
-        "prepublishOnly": "rm -rf dist && tsup --clean --dts"
+        "prepublishOnly": "rm -rf dist && turbo build"
     },
     "type": "module",
     "main": "./dist/index.cjs",
