@@ -72,6 +72,9 @@ export const authLocalization = {
     /** @default "Confirm password is required" */
     confirmPasswordRequired: "Confirm password is required",
 
+    /** @default "Continue with Authenticator" */
+    continueWithAuthenticator: "Continue with Authenticator",
+
     /** @default "Copied to clipboard" */
     copiedToClipboard: "Copied to clipboard",
 
@@ -131,11 +134,17 @@ export const authLocalization = {
     /** @default "Please enter a valid email address." */
     emailInstructions: "Please enter a valid email address.",
 
-    /** @default "m@example.com" */
-    emailPlaceholder: "m@example.com",
+    /** @default "Email address is invalid" */
+    emailInvalid: "Email address is invalid",
 
     /** @default "Email is the same" */
     emailIsTheSame: "Email is the same",
+
+    /** @default "m@example.com" */
+    emailPlaceholder: "m@example.com",
+
+    /** @default "Email address is required" */
+    emailRequired: "Email address is required",
 
     /** @default "Your email has been updated." */
     emailUpdated: "Your email has been updated.",
@@ -229,12 +238,6 @@ export const authLocalization = {
 
     /** @default "Password" */
     password: "Password",
-
-    /** @default "Enter your current password." */
-    passwordDescription: "Enter your current password.",
-
-    /** @default "Please use 8 characters at minimum." */
-    passwordInstructions: "Please use 8 characters at minimum.",
 
     /** @default "Password" */
     passwordPlaceholder: "Password",
@@ -374,9 +377,6 @@ export const authLocalization = {
 
     /** @default "Scan the QR Code with your Authenticator" */
     twoFactorTotpLabel: "Scan the QR Code with your Authenticator",
-
-    /** @default "Continue with Authenticator" */
-    continueWithAuthenticator: "Continue with Authenticator",
 
     /** @default "Send verification code" */
     sendVerificationCode: "Send verification code",

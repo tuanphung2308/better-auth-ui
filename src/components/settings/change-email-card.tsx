@@ -31,17 +31,20 @@ export function ChangeEmailCard({
         authClient,
         emailVerification,
         hooks: { useSession },
-        localization: authLocalization,
+        localization: contextLocalization,
         toast
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     const { data: sessionData, isPending: sessionPending, refetch } = useSession()
     const [resendDisabled, setResendDisabled] = useState(false)
 
     const formSchema = z.object({
-        email: z.string().email({ message: localization.emailInstructions })
+        email: z
+            .string()
+            .min(1, { message: localization.emailRequired })
+            .email({ message: localization.emailInvalid })
     })
 
     const form = useForm({

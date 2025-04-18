@@ -36,7 +36,7 @@ export function AccountCell({
 }: AccountCellProps) {
     const {
         basePath,
-        localization: authLocalization,
+        localization: contextLocalization,
         hooks: { useSession },
         mutators: { revokeDeviceSession, setActiveSession },
         toast,
@@ -44,7 +44,7 @@ export function AccountCell({
         navigate
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     const { data: sessionData } = useSession()
     const [isLoading, setIsLoading] = useState(false)

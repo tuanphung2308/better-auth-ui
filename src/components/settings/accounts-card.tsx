@@ -36,12 +36,12 @@ export function AccountsCard({
     const {
         basePath,
         hooks: { useListDeviceSessions },
-        localization: authLocalization,
+        localization: contextLocalization,
         viewPaths,
         navigate
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     if (!skipHook) {
         const result = useListDeviceSessions()

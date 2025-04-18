@@ -118,7 +118,7 @@ export function ChangePasswordCard({
             <Form {...setPasswordForm}>
                 <form onSubmit={setPasswordForm.handleSubmit(setPassword)}>
                     <NewSettingsCard
-                        title={localization.changePassword}
+                        title={localization.setPassword}
                         description={localization.setPasswordDescription}
                         actionLabel={localization.setPassword}
                         isPending={isPending}
@@ -174,6 +174,7 @@ export function ChangePasswordCard({
                                                     {...field}
                                                 />
                                             </FormControl>
+
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -200,6 +201,7 @@ export function ChangePasswordCard({
                                                     {...field}
                                                 />
                                             </FormControl>
+
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -226,6 +228,7 @@ export function ChangePasswordCard({
                                                         {...field}
                                                     />
                                                 </FormControl>
+
                                                 <FormMessage />
                                             </FormItem>
                                         )}
