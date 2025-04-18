@@ -348,8 +348,8 @@ export const authLocalization = {
     /** @default "Trust this device" */
     trustDevice: "Trust this device",
 
-    /** @default "Two-Factor Authentication" */
-    twoFactor: "Two-Factor Authentication",
+    /** @default "Two-Factor" */
+    twoFactor: "Two-Factor",
 
     /** @default "Verify code" */
     twoFactorAction: "Verify code",
