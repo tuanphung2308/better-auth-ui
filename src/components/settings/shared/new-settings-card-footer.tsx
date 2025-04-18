@@ -24,6 +24,7 @@ export interface SettingsCardFooterProps {
 
 export function NewSettingsCardFooter({
     actionLabel,
+    disabled,
     isPending,
     instructions,
     classNames,
@@ -75,7 +76,7 @@ export function NewSettingsCardFooter({
                     {actionLabel && (
                         <Button
                             className={cn("md:ms-auto", classNames?.button)}
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || disabled}
                             size="sm"
                             type="submit"
                             variant={variant === "destructive" ? "destructive" : "default"}

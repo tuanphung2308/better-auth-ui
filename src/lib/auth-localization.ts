@@ -128,11 +128,17 @@ export const authLocalization = {
     /** @default "Enter the email address you want to use to log in." */
     emailDescription: "Enter the email address you want to use to log in.",
 
-    /** @default "Please use a valid email address." */
-    emailInstructions: "Please use a valid email address.",
+    /** @default "Please enter a valid email address." */
+    emailInstructions: "Please enter a valid email address.",
 
     /** @default "m@example.com" */
     emailPlaceholder: "m@example.com",
+
+    /** @default "Email is the same" */
+    emailIsTheSame: "Email is the same",
+
+    /** @default "Your email has been updated." */
+    emailUpdated: "Your email has been updated.",
 
     /** @default "Please check your email to verify the change." */
     emailVerifyChange: "Please check your email to verify the change.",

@@ -1,13 +1,18 @@
 "use client"
 
-import { useContext, useEffect, useRef, useState } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useContext, useState } from "react"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
+
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn } from "../../lib/utils"
+import { cn, getLocalizedError } from "../../lib/utils"
 import { CardContent } from "../ui/card"
+import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
 import { Input } from "../ui/input"
 import { Skeleton } from "../ui/skeleton"
-import { SettingsCard, type SettingsCardClassNames } from "./shared/settings-card"
+import { NewSettingsCard, type SettingsCardClassNames } from "./shared/new-settings-card"
 
 export interface ChangeEmailCardProps {
     className?: string
@@ -22,8 +27,6 @@ export function ChangeEmailCard({
     isPending,
     localization
 }: ChangeEmailCardProps) {
-    const shownVerifyEmailToast = useRef(false)
-
     const {
         authClient,
         emailVerification,
@@ -36,99 +39,113 @@ export function ChangeEmailCard({
 
     const { data: sessionData, isPending: sessionPending, refetch } = useSession()
     const [resendDisabled, setResendDisabled] = useState(false)
-    const [disabled, setDisabled] = useState(true)
 
-    useEffect(() => {
-        if (!sessionData) return
-        if (shownVerifyEmailToast.current) return
+    const formSchema = z.object({
+        email: z.string().email({ message: localization.emailInstructions })
+    })
 
-        const searchParams = new URLSearchParams(window.location.search)
-        if (searchParams.get("verifyEmail") && !sessionData.user.emailVerified) {
-            shownVerifyEmailToast.current = true
-            setTimeout(() => toast({ message: localization.emailVerification! }))
-        }
-    }, [localization, sessionData, toast])
+    const form = useForm({
+        resolver: zodResolver(formSchema),
+        values: { email: sessionData?.user.email || "" }
+    })
 
-    const changeEmail = async (formData: FormData) => {
-        const newEmail = formData.get("email") as string
-        if (newEmail === sessionData?.user.email) return {}
+    const { isSubmitting } = form.formState
+    const resendForm = useForm()
 
-        const callbackURL = `${window.location.pathname}?verifyEmail=true`
+    const changeEmail = async ({ email }: z.infer<typeof formSchema>) => {
+        try {
+            await authClient.changeEmail({
+                newEmail: email,
+                callbackURL: window.location.pathname,
+                fetchOptions: { throw: true }
+            })
 
-        await authClient.changeEmail({
-            newEmail,
-            callbackURL,
-            fetchOptions: { throw: true }
-        })
-
-        if (sessionData?.user.emailVerified) {
-            toast({ message: localization.emailVerifyChange! })
-        } else {
-            refetch?.()
+            if (sessionData?.user.emailVerified) {
+                toast({ variant: "success", message: localization.emailVerifyChange! })
+            } else {
+                toast({ variant: "success", message: localization.emailUpdated! })
+                refetch?.()
+            }
+        } catch (error) {
+            toast({ variant: "error", message: getLocalizedError({ error, localization }) })
         }
     }
 
     const resendVerification = async () => {
+        if (!sessionData) return
+        const email = sessionData.user.email
+
         setResendDisabled(true)
 
         try {
             await authClient.sendVerificationEmail({
-                email: sessionData!.user.email,
+                email,
                 fetchOptions: { throw: true }
             })
+
+            toast({ variant: "success", message: localization.emailVerification! })
         } catch (error) {
+            toast({ variant: "error", message: getLocalizedError({ error, localization }) })
             setResendDisabled(false)
             throw error
         }
-
-        toast({ variant: "success", message: localization.emailVerification! })
     }
 
     return (
         <>
-            <SettingsCard
-                key={sessionData?.user.email}
-                className={className}
-                classNames={classNames}
-                description={localization.emailDescription}
-                formAction={changeEmail}
-                instructions={localization.emailInstructions}
-                isPending={isPending || sessionPending}
-                title={localization.email}
-                actionLabel={localization.save}
-                disabled={disabled}
-                localization={localization}
-            >
-                <CardContent className={classNames?.content}>
-                    {isPending ? (
-                        <Skeleton className={cn("h-9 w-full", classNames?.skeleton)} />
-                    ) : (
-                        <Input
-                            key={sessionData?.user.email}
-                            className={classNames?.input}
-                            defaultValue={sessionData?.user.email}
-                            name="email"
-                            placeholder={localization.emailPlaceholder}
-                            required
-                            type="email"
-                            onChange={(e) =>
-                                setDisabled(e.target.value === sessionData?.user.email)
-                            }
-                        />
-                    )}
-                </CardContent>
-            </SettingsCard>
+            <Form {...form}>
+                <form noValidate onSubmit={form.handleSubmit(changeEmail)}>
+                    <NewSettingsCard
+                        className={className}
+                        classNames={classNames}
+                        description={localization.emailDescription}
+                        instructions={localization.emailInstructions}
+                        isPending={isPending || sessionPending}
+                        title={localization.email}
+                        actionLabel={localization.save}
+                    >
+                        <CardContent className={classNames?.content}>
+                            {isPending || sessionPending ? (
+                                <Skeleton className={cn("h-9 w-full", classNames?.skeleton)} />
+                            ) : (
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormControl>
+                                                <Input
+                                                    className={classNames?.input}
+                                                    placeholder={localization.emailPlaceholder}
+                                                    type="email"
+                                                    disabled={isSubmitting}
+                                                    {...field}
+                                                />
+                                            </FormControl>
+
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            )}
+                        </CardContent>
+                    </NewSettingsCard>
+                </form>
+            </Form>
 
             {emailVerification && sessionData?.user && !sessionData?.user.emailVerified && (
-                <SettingsCard
-                    className={className}
-                    classNames={classNames}
-                    title={localization.verifyYourEmail}
-                    description={localization.verifyYourEmailDescription}
-                    actionLabel={localization.resendVerificationEmail}
-                    formAction={resendVerification}
-                    disabled={resendDisabled}
-                />
+                <Form {...resendForm}>
+                    <form onSubmit={resendForm.handleSubmit(resendVerification)}>
+                        <NewSettingsCard
+                            className={className}
+                            classNames={classNames}
+                            title={localization.verifyYourEmail}
+                            description={localization.verifyYourEmailDescription}
+                            actionLabel={localization.resendVerificationEmail}
+                            disabled={resendDisabled}
+                        />
+                    </form>
+                </Form>
             )}
         </>
     )

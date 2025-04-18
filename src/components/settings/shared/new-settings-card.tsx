@@ -1,11 +1,8 @@
 "use client"
 
-import { type ReactNode, useContext } from "react"
+import type { ReactNode } from "react"
 import type { UseFormReturn } from "react-hook-form"
 import type * as z from "zod"
-
-import type { AuthLocalization } from "../../../lib/auth-localization"
-import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn } from "../../../lib/utils"
 import { Card } from "../../ui/card"
 import type { UserAvatarClassNames } from "../../user-avatar"
@@ -40,7 +37,6 @@ export interface SettingsCardProps<TFormSchema extends z.ZodTypeAny> {
     isPending?: boolean
     className?: string
     classNames?: SettingsCardClassNames
-    localization?: AuthLocalization
     optimistic?: boolean
     variant?: "default" | "destructive"
 }
@@ -55,13 +51,9 @@ export function NewSettingsCard<TFormSchema extends z.ZodTypeAny>({
     isPending,
     className,
     classNames,
-    localization,
     optimistic,
     variant = "default"
 }: SettingsCardProps<TFormSchema>) {
-    const { localization: contextLocalization } = useContext(AuthUIContext)
-    localization = { ...contextLocalization, ...localization }
-
     return (
         <Card
             className={cn(

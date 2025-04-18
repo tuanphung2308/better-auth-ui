@@ -20,6 +20,7 @@ export interface UseInstantOptionsProps {
     modelNames?: Partial<ModelNames>
     usePlural?: boolean
     sessionData?: { user: User; session: Session }
+    refetch?: () => Promise<unknown> | unknown
     user?: { id: string } | null
     isPending: boolean
 }

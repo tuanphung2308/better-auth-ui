@@ -73,6 +73,8 @@ export function ChangePasswordCard({
         }
     })
 
+    const setPasswordForm = useForm()
+
     const { isSubmitting } = form.formState
 
     const setPassword = async () => {
@@ -113,8 +115,8 @@ export function ChangePasswordCard({
 
     if (!isPending && !credentialsLinked) {
         return (
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(setPassword)}>
+            <Form {...setPasswordForm}>
+                <form onSubmit={setPasswordForm.handleSubmit(setPassword)}>
                     <NewSettingsCard
                         title={localization.changePassword}
                         description={localization.setPasswordDescription}
