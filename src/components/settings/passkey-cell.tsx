@@ -66,15 +66,9 @@ export function PasskeyCell({
                 variant="outline"
                 onClick={handleDeletePasskey}
             >
-                <span className={isLoading ? "opacity-0" : "opacity-100"}>
-                    {localization.delete}
-                </span>
+                {isLoading && <Loader2 className="animate-spin" />}
 
-                {isLoading && (
-                    <span className="absolute">
-                        <Loader2 className="animate-spin" />
-                    </span>
-                )}
+                {localization.delete}
             </Button>
         </Card>
     )

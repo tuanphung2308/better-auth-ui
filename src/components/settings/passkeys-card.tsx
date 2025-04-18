@@ -1,14 +1,17 @@
 "use client"
 
 import { useContext } from "react"
+import { useForm } from "react-hook-form"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn } from "../../lib/utils"
+import { cn, getLocalizedError } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
 import { CardContent } from "../ui/card"
+import { Form } from "../ui/form"
 import { PasskeyCell } from "./passkey-cell"
-import { SettingsCard, type SettingsCardClassNames } from "./shared/settings-card"
+import { NewSettingsCard } from "./shared/new-settings-card"
+import type { SettingsCardClassNames } from "./shared/settings-card"
 import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
 export interface PasskeysCardProps {
@@ -33,7 +36,8 @@ export function PasskeysCard({
     const {
         authClient,
         hooks: { useListPasskeys },
-        localization: authLocalization
+        localization: authLocalization,
+        toast
     } = useContext(AuthUIContext)
 
     localization = { ...authLocalization, ...localization }
@@ -46,36 +50,48 @@ export function PasskeysCard({
     }
 
     const addPasskey = async () => {
-        await (authClient as AuthClient).passkey.addPasskey({ fetchOptions: { throw: true } })
-        await refetch?.()
+        try {
+            await (authClient as AuthClient).passkey.addPasskey({ fetchOptions: { throw: true } })
+            await refetch?.()
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: getLocalizedError({ error, localization })
+            })
+        }
     }
 
+    const form = useForm()
+
     return (
-        <SettingsCard
-            className={className}
-            classNames={classNames}
-            title={localization.passkeys}
-            description={localization.passkeysDescription}
-            actionLabel={localization.addPasskey}
-            formAction={addPasskey}
-            instructions={localization.passkeysInstructions}
-            isPending={isPending}
-        >
-            <CardContent className={cn("grid gap-4", classNames?.content)}>
-                {isPending ? (
-                    <SettingsCellSkeleton classNames={classNames} />
-                ) : (
-                    passkeys?.map((passkey) => (
-                        <PasskeyCell
-                            key={passkey.id}
-                            classNames={classNames}
-                            passkey={passkey}
-                            localization={localization}
-                            refetch={refetch}
-                        />
-                    ))
-                )}
-            </CardContent>
-        </SettingsCard>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(addPasskey)}>
+                <NewSettingsCard
+                    className={className}
+                    classNames={classNames}
+                    title={localization.passkeys}
+                    description={localization.passkeysDescription}
+                    actionLabel={localization.addPasskey}
+                    instructions={localization.passkeysInstructions}
+                    isPending={isPending}
+                >
+                    <CardContent className={cn("grid gap-4", classNames?.content)}>
+                        {isPending ? (
+                            <SettingsCellSkeleton classNames={classNames} />
+                        ) : (
+                            passkeys?.map((passkey) => (
+                                <PasskeyCell
+                                    key={passkey.id}
+                                    classNames={classNames}
+                                    passkey={passkey}
+                                    localization={localization}
+                                    refetch={refetch}
+                                />
+                            ))
+                        )}
+                    </CardContent>
+                </NewSettingsCard>
+            </form>
+        </Form>
     )
 }
