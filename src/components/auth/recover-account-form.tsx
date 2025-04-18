@@ -32,17 +32,14 @@ export function RecoverAccountForm({
     const { authClient, basePath, viewPaths, replace, toast } = useContext(AuthUIContext)
 
     const formSchema = z.object({
-        code: z.string().min(1, { message: localization.backupCodeRequired })
+        code: z.string().min(1, { message: localization.backupCodeRequired }).default("")
     })
 
-    const form = useForm({
-        resolver: zodResolver(formSchema),
-        defaultValues: { code: "" }
-    })
+    const form = useForm({ resolver: zodResolver(formSchema) })
 
     const isSubmitting = form.formState.isSubmitting
 
-    const onSubmit = async ({ code }: z.infer<typeof formSchema>) => {
+    async function onSubmit({ code }: z.infer<typeof formSchema>) {
         try {
             await (authClient as AuthClient).twoFactor.verifyBackupCode({
                 code,

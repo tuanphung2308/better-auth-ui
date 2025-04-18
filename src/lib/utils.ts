@@ -29,20 +29,20 @@ export function getLocalizedError({
     localization
 }: {
     error: unknown
-    localization: Partial<AuthLocalization>
+    localization?: Partial<AuthLocalization>
 }) {
     if (error instanceof BetterFetchError) {
         const camelCaseErrorCode = errorCodeToCamelCase(error.error.code) as keyof AuthLocalization
-        return (localization[camelCaseErrorCode] ||
+        return (localization?.[camelCaseErrorCode] ||
             error.error.message ||
             error.error.code ||
             error.error.statusText ||
-            localization.requestFailed) as string
+            localization?.requestFailed) as string
     }
 
     if (error instanceof Error) {
         return error.message
     }
 
-    return localization.requestFailed as string
+    return localization?.requestFailed || "Request failed"
 }
