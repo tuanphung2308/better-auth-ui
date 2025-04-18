@@ -31,14 +31,14 @@ export function SessionCell({
     const {
         hooks: { useSession },
         mutators: { revokeSession },
-        localization: authLocalization,
+        localization: contextLocalization,
         navigate,
         toast,
         basePath,
         viewPaths
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     const { data: sessionData } = useSession()
     const isCurrentSession = session.id === sessionData?.session?.id
@@ -90,15 +90,8 @@ export function SessionCell({
                 variant="outline"
                 onClick={handleRevoke}
             >
-                <span className={isLoading ? "opacity-0" : "opacity-100"}>
-                    {isCurrentSession ? localization.signOut : localization.revoke}
-                </span>
-
-                {isLoading && (
-                    <span className="absolute">
-                        <Loader2 className="animate-spin" />
-                    </span>
-                )}
+                {isLoading && <Loader2 className="animate-spin" />}
+                {isCurrentSession ? localization.signOut : localization.revoke}
             </Button>
         </Card>
     )

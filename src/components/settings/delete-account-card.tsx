@@ -1,8 +1,8 @@
 "use client"
 
 import { useContext, useState } from "react"
-
 import { useForm } from "react-hook-form"
+
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { Form } from "../ui/form"
