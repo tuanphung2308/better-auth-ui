@@ -39,13 +39,13 @@ export function DeleteAccountDialog({
         deleteAccountVerification,
         freshAge,
         hooks: { useSession },
-        localization: authLocalization,
+        localization: contextLocalization,
         navigate,
         toast,
         viewPaths
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     const { data: sessionData } = useSession()
     const session = sessionData?.session
