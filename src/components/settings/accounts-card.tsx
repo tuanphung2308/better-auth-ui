@@ -2,14 +2,16 @@
 
 import type { Session, User } from "better-auth"
 import { useContext } from "react"
+import { useForm } from "react-hook-form"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { CardContent } from "../ui/card"
+import { Form } from "../ui/form"
 import { AccountCell } from "./account-cell"
+import { NewSettingsCard } from "./shared/new-settings-card"
 import type { SettingsCardClassNames } from "./shared/settings-card"
-import { SettingsCard } from "./shared/settings-card"
 import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
 export interface AccountsCardProps {
@@ -33,7 +35,7 @@ export function AccountsCard({
 }: AccountsCardProps) {
     const {
         basePath,
-        hooks: { useSession, useListDeviceSessions },
+        hooks: { useListDeviceSessions },
         localization: authLocalization,
         viewPaths,
         navigate
@@ -48,36 +50,37 @@ export function AccountsCard({
         refetch = result.refetch
     }
 
-    const { data: sessionData } = useSession()
-    const session = sessionData?.session
+    const form = useForm()
 
     return (
-        <SettingsCard
-            className={className}
-            classNames={classNames}
-            title={localization.accounts}
-            description={localization.accountsDescription}
-            actionLabel={localization.addAccount}
-            formAction={() => navigate(`${basePath}/${viewPaths.signIn}`)}
-            instructions={localization.accountsInstructions}
-            isPending={isPending}
-        >
-            <CardContent className={cn("grid gap-4", classNames?.content)}>
-                {isPending ? (
-                    <SettingsCellSkeleton classNames={classNames} />
-                ) : (
-                    deviceSessions?.map((deviceSession) => (
-                        <AccountCell
-                            key={deviceSession.session.id}
-                            classNames={classNames}
-                            deviceSession={deviceSession}
-                            activeSessionId={session?.id}
-                            localization={localization}
-                            refetch={refetch}
-                        />
-                    ))
-                )}
-            </CardContent>
-        </SettingsCard>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(() => navigate(`${basePath}/${viewPaths.signIn}`))}>
+                <NewSettingsCard
+                    className={className}
+                    classNames={classNames}
+                    title={localization.accounts}
+                    description={localization.accountsDescription}
+                    actionLabel={localization.addAccount}
+                    instructions={localization.accountsInstructions}
+                    isPending={isPending}
+                >
+                    <CardContent className={cn("grid gap-4", classNames?.content)}>
+                        {isPending ? (
+                            <SettingsCellSkeleton classNames={classNames} />
+                        ) : (
+                            deviceSessions?.map((deviceSession) => (
+                                <AccountCell
+                                    key={deviceSession.session.id}
+                                    classNames={classNames}
+                                    deviceSession={deviceSession}
+                                    localization={localization}
+                                    refetch={refetch}
+                                />
+                            ))
+                        )}
+                    </CardContent>
+                </NewSettingsCard>
+            </form>
+        </Form>
     )
 }

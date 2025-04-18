@@ -23,7 +23,6 @@ export interface AccountCellProps {
     className?: string
     classNames?: SettingsCardClassNames
     deviceSession: { user: User; session: Session }
-    activeSessionId?: string
     localization?: Partial<AuthLocalization>
     refetch?: () => Promise<void>
 }
@@ -32,13 +31,13 @@ export function AccountCell({
     className,
     classNames,
     deviceSession,
-    activeSessionId,
     localization,
     refetch
 }: AccountCellProps) {
     const {
         basePath,
         localization: authLocalization,
+        hooks: { useSession },
         mutators: { revokeDeviceSession, setActiveSession },
         toast,
         viewPaths,
@@ -47,6 +46,7 @@ export function AccountCell({
 
     localization = { ...authLocalization, ...localization }
 
+    const { data: sessionData } = useSession()
     const [isLoading, setIsLoading] = useState(false)
 
     const handleRevoke = async () => {
@@ -81,7 +81,7 @@ export function AccountCell({
         }
     }
 
-    const isCurrentSession = deviceSession.session.id === activeSessionId
+    const isCurrentSession = deviceSession.session.id === sessionData?.session.id
 
     return (
         <Card className={cn("flex-row p-4", className, classNames?.cell)}>
