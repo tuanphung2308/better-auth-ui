@@ -21,6 +21,7 @@ export interface EmailTemplateClassNames {
     body?: string
     button?: string
     container?: string
+    image?: string
     content?: string
     footer?: string
     heading?: string
@@ -129,7 +130,7 @@ export const EmailTemplate = ({
                         <Section className="mt-[32px]">
                             <Img
                                 alt={siteName}
-                                className="mx-auto my-0 rounded-full"
+                                className={cn("mx-auto my-0 rounded-full", classNames?.image)}
                                 height="40"
                                 src={imageUrl}
                                 width="40"
