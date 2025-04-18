@@ -50,7 +50,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         changeEmail,
         deleteUser,
         hooks,
-        localization: authLocalization,
+        localization: contextLocalization,
         multiSession,
         nameRequired,
         otherProviders,
@@ -61,7 +61,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         twoFactor
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     const { useListAccounts, useListDeviceSessions, useListPasskeys, useListSessions, useSession } =
         hooks
