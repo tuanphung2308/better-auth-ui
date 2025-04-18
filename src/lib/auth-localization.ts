@@ -69,6 +69,9 @@ export const authLocalization = {
     /** @default "Confirm Password" */
     confirmPasswordPlaceholder: "Confirm Password",
 
+    /** @default "Confirm password is required" */
+    confirmPasswordRequired: "Confirm password is required",
+
     /** @default "Copied to clipboard" */
     copiedToClipboard: "Copied to clipboard",
 
@@ -197,6 +200,9 @@ export const authLocalization = {
     /** @default "New Password" */
     newPasswordPlaceholder: "New Password",
 
+    /** @default "New password is required" */
+    newPasswordRequired: "New password is required",
+
     /** @default "One-Time Password" */
     oneTimePassword: "One-Time Password",
 
@@ -227,7 +233,10 @@ export const authLocalization = {
     /** @default "Password" */
     passwordPlaceholder: "Password",
 
-    /** @default "Passwords do not match." */
+    /** @default "Password is required" */
+    passwordRequired: "Password is required",
+
+    /** @default "Passwords do not match" */
     passwordsDoNotMatch: "Passwords do not match",
 
     /** @default "Providers" */
@@ -401,7 +410,13 @@ export const authLocalization = {
     resendCode: "Resend code",
 
     /** @default "Go back" */
-    goBack: "Go back"
+    goBack: "Go back",
+
+    /** @default "Invalid password" */
+    invalidPassword: "Invalid password",
+
+    /** @default "Password too short" */
+    passwordTooShort: "Password too short"
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>

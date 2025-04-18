@@ -2,6 +2,8 @@
 
 import { Loader2 } from "lucide-react"
 import type { ReactNode } from "react"
+import { useFormState } from "react-hook-form"
+
 import { cn } from "../../../lib/utils"
 import { Button } from "../../ui/button"
 import { CardDescription, CardFooter } from "../../ui/card"
@@ -20,17 +22,16 @@ export interface SettingsCardFooterProps {
     variant?: "default" | "destructive"
 }
 
-export function SettingsCardFooter({
+export function NewSettingsCardFooter({
     actionLabel,
-    disabled,
-    isSubmitting,
     isPending,
     instructions,
     classNames,
     className,
-    optimistic,
     variant = "default"
 }: SettingsCardFooterProps) {
+    const { isSubmitting } = useFormState()
+
     return (
         <CardFooter
             className={cn(
@@ -74,20 +75,14 @@ export function SettingsCardFooter({
                     {actionLabel && (
                         <Button
                             className={cn("md:ms-auto", classNames?.button)}
-                            disabled={disabled || isSubmitting}
+                            disabled={isSubmitting}
                             size="sm"
                             type="submit"
                             variant={variant === "destructive" ? "destructive" : "default"}
                         >
-                            <span className={cn(!optimistic && isSubmitting && "opacity-0")}>
-                                {actionLabel}
-                            </span>
+                            {isSubmitting && <Loader2 className="animate-spin" />}
 
-                            {!optimistic && isSubmitting && (
-                                <span className="absolute">
-                                    <Loader2 className="animate-spin" />
-                                </span>
-                            )}
+                            {actionLabel}
                         </Button>
                     )}
                 </>
