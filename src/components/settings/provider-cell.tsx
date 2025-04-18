@@ -6,9 +6,8 @@ import { useContext, useState } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { getErrorMessage } from "../../lib/get-error-message"
 import type { Provider } from "../../lib/social-providers"
-import { cn } from "../../lib/utils"
+import { cn, getLocalizedError } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
 import { Button } from "../ui/button"
 import { Card } from "../ui/card"
@@ -22,7 +21,7 @@ export interface ProviderCellProps {
     localization?: Partial<AuthLocalization>
     other?: boolean
     provider: Provider
-    refetch?: () => void
+    refetch?: () => Promise<void>
 }
 
 export function ProviderCell({
@@ -36,51 +35,48 @@ export function ProviderCell({
 }: ProviderCellProps) {
     const {
         authClient,
+        basePath,
         colorIcons,
         mutators: { unlinkAccount },
-        localization: authLocalization,
+        localization: contextLocalization,
         noColorIcons,
-        toast
+        toast,
+        viewPaths
     } = useContext(AuthUIContext)
 
     const account = accounts?.find((acc) => acc.provider === provider.provider)
     const isLinked = !!account
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     const [isLoading, setIsLoading] = useState(false)
 
     const handleLink = async () => {
         setIsLoading(true)
-        const callbackURL = `${window.location.pathname}?providerLinked=true`
+        const callbackURL = `${basePath}/${viewPaths.callback}?redirectTo=${window.location.pathname}`
 
-        if (other) {
-            const { error } = await (authClient as AuthClient).oauth2.link({
-                providerId: provider.provider as SocialProvider,
-                callbackURL
-            })
-
-            if (error) {
-                toast({
-                    variant: "error",
-                    message: getErrorMessage(error) || localization.requestFailed
+        try {
+            if (other) {
+                await (authClient as AuthClient).oauth2.link({
+                    providerId: provider.provider as SocialProvider,
+                    callbackURL,
+                    fetchOptions: { throw: true }
+                })
+            } else {
+                await authClient.linkSocial({
+                    provider: provider.provider as SocialProvider,
+                    callbackURL,
+                    fetchOptions: { throw: true }
                 })
             }
-        } else {
-            const { error } = await authClient.linkSocial({
-                provider: provider.provider as SocialProvider,
-                callbackURL
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: getLocalizedError({ error, localization })
             })
 
-            if (error) {
-                toast({
-                    variant: "error",
-                    message: getErrorMessage(error) || localization.requestFailed
-                })
-            }
+            setIsLoading(false)
         }
-
-        setIsLoading(false)
     }
 
     const handleUnlink = async () => {
@@ -92,15 +88,15 @@ export function ProviderCell({
                 providerId: provider.provider
             })
 
-            refetch?.()
+            await refetch?.()
         } catch (error) {
             toast({
                 variant: "error",
-                message: getErrorMessage(error) || localization.requestFailed
+                message: getLocalizedError({ error, localization })
             })
-
-            setIsLoading(false)
         }
+
+        setIsLoading(false)
     }
 
     return (
@@ -125,23 +121,10 @@ export function ProviderCell({
                 size="sm"
                 type="button"
                 variant={isLinked ? "outline" : "default"}
-                onClick={() => {
-                    if (isLinked) {
-                        handleUnlink()
-                    } else {
-                        handleLink()
-                    }
-                }}
+                onClick={isLinked ? handleUnlink : handleLink}
             >
-                <span className={isLoading ? "opacity-0" : "opacity-100"}>
-                    {isLinked ? localization.unlink : localization.link}
-                </span>
-
-                {isLoading && (
-                    <span className="absolute">
-                        <Loader2 className="animate-spin" />
-                    </span>
-                )}
+                {isLoading && <Loader2 className="animate-spin" />}
+                {isLinked ? localization.unlink : localization.link}
             </Button>
         </Card>
     )

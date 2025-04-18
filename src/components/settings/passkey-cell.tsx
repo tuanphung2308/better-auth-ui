@@ -27,12 +27,12 @@ export function PasskeyCell({
     refetch
 }: PasskeyCellProps) {
     const {
-        localization: authLocalization,
+        localization: contextLocalization,
         mutators: { deletePasskey },
         toast
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     const [isLoading, setIsLoading] = useState(false)
 
