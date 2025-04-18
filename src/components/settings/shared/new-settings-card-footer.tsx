@@ -75,7 +75,12 @@ export function NewSettingsCardFooter({
 
                     {actionLabel && (
                         <Button
-                            className={cn("md:ms-auto", classNames?.button)}
+                            className={cn(
+                                "md:ms-auto",
+                                classNames?.button,
+                                variant === "default" && classNames?.primaryButton,
+                                variant === "destructive" && classNames?.destructiveButton
+                            )}
                             disabled={isSubmitting || disabled}
                             size="sm"
                             type="submit"

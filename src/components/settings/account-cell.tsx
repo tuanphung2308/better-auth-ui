@@ -96,15 +96,7 @@ export function AccountCell({
                         type="button"
                         variant="outline"
                     >
-                        <span className={isLoading ? "opacity-0" : "opacity-100"}>
-                            <EllipsisIcon />
-                        </span>
-
-                        {isLoading && (
-                            <span className="absolute">
-                                <Loader2 className="animate-spin" />
-                            </span>
-                        )}
+                        {isLoading ? <Loader2 className="animate-spin" /> : <EllipsisIcon />}
                     </Button>
                 </DropdownMenuTrigger>
 

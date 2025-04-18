@@ -108,7 +108,7 @@ export const authLocalization = {
         "Please confirm the deletion of your account. This action is not reversible, so please continue with caution.",
 
     /** @default "Please check your email to verify the deletion of your account." */
-    deleteAccountEmail: "Please check your email to verify the deletion of your account.",
+    deleteAccountVerify: "Please check your email to verify the deletion of your account.",
 
     /** @default "Your account has been deleted." */
     deleteAccountSuccess: "Your account has been deleted.",

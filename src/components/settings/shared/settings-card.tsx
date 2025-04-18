@@ -16,13 +16,21 @@ export type SettingsCardClassNames = {
     avatar?: UserAvatarClassNames
     button?: string
     cell?: string
+    destructiveButton?: string
     content?: string
     description?: string
+    dialog?: {
+        content?: string
+        footer?: string
+        header?: string
+    }
     footer?: string
     header?: string
     input?: string
     instructions?: string
     label?: string
+    primaryButton?: string
+    secondaryButton?: string
     skeleton?: string
     title?: string
 }
