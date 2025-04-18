@@ -324,9 +324,6 @@ export const authLocalization = {
     setPasswordDescription:
         "You registered with a third-party service. Click the button below to set a password for your account.",
 
-    /** @default "Check your email to set your password." */
-    setPasswordEmailSent: "Check your email to set your password.",
-
     /** @default "Settings" */
     settings: "Settings",
 

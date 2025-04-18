@@ -56,7 +56,7 @@ export function ChangePasswordCard({
             currentPassword: z.string().min(1, { message: localization.passwordRequired }),
             newPassword: z.string().min(1, { message: localization.newPasswordRequired }),
             confirmPassword: confirmPasswordEnabled
-                ? z.string().min(1, { message: localization.confirmPasswordRequired }).default("")
+                ? z.string().min(1, { message: localization.confirmPasswordRequired })
                 : z.string().optional()
         })
         .refine((data) => !confirmPasswordEnabled || data.newPassword === data.confirmPassword, {
@@ -73,7 +73,7 @@ export function ChangePasswordCard({
         }
     })
 
-    const isSubmitting = form.formState.isSubmitting
+    const { isSubmitting } = form.formState
 
     const setPassword = async () => {
         if (!sessionData) return
@@ -86,7 +86,7 @@ export function ChangePasswordCard({
                 fetchOptions: { throw: true }
             })
 
-            toast({ variant: "success", message: localization.setPasswordEmailSent! })
+            toast({ variant: "success", message: localization.forgotPasswordEmail! })
         } catch (error) {
             toast({ variant: "error", message: getLocalizedError({ error, localization }) })
         }
