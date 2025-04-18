@@ -53,8 +53,17 @@
             }
         }
     },
-    "files": ["src", "dist"],
-    "keywords": ["typescript", "react", "better-auth", "shadcn", "nextjs"],
+    "files": [
+        "src",
+        "dist"
+    ],
+    "keywords": [
+        "typescript",
+        "react",
+        "better-auth",
+        "shadcn",
+        "nextjs"
+    ],
     "author": "daveycodez",
     "license": "MIT",
     "devDependencies": {
@@ -128,5 +137,9 @@
     "pnpm": {
         "overrides": {}
     },
-    "packageManager": "pnpm@10.8.1"
+    "packageManager": "pnpm@10.8.1",
+    "dependencies": {
+        "@hookform/resolvers": "^5.0.1",
+        "zod": "^3.24.3"
+    }
 }

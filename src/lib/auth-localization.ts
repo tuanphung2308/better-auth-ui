@@ -29,6 +29,9 @@ export const authLocalization = {
     /** @default "An avatar is optional but strongly recommended." */
     avatarInstructions: "An avatar is optional but strongly recommended.",
 
+    /** @default "Backup code is required" */
+    backupCodeRequired: "Backup code is required",
+
     /** @default "Backup Codes" */
     backupCodes: "Backup Codes",
 
@@ -137,6 +140,9 @@ export const authLocalization = {
     /** @default "Enable" */
     enable: "Enable",
 
+    /** @default "Error" */
+    error: "Error",
+
     /** @default "Failed to validate" */
     failedToValidate: "Failed to validate",
 
@@ -154,6 +160,9 @@ export const authLocalization = {
 
     /** @default "Forgot your password?" */
     forgotPasswordLink: "Forgot your password?",
+
+    /** @default "Invalid two factor cookie" */
+    invalidTwoFactorCookie: "Invalid two factor cookie",
 
     /** @default "Link" */
     link: "Link",

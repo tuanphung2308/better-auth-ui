@@ -18,20 +18,22 @@ import { Label } from "../ui/label"
 import { Separator } from "../ui/separator"
 import { ActionButton } from "./action-button"
 import { AdditionalFieldInput } from "./additional-field-input"
-import { BackupCodeForm } from "./backup-code-form"
 import { MagicLinkButton } from "./magic-link-button"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
+import { RecoverAccountForm } from "./recover-account-form"
 import { RememberMeCheckbox } from "./remember-me-checkbox"
 import { TwoFactorForm } from "./two-factor-form"
 
 export type AuthFormClassNames = {
     base?: string
-    actionButton?: string
+    button?: string
+    primaryButton?: string
     forgotPasswordLink?: string
     input?: string
     label?: string
     description?: string
+    error?: string
     providerButton?: string
     secondaryButton?: string
     qrCode?: string
@@ -439,7 +441,7 @@ export function AuthForm({
 
     if (view === "recover") {
         return (
-            <BackupCodeForm
+            <RecoverAccountForm
                 className={className}
                 classNames={classNames}
                 localization={localization}
@@ -576,7 +578,7 @@ export function AuthForm({
                 {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) && (
                     <ActionButton
                         authView={view}
-                        className={classNames?.actionButton}
+                        className={cn(classNames?.button, classNames?.primaryButton)}
                         isLoading={isLoading}
                         localization={localization}
                     />
@@ -584,7 +586,7 @@ export function AuthForm({
 
                 {magicLink && credentials && view !== "resetPassword" && (
                     <MagicLinkButton
-                        className={classNames?.secondaryButton}
+                        className={cn(classNames?.button, classNames?.secondaryButton)}
                         isLoading={isLoading}
                         localization={localization}
                         view={view}
@@ -625,7 +627,10 @@ export function AuthForm({
                                 return (
                                     <ProviderButton
                                         key={provider}
-                                        className={classNames?.providerButton}
+                                        className={cn(
+                                            classNames?.button,
+                                            classNames?.providerButton
+                                        )}
                                         isLoading={isLoading}
                                         localization={localization}
                                         socialLayout={socialLayout}
@@ -637,7 +642,7 @@ export function AuthForm({
                             {otherProviders?.map((provider) => (
                                 <ProviderButton
                                     key={provider.provider}
-                                    className={classNames?.providerButton}
+                                    className={cn(classNames?.button, classNames?.providerButton)}
                                     isLoading={isLoading}
                                     localization={localization}
                                     socialLayout={socialLayout}
@@ -651,7 +656,7 @@ export function AuthForm({
 
             {passkey && (
                 <PasskeyButton
-                    className={classNames?.secondaryButton}
+                    className={cn(classNames?.button, classNames?.secondaryButton)}
                     isLoading={isLoading}
                     localization={localization}
                 />

@@ -280,7 +280,7 @@ export function TwoFactorForm({
                     <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className={classNames?.actionButton}
+                        className={cn(classNames?.button, classNames?.primaryButton)}
                     >
                         {isSubmitting && <Loader2 className="animate-spin" />}
                         {localization.twoFactorAction}
@@ -293,7 +293,7 @@ export function TwoFactorForm({
                         variant="outline"
                         onClick={sendOtp}
                         disabled={cooldownSeconds > 0 || isSendingOtp || isSubmitting}
-                        className={classNames?.providerButton}
+                        className={cn(classNames?.button, classNames?.providerButton)}
                     >
                         {isSendingOtp ? <Loader2 className="animate-spin" /> : <SendIcon />}
                         {localization.resendCode}
@@ -305,7 +305,7 @@ export function TwoFactorForm({
                     <Button
                         type="button"
                         variant="secondary"
-                        className={classNames?.secondaryButton}
+                        className={cn(classNames?.button, classNames?.secondaryButton)}
                         onClick={() => setMethod("otp")}
                         disabled={isSubmitting}
                     >
@@ -318,7 +318,7 @@ export function TwoFactorForm({
                     <Button
                         type="button"
                         variant="secondary"
-                        className={classNames?.secondaryButton}
+                        className={cn(classNames?.button, classNames?.secondaryButton)}
                         onClick={() => setMethod("totp")}
                         disabled={isSubmitting}
                     >
