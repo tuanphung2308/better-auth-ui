@@ -375,11 +375,11 @@ export const authLocalization = {
     /** @default "Please enter your password to enable 2FA" */
     twoFactorEnableInstructions: "Please enter your password to enable 2FA.",
 
-    /** @default "Two-factor authentication enabled" */
-    twoFactorEnabled: "Two-factor authentication enabled",
+    /** @default "Two-factor authentication has been enabled" */
+    twoFactorEnabled: "Two-factor authentication has been enabled",
 
-    /** @default "Two-Factor Authentication disabled" */
-    twoFactorDisabled: "Two-Factor Authentication disabled",
+    /** @default "Two-Factor Authentication has been disabled" */
+    twoFactorDisabled: "Two-Factor Authentication has been disabled",
 
     /** @default "Two-Factor Authentication" */
     twoFactorPrompt: "Two-Factor Authentication",

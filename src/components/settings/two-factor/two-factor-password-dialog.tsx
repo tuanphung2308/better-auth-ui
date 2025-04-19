@@ -1,9 +1,13 @@
 "use client"
 
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { useContext, useState } from "react"
+import { type ComponentProps, useContext, useState } from "react"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
+
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import { getErrorMessage } from "../../../lib/get-error-message"
+import { cn, getLocalizedError } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
@@ -15,43 +19,46 @@ import {
     DialogHeader,
     DialogTitle
 } from "../../ui/dialog"
-import { Label } from "../../ui/label"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import type { SettingsCardClassNames } from "../shared/settings-card"
 import { BackupCodesDialog } from "./backup-codes-dialog"
 
-interface TwoFactorPasswordDialogProps {
-    open: boolean
-    onOpenChange: (open: boolean) => void
+interface TwoFactorPasswordDialogProps extends ComponentProps<typeof Dialog> {
+    classNames?: SettingsCardClassNames
     isTwoFactorEnabled: boolean
 }
 
 export function TwoFactorPasswordDialog({
-    open,
+    classNames,
     onOpenChange,
-    isTwoFactorEnabled
+    isTwoFactorEnabled,
+    ...props
 }: TwoFactorPasswordDialogProps) {
     const { localization, authClient, basePath, viewPaths, navigate, toast, twoFactor } =
         useContext(AuthUIContext)
-    const [isLoading, setIsLoading] = useState(false)
     const [showBackupCodesDialog, setShowBackupCodesDialog] = useState(false)
     const [backupCodes, setBackupCodes] = useState<string[]>([])
     const [totpURI, setTotpURI] = useState<string | null>(null)
 
-    async function handleEnableTwoFactor(formData: FormData) {
-        const password = formData.get("password") as string
+    const formSchema = z.object({
+        password: z.string().min(1, { message: localization.passwordRequired })
+    })
 
-        setIsLoading(true)
+    const form = useForm({ resolver: zodResolver(formSchema), defaultValues: { password: "" } })
+    const { isSubmitting } = form.formState
 
+    async function handleEnableTwoFactor({ password }: z.infer<typeof formSchema>) {
         try {
-            const data = await (authClient as AuthClient).twoFactor.enable({
+            const response = await (authClient as AuthClient).twoFactor.enable({
                 password,
                 fetchOptions: { throw: true }
             })
 
-            onOpenChange(false)
-            setBackupCodes(data.backupCodes)
+            onOpenChange?.(false)
+            setBackupCodes(response.backupCodes)
 
             if (twoFactor?.includes("totp")) {
-                setTotpURI(data.totpURI)
+                setTotpURI(response.totpURI)
             }
 
             setTimeout(() => {
@@ -60,18 +67,12 @@ export function TwoFactorPasswordDialog({
         } catch (error) {
             toast({
                 variant: "error",
-                message: getErrorMessage(error) || localization.requestFailed
+                message: getLocalizedError({ error, localization })
             })
         }
-
-        setIsLoading(false)
     }
 
-    async function handleDisableTwoFactor(formData: FormData) {
-        const password = formData.get("password") as string
-
-        setIsLoading(true)
-
+    async function handleDisableTwoFactor({ password }: z.infer<typeof formSchema>) {
         try {
             await (authClient as AuthClient).twoFactor.disable({
                 password,
@@ -83,72 +84,89 @@ export function TwoFactorPasswordDialog({
                 message: localization.twoFactorDisabled
             })
 
-            onOpenChange(false)
+            onOpenChange?.(false)
         } catch (error) {
             toast({
                 variant: "error",
-                message: getErrorMessage(error) || localization.requestFailed
+                message: getLocalizedError({ error, localization })
             })
-        }
-
-        setIsLoading(false)
-    }
-
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        const formData = new FormData(e.currentTarget)
-        if (isTwoFactorEnabled) {
-            handleDisableTwoFactor(formData)
-        } else {
-            handleEnableTwoFactor(formData)
         }
     }
 
     return (
         <>
-            <Dialog open={open} onOpenChange={onOpenChange}>
-                <DialogContent className="sm:max-w-md">
-                    <DialogHeader>
-                        <DialogTitle>{localization.twoFactor}</DialogTitle>
-                        <DialogDescription>
+            <Dialog onOpenChange={onOpenChange} {...props}>
+                <DialogContent className={cn("sm:max-w-md", classNames?.dialog)}>
+                    <DialogHeader className={classNames?.dialog?.header}>
+                        <DialogTitle className={classNames?.title}>
+                            {localization.twoFactor}
+                        </DialogTitle>
+
+                        <DialogDescription className={classNames?.description}>
                             {isTwoFactorEnabled
                                 ? localization.twoFactorDisableInstructions
                                 : localization.twoFactorEnableInstructions}
                         </DialogDescription>
                     </DialogHeader>
 
-                    <form onSubmit={handleSubmit}>
-                        <div className="grid gap-2">
-                            <Label htmlFor="password">{localization.password}</Label>
-                            <PasswordInput
-                                id="password"
+                    <Form {...form}>
+                        <form
+                            onSubmit={form.handleSubmit(
+                                isTwoFactorEnabled ? handleDisableTwoFactor : handleEnableTwoFactor
+                            )}
+                            className="grid gap-4"
+                        >
+                            <FormField
+                                control={form.control}
                                 name="password"
-                                placeholder={localization.passwordPlaceholder}
-                                autoComplete="current-password"
-                                required
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className={classNames?.label}>
+                                            {localization.password}
+                                        </FormLabel>
+
+                                        <FormControl>
+                                            <PasswordInput
+                                                className={classNames?.input}
+                                                placeholder={localization.passwordPlaceholder}
+                                                autoComplete="current-password"
+                                                {...field}
+                                            />
+                                        </FormControl>
+
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
                             />
-                        </div>
 
-                        <DialogFooter className="mt-4">
-                            <Button
-                                type="button"
-                                variant="secondary"
-                                onClick={() => onOpenChange(false)}
-                                disabled={isLoading}
-                            >
-                                {localization.cancel}
-                            </Button>
+                            <DialogFooter className={classNames?.dialog?.footer}>
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    onClick={() => onOpenChange?.(false)}
+                                    className={cn(classNames?.button, classNames?.secondaryButton)}
+                                >
+                                    {localization.cancel}
+                                </Button>
 
-                            <Button type="submit" disabled={isLoading}>
-                                {isLoading && <Loader2 className="animate-spin" />}
-                                {isTwoFactorEnabled ? localization.disable : localization.enable}
-                            </Button>
-                        </DialogFooter>
-                    </form>
+                                <Button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className={cn(classNames?.button, classNames?.primaryButton)}
+                                >
+                                    {isSubmitting && <Loader2 className="animate-spin" />}
+                                    {isTwoFactorEnabled
+                                        ? localization.disable
+                                        : localization.enable}
+                                </Button>
+                            </DialogFooter>
+                        </form>
+                    </Form>
                 </DialogContent>
             </Dialog>
 
             <BackupCodesDialog
+                classNames={classNames}
                 open={showBackupCodesDialog}
                 onOpenChange={(open) => {
                     setShowBackupCodesDialog(open)

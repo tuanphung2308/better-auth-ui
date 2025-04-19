@@ -44,6 +44,7 @@ export function TwoFactorCard({ className, classNames, localization }: TwoFactor
             />
 
             <TwoFactorPasswordDialog
+                classNames={classNames}
                 open={showPasswordDialog}
                 onOpenChange={setShowPasswordDialog}
                 isTwoFactorEnabled={!!isTwoFactorEnabled}

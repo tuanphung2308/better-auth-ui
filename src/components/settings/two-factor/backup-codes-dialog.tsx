@@ -15,6 +15,7 @@ import {
     DialogTitle
 } from "../../ui/dialog"
 import type { SettingsCardClassNames } from "../shared/settings-card"
+
 interface BackupCodesDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     backupCodes: string[]
