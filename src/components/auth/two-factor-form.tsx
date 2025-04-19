@@ -12,9 +12,10 @@ import { cn } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
 import { Button } from "../ui/button"
 import { Checkbox } from "../ui/checkbox"
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "../ui/input-otp"
+import { InputOTP } from "../ui/input-otp"
 import { Label } from "../ui/label"
 import type { AuthFormClassNames } from "./auth-form"
+import { OTPInputGroup } from "./otp-input-group"
 
 export interface TwoFactorFormProps {
     className?: string
@@ -149,65 +150,6 @@ export function TwoFactorForm({
         }
     }, [code, isSubmitting, method])
 
-    // Render OTP input with correct separators based on otpSeparators value
-    const renderOTPInput = () => {
-        if (otpSeparators === 0) {
-            return (
-                <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
-                </InputOTPGroup>
-            )
-        }
-
-        if (otpSeparators === 1) {
-            return (
-                <>
-                    <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                    </InputOTPGroup>
-
-                    <InputOTPSeparator />
-
-                    <InputOTPGroup>
-                        <InputOTPSlot index={3} />
-                        <InputOTPSlot index={4} />
-                        <InputOTPSlot index={5} />
-                    </InputOTPGroup>
-                </>
-            )
-        }
-
-        return (
-            <>
-                <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                </InputOTPGroup>
-
-                <InputOTPSeparator />
-
-                <InputOTPGroup>
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                </InputOTPGroup>
-
-                <InputOTPSeparator />
-
-                <InputOTPGroup>
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
-                </InputOTPGroup>
-            </>
-        )
-    }
-
     return (
         <form
             ref={formRef}
@@ -255,7 +197,7 @@ export function TwoFactorForm({
                             className={classNames?.otpInput}
                             disabled={isSubmitting}
                         >
-                            {renderOTPInput()}
+                            <OTPInputGroup otpSeparators={otpSeparators} />
                         </InputOTP>
                     </div>
 
