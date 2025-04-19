@@ -161,8 +161,14 @@ export const authLocalization = {
     /** @default "Error" */
     error: "Error",
 
-    /** @default "Failed to validate" */
-    failedToValidate: "Failed to validate",
+    /** @default "is invalid" */
+    isInvalid: "is invalid",
+
+    /** @default "is required" */
+    isRequired: "is required",
+
+    /** @default "Forgot authenticator?" */
+    forgotAuthenticator: "Forgot authenticator?",
 
     /** @default "Forgot Password" */
     forgotPassword: "Forgot Password",
@@ -265,6 +271,9 @@ export const authLocalization = {
 
     /** @default "Remember me" */
     rememberMe: "Remember me",
+
+    /** @default "Resend code" */
+    resendCode: "Resend code",
 
     /** @default "Resend verification email" */
     resendVerificationEmail: "Resend Verification Email",
@@ -384,8 +393,8 @@ export const authLocalization = {
     /** @default "Unlink" */
     unlink: "Unlink",
 
-    /** @default "Forgot authenticator?" */
-    forgotAuthenticator: "Forgot authenticator?",
+    /** @default "Updated successfully" */
+    updatedSuccessfully: "updated successfully",
 
     /** @default "Username" */
     username: "Username",
@@ -408,9 +417,6 @@ export const authLocalization = {
     /** @default "Please verify your email address. Check your inbox for the verification email. If you haven't received the email, click the button below to resend." */
     verifyYourEmailDescription:
         "Please verify your email address. Check your inbox for the verification email. If you haven't received the email, click the button below to resend.",
-
-    /** @default "Resend code" */
-    resendCode: "Resend code",
 
     /** @default "Go back" */
     goBack: "Go back",

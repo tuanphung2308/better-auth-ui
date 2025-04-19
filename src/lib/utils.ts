@@ -1,4 +1,3 @@
-import { BetterFetchError } from "@better-fetch/fetch"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import type { AuthLocalization } from "./auth-localization"
@@ -28,21 +27,25 @@ export function getLocalizedError({
     error,
     localization
 }: {
-    error: unknown
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    error: any
     localization?: Partial<AuthLocalization>
 }) {
-    if (error instanceof BetterFetchError) {
-        const camelCaseErrorCode = errorCodeToCamelCase(error.error.code) as keyof AuthLocalization
-        return (localization?.[camelCaseErrorCode] ||
+    if (error?.error) {
+        if (error.error.code) {
+            const camelCaseErrorCode = errorCodeToCamelCase(
+                error.error.code
+            ) as keyof AuthLocalization
+            if (localization?.[camelCaseErrorCode]) return localization[camelCaseErrorCode]
+        }
+
+        return (
             error.error.message ||
             error.error.code ||
             error.error.statusText ||
-            localization?.requestFailed) as string
+            localization?.requestFailed
+        )
     }
 
-    if (error instanceof Error) {
-        return error.message
-    }
-
-    return localization?.requestFailed || "Request failed"
+    return error?.message || localization?.requestFailed || "Request failed"
 }

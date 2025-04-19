@@ -186,9 +186,9 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             <UpdateFieldCard
                                 key={field}
                                 classNames={classNames?.card}
-                                defaultValue={defaultValue}
+                                value={defaultValue}
                                 description={description}
-                                field={field}
+                                name={field}
                                 instructions={instructions}
                                 isPending={sessionPending}
                                 label={label}

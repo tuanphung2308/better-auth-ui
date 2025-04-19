@@ -287,7 +287,7 @@ export function AuthForm({
                             if (additionalField.validate && !additionalField.validate(value)) {
                                 toast({
                                     variant: "error",
-                                    message: `${localization.failedToValidate} ${field}`
+                                    message: `${additionalField.label} ${localization.isInvalid}`
                                 })
                                 return
                             }
