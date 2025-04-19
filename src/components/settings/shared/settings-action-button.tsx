@@ -8,14 +8,14 @@ import { cn } from "../../../lib/utils"
 import { Button } from "../../ui/button"
 import type { SettingsCardClassNames } from "./settings-card"
 
-interface ActionButtonProps extends ComponentProps<typeof Button> {
+interface SettingsActionButtonProps extends ComponentProps<typeof Button> {
     classNames?: SettingsCardClassNames
     actionLabel: ReactNode
     disabled?: boolean
     isSubmitting?: boolean
 }
 
-export function ActionButton({
+export function SettingsActionButton({
     classNames,
     actionLabel,
     disabled,
@@ -23,7 +23,7 @@ export function ActionButton({
     variant,
     onClick,
     ...props
-}: ActionButtonProps) {
+}: SettingsActionButtonProps) {
     if (!onClick) {
         const formState = useFormState()
         isSubmitting = formState.isSubmitting

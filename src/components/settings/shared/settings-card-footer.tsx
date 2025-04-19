@@ -5,7 +5,7 @@ import type { ReactNode } from "react"
 import { cn } from "../../../lib/utils"
 import { CardDescription, CardFooter } from "../../ui/card"
 import { Skeleton } from "../../ui/skeleton"
-import { ActionButton } from "./action-button"
+import { SettingsActionButton } from "./settings-action-button"
 import type { SettingsCardClassNames } from "./settings-card"
 
 export interface SettingsCardFooterProps {
@@ -73,7 +73,7 @@ export function SettingsCardFooter({
                     )}
 
                     {actionLabel && (
-                        <ActionButton
+                        <SettingsActionButton
                             classNames={classNames}
                             actionLabel={actionLabel}
                             onClick={action}
