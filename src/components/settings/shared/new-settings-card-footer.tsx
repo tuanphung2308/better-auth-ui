@@ -1,38 +1,37 @@
 "use client"
 
-import { Loader2 } from "lucide-react"
 import type { ReactNode } from "react"
-import { useFormState } from "react-hook-form"
 
 import { cn } from "../../../lib/utils"
-import { Button } from "../../ui/button"
 import { CardDescription, CardFooter } from "../../ui/card"
 import { Skeleton } from "../../ui/skeleton"
+import { ActionButton } from "./action-button"
 import type { SettingsCardClassNames } from "./settings-card"
 
 export interface SettingsCardFooterProps {
+    className?: string
+    classNames?: SettingsCardClassNames
+    action?: () => Promise<unknown> | unknown
     actionLabel?: ReactNode
     disabled?: boolean
-    isSubmitting?: boolean
-    isPending?: boolean
     instructions?: ReactNode
-    classNames?: SettingsCardClassNames
-    className?: string
+    isPending?: boolean
+    isSubmitting?: boolean
     optimistic?: boolean
     variant?: "default" | "destructive"
 }
 
 export function NewSettingsCardFooter({
+    action,
+    className,
+    classNames,
     actionLabel,
     disabled,
-    isPending,
     instructions,
-    classNames,
-    className,
+    isPending,
+    isSubmitting,
     variant = "default"
 }: SettingsCardFooterProps) {
-    const { isSubmitting } = useFormState()
-
     return (
         <CardFooter
             className={cn(
@@ -74,22 +73,14 @@ export function NewSettingsCardFooter({
                     )}
 
                     {actionLabel && (
-                        <Button
-                            className={cn(
-                                "md:ms-auto",
-                                classNames?.button,
-                                variant === "default" && classNames?.primaryButton,
-                                variant === "destructive" && classNames?.destructiveButton
-                            )}
-                            disabled={isSubmitting || disabled}
-                            size="sm"
-                            type="submit"
-                            variant={variant === "destructive" ? "destructive" : "default"}
-                        >
-                            {isSubmitting && <Loader2 className="animate-spin" />}
-
-                            {actionLabel}
-                        </Button>
+                        <ActionButton
+                            classNames={classNames}
+                            actionLabel={actionLabel}
+                            action={action}
+                            disabled={disabled}
+                            isSubmitting={isSubmitting}
+                            variant={variant}
+                        />
                     )}
                 </>
             )}

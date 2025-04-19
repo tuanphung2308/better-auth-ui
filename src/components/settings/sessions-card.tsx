@@ -2,13 +2,11 @@
 
 import type { Session } from "better-auth"
 import { useContext } from "react"
-import { useForm } from "react-hook-form"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { CardContent } from "../ui/card"
-import { Form } from "../ui/form"
 import { SessionCell } from "./session-cell"
 import { NewSettingsCard } from "./shared/new-settings-card"
 import type { SettingsCardClassNames } from "./shared/settings-card"
@@ -47,33 +45,29 @@ export function SessionsCard({
         refetch = result.refetch
     }
 
-    const form = useForm()
-
     return (
-        <Form {...form}>
-            <NewSettingsCard
-                className={className}
-                classNames={classNames}
-                title={localization.sessions}
-                description={localization.sessionsDescription}
-                isPending={isPending}
-            >
-                <CardContent className={cn("grid gap-4", classNames?.content)}>
-                    {isPending ? (
-                        <SettingsCellSkeleton classNames={classNames} />
-                    ) : (
-                        sessions?.map((session) => (
-                            <SessionCell
-                                key={session.id}
-                                classNames={classNames}
-                                session={session}
-                                localization={localization}
-                                refetch={refetch}
-                            />
-                        ))
-                    )}
-                </CardContent>
-            </NewSettingsCard>
-        </Form>
+        <NewSettingsCard
+            className={className}
+            classNames={classNames}
+            title={localization.sessions}
+            description={localization.sessionsDescription}
+            isPending={isPending}
+        >
+            <CardContent className={cn("grid gap-4", classNames?.content)}>
+                {isPending ? (
+                    <SettingsCellSkeleton classNames={classNames} />
+                ) : (
+                    sessions?.map((session) => (
+                        <SessionCell
+                            key={session.id}
+                            classNames={classNames}
+                            session={session}
+                            localization={localization}
+                            refetch={refetch}
+                        />
+                    ))
+                )}
+            </CardContent>
+        </NewSettingsCard>
     )
 }

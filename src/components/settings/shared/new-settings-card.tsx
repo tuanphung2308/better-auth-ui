@@ -38,6 +38,7 @@ export interface SettingsCardProps<TFormSchema extends z.ZodTypeAny> {
     title: ReactNode
     description?: ReactNode
     instructions?: ReactNode
+    action?: () => Promise<unknown> | unknown
     actionLabel?: ReactNode
     isSubmitting?: boolean
     disabled?: boolean
@@ -54,9 +55,11 @@ export function NewSettingsCard<TFormSchema extends z.ZodTypeAny>({
     title,
     description,
     instructions,
+    action,
     actionLabel,
     disabled,
     isPending,
+    isSubmitting,
     className,
     classNames,
     optimistic,
@@ -81,9 +84,11 @@ export function NewSettingsCard<TFormSchema extends z.ZodTypeAny>({
             {children}
 
             <NewSettingsCardFooter
+                action={action}
                 actionLabel={actionLabel}
                 disabled={disabled}
                 isPending={isPending}
+                isSubmitting={isSubmitting}
                 instructions={instructions}
                 classNames={classNames}
                 optimistic={optimistic}

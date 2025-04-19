@@ -21,18 +21,16 @@ import { Input } from "../ui/input"
 import type { SettingsCardClassNames } from "./shared/settings-card"
 
 export interface DeleteAccountDialogProps extends ComponentProps<typeof Dialog> {
+    classNames?: SettingsCardClassNames
     accounts?: { provider: string }[] | null
     localization?: AuthLocalization
-    className?: string
-    classNames?: SettingsCardClassNames
 }
 
 export function DeleteAccountDialog({
-    open,
+    classNames,
     onOpenChange,
     accounts,
     localization,
-    classNames,
     ...props
 }: DeleteAccountDialogProps) {
     const {
@@ -109,7 +107,7 @@ export function DeleteAccountDialog({
     }
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange} {...props}>
+        <Dialog onOpenChange={onOpenChange} {...props}>
             <DialogContent className={cn("sm:max-w-md", classNames?.dialog?.content)}>
                 <DialogHeader className={classNames?.dialog?.header}>
                     <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>

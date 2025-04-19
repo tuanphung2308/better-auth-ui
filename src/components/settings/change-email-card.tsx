@@ -53,7 +53,7 @@ export function ChangeEmailCard({
     })
 
     const { isSubmitting } = form.formState
-    const resendForm = useForm()
+    const [resendSubmitting, setResendSubmitting] = useState(false)
 
     const changeEmail = async ({ email }: z.infer<typeof formSchema>) => {
         try {
@@ -79,7 +79,7 @@ export function ChangeEmailCard({
         const email = sessionData.user.email
 
         setResendDisabled(true)
-
+        setResendSubmitting(true)
         try {
             await authClient.sendVerificationEmail({
                 email,
@@ -92,6 +92,8 @@ export function ChangeEmailCard({
             setResendDisabled(false)
             throw error
         }
+
+        setResendSubmitting(false)
     }
 
     return (
@@ -137,18 +139,16 @@ export function ChangeEmailCard({
             </Form>
 
             {emailVerification && sessionData?.user && !sessionData?.user.emailVerified && (
-                <Form {...resendForm}>
-                    <form onSubmit={resendForm.handleSubmit(resendVerification)}>
-                        <NewSettingsCard
-                            className={className}
-                            classNames={classNames}
-                            title={localization.verifyYourEmail}
-                            description={localization.verifyYourEmailDescription}
-                            actionLabel={localization.resendVerificationEmail}
-                            disabled={resendDisabled}
-                        />
-                    </form>
-                </Form>
+                <NewSettingsCard
+                    className={className}
+                    classNames={classNames}
+                    title={localization.verifyYourEmail}
+                    description={localization.verifyYourEmailDescription}
+                    actionLabel={localization.resendVerificationEmail}
+                    disabled={resendDisabled}
+                    action={resendVerification}
+                    isSubmitting={resendSubmitting}
+                />
             )}
         </>
     )
