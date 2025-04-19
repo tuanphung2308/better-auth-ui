@@ -52,10 +52,20 @@ export function ChangeEmailCard({
         values: { email: sessionData?.user.email || "" }
     })
 
+    const resendForm = useForm()
+
     const { isSubmitting } = form.formState
-    const [resendSubmitting, setResendSubmitting] = useState(false)
 
     const changeEmail = async ({ email }: z.infer<typeof formSchema>) => {
+        if (email === sessionData?.user.email) {
+            await new Promise((resolve) => setTimeout(resolve))
+            toast({
+                variant: "error",
+                message: localization.emailIsTheSame
+            })
+            return
+        }
+
         try {
             await authClient.changeEmail({
                 newEmail: email,
@@ -66,8 +76,11 @@ export function ChangeEmailCard({
             if (sessionData?.user.emailVerified) {
                 toast({ variant: "success", message: localization.emailVerifyChange! })
             } else {
-                toast({ variant: "success", message: localization.emailUpdated! })
-                refetch?.()
+                await refetch?.()
+                toast({
+                    variant: "success",
+                    message: `${localization.email} ${localization.updatedSuccessfully}`
+                })
             }
         } catch (error) {
             toast({ variant: "error", message: getLocalizedError({ error, localization }) })
@@ -79,7 +92,7 @@ export function ChangeEmailCard({
         const email = sessionData.user.email
 
         setResendDisabled(true)
-        setResendSubmitting(true)
+
         try {
             await authClient.sendVerificationEmail({
                 email,
@@ -92,8 +105,6 @@ export function ChangeEmailCard({
             setResendDisabled(false)
             throw error
         }
-
-        setResendSubmitting(false)
     }
 
     return (
@@ -139,16 +150,18 @@ export function ChangeEmailCard({
             </Form>
 
             {emailVerification && sessionData?.user && !sessionData?.user.emailVerified && (
-                <SettingsCard
-                    className={className}
-                    classNames={classNames}
-                    title={localization.verifyYourEmail}
-                    description={localization.verifyYourEmailDescription}
-                    actionLabel={localization.resendVerificationEmail}
-                    disabled={resendDisabled}
-                    action={resendVerification}
-                    isSubmitting={resendSubmitting}
-                />
+                <Form {...resendForm}>
+                    <form onSubmit={resendForm.handleSubmit(resendVerification)}>
+                        <SettingsCard
+                            className={className}
+                            classNames={classNames}
+                            title={localization.verifyYourEmail}
+                            description={localization.verifyYourEmailDescription}
+                            actionLabel={localization.resendVerificationEmail}
+                            disabled={resendDisabled}
+                        />
+                    </form>
+                </Form>
             )}
         </>
     )

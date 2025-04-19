@@ -103,9 +103,18 @@ export function UpdateFieldCard({
     const { isSubmitting } = form.formState
 
     const updateField = async (values: Record<string, unknown>) => {
-        const value = values[name]
+        await new Promise((resolve) => setTimeout(resolve))
+        const newValue = values[name]
 
-        if (validate && typeof value === "string" && !(await validate(value))) {
+        if (value === newValue) {
+            toast({
+                variant: "error",
+                message: `${label} ${localization.isTheSame}`
+            })
+            return
+        }
+
+        if (validate && typeof newValue === "string" && !(await validate(newValue))) {
             form.setError(name, {
                 message: `${label} ${localization.isInvalid}`
             })
@@ -114,7 +123,7 @@ export function UpdateFieldCard({
         }
 
         try {
-            await updateUser({ [name]: value })
+            await updateUser({ [name]: newValue })
 
             await refetch?.()
             toast({

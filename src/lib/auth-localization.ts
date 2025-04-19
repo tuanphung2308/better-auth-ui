@@ -146,9 +146,6 @@ export const authLocalization = {
     /** @default "Email address is required" */
     emailRequired: "Email address is required",
 
-    /** @default "Your email has been updated." */
-    emailUpdated: "Your email has been updated.",
-
     /** @default "Please check your email to verify the change." */
     emailVerifyChange: "Please check your email to verify the change.",
 
@@ -166,6 +163,9 @@ export const authLocalization = {
 
     /** @default "is required" */
     isRequired: "is required",
+
+    /** @default "is the same" */
+    isTheSame: "is the same",
 
     /** @default "Forgot authenticator?" */
     forgotAuthenticator: "Forgot authenticator?",
