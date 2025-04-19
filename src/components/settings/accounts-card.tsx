@@ -8,7 +8,7 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { CardContent } from "../ui/card"
 import { AccountCell } from "./account-cell"
-import { NewSettingsCard } from "./shared/new-settings-card"
+import { SettingsCard } from "./shared/settings-card"
 import type { SettingsCardClassNames } from "./shared/settings-card"
 import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
@@ -49,7 +49,7 @@ export function AccountsCard({
     }
 
     return (
-        <NewSettingsCard
+        <SettingsCard
             className={className}
             classNames={classNames}
             title={localization.accounts}
@@ -74,6 +74,6 @@ export function AccountsCard({
                     ))
                 )}
             </CardContent>
-        </NewSettingsCard>
+        </SettingsCard>
     )
 }

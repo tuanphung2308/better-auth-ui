@@ -14,7 +14,7 @@ import { Checkbox } from "../../ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
 import { Skeleton } from "../../ui/skeleton"
-import { NewSettingsCard, type SettingsCardClassNames } from "./new-settings-card"
+import { SettingsCard, type SettingsCardClassNames } from "./settings-card"
 
 export interface UpdateFieldCardProps {
     className?: string
@@ -132,7 +132,7 @@ export function UpdateFieldCard({
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(updateField)}>
-                <NewSettingsCard
+                <SettingsCard
                     className={className}
                     classNames={classNames}
                     description={description}
@@ -190,7 +190,7 @@ export function UpdateFieldCard({
                             />
                         )}
                     </CardContent>
-                </NewSettingsCard>
+                </SettingsCard>
             </form>
         </Form>
     )

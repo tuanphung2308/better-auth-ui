@@ -12,7 +12,7 @@ import { CardContent } from "../ui/card"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
 import { Input } from "../ui/input"
 import { Skeleton } from "../ui/skeleton"
-import { NewSettingsCard, type SettingsCardClassNames } from "./shared/new-settings-card"
+import { SettingsCard, type SettingsCardClassNames } from "./shared/settings-card"
 
 export interface ChangeEmailCardProps {
     className?: string
@@ -100,7 +100,7 @@ export function ChangeEmailCard({
         <>
             <Form {...form}>
                 <form noValidate onSubmit={form.handleSubmit(changeEmail)}>
-                    <NewSettingsCard
+                    <SettingsCard
                         className={className}
                         classNames={classNames}
                         description={localization.emailDescription}
@@ -134,12 +134,12 @@ export function ChangeEmailCard({
                                 />
                             )}
                         </CardContent>
-                    </NewSettingsCard>
+                    </SettingsCard>
                 </form>
             </Form>
 
             {emailVerification && sessionData?.user && !sessionData?.user.emailVerified && (
-                <NewSettingsCard
+                <SettingsCard
                     className={className}
                     classNames={classNames}
                     title={localization.verifyYourEmail}

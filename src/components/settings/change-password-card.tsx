@@ -11,7 +11,7 @@ import { cn, getLocalizedError } from "../../lib/utils"
 import { PasswordInput } from "../password-input"
 import { CardContent } from "../ui/card"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
-import { NewSettingsCard, type SettingsCardClassNames } from "./shared/new-settings-card"
+import { SettingsCard, type SettingsCardClassNames } from "./shared/settings-card"
 import { InputFieldSkeleton } from "./skeletons/input-field-skeleton"
 
 export interface ChangePasswordCardProps {
@@ -117,7 +117,7 @@ export function ChangePasswordCard({
         return (
             <Form {...setPasswordForm}>
                 <form onSubmit={setPasswordForm.handleSubmit(setPassword)}>
-                    <NewSettingsCard
+                    <SettingsCard
                         title={localization.setPassword}
                         description={localization.setPasswordDescription}
                         actionLabel={localization.setPassword}
@@ -133,7 +133,7 @@ export function ChangePasswordCard({
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(changePassword)}>
-                <NewSettingsCard
+                <SettingsCard
                     title={localization.changePassword}
                     description={localization.changePasswordDescription}
                     actionLabel={localization.save}
@@ -237,7 +237,7 @@ export function ChangePasswordCard({
                             </>
                         )}
                     </CardContent>
-                </NewSettingsCard>
+                </SettingsCard>
             </form>
         </Form>
     )

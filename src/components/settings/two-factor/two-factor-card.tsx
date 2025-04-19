@@ -3,8 +3,8 @@
 import { useContext, useState } from "react"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import type { SettingsCardClassNames } from "../shared/settings-card"
 import { SettingsCard } from "../shared/settings-card"
+import type { SettingsCardClassNames } from "../shared/settings-card"
 import { TwoFactorPasswordDialog } from "./two-factor-password-dialog"
 
 export interface TwoFactorCardProps {
@@ -40,7 +40,7 @@ export function TwoFactorCard({ className, classNames, localization }: TwoFactor
                         ? localization.twoFactorDisableInstructions
                         : localization.twoFactorEnableInstructions
                 }
-                formAction={() => setShowPasswordDialog(true)}
+                action={() => setShowPasswordDialog(true)}
             />
 
             <TwoFactorPasswordDialog

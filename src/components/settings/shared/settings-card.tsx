@@ -1,10 +1,7 @@
 "use client"
 
-import { type ReactNode, useActionState, useContext } from "react"
+import type { ReactNode } from "react"
 
-import type { AuthLocalization } from "../../../lib/auth-localization"
-import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import { getErrorMessage } from "../../../lib/get-error-message"
 import { cn } from "../../../lib/utils"
 import { Card } from "../../ui/card"
 import type { UserAvatarClassNames } from "../../user-avatar"
@@ -37,86 +34,64 @@ export type SettingsCardClassNames = {
 
 export interface SettingsCardProps {
     children?: ReactNode
+    className?: string
+    classNames?: SettingsCardClassNames
     title: ReactNode
     description?: ReactNode
     instructions?: ReactNode
+    action?: () => Promise<unknown> | unknown
     actionLabel?: ReactNode
     isSubmitting?: boolean
     disabled?: boolean
     isPending?: boolean
-    className?: string
-    classNames?: SettingsCardClassNames
-    formAction?: (formData: FormData) => Promise<unknown> | Promise<void> | void
-    localization?: AuthLocalization
     optimistic?: boolean
     variant?: "default" | "destructive"
 }
 
 export function SettingsCard({
     children,
+    className,
+    classNames,
     title,
     description,
     instructions,
+    action,
     actionLabel,
-    isSubmitting: externalIsSubmitting,
     disabled,
     isPending,
-    className,
-    classNames,
-    formAction,
-    localization,
+    isSubmitting,
     optimistic,
-    variant = "default"
+    variant
 }: SettingsCardProps) {
-    const { localization: authLocalization, toast } = useContext(AuthUIContext)
-
-    localization = { ...authLocalization, ...localization }
-
-    const performAction = async (_: Record<string, unknown>, formData: FormData) => {
-        try {
-            await formAction?.(formData)
-        } catch (error) {
-            toast({
-                variant: "error",
-                message: getErrorMessage(error) || localization.requestFailed
-            })
-        }
-
-        return {}
-    }
-
-    const [_, internalAction, isSubmitting] = useActionState(performAction, {})
-
     return (
-        <form action={internalAction}>
-            <Card
-                className={cn(
-                    "w-full pb-0 text-start",
-                    variant === "destructive" && "border-destructive/40",
-                    className,
-                    classNames?.base
-                )}
-            >
-                <SettingsCardHeader
-                    title={title}
-                    description={description}
-                    isPending={isPending}
-                    classNames={classNames}
-                />
+        <Card
+            className={cn(
+                "w-full pb-0 text-start",
+                variant === "destructive" && "border-destructive/40",
+                className,
+                classNames?.base
+            )}
+        >
+            <SettingsCardHeader
+                title={title}
+                description={description}
+                isPending={isPending}
+                classNames={classNames}
+            />
 
-                {children}
+            {children}
 
-                <SettingsCardFooter
-                    actionLabel={actionLabel}
-                    disabled={disabled}
-                    isSubmitting={isSubmitting || externalIsSubmitting}
-                    isPending={isPending}
-                    instructions={instructions}
-                    classNames={classNames}
-                    optimistic={optimistic}
-                    variant={variant}
-                />
-            </Card>
-        </form>
+            <SettingsCardFooter
+                action={action}
+                actionLabel={actionLabel}
+                disabled={disabled}
+                isPending={isPending}
+                isSubmitting={isSubmitting}
+                instructions={instructions}
+                classNames={classNames}
+                optimistic={optimistic}
+                variant={variant}
+            />
+        </Card>
     )
 }

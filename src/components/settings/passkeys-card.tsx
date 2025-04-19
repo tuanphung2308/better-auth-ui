@@ -10,7 +10,7 @@ import type { AuthClient } from "../../types/auth-client"
 import { CardContent } from "../ui/card"
 import { Form } from "../ui/form"
 import { PasskeyCell } from "./passkey-cell"
-import { NewSettingsCard } from "./shared/new-settings-card"
+import { SettingsCard } from "./shared/settings-card"
 import type { SettingsCardClassNames } from "./shared/settings-card"
 import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
@@ -66,7 +66,7 @@ export function PasskeysCard({
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(addPasskey)}>
-                <NewSettingsCard
+                <SettingsCard
                     className={className}
                     classNames={classNames}
                     title={localization.passkeys}
@@ -90,7 +90,7 @@ export function PasskeysCard({
                             ))
                         )}
                     </CardContent>
-                </NewSettingsCard>
+                </SettingsCard>
             </form>
         </Form>
     )
