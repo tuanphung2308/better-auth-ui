@@ -8,5 +8,3 @@ When asked to push, immediately run git push.
 When asked to pull, immediately run git pull.
 
 Do not make commits unless the user asks you to.
-
-Always search the codebase for relevant files and do research before you begin a task.
