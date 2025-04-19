@@ -179,7 +179,7 @@ export function TwoFactorForm({
                             render={({ field }) => (
                                 <FormItem className="space-y-3">
                                     <div className="flex items-center">
-                                        <FormLabel className={classNames?.label} htmlFor="otp">
+                                        <FormLabel className={classNames?.label}>
                                             {localization.oneTimePassword}
                                         </FormLabel>
 
