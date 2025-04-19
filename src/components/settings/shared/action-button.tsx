@@ -1,31 +1,30 @@
 "use client"
 
 import { Loader2 } from "lucide-react"
-import type { ReactNode } from "react"
+import type { ComponentProps, ReactNode } from "react"
 import { useFormState } from "react-hook-form"
 
 import { cn } from "../../../lib/utils"
 import { Button } from "../../ui/button"
 import type { SettingsCardClassNames } from "./settings-card"
 
-interface ActionButtonProps {
+interface ActionButtonProps extends ComponentProps<typeof Button> {
     classNames?: SettingsCardClassNames
-    action?: () => Promise<unknown> | unknown
     actionLabel: ReactNode
     disabled?: boolean
     isSubmitting?: boolean
-    variant?: "default" | "destructive"
 }
 
 export function ActionButton({
     classNames,
-    action,
     actionLabel,
     disabled,
     isSubmitting,
-    variant = "default"
+    variant,
+    onClick,
+    ...props
 }: ActionButtonProps) {
-    if (!action) {
+    if (!onClick) {
         const formState = useFormState()
         isSubmitting = formState.isSubmitting
     }
@@ -40,9 +39,10 @@ export function ActionButton({
             )}
             disabled={isSubmitting || disabled}
             size="sm"
-            type="submit"
-            variant={variant === "destructive" ? "destructive" : "default"}
-            onClick={action}
+            type={onClick ? "button" : "submit"}
+            variant={variant}
+            onClick={onClick}
+            {...props}
         >
             {isSubmitting && <Loader2 className="animate-spin" />}
             {actionLabel}

@@ -30,16 +30,16 @@ export function NewSettingsCardFooter({
     instructions,
     isPending,
     isSubmitting,
-    variant = "default"
+    variant
 }: SettingsCardFooterProps) {
     return (
         <CardFooter
             className={cn(
                 "flex flex-col justify-between gap-4 rounded-b-xl md:flex-row",
                 (actionLabel || instructions) && "!py-4 border-t",
-                variant === "default"
-                    ? "bg-muted dark:bg-transparent"
-                    : "border-destructive/30 bg-destructive/10",
+                variant === "destructive"
+                    ? "border-destructive/30 bg-destructive/10"
+                    : "bg-muted dark:bg-transparent",
                 className,
                 classNames?.footer
             )}
@@ -76,7 +76,7 @@ export function NewSettingsCardFooter({
                         <ActionButton
                             classNames={classNames}
                             actionLabel={actionLabel}
-                            action={action}
+                            onClick={action}
                             disabled={disabled}
                             isSubmitting={isSubmitting}
                             variant={variant}

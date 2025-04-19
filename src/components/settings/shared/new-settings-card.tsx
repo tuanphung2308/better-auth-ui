@@ -1,8 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
-import type { UseFormReturn } from "react-hook-form"
-import type * as z from "zod"
+
 import { cn } from "../../../lib/utils"
 import { Card } from "../../ui/card"
 import type { UserAvatarClassNames } from "../../user-avatar"
@@ -33,8 +32,10 @@ export type SettingsCardClassNames = {
     title?: string
 }
 
-export interface SettingsCardProps<TFormSchema extends z.ZodTypeAny> {
+export interface SettingsCardProps {
     children?: ReactNode
+    className?: string
+    classNames?: SettingsCardClassNames
     title: ReactNode
     description?: ReactNode
     instructions?: ReactNode
@@ -42,16 +43,15 @@ export interface SettingsCardProps<TFormSchema extends z.ZodTypeAny> {
     actionLabel?: ReactNode
     isSubmitting?: boolean
     disabled?: boolean
-    render?: (form: UseFormReturn<z.infer<TFormSchema>>) => ReactNode
     isPending?: boolean
-    className?: string
-    classNames?: SettingsCardClassNames
     optimistic?: boolean
     variant?: "default" | "destructive"
 }
 
-export function NewSettingsCard<TFormSchema extends z.ZodTypeAny>({
+export function NewSettingsCard({
     children,
+    className,
+    classNames,
     title,
     description,
     instructions,
@@ -60,11 +60,9 @@ export function NewSettingsCard<TFormSchema extends z.ZodTypeAny>({
     disabled,
     isPending,
     isSubmitting,
-    className,
-    classNames,
     optimistic,
-    variant = "default"
-}: SettingsCardProps<TFormSchema>) {
+    variant
+}: SettingsCardProps) {
     return (
         <Card
             className={cn(
