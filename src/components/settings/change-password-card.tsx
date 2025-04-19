@@ -225,6 +225,7 @@ export function ChangePasswordCard({
                                                             localization.confirmPasswordPlaceholder
                                                         }
                                                         disabled={isSubmitting}
+                                                        enableToggle
                                                         {...field}
                                                     />
                                                 </FormControl>
