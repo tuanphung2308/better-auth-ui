@@ -80,12 +80,13 @@ export function TwoFactorForm({
 
     const { isSubmitting } = form.formState
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies:
     useEffect(() => {
         if (method === "otp" && cooldownSeconds <= 0 && !initialSendRef.current) {
             initialSendRef.current = true
             sendOtp()
         }
-    }, [method, cooldownSeconds])
+    }, [method])
 
     useEffect(() => {
         if (cooldownSeconds <= 0) return
@@ -114,6 +115,7 @@ export function TwoFactorForm({
             }
         }
 
+        initialSendRef.current = false
         setIsSendingOtp(false)
     }
 
