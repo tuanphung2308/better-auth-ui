@@ -308,8 +308,8 @@ export const authLocalization = {
     /** @default "Enter your email below to login to your account" */
     signInDescription: "Enter your email below to login to your account",
 
-    /** @default "Enter your username below to login to your account" */
-    signInUsernameDescription: "Enter your username below to login to your account",
+    /** @default "Enter your username or email below to login to your account" */
+    signInUsernameDescription: "Enter your username or email to login to your account",
 
     /** @default "Sign in with" */
     signInWith: "Sign in with",
@@ -409,7 +409,7 @@ export const authLocalization = {
     usernamePlaceholder: "Username",
 
     /** @default "Username or email" */
-    usernameSignInPlaceholder: "Username or email",
+    signInUsernamePlaceholder: "Username or email",
 
     /** @default "Verify Your Email" */
     verifyYourEmail: "Verify Your Email",

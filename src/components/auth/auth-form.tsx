@@ -46,6 +46,7 @@ export interface AuthFormProps {
     className?: string
     classNames?: AuthFormClassNames
     callbackURL?: string
+    isSubmitting?: boolean
     localization?: Partial<AuthLocalization>
     pathname?: string
     redirectTo?: string
@@ -433,9 +434,7 @@ export function AuthForm({
     if (["signOut", "callback"].includes(view)) return <Loader2 className="animate-spin" />
 
     if (view === "signIn") {
-        return (
-            <SignInForm classNames={classNames} localization={localization} onSuccess={onSuccess} />
-        )
+        return <SignInForm classNames={classNames} localization={localization} />
     }
 
     if (view === "twoFactor") {
