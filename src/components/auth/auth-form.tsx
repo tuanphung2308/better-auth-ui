@@ -9,14 +9,12 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { getErrorMessage } from "../../lib/get-error-message"
-import { socialProviders } from "../../lib/social-providers"
 import { cn } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
 import { ConfirmPasswordInput } from "../confirm-password-input"
 import { PasswordInput } from "../password-input"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-import { Separator } from "../ui/separator"
 import { ActionButton } from "./action-button"
 import { AdditionalFieldInput } from "./additional-field-input"
 import { ForgotPasswordForm } from "./forms/forgot-password-form"
@@ -25,9 +23,6 @@ import { RecoverAccountForm } from "./forms/recover-account-form"
 import { ResetPasswordForm } from "./forms/reset-password-form"
 import { SignInForm } from "./forms/sign-in-form"
 import { TwoFactorForm } from "./forms/two-factor-form"
-import { MagicLinkButton } from "./magic-link-button"
-import { PasskeyButton } from "./passkey-button"
-import { ProviderButton } from "./provider-button"
 
 export type AuthFormClassNames = {
     base?: string
@@ -108,14 +103,6 @@ export function AuthForm({
     const signingOut = useRef(false)
     const isRedirecting = useRef(false)
     const checkingResetPasswordToken = useRef(false)
-
-    if (socialLayout === "auto") {
-        socialLayout = !credentials
-            ? "vertical"
-            : providers && providers.length > 2
-              ? "horizontal"
-              : "vertical"
-    }
 
     const path = pathname?.split("/").pop()
 
@@ -526,84 +513,7 @@ export function AuthForm({
                         localization={localization}
                     />
                 )}
-
-                {magicLink && credentials && (
-                    <MagicLinkButton
-                        className={cn(classNames?.button, classNames?.secondaryButton)}
-                        isLoading={isLoading}
-                        localization={localization}
-                        view={view}
-                    />
-                )}
             </div>
-
-            {!["forgotPassword"].includes(view) &&
-                (providers?.length || otherProviders?.length) && (
-                    <>
-                        {credentials && (
-                            <div className="flex items-center gap-2">
-                                <Separator className="!w-auto grow" />
-
-                                <span className="flex-shrink-0 text-muted-foreground text-sm">
-                                    {localization.orContinueWith}
-                                </span>
-
-                                <Separator className="!w-auto grow" />
-                            </div>
-                        )}
-
-                        <div
-                            className={cn(
-                                "flex w-full items-center gap-4",
-                                "justify-between",
-                                socialLayout === "horizontal" && "flex-wrap",
-                                socialLayout === "vertical" && "flex-col",
-                                socialLayout === "grid" && "grid grid-cols-2"
-                            )}
-                        >
-                            {providers?.map((provider) => {
-                                const socialProvider = socialProviders.find(
-                                    (socialProvider) => socialProvider.provider === provider
-                                )
-                                if (!socialProvider) return null
-
-                                return (
-                                    <ProviderButton
-                                        key={provider}
-                                        className={cn(
-                                            classNames?.button,
-                                            classNames?.providerButton
-                                        )}
-                                        isLoading={isLoading}
-                                        localization={localization}
-                                        socialLayout={socialLayout}
-                                        provider={socialProvider}
-                                    />
-                                )
-                            })}
-
-                            {otherProviders?.map((provider) => (
-                                <ProviderButton
-                                    key={provider.provider}
-                                    className={cn(classNames?.button, classNames?.providerButton)}
-                                    isLoading={isLoading}
-                                    localization={localization}
-                                    socialLayout={socialLayout}
-                                    provider={provider}
-                                    other
-                                />
-                            ))}
-                        </div>
-                    </>
-                )}
-
-            {passkey && (
-                <PasskeyButton
-                    className={cn(classNames?.button, classNames?.secondaryButton)}
-                    isLoading={isLoading}
-                    localization={localization}
-                />
-            )}
         </form>
     )
 }

@@ -6,10 +6,15 @@ import { useContext, useEffect } from "react"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
+import { socialProviders } from "../../lib/social-providers"
 import { cn } from "../../lib/utils"
 import { SettingsCards, type SettingsCardsClassNames } from "../settings/settings-cards"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
+import { Separator } from "../ui/separator"
 import { AuthForm, type AuthFormClassNames } from "./auth-form"
+import { MagicLinkButton } from "./magic-link-button"
+import { PasskeyButton } from "./passkey-button"
+import { ProviderButton } from "./provider-button"
 
 export interface AuthCardClassNames {
     base?: string
@@ -66,6 +71,9 @@ export function AuthCard({
         credentials,
         localization: contextLocalization,
         magicLink,
+        passkey,
+        providers,
+        otherProviders,
         replace,
         settingsURL,
         signUp,
@@ -74,6 +82,14 @@ export function AuthCard({
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
+
+    if (socialLayout === "auto") {
+        socialLayout = !credentials
+            ? "vertical"
+            : providers && providers.length > 2
+              ? "horizontal"
+              : "vertical"
+    }
 
     if (path && !Object.values(viewPaths).includes(path)) {
         console.error(`Invalid auth view: ${path}`)
@@ -117,7 +133,7 @@ export function AuthCard({
             : localization[`${view}Description` as keyof typeof localization]
 
     return (
-        <Card className={cn("w-full max-w-sm text-start", className, classNames?.base)}>
+        <Card className={cn("w-full max-w-sm", className, classNames?.base)}>
             <CardHeader className={classNames?.header}>
                 <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                     {localization[view as keyof typeof localization]}
@@ -130,16 +146,93 @@ export function AuthCard({
                 )}
             </CardHeader>
 
-            <CardContent className={classNames?.content}>
-                <AuthForm
-                    callbackURL={callbackURL}
-                    classNames={classNames?.form}
-                    localization={localization}
-                    redirectTo={redirectTo}
-                    socialLayout={socialLayout}
-                    view={view}
-                    otpSeparators={otpSeparators}
-                />
+            <CardContent className={cn("grid gap-6", classNames?.content)}>
+                <div className="grid gap-4">
+                    <AuthForm
+                        callbackURL={callbackURL}
+                        classNames={classNames?.form}
+                        localization={localization}
+                        redirectTo={redirectTo}
+                        socialLayout={socialLayout}
+                        view={view}
+                        otpSeparators={otpSeparators}
+                    />
+
+                    {magicLink && credentials && (
+                        <MagicLinkButton localization={localization} view={view} />
+                    )}
+                </div>
+
+                {!["forgotPassword"].includes(view) &&
+                    (providers?.length || otherProviders?.length) && (
+                        <>
+                            {credentials && (
+                                <div className="flex items-center gap-2">
+                                    <Separator className="!w-auto grow" />
+
+                                    <span className="flex-shrink-0 text-muted-foreground text-sm">
+                                        {localization.orContinueWith}
+                                    </span>
+
+                                    <Separator className="!w-auto grow" />
+                                </div>
+                            )}
+
+                            <div
+                                className={cn(
+                                    "flex w-full items-center gap-4",
+                                    "justify-between",
+                                    socialLayout === "horizontal" && "flex-wrap",
+                                    socialLayout === "vertical" && "flex-col",
+                                    socialLayout === "grid" && "grid grid-cols-2"
+                                )}
+                            >
+                                {providers?.map((provider) => {
+                                    const socialProvider = socialProviders.find(
+                                        (socialProvider) => socialProvider.provider === provider
+                                    )
+                                    if (!socialProvider) return null
+
+                                    return (
+                                        <ProviderButton
+                                            key={provider}
+                                            className={cn(
+                                                classNames?.form?.button,
+                                                classNames?.form?.providerButton
+                                            )}
+                                            localization={localization}
+                                            socialLayout={socialLayout}
+                                            provider={socialProvider}
+                                        />
+                                    )
+                                })}
+
+                                {otherProviders?.map((provider) => (
+                                    <ProviderButton
+                                        key={provider.provider}
+                                        className={cn(
+                                            classNames?.form?.button,
+                                            classNames?.form?.providerButton
+                                        )}
+                                        localization={localization}
+                                        socialLayout={socialLayout}
+                                        provider={provider}
+                                        other
+                                    />
+                                ))}
+
+                                {passkey && ["signIn", "magicLink"].includes(view) && (
+                                    <PasskeyButton
+                                        className={cn(
+                                            classNames?.form?.button,
+                                            classNames?.form?.secondaryButton
+                                        )}
+                                        localization={localization}
+                                    />
+                                )}
+                            </div>
+                        </>
+                    )}
             </CardContent>
 
             {credentials && signUp && (
