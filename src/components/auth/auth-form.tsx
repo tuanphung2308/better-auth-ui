@@ -9,7 +9,7 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { getErrorMessage } from "../../lib/get-error-message"
 import { socialProviders } from "../../lib/social-providers"
-import { cn, isValidEmail } from "../../lib/utils"
+import { cn } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
 import { ConfirmPasswordInput } from "../confirm-password-input"
 import { PasswordInput } from "../password-input"
@@ -24,7 +24,6 @@ import { TwoFactorForm } from "./forms/two-factor-form"
 import { MagicLinkButton } from "./magic-link-button"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
-import { RememberMeCheckbox } from "./remember-me-checkbox"
 
 export type AuthFormClassNames = {
     base?: string
@@ -195,60 +194,11 @@ export function AuthForm({
                 return
             }
 
-            let email = formData.get("email") as string
+            const email = formData.get("email") as string
             const password = formData.get("password") as string
             const name = formData.get("name") || ("" as string)
 
             switch (view) {
-                case "signIn": {
-                    if (!credentials) {
-                        await (authClient as AuthClient).signIn.magicLink({
-                            email,
-                            callbackURL: getCallbackURL(),
-                            fetchOptions: { throw: true }
-                        })
-
-                        toast({ variant: "success", message: localization.magicLinkEmail! })
-                        return
-                    }
-
-                    const params = {
-                        password,
-                        rememberMe: !rememberMe || formData.has("rememberMe")
-                    }
-
-                    if (usernamePlugin) {
-                        const username = formData.get("username") as string
-
-                        if (isValidEmail(username)) {
-                            email = username
-                        } else {
-                            await (authClient as AuthClient).signIn.username({
-                                username,
-                                ...params,
-                                fetchOptions: { throw: true }
-                            })
-
-                            onSuccess()
-                            return
-                        }
-                    }
-
-                    const response = (await authClient.signIn.email({
-                        email,
-                        ...params,
-                        fetchOptions: { throw: true }
-                    })) as Awaited<ReturnType<AuthClient["signIn"]["email"]>>
-
-                    if (response.twoFactorRedirect) {
-                        navigate(`${basePath}/${viewPaths.twoFactor}`)
-                    } else {
-                        onSuccess()
-                    }
-
-                    break
-                }
-
                 case "magicLink": {
                     await (authClient as AuthClient).signIn.magicLink({
                         email,
@@ -554,8 +504,6 @@ export function AuthForm({
                     )}
                 </>
             )}
-
-            {rememberMe && <RememberMeCheckbox localization={localization} />}
 
             {view === "signUp" &&
                 signUpFields

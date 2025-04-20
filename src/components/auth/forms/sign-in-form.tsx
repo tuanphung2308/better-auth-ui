@@ -22,7 +22,7 @@ import { useOnSuccessTransition } from "./use-success-transition"
 export interface SignInFormProps {
     className?: string
     classNames?: AuthFormClassNames
-    isSubmitting?: boolean
+    isLoading?: boolean
     localization: Partial<AuthLocalization>
     redirectTo?: string
 }
@@ -30,7 +30,7 @@ export interface SignInFormProps {
 export function SignInForm({
     className,
     classNames,
-    isSubmitting,
+    isLoading,
     localization,
     redirectTo
 }: SignInFormProps) {
@@ -48,7 +48,7 @@ export function SignInForm({
         Link
     } = useContext(AuthUIContext)
 
-    const { onSuccess, isPending } = useOnSuccessTransition({ redirectTo })
+    const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({ redirectTo })
 
     const formSchema = z.object({
         email: usernameEnabled
@@ -78,7 +78,7 @@ export function SignInForm({
         }
     })
 
-    isSubmitting = isSubmitting || form.formState.isSubmitting || isPending
+    isLoading = isLoading || form.formState.isSubmitting || transitionPending
 
     async function signIn({ email, password, rememberMe }: z.infer<typeof formSchema>) {
         try {
@@ -140,7 +140,7 @@ export function SignInForm({
                                             ? localization.signInUsernamePlaceholder
                                             : localization.emailPlaceholder
                                     }
-                                    disabled={isSubmitting}
+                                    disabled={isLoading}
                                     {...field}
                                 />
                             </FormControl>
@@ -178,7 +178,7 @@ export function SignInForm({
                                     autoComplete="current-password"
                                     className={classNames?.input}
                                     placeholder={localization.passwordPlaceholder}
-                                    disabled={isSubmitting}
+                                    disabled={isLoading}
                                     {...field}
                                 />
                             </FormControl>
@@ -198,7 +198,7 @@ export function SignInForm({
                                     <Checkbox
                                         checked={field.value}
                                         onCheckedChange={field.onChange}
-                                        disabled={isSubmitting}
+                                        disabled={isLoading}
                                     />
                                 </FormControl>
 
@@ -210,14 +210,10 @@ export function SignInForm({
 
                 <Button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isLoading}
                     className={cn("w-full", classNames?.button, classNames?.primaryButton)}
                 >
-                    {isSubmitting ? (
-                        <Loader2 className="animate-spin" />
-                    ) : (
-                        localization.signInAction
-                    )}
+                    {isLoading ? <Loader2 className="animate-spin" /> : localization.signInAction}
                 </Button>
             </form>
         </Form>
