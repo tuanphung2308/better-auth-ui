@@ -2,7 +2,7 @@
 
 import type { SocialProvider } from "better-auth/social-providers"
 import { Loader2 } from "lucide-react"
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useContext, useEffect, useMemo, useRef } from "react"
 
 import { useSearchParam } from "../../hooks/use-search-param"
 import type { AuthLocalization } from "../../lib/auth-localization"
@@ -15,7 +15,6 @@ import { ConfirmPasswordInput } from "../confirm-password-input"
 import { PasswordInput } from "../password-input"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-import { ActionButton } from "./action-button"
 import { AdditionalFieldInput } from "./additional-field-input"
 import { ForgotPasswordForm } from "./forms/forgot-password-form"
 import { MagicLinkForm } from "./forms/magic-link-form"
@@ -44,11 +43,9 @@ export interface AuthFormProps {
     className?: string
     classNames?: AuthFormClassNames
     callbackURL?: string
-    isSubmitting?: boolean
     localization?: Partial<AuthLocalization>
     pathname?: string
     redirectTo?: string
-    socialLayout?: "auto" | "horizontal" | "grid" | "vertical"
     view?: AuthView
     otpSeparators?: 0 | 1 | 2
 }
@@ -60,12 +57,9 @@ export function AuthForm({
     localization,
     pathname,
     redirectTo: propsRedirectTo,
-    socialLayout = "auto",
     view,
     otpSeparators = 0
 }: AuthFormProps) {
-    const [isLoading, setIsLoading] = useState(false)
-
     const {
         additionalFields,
         authClient,
@@ -80,10 +74,7 @@ export function AuthForm({
         magicLink,
         nameRequired,
         navigate,
-        otherProviders,
-        passkey,
         persistClient,
-        providers,
         replace,
         signUp,
         signUpFields,
@@ -137,19 +128,6 @@ export function AuthForm({
 
     const getCallbackURL = useCallback(() => callbackURL, [callbackURL])
 
-    const onSuccess = useCallback(async () => {
-        setIsLoading(true)
-
-        await refetchSession?.()
-        await onSessionChange?.()
-
-        navigate(getRedirectTo())
-
-        setTimeout(() => {
-            setIsLoading(false)
-        }, 5000)
-    }, [refetchSession, onSessionChange, navigate, getRedirectTo])
-
     const formAction = async (formData: FormData) => {
         const provider = formData.get("provider") as SocialProvider
 
@@ -161,7 +139,6 @@ export function AuthForm({
                     fetchOptions: { throw: true }
                 })
 
-                setIsLoading(true)
                 return
             }
 
@@ -174,13 +151,11 @@ export function AuthForm({
                     fetchOptions: { throw: true }
                 })
 
-                setIsLoading(true)
                 return
             }
 
             if (formData.get("passkey")) {
                 await (authClient as AuthClient).signIn.passkey({ fetchOptions: { throw: true } })
-                onSuccess()
                 return
             }
 
@@ -244,7 +219,6 @@ export function AuthForm({
                     })
 
                     if (data.token) {
-                        onSuccess()
                     } else {
                         navigate(`${basePath}/${viewPaths.signIn}`)
                         toast({ variant: "success", message: localization.signUpEmail! })
@@ -323,9 +297,8 @@ export function AuthForm({
         if (isRestoring) return
 
         isRedirecting.current = true
-
-        onSuccess()
-    }, [isRestoring, view, replace, persistClient, getRedirectTo, onSuccess])
+        // onSuccess()
+    }, [isRestoring, view, replace, persistClient, getRedirectTo])
 
     if (["signOut", "callback"].includes(view)) return <Loader2 className="animate-spin" />
 
@@ -503,17 +476,6 @@ export function AuthForm({
                             />
                         )
                     })}
-
-            <div className="flex flex-col gap-4">
-                {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) && (
-                    <ActionButton
-                        authView={view}
-                        className={cn(classNames?.button, classNames?.primaryButton)}
-                        isLoading={isLoading}
-                        localization={localization}
-                    />
-                )}
-            </div>
         </form>
     )
 }

@@ -80,6 +80,8 @@ export function MagicLinkForm({
                 variant: "success",
                 message: localization.magicLinkEmail
             })
+
+            form.reset()
         } catch (error) {
             toast({
                 variant: "error",

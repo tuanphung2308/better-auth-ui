@@ -27,7 +27,7 @@ export function ForgotPasswordForm({
     localization
 }: ForgotPasswordFormProps) {
     const isHydrated = useIsHydrated()
-    const { authClient, basePath, baseURL, toast, viewPaths } = useContext(AuthUIContext)
+    const { authClient, basePath, baseURL, navigate, toast, viewPaths } = useContext(AuthUIContext)
 
     const formSchema = z.object({
         email: z
@@ -61,6 +61,8 @@ export function ForgotPasswordForm({
                 variant: "success",
                 message: localization.forgotPasswordEmail
             })
+
+            navigate(`${basePath}/${viewPaths.signIn}`)
         } catch (error) {
             toast({
                 variant: "error",

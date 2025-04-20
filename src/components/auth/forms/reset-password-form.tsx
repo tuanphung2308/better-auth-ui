@@ -17,16 +17,10 @@ import type { AuthFormClassNames } from "../auth-form"
 export interface ResetPasswordFormProps {
     className?: string
     classNames?: AuthFormClassNames
-    isSubmitting?: boolean
     localization: Partial<AuthLocalization>
 }
 
-export function ResetPasswordForm({
-    className,
-    classNames,
-    isSubmitting,
-    localization
-}: ResetPasswordFormProps) {
+export function ResetPasswordForm({ className, classNames, localization }: ResetPasswordFormProps) {
     const tokenChecked = useRef(false)
 
     const {
@@ -40,7 +34,7 @@ export function ResetPasswordForm({
 
     const formSchema = z
         .object({
-            password: z.string().min(1, {
+            newPassword: z.string().min(1, {
                 message: `${localization.password} ${localization.isRequired}`
             }),
             confirmPassword: confirmPasswordEnabled
@@ -49,46 +43,41 @@ export function ResetPasswordForm({
                   })
                 : z.string().optional()
         })
-        .refine((data) => !confirmPasswordEnabled || data.password === data.confirmPassword, {
+        .refine((data) => !confirmPasswordEnabled || data.newPassword === data.confirmPassword, {
             message: localization.passwordsDoNotMatch,
             path: ["confirmPassword"]
         })
 
-    // Infer the type from the schema
-    type FormValues = z.infer<typeof formSchema>
-
-    const form = useForm<FormValues>({
+    const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            password: "",
+            newPassword: "",
             confirmPassword: ""
         }
     })
 
-    isSubmitting = isSubmitting || form.formState.isSubmitting
+    const isSubmitting = form.formState.isSubmitting
 
     useEffect(() => {
         if (tokenChecked.current) return
-
         tokenChecked.current = true
+
         const searchParams = new URLSearchParams(window.location.search)
         const token = searchParams.get("token")
 
         if (!token || token === "INVALID_TOKEN") {
             navigate(`${basePath}/${viewPaths.signIn}`)
-            setTimeout(() => {
-                toast({ variant: "error", message: localization.resetPasswordInvalidToken })
-            }, 100)
+            toast({ variant: "error", message: localization.resetPasswordInvalidToken })
         }
     }, [basePath, navigate, toast, viewPaths, localization])
 
-    async function resetPassword(values: FormValues) {
+    async function resetPassword({ newPassword }: z.infer<typeof formSchema>) {
         try {
             const searchParams = new URLSearchParams(window.location.search)
             const token = searchParams.get("token") as string
 
             await authClient.resetPassword({
-                newPassword: values.password,
+                newPassword,
                 token,
                 fetchOptions: { throw: true }
             })
@@ -104,6 +93,8 @@ export function ResetPasswordForm({
                 variant: "error",
                 message: getLocalizedError({ error, localization })
             })
+
+            form.reset()
         }
     }
 
@@ -115,7 +106,7 @@ export function ResetPasswordForm({
             >
                 <FormField
                     control={form.control}
-                    name="password"
+                    name="newPassword"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className={classNames?.label}>

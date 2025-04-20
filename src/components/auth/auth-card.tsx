@@ -153,17 +153,18 @@ export function AuthCard({
                         classNames={classNames?.form}
                         localization={localization}
                         redirectTo={redirectTo}
-                        socialLayout={socialLayout}
                         view={view}
                         otpSeparators={otpSeparators}
                     />
 
-                    {magicLink && credentials && (
-                        <MagicLinkButton localization={localization} view={view} />
-                    )}
+                    {magicLink &&
+                        credentials &&
+                        ["forgotPassword", "signUp", "signIn", "magicLink"].includes(view) && (
+                            <MagicLinkButton localization={localization} view={view} />
+                        )}
                 </div>
 
-                {!["forgotPassword"].includes(view) &&
+                {!["forgotPassword", "resetPassword"].includes(view) &&
                     (providers?.length || otherProviders?.length) && (
                         <>
                             {credentials && (
@@ -242,7 +243,7 @@ export function AuthCard({
                         classNames?.footer
                     )}
                 >
-                    {view === "signIn" ? (
+                    {view === "signIn" || view === "magicLink" ? (
                         localization.dontHaveAnAccount
                     ) : view === "signUp" ? (
                         localization.alreadyHaveAnAccount
@@ -252,9 +253,9 @@ export function AuthCard({
 
                     <Link
                         className={cn("text-foreground underline", classNames?.footerLink)}
-                        href={`${basePath}/${viewPaths[view === "signIn" ? "signUp" : "signIn"]}`}
+                        href={`${basePath}/${viewPaths[view === "signIn" || view === "magicLink" ? "signUp" : "signIn"]}`}
                     >
-                        {view === "signIn"
+                        {view === "signIn" || view === "magicLink"
                             ? localization.signUp
                             : view === "signUp"
                               ? localization.signIn
