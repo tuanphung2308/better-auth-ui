@@ -4,8 +4,7 @@ import { useContext, useRef, useState } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { getErrorMessage } from "../../lib/get-error-message"
-import { cn } from "../../lib/utils"
+import { cn, getLocalizedError } from "../../lib/utils"
 import { Card } from "../ui/card"
 import { Skeleton } from "../ui/skeleton"
 import { UserAvatar } from "../user-avatar"
@@ -121,7 +120,7 @@ export function UpdateAvatarCard({
         } catch (error) {
             toast({
                 variant: "error",
-                message: getErrorMessage(error) || localization.requestFailed
+                message: getLocalizedError({ error, localization })
             })
         }
 

@@ -5,8 +5,7 @@ import { useContext, useState } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { getErrorMessage } from "../../lib/get-error-message"
-import { cn } from "../../lib/utils"
+import { cn, getLocalizedError } from "../../lib/utils"
 import { Button } from "../ui/button"
 import { Card } from "../ui/card"
 import type { SettingsCardClassNames } from "./shared/settings-card"
@@ -47,7 +46,7 @@ export function PasskeyCell({
 
             toast({
                 variant: "error",
-                message: getErrorMessage(error) || localization.requestFailed
+                message: getLocalizedError({ error, localization })
             })
         }
     }

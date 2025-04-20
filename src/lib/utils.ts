@@ -21,7 +21,6 @@ export function errorCodeToCamelCase(errorCode: string): string {
 
 /**
  * Gets a localized error message from an error object
- * Uses getErrorMessage internally but adds localization fallback
  */
 export function getLocalizedError({
     error,

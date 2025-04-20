@@ -238,6 +238,10 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         />
                     )}
 
+                    {twoFactor && credentialsLinked && (
+                        <TwoFactorCard classNames={classNames?.card} localization={localization} />
+                    )}
+
                     {passkey && (
                         <PasskeysCard
                             classNames={classNames?.card}
@@ -247,10 +251,6 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             refetch={refetchPasskeys}
                             skipHook
                         />
-                    )}
-
-                    {twoFactor && credentialsLinked && (
-                        <TwoFactorCard classNames={classNames?.card} localization={localization} />
                     )}
 
                     <SessionsCard
