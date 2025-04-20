@@ -1,13 +1,13 @@
 import { KeyIcon } from "lucide-react"
 
 import { useContext } from "react"
+import { useOnSuccessTransition } from "../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
 import { Button } from "../ui/button"
 import type { AuthCardClassNames } from "./auth-card"
-import { useOnSuccessTransition } from "./forms/use-success-transition"
 
 interface PasskeyButtonProps {
     classNames?: AuthCardClassNames

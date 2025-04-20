@@ -7,6 +7,7 @@ import { useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
@@ -15,7 +16,6 @@ import { Button } from "../../ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
 import type { AuthFormClassNames } from "../auth-form"
-import { useOnSuccessTransition } from "./use-success-transition"
 
 export interface RecoverAccountFormProps {
     className?: string

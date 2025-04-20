@@ -9,6 +9,7 @@ import * as z from "zod"
 
 import type { BetterFetchError } from "@better-fetch/fetch"
 import { useSearchParam } from "../../../hooks/use-search-param"
+import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { getErrorMessage } from "../../../lib/get-error-message"
@@ -21,7 +22,6 @@ import { InputOTP } from "../../ui/input-otp"
 import { Label } from "../../ui/label"
 import type { AuthFormClassNames } from "../auth-form"
 import { OTPInputGroup } from "../otp-input-group"
-import { useOnSuccessTransition } from "./use-success-transition"
 
 export interface TwoFactorFormProps {
     className?: string
