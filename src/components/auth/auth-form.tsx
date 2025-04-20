@@ -9,18 +9,13 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { getErrorMessage } from "../../lib/get-error-message"
-import { cn } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
-import { ConfirmPasswordInput } from "../confirm-password-input"
-import { PasswordInput } from "../password-input"
-import { Input } from "../ui/input"
-import { Label } from "../ui/label"
-import { AdditionalFieldInput } from "./additional-field-input"
 import { ForgotPasswordForm } from "./forms/forgot-password-form"
 import { MagicLinkForm } from "./forms/magic-link-form"
 import { RecoverAccountForm } from "./forms/recover-account-form"
 import { ResetPasswordForm } from "./forms/reset-password-form"
 import { SignInForm } from "./forms/sign-in-form"
+import { SignUpForm } from "./forms/sign-up-form"
 import { TwoFactorForm } from "./forms/two-factor-form"
 
 export type AuthFormClassNames = {
@@ -43,6 +38,7 @@ export interface AuthFormProps {
     className?: string
     classNames?: AuthFormClassNames
     callbackURL?: string
+    isSubmitting?: boolean
     localization?: Partial<AuthLocalization>
     pathname?: string
     redirectTo?: string
@@ -54,6 +50,7 @@ export function AuthForm({
     className,
     classNames,
     callbackURL: propsCallbackURL,
+    isSubmitting,
     localization,
     pathname,
     redirectTo: propsRedirectTo,
@@ -68,11 +65,9 @@ export function AuthForm({
         confirmPassword: confirmPasswordEnabled,
         redirectTo: contextRedirectTo,
         credentials,
-        forgotPassword,
         hooks: { useIsRestoring, useSession },
         localization: contextLocalization,
         magicLink,
-        nameRequired,
         navigate,
         persistClient,
         replace,
@@ -81,8 +76,7 @@ export function AuthForm({
         toast,
         username: usernamePlugin,
         viewPaths,
-        onSessionChange,
-        Link
+        onSessionChange
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
@@ -281,7 +275,10 @@ export function AuthForm({
             replace(`${basePath}/${viewPaths.signIn}`)
         }
 
-        if (["signUp", "forgotPassword", "resetPassword"].includes(view) && !credentials) {
+        if (
+            (view === "signUp" || view === "forgotPassword" || view === "resetPassword") &&
+            !credentials
+        ) {
             replace(`${basePath}/${viewPaths.signIn}`)
         }
     }, [basePath, view, viewPaths, credentials, replace, signUp, magicLink])
@@ -300,7 +297,7 @@ export function AuthForm({
         // onSuccess()
     }, [isRestoring, view, replace, persistClient, getRedirectTo])
 
-    if (["signOut", "callback"].includes(view)) return <Loader2 className="animate-spin" />
+    if (view === "signOut" || view === "callback") return <Loader2 className="animate-spin" />
 
     if (view === "signIn") {
         return (
@@ -308,6 +305,7 @@ export function AuthForm({
                 classNames={classNames}
                 localization={localization}
                 redirectTo={redirectTo}
+                isSubmitting={isSubmitting}
             />
         )
     }
@@ -341,6 +339,7 @@ export function AuthForm({
                 classNames={classNames}
                 localization={localization}
                 redirectTo={redirectTo}
+                isSubmitting={isSubmitting}
             />
         )
     }
@@ -365,117 +364,15 @@ export function AuthForm({
         )
     }
 
-    return (
-        <form action={formAction} className={cn("grid w-full gap-6", className, classNames?.base)}>
-            {credentials &&
-                view === "signUp" &&
-                (nameRequired || signUpFields?.includes("name")) && (
-                    <div className="grid gap-2">
-                        <Label className={classNames?.label} htmlFor="name">
-                            {localization.name}
-                        </Label>
-
-                        <Input
-                            className={classNames?.input}
-                            id="name"
-                            name="name"
-                            placeholder={localization.namePlaceholder}
-                            required={nameRequired}
-                        />
-                    </div>
-                )}
-
-            {credentials && usernamePlugin && ["signIn", "signUp"].includes(view) && (
-                <div className="grid gap-2">
-                    <Label className={classNames?.label} htmlFor="username">
-                        {localization.username}
-                    </Label>
-
-                    <Input
-                        className={classNames?.input}
-                        id="username"
-                        name="username"
-                        placeholder={localization.usernamePlaceholder}
-                        required
-                    />
-                </div>
-            )}
-
-            {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) &&
-                (!usernamePlugin || ["signUp", "magicLink", "forgotPassword"].includes(view)) && (
-                    <div className="grid gap-2">
-                        <Label className={classNames?.label} htmlFor="email">
-                            {localization.email}
-                        </Label>
-
-                        <Input
-                            className={classNames?.input}
-                            id="email"
-                            name="email"
-                            placeholder={localization.emailPlaceholder}
-                            required
-                            type="email"
-                        />
-                    </div>
-                )}
-
-            {credentials && ["signUp", "signIn"].includes(view) && (
-                <>
-                    <div className="grid gap-2">
-                        <div className="flex items-center">
-                            <Label className={classNames?.label} htmlFor="password">
-                                {localization.password}
-                            </Label>
-
-                            {forgotPassword && (
-                                <Link
-                                    className={cn(
-                                        "-my-1 ml-auto inline-block text-sm hover:underline",
-                                        classNames?.forgotPasswordLink
-                                    )}
-                                    href={`${basePath}/${viewPaths.forgotPassword}`}
-                                >
-                                    {localization.forgotPasswordLink}
-                                </Link>
-                            )}
-                        </div>
-
-                        <PasswordInput
-                            id="password"
-                            name="password"
-                            autoComplete={["signUp"].includes(view) ? "new-password" : "password"}
-                            className={classNames?.input}
-                            placeholder={localization.passwordPlaceholder}
-                            required
-                        />
-                    </div>
-
-                    {confirmPasswordEnabled && ["signUp"].includes(view) && (
-                        <ConfirmPasswordInput classNames={classNames} localization={localization} />
-                    )}
-                </>
-            )}
-
-            {view === "signUp" &&
-                signUpFields
-                    ?.filter((field) => field !== "name")
-                    .map((field) => {
-                        const additionalField = additionalFields?.[field]
-
-                        if (!additionalField) {
-                            console.error(`Invalid additional field: ${field}`)
-                            return null
-                        }
-
-                        return (
-                            <AdditionalFieldInput
-                                key={field}
-                                field={field}
-                                additionalField={additionalField}
-                                classNames={classNames}
-                            />
-                        )
-                    })}
-        </form>
-    )
+    if (view === "signUp") {
+        return (
+            <SignUpForm
+                className={className}
+                classNames={classNames}
+                localization={localization}
+                redirectTo={redirectTo}
+                isSubmitting={isSubmitting}
+            />
+        )
+    }
 }
