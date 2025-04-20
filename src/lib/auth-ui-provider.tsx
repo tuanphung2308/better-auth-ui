@@ -1,7 +1,7 @@
 "use client"
 
 import type { SocialProvider } from "better-auth/social-providers"
-import { type ReactNode, createContext } from "react"
+import { type ReactNode, createContext, useMemo } from "react"
 import { toast } from "sonner"
 
 import { useAuthData } from "../hooks/use-auth-data"
@@ -288,54 +288,64 @@ export const AuthUIProvider = ({
     signUp = true,
     signUpFields = ["name"],
     toast = defaultToast,
-    viewPaths,
+    viewPaths: viewPathsProp,
     navigate,
     replace,
     uploadAvatar,
     Link = DefaultLink,
     ...props
 }: AuthUIProviderProps) => {
-    const defaultMutates: AuthMutators = {
-        deletePasskey: (params) =>
-            (authClient as AuthClient).passkey.deletePasskey({
-                ...params,
-                fetchOptions: { throw: true }
-            }),
-        revokeDeviceSession: (params) =>
-            (authClient as AuthClient).multiSession.revoke({
-                ...params,
-                fetchOptions: { throw: true }
-            }),
-        revokeSession: (params) =>
-            (authClient as AuthClient).revokeSession({
-                ...params,
-                fetchOptions: { throw: true }
-            }),
-        setActiveSession: (params) =>
-            (authClient as AuthClient).multiSession.setActive({
-                ...params,
-                fetchOptions: { throw: true }
-            }),
-        updateUser: (params) =>
-            authClient.updateUser({
-                ...params,
-                fetchOptions: { throw: true }
-            }),
-        unlinkAccount: (params) =>
-            authClient.unlinkAccount({
-                ...params,
-                fetchOptions: { throw: true }
-            })
-    }
+    const defaultMutators = useMemo(() => {
+        return {
+            deletePasskey: (params) =>
+                (authClient as AuthClient).passkey.deletePasskey({
+                    ...params,
+                    fetchOptions: { throw: true }
+                }),
+            revokeDeviceSession: (params) =>
+                (authClient as AuthClient).multiSession.revoke({
+                    ...params,
+                    fetchOptions: { throw: true }
+                }),
+            revokeSession: (params) =>
+                (authClient as AuthClient).revokeSession({
+                    ...params,
+                    fetchOptions: { throw: true }
+                }),
+            setActiveSession: (params) =>
+                (authClient as AuthClient).multiSession.setActive({
+                    ...params,
+                    fetchOptions: { throw: true }
+                }),
+            updateUser: (params) =>
+                authClient.updateUser({
+                    ...params,
+                    fetchOptions: { throw: true }
+                }),
+            unlinkAccount: (params) =>
+                authClient.unlinkAccount({
+                    ...params,
+                    fetchOptions: { throw: true }
+                })
+        } as AuthMutators
+    }, [authClient])
 
-    const defaultHooks: AuthHooks = {
-        useSession: (authClient as AuthClient).useSession,
-        useListAccounts: () => useAuthData({ queryFn: authClient.listAccounts }),
-        useListDeviceSessions: () =>
-            useAuthData({ queryFn: (authClient as AuthClient).multiSession.listDeviceSessions }),
-        useListSessions: () => useAuthData({ queryFn: authClient.listSessions }),
-        useListPasskeys: (authClient as AuthClient).useListPasskeys
-    }
+    const defaultHooks = useMemo(() => {
+        return {
+            useSession: (authClient as AuthClient).useSession,
+            useListAccounts: () => useAuthData({ queryFn: authClient.listAccounts }),
+            useListDeviceSessions: () =>
+                useAuthData({
+                    queryFn: (authClient as AuthClient).multiSession.listDeviceSessions
+                }),
+            useListSessions: () => useAuthData({ queryFn: authClient.listSessions }),
+            useListPasskeys: (authClient as AuthClient).useListPasskeys
+        } as AuthHooks
+    }, [authClient])
+
+    const viewPaths = useMemo(() => {
+        return { ...authViewPaths, ...viewPathsProp } as AuthViewPaths
+    }, [viewPathsProp])
 
     return (
         <AuthUIContext.Provider
@@ -351,7 +361,7 @@ export const AuthUIProvider = ({
                 forgotPassword,
                 freshAge,
                 hooks: { ...defaultHooks, ...hooks },
-                mutators: { ...defaultMutates, ...mutators },
+                mutators: { ...defaultMutators, ...mutators },
                 localization: { ...authLocalization, ...localization },
                 nameRequired,
                 settingsFields,
@@ -360,7 +370,7 @@ export const AuthUIProvider = ({
                 toast,
                 navigate: navigate || defaultNavigate,
                 replace: replace || navigate || defaultReplace,
-                viewPaths: { ...authViewPaths, ...viewPaths },
+                viewPaths,
                 uploadAvatar,
                 Link,
                 ...props

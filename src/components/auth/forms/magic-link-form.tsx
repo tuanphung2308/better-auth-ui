@@ -2,15 +2,14 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { useContext } from "react"
+import { useCallback, useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { useIsHydrated } from "../../../hooks/use-hydrated"
-import { useSearchParam } from "../../../hooks/use-search-param"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import { cn, getLocalizedError } from "../../../lib/utils"
+import { cn, getLocalizedError, getSearchParam } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
 import { Button } from "../../ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
@@ -24,15 +23,17 @@ export interface MagicLinkFormProps {
     isSubmitting?: boolean
     localization: Partial<AuthLocalization>
     redirectTo?: string
+    setIsSubmitting?: (value: boolean) => void
 }
 
 export function MagicLinkForm({
     className,
     classNames,
-    callbackURL,
+    callbackURL: callbackURLProp,
     isSubmitting,
     localization,
-    redirectTo
+    redirectTo: redirectToProp,
+    setIsSubmitting
 }: MagicLinkFormProps) {
     const isHydrated = useIsHydrated()
 
@@ -46,11 +47,21 @@ export function MagicLinkForm({
         viewPaths
     } = useContext(AuthUIContext)
 
-    const redirectToParam = useSearchParam("redirectTo")
-    redirectTo = redirectTo || redirectToParam || contextRedirectTo
-    callbackURL =
-        callbackURL ||
-        `${baseURL}${persistClient ? `${basePath}/${viewPaths.callback}?redirectTo=${redirectTo}` : redirectTo}`
+    const getRedirectTo = useCallback(
+        () => redirectToProp || getSearchParam("redirectTo") || contextRedirectTo,
+        [redirectToProp, contextRedirectTo]
+    )
+
+    const getCallbackURL = useCallback(
+        () =>
+            `${baseURL}${
+                callbackURLProp ||
+                (persistClient
+                    ? `${basePath}/${viewPaths.callback}?redirectTo=${getRedirectTo()}`
+                    : getRedirectTo())
+            }`,
+        [callbackURLProp, persistClient, basePath, viewPaths, baseURL, getRedirectTo]
+    )
 
     const formSchema = z.object({
         email: z
@@ -68,11 +79,15 @@ export function MagicLinkForm({
 
     isSubmitting = isSubmitting || form.formState.isSubmitting
 
+    useEffect(() => {
+        setIsSubmitting?.(form.formState.isSubmitting)
+    }, [form.formState.isSubmitting, setIsSubmitting])
+
     async function sendMagicLink({ email }: z.infer<typeof formSchema>) {
         try {
             await (authClient as AuthClient).signIn.magicLink({
                 email,
-                callbackURL,
+                callbackURL: getCallbackURL(),
                 fetchOptions: { throw: true }
             })
 

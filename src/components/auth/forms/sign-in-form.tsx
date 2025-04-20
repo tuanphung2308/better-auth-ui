@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -25,6 +25,7 @@ export interface SignInFormProps {
     isSubmitting?: boolean
     localization: Partial<AuthLocalization>
     redirectTo?: string
+    setIsSubmitting?: (isSubmitting: boolean) => void
 }
 
 export function SignInForm({
@@ -32,9 +33,15 @@ export function SignInForm({
     classNames,
     isSubmitting,
     localization,
-    redirectTo
+    redirectTo,
+    setIsSubmitting
 }: SignInFormProps) {
     const isHydrated = useIsHydrated()
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
 
     const {
         authClient,
@@ -80,6 +87,10 @@ export function SignInForm({
 
     isSubmitting = isSubmitting || form.formState.isSubmitting || transitionPending
 
+    useEffect(() => {
+        setIsSubmitting?.(form.formState.isSubmitting || transitionPending)
+    }, [form.formState.isSubmitting, transitionPending, setIsSubmitting])
+
     async function signIn({ email, password, rememberMe }: z.infer<typeof formSchema>) {
         try {
             let response: Record<string, unknown> = {}
@@ -101,7 +112,7 @@ export function SignInForm({
             }
 
             if (response.twoFactorRedirect) {
-                navigate(`${basePath}/${viewPaths.twoFactor}`)
+                navigate(`${basePath}/${viewPaths.twoFactor}${window.location.search}`)
             } else {
                 onSuccess()
             }
@@ -166,7 +177,7 @@ export function SignInForm({
                                             "text-sm hover:underline",
                                             classNames?.forgotPasswordLink
                                         )}
-                                        href={`${basePath}/${viewPaths.forgotPassword}`}
+                                        href={`${basePath}/${viewPaths.forgotPassword}${isMounted ? window.location.search : ""}`}
                                     >
                                         {localization.forgotPasswordLink}
                                     </Link>

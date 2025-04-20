@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -18,13 +18,17 @@ import type { AuthFormClassNames } from "../auth-form"
 export interface ForgotPasswordFormProps {
     className?: string
     classNames?: AuthFormClassNames
+    isSubmitting?: boolean
     localization: Partial<AuthLocalization>
+    setIsSubmitting?: (value: boolean) => void
 }
 
 export function ForgotPasswordForm({
     className,
     classNames,
-    localization
+    isSubmitting,
+    localization,
+    setIsSubmitting
 }: ForgotPasswordFormProps) {
     const isHydrated = useIsHydrated()
     const { authClient, basePath, baseURL, navigate, toast, viewPaths } = useContext(AuthUIContext)
@@ -47,7 +51,11 @@ export function ForgotPasswordForm({
         }
     })
 
-    const isSubmitting = form.formState.isSubmitting
+    isSubmitting = isSubmitting || form.formState.isSubmitting
+
+    useEffect(() => {
+        setIsSubmitting?.(form.formState.isSubmitting)
+    }, [form.formState.isSubmitting, setIsSubmitting])
 
     async function forgotPassword({ email }: z.infer<typeof formSchema>) {
         try {
@@ -62,7 +70,7 @@ export function ForgotPasswordForm({
                 message: localization.forgotPasswordEmail
             })
 
-            navigate(`${basePath}/${viewPaths.signIn}`)
+            navigate(`${basePath}/${viewPaths.signIn}${window.location.search}`)
         } catch (error) {
             toast({
                 variant: "error",

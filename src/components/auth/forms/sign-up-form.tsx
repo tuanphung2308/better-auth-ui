@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -25,6 +25,7 @@ export interface SignUpFormProps {
     isSubmitting?: boolean
     localization: Partial<AuthLocalization>
     redirectTo?: string
+    setIsSubmitting?: (value: boolean) => void
 }
 
 export function SignUpForm({
@@ -32,7 +33,8 @@ export function SignUpForm({
     classNames,
     isSubmitting,
     localization,
-    redirectTo
+    redirectTo,
+    setIsSubmitting
 }: SignUpFormProps) {
     const isHydrated = useIsHydrated()
 
@@ -177,6 +179,10 @@ export function SignUpForm({
 
     isSubmitting = isSubmitting || form.formState.isSubmitting || transitionPending
 
+    useEffect(() => {
+        setIsSubmitting?.(form.formState.isSubmitting || transitionPending)
+    }, [form.formState.isSubmitting, transitionPending, setIsSubmitting])
+
     async function signUp({
         email,
         password,
@@ -214,7 +220,7 @@ export function SignUpForm({
             if ("token" in data && data.token) {
                 onSuccess()
             } else {
-                navigate(`${basePath}/${viewPaths.signIn}`)
+                navigate(`${basePath}/${viewPaths.signIn}${window.location.search}`)
                 toast({ variant: "success", message: localization.signUpEmail! })
             }
         } catch (error) {

@@ -3,7 +3,7 @@
 import type { BetterFetchError } from "@better-fetch/fetch"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -20,15 +20,19 @@ import { useOnSuccessTransition } from "./use-success-transition"
 export interface RecoverAccountFormProps {
     className?: string
     classNames?: AuthFormClassNames
+    isSubmitting?: boolean
     localization: Partial<AuthLocalization>
     redirectTo?: string
+    setIsSubmitting?: (value: boolean) => void
 }
 
 export function RecoverAccountForm({
     className,
     classNames,
+    isSubmitting,
     localization,
-    redirectTo
+    redirectTo,
+    setIsSubmitting
 }: RecoverAccountFormProps) {
     const { authClient, basePath, viewPaths, replace, toast } = useContext(AuthUIContext)
 
@@ -45,7 +49,11 @@ export function RecoverAccountForm({
         }
     })
 
-    const isSubmitting = form.formState.isSubmitting || transitionPending
+    isSubmitting = isSubmitting || form.formState.isSubmitting || transitionPending
+
+    useEffect(() => {
+        setIsSubmitting?.(form.formState.isSubmitting || transitionPending)
+    }, [form.formState.isSubmitting, transitionPending, setIsSubmitting])
 
     async function verifyBackupCode({ code }: z.infer<typeof formSchema>) {
         try {
@@ -59,7 +67,7 @@ export function RecoverAccountForm({
             toast({ variant: "error", message: getLocalizedError({ error, localization }) })
 
             if ((error as BetterFetchError).error.code === "INVALID_TWO_FACTOR_COOKIE") {
-                replace(`${basePath}/${viewPaths.signIn}`)
+                replace(`${basePath}/${viewPaths.signIn}${window.location.search}`)
             }
 
             form.reset()
@@ -104,7 +112,7 @@ export function RecoverAccountForm({
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />
                     ) : (
-                        localization.recoverAction
+                        localization.recoverAccountAction
                     )}
                 </Button>
             </form>

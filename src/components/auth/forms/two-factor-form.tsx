@@ -26,20 +26,30 @@ import { useOnSuccessTransition } from "./use-success-transition"
 export interface TwoFactorFormProps {
     className?: string
     classNames?: AuthFormClassNames
+    isSubmitting?: boolean
     localization: Partial<AuthLocalization>
     otpSeparators?: 0 | 1 | 2
     redirectTo?: string
+    setIsSubmitting?: (value: boolean) => void
 }
 
 export function TwoFactorForm({
     className,
     classNames,
+    isSubmitting,
     localization,
     otpSeparators = 0,
-    redirectTo
+    redirectTo,
+    setIsSubmitting
 }: TwoFactorFormProps) {
     const totpURI = useSearchParam("totpURI")
     const initialSendRef = useRef(false)
+
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
 
     const {
         basePath,
@@ -81,7 +91,11 @@ export function TwoFactorForm({
         defaultValues: { code: "" }
     })
 
-    const isSubmitting = form.formState.isSubmitting || transitionPending
+    isSubmitting = isSubmitting || form.formState.isSubmitting || transitionPending
+
+    useEffect(() => {
+        setIsSubmitting?.(form.formState.isSubmitting || transitionPending)
+    }, [form.formState.isSubmitting, transitionPending, setIsSubmitting])
 
     // biome-ignore lint/correctness/useExhaustiveDependencies:
     useEffect(() => {
@@ -114,7 +128,7 @@ export function TwoFactorForm({
             })
 
             if ((error as BetterFetchError).error.code === "INVALID_TWO_FACTOR_COOKIE") {
-                replace(`${basePath}/${viewPaths.signIn}`)
+                replace(`${basePath}/${viewPaths.signIn}${window.location.search}`)
             }
         }
 
@@ -150,7 +164,7 @@ export function TwoFactorForm({
             })
 
             if ((error as BetterFetchError).error.code === "INVALID_TWO_FACTOR_COOKIE") {
-                replace(`${basePath}/${viewPaths.signIn}`)
+                replace(`${basePath}/${viewPaths.signIn}${window.location.search}`)
             }
 
             form.reset()
@@ -193,7 +207,7 @@ export function TwoFactorForm({
                                                 "-my-1 ml-auto inline-block text-sm hover:underline",
                                                 classNames?.forgotPasswordLink
                                             )}
-                                            href={`${basePath}/${viewPaths.recoverAccount}`}
+                                            href={`${basePath}/${viewPaths.recoverAccount}${isMounted ? window.location.search : ""}`}
                                         >
                                             {localization.forgotAuthenticator}
                                         </Link>

@@ -261,13 +261,13 @@ export const authLocalization = {
     providersDescription: "Connect your account with a third-party service.",
 
     /** @default "Recover Account" */
-    recover: "Recover Account",
+    recoverAccount: "Recover Account",
 
     /** @default "Recover account" */
-    recoverAction: "Recover account",
+    recoverAccountAction: "Recover account",
 
     /** @default "Please enter a backup code to access your account" */
-    recoverDescription: "Please enter a backup code to access your account",
+    recoverAccountDescription: "Please enter a backup code to access your account",
 
     /** @default "Remember me" */
     rememberMe: "Remember me",

@@ -1,70 +1,99 @@
 import type { SocialProvider } from "better-auth/social-providers"
-import { useContext } from "react"
-
+import { useCallback, useContext } from "react"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { Provider } from "../../lib/social-providers"
-import { cn } from "../../lib/utils"
+import { cn, getSearchParam } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
 import { Button } from "../ui/button"
+import type { AuthCardClassNames } from "./auth-card"
 
 interface ProviderButtonProps {
-    className?: string
+    classNames?: AuthCardClassNames
+    callbackURL?: string
     isSubmitting: boolean
     localization: Partial<AuthLocalization>
     other?: boolean
     provider: Provider
+    redirectTo?: string
     setIsSubmitting: (value: boolean) => void
     socialLayout: "auto" | "horizontal" | "grid" | "vertical"
 }
 
 export function ProviderButton({
-    className,
+    classNames,
+    callbackURL: propsCallbackURL,
     isSubmitting,
     localization,
     other,
     provider,
+    redirectTo: propsRedirectTo,
     setIsSubmitting,
     socialLayout
 }: ProviderButtonProps) {
-    const { authClient, basePath, baseURL, viewPaths, toast, colorIcons, noColorIcons } =
-        useContext(AuthUIContext)
+    const {
+        authClient,
+        basePath,
+        baseURL,
+        persistClient,
+        redirectTo: contextRedirectTo,
+        viewPaths,
+        toast,
+        colorIcons,
+        noColorIcons
+    } = useContext(AuthUIContext)
+
+    const getRedirectTo = useCallback(
+        () => propsRedirectTo || getSearchParam("redirectTo") || contextRedirectTo,
+        [propsRedirectTo, contextRedirectTo]
+    )
+
+    const getCallbackURL = useCallback(
+        () =>
+            `${baseURL}${
+                propsCallbackURL ||
+                (persistClient
+                    ? `${basePath}/${viewPaths.callback}?redirectTo=${getRedirectTo()}`
+                    : getRedirectTo())
+            }`,
+        [propsCallbackURL, persistClient, basePath, viewPaths, baseURL, getRedirectTo]
+    )
 
     const signInSocial = async () => {
         setIsSubmitting(true)
 
         try {
-            const callbackURL = `${baseURL}${basePath}/${viewPaths.callback}`
-
             if (other) {
                 await (authClient as AuthClient).signIn.oauth2({
                     providerId: provider.provider,
-                    callbackURL,
+                    callbackURL: getCallbackURL(),
                     fetchOptions: { throw: true }
                 })
             } else {
                 await authClient.signIn.social({
                     provider: provider.provider as SocialProvider,
-                    callbackURL,
+                    callbackURL: getCallbackURL(),
                     fetchOptions: { throw: true }
                 })
             }
         } catch (error) {
-            setIsSubmitting(false)
             toast({
                 variant: "error",
                 message: error instanceof Error ? error.message : localization.requestFailed
             })
+
+            setIsSubmitting(false)
         }
     }
 
     return (
         <Button
-            className={cn(socialLayout === "vertical" ? "w-full" : "grow", className)}
+            className={cn(
+                socialLayout === "vertical" ? "w-full" : "grow",
+                classNames?.form?.button,
+                classNames?.form?.providerButton
+            )}
             disabled={isSubmitting}
-            formNoValidate
-            name={other ? "otherProvider" : "provider"}
-            value={provider.provider}
             variant="outline"
             onClick={signInSocial}
         >
