@@ -2,8 +2,8 @@
 
 import type { SocialProvider } from "better-auth/social-providers"
 import { Loader2 } from "lucide-react"
-import { useCallback, useContext, useEffect, useRef, useState } from "react"
-
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
+import { useSearchParam } from "../../hooks/use-search-param"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
@@ -18,12 +18,13 @@ import { Label } from "../ui/label"
 import { Separator } from "../ui/separator"
 import { ActionButton } from "./action-button"
 import { AdditionalFieldInput } from "./additional-field-input"
+import { RecoverAccountForm } from "./forms/recover-account-form"
+import { SignInForm } from "./forms/sign-in-form"
+import { TwoFactorForm } from "./forms/two-factor-form"
 import { MagicLinkButton } from "./magic-link-button"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
-import { RecoverAccountForm } from "./recover-account-form"
 import { RememberMeCheckbox } from "./remember-me-checkbox"
-import { TwoFactorForm } from "./two-factor-form"
 
 export type AuthFormClassNames = {
     base?: string
@@ -56,10 +57,10 @@ export interface AuthFormProps {
 export function AuthForm({
     className,
     classNames,
-    callbackURL,
+    callbackURL: propsCallbackURL,
     localization,
     pathname,
-    redirectTo,
+    redirectTo: propsRedirectTo,
     socialLayout = "auto",
     view,
     otpSeparators = 0
@@ -124,24 +125,27 @@ export function AuthForm({
         ((Object.entries(viewPaths).find(([_, value]) => value === path)?.[0] ||
             "signIn") as AuthView)
 
-    const getRedirectTo = useCallback(
-        () =>
-            redirectTo ||
-            new URLSearchParams(window.location.search).get("redirectTo") ||
-            contextRedirectTo,
-        [contextRedirectTo, redirectTo]
+    const redirectToParam = useSearchParam("redirectTo")
+
+    const redirectTo = useMemo(
+        () => propsRedirectTo || redirectToParam || contextRedirectTo,
+        [propsRedirectTo, redirectToParam, contextRedirectTo]
     )
 
-    const getCallbackURL = useCallback(
+    const getRedirectTo = useCallback(() => redirectTo, [redirectTo])
+
+    const callbackURL = useMemo(
         () =>
             `${baseURL}${
-                callbackURL ||
+                propsCallbackURL ||
                 (persistClient
-                    ? `${basePath}/${viewPaths.callback}?redirectTo=${getRedirectTo()}`
-                    : getRedirectTo())
+                    ? `${basePath}/${viewPaths.callback}?redirectTo=${redirectTo}`
+                    : redirectTo)
             }`,
-        [baseURL, callbackURL, persistClient, viewPaths, basePath, getRedirectTo]
+        [propsCallbackURL, redirectTo, persistClient, basePath, viewPaths, baseURL]
     )
+
+    const getCallbackURL = useCallback(() => callbackURL, [callbackURL])
 
     const onSuccess = useCallback(async () => {
         setIsLoading(true)
@@ -428,6 +432,12 @@ export function AuthForm({
 
     if (["signOut", "callback"].includes(view)) return <Loader2 className="animate-spin" />
 
+    if (view === "signIn") {
+        return (
+            <SignInForm classNames={classNames} localization={localization} onSuccess={onSuccess} />
+        )
+    }
+
     if (view === "twoFactor") {
         return (
             <TwoFactorForm
@@ -480,11 +490,7 @@ export function AuthForm({
                         className={classNames?.input}
                         id="username"
                         name="username"
-                        placeholder={
-                            view === "signIn"
-                                ? localization.usernameSignInPlaceholder
-                                : localization.usernamePlaceholder
-                        }
+                        placeholder={localization.usernamePlaceholder}
                         required
                     />
                 </div>
@@ -517,7 +523,7 @@ export function AuthForm({
                                 {localization.password}
                             </Label>
 
-                            {view === "signIn" && forgotPassword && (
+                            {forgotPassword && (
                                 <Link
                                     className={cn(
                                         "-my-1 ml-auto inline-block text-sm hover:underline",
@@ -539,7 +545,6 @@ export function AuthForm({
                                     : "password"
                             }
                             className={classNames?.input}
-                            enableToggle={view !== "signIn"}
                             placeholder={localization.passwordPlaceholder}
                             required
                         />
@@ -551,7 +556,7 @@ export function AuthForm({
                 </>
             )}
 
-            {view === "signIn" && rememberMe && <RememberMeCheckbox localization={localization} />}
+            {rememberMe && <RememberMeCheckbox localization={localization} />}
 
             {view === "signUp" &&
                 signUpFields
