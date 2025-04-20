@@ -10,12 +10,12 @@ import { Button } from "../ui/button"
 
 export function MagicLinkButton({
     className,
-    isLoading,
+    isSubmitting,
     localization,
     view
 }: {
     className?: string
-    isLoading?: boolean
+    isSubmitting?: boolean
     localization: Partial<AuthLocalization>
     view: AuthView
 }) {
@@ -25,7 +25,7 @@ export function MagicLinkButton({
     return (
         <Button
             className={cn("w-full", className)}
-            disabled={pending || isLoading}
+            disabled={pending || isSubmitting}
             type="button"
             variant="secondary"
             onClick={() => navigate(view === "magicLink" ? viewPaths.signIn : viewPaths.magicLink)}

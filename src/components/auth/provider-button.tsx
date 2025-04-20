@@ -1,38 +1,72 @@
+import type { SocialProvider } from "better-auth/social-providers"
 import { useContext } from "react"
-import { useFormStatus } from "react-dom"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { Provider } from "../../lib/social-providers"
 import { cn } from "../../lib/utils"
+import type { AuthClient } from "../../types/auth-client"
 import { Button } from "../ui/button"
 
-export function ProviderButton({
-    className,
-    isLoading,
-    localization,
-    other = false,
-    provider,
-    socialLayout
-}: {
+interface ProviderButtonProps {
     className?: string
-    isLoading?: boolean
+    isSubmitting: boolean
     localization: Partial<AuthLocalization>
     other?: boolean
     provider: Provider
+    setIsSubmitting: (value: boolean) => void
     socialLayout: "auto" | "horizontal" | "grid" | "vertical"
-}) {
-    const { pending } = useFormStatus()
-    const { colorIcons, noColorIcons } = useContext(AuthUIContext)
+}
+
+export function ProviderButton({
+    className,
+    isSubmitting,
+    localization,
+    other,
+    provider,
+    setIsSubmitting,
+    socialLayout
+}: ProviderButtonProps) {
+    const { authClient, basePath, baseURL, viewPaths, toast, colorIcons, noColorIcons } =
+        useContext(AuthUIContext)
+
+    const signInSocial = async () => {
+        setIsSubmitting(true)
+
+        try {
+            const callbackURL = `${baseURL}${basePath}/${viewPaths.callback}`
+
+            if (other) {
+                await (authClient as AuthClient).signIn.oauth2({
+                    providerId: provider.provider,
+                    callbackURL,
+                    fetchOptions: { throw: true }
+                })
+            } else {
+                await authClient.signIn.social({
+                    provider: provider.provider as SocialProvider,
+                    callbackURL,
+                    fetchOptions: { throw: true }
+                })
+            }
+        } catch (error) {
+            setIsSubmitting(false)
+            toast({
+                variant: "error",
+                message: error instanceof Error ? error.message : localization.requestFailed
+            })
+        }
+    }
 
     return (
         <Button
             className={cn(socialLayout === "vertical" ? "w-full" : "grow", className)}
-            disabled={pending || isLoading}
+            disabled={isSubmitting}
             formNoValidate
             name={other ? "otherProvider" : "provider"}
             value={provider.provider}
             variant="outline"
+            onClick={signInSocial}
         >
             {provider.icon &&
                 (colorIcons ? (

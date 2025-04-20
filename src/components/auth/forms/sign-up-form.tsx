@@ -222,6 +222,9 @@ export function SignUpForm({
                 variant: "error",
                 message: getLocalizedError({ error, localization })
             })
+
+            form.resetField("password")
+            form.resetField("confirmPassword")
         }
     }
 

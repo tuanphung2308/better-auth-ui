@@ -1,7 +1,7 @@
 "use client"
 
 import { ArrowLeftIcon, Loader2 } from "lucide-react"
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
@@ -100,6 +100,8 @@ export function AuthCard({
         ((Object.entries(viewPaths).find(([_, value]) => value === path)?.[0] ||
             "signIn") as AuthView)
 
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
     useEffect(() => {
         if (view === "settings" && settingsURL) replace(settingsURL)
     }, [replace, settingsURL, view])
@@ -109,6 +111,7 @@ export function AuthCard({
             <AuthForm
                 callbackURL={callbackURL}
                 classNames={classNames?.form}
+                isSubmitting={isSubmitting}
                 redirectTo={redirectTo}
                 view={view}
                 otpSeparators={otpSeparators}
@@ -201,7 +204,9 @@ export function AuthCard({
                                                 classNames?.form?.button,
                                                 classNames?.form?.providerButton
                                             )}
+                                            isSubmitting={isSubmitting}
                                             localization={localization}
+                                            setIsSubmitting={setIsSubmitting}
                                             socialLayout={socialLayout}
                                             provider={socialProvider}
                                         />
@@ -215,7 +220,9 @@ export function AuthCard({
                                             classNames?.form?.button,
                                             classNames?.form?.providerButton
                                         )}
+                                        isSubmitting={isSubmitting}
                                         localization={localization}
+                                        setIsSubmitting={setIsSubmitting}
                                         socialLayout={socialLayout}
                                         provider={provider}
                                         other
