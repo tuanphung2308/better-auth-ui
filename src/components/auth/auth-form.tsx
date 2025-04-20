@@ -363,7 +363,7 @@ export function AuthForm({
         )
     }
 
-    if (view === "recover") {
+    if (view === "recoverAccount") {
         return (
             <RecoverAccountForm
                 className={className}
