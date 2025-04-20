@@ -3,6 +3,7 @@
 import type { SocialProvider } from "better-auth/social-providers"
 import { Loader2 } from "lucide-react"
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
+
 import { useSearchParam } from "../../hooks/use-search-param"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
@@ -18,6 +19,7 @@ import { Label } from "../ui/label"
 import { Separator } from "../ui/separator"
 import { ActionButton } from "./action-button"
 import { AdditionalFieldInput } from "./additional-field-input"
+import { MagicLinkForm } from "./forms/magic-link-form"
 import { RecoverAccountForm } from "./forms/recover-account-form"
 import { SignInForm } from "./forms/sign-in-form"
 import { TwoFactorForm } from "./forms/two-factor-form"
@@ -199,17 +201,6 @@ export function AuthForm({
             const name = formData.get("name") || ("" as string)
 
             switch (view) {
-                case "magicLink": {
-                    await (authClient as AuthClient).signIn.magicLink({
-                        email,
-                        callbackURL: getCallbackURL(),
-                        fetchOptions: { throw: true }
-                    })
-
-                    toast({ variant: "success", message: localization.magicLinkEmail! })
-                    break
-                }
-
                 case "signUp": {
                     if (confirmPasswordEnabled) {
                         const confirmPassword = formData.get("confirmPassword") as string
@@ -405,6 +396,17 @@ export function AuthForm({
                 classNames={classNames}
                 localization={localization}
                 onSuccess={onSuccess}
+            />
+        )
+    }
+
+    if (view === "magicLink") {
+        return (
+            <MagicLinkForm
+                className={className}
+                classNames={classNames}
+                localization={localization}
+                redirectTo={redirectTo}
             />
         )
     }
