@@ -19,8 +19,10 @@ import { Label } from "../ui/label"
 import { Separator } from "../ui/separator"
 import { ActionButton } from "./action-button"
 import { AdditionalFieldInput } from "./additional-field-input"
+import { ForgotPasswordForm } from "./forms/forgot-password-form"
 import { MagicLinkForm } from "./forms/magic-link-form"
 import { RecoverAccountForm } from "./forms/recover-account-form"
+import { ResetPasswordForm } from "./forms/reset-password-form"
 import { SignInForm } from "./forms/sign-in-form"
 import { TwoFactorForm } from "./forms/two-factor-form"
 import { MagicLinkButton } from "./magic-link-button"
@@ -87,7 +89,6 @@ export function AuthForm({
         passkey,
         persistClient,
         providers,
-        rememberMe,
         replace,
         signUp,
         signUpFields,
@@ -264,39 +265,6 @@ export function AuthForm({
 
                     break
                 }
-
-                case "forgotPassword": {
-                    await authClient.forgetPassword({
-                        email: email,
-                        redirectTo: `${baseURL}${basePath}/${viewPaths.resetPassword}`,
-                        fetchOptions: { throw: true }
-                    })
-
-                    toast({ variant: "success", message: localization.forgotPasswordEmail! })
-                    break
-                }
-
-                case "resetPassword": {
-                    if (confirmPasswordEnabled) {
-                        const confirmPassword = formData.get("confirmPassword") as string
-                        if (password !== confirmPassword) {
-                            toast({ variant: "error", message: localization.passwordsDoNotMatch! })
-                            return
-                        }
-                    }
-
-                    const searchParams = new URLSearchParams(window.location.search)
-                    const token = searchParams.get("token") as string
-
-                    await authClient.resetPassword({
-                        newPassword: password,
-                        token,
-                        fetchOptions: { throw: true }
-                    })
-
-                    toast({ variant: "success", message: localization.resetPasswordSuccess! })
-                    break
-                }
             }
         } catch (error) {
             toast({
@@ -375,7 +343,13 @@ export function AuthForm({
     if (["signOut", "callback"].includes(view)) return <Loader2 className="animate-spin" />
 
     if (view === "signIn") {
-        return <SignInForm classNames={classNames} localization={localization} />
+        return (
+            <SignInForm
+                classNames={classNames}
+                localization={localization}
+                redirectTo={redirectTo}
+            />
+        )
     }
 
     if (view === "twoFactor") {
@@ -383,8 +357,8 @@ export function AuthForm({
             <TwoFactorForm
                 classNames={classNames}
                 localization={localization}
-                onSuccess={onSuccess}
                 otpSeparators={otpSeparators}
+                redirectTo={redirectTo}
             />
         )
     }
@@ -395,7 +369,7 @@ export function AuthForm({
                 className={className}
                 classNames={classNames}
                 localization={localization}
-                onSuccess={onSuccess}
+                redirectTo={redirectTo}
             />
         )
     }
@@ -407,6 +381,26 @@ export function AuthForm({
                 classNames={classNames}
                 localization={localization}
                 redirectTo={redirectTo}
+            />
+        )
+    }
+
+    if (view === "resetPassword") {
+        return (
+            <ResetPasswordForm
+                className={className}
+                classNames={classNames}
+                localization={localization}
+            />
+        )
+    }
+
+    if (view === "forgotPassword") {
+        return (
+            <ForgotPasswordForm
+                className={className}
+                classNames={classNames}
+                localization={localization}
             />
         )
     }
@@ -448,8 +442,7 @@ export function AuthForm({
             )}
 
             {(credentials || (["signIn", "magicLink"].includes(view) && magicLink)) &&
-                ((!usernamePlugin && view !== "resetPassword") ||
-                    ["signUp", "magicLink", "forgotPassword"].includes(view)) && (
+                (!usernamePlugin || ["signUp", "magicLink", "forgotPassword"].includes(view)) && (
                     <div className="grid gap-2">
                         <Label className={classNames?.label} htmlFor="email">
                             {localization.email}
@@ -466,7 +459,7 @@ export function AuthForm({
                     </div>
                 )}
 
-            {credentials && ["signUp", "signIn", "resetPassword"].includes(view) && (
+            {credentials && ["signUp", "signIn"].includes(view) && (
                 <>
                     <div className="grid gap-2">
                         <div className="flex items-center">
@@ -490,18 +483,14 @@ export function AuthForm({
                         <PasswordInput
                             id="password"
                             name="password"
-                            autoComplete={
-                                ["signUp", "resetPassword"].includes(view)
-                                    ? "new-password"
-                                    : "password"
-                            }
+                            autoComplete={["signUp"].includes(view) ? "new-password" : "password"}
                             className={classNames?.input}
                             placeholder={localization.passwordPlaceholder}
                             required
                         />
                     </div>
 
-                    {confirmPasswordEnabled && ["signUp", "resetPassword"].includes(view) && (
+                    {confirmPasswordEnabled && ["signUp"].includes(view) && (
                         <ConfirmPasswordInput classNames={classNames} localization={localization} />
                     )}
                 </>
@@ -538,7 +527,7 @@ export function AuthForm({
                     />
                 )}
 
-                {magicLink && credentials && view !== "resetPassword" && (
+                {magicLink && credentials && (
                     <MagicLinkButton
                         className={cn(classNames?.button, classNames?.secondaryButton)}
                         isLoading={isLoading}
@@ -548,7 +537,7 @@ export function AuthForm({
                 )}
             </div>
 
-            {!["forgotPassword", "resetPassword"].includes(view) &&
+            {!["forgotPassword"].includes(view) &&
                 (providers?.length || otherProviders?.length) && (
                     <>
                         {credentials && (

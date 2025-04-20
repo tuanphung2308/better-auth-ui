@@ -21,21 +21,22 @@ import { InputOTP } from "../../ui/input-otp"
 import { Label } from "../../ui/label"
 import type { AuthFormClassNames } from "../auth-form"
 import { OTPInputGroup } from "../otp-input-group"
+import { useOnSuccessTransition } from "./use-success-transition"
 
 export interface TwoFactorFormProps {
     className?: string
     classNames?: AuthFormClassNames
     localization: Partial<AuthLocalization>
-    onSuccess: () => Promise<void>
     otpSeparators?: 0 | 1 | 2
+    redirectTo?: string
 }
 
 export function TwoFactorForm({
     className,
     classNames,
     localization,
-    onSuccess,
-    otpSeparators = 0
+    otpSeparators = 0,
+    redirectTo
 }: TwoFactorFormProps) {
     const totpURI = useSearchParam("totpURI")
     const initialSendRef = useRef(false)
@@ -50,6 +51,8 @@ export function TwoFactorForm({
         replace,
         toast
     } = useContext(AuthUIContext)
+
+    const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({ redirectTo })
 
     const { data: sessionData } = useSession()
     const isTwoFactorEnabled = sessionData?.user.twoFactorEnabled
@@ -78,7 +81,7 @@ export function TwoFactorForm({
         defaultValues: { code: "" }
     })
 
-    const { isSubmitting } = form.formState
+    const isSubmitting = form.formState.isSubmitting || transitionPending
 
     // biome-ignore lint/correctness/useExhaustiveDependencies:
     useEffect(() => {
@@ -190,7 +193,7 @@ export function TwoFactorForm({
                                                 "-my-1 ml-auto inline-block text-sm hover:underline",
                                                 classNames?.forgotPasswordLink
                                             )}
-                                            href={`${basePath}/${viewPaths.recover}`}
+                                            href={`${basePath}/${viewPaths.recoverAccount}`}
                                         >
                                             {localization.forgotAuthenticator}
                                         </Link>

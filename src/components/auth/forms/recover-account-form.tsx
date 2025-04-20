@@ -15,21 +15,24 @@ import { Button } from "../../ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
 import type { AuthFormClassNames } from "../auth-form"
+import { useOnSuccessTransition } from "./use-success-transition"
 
 export interface RecoverAccountFormProps {
     className?: string
     classNames?: AuthFormClassNames
     localization: Partial<AuthLocalization>
-    onSuccess: () => Promise<void>
+    redirectTo?: string
 }
 
 export function RecoverAccountForm({
     className,
     classNames,
     localization,
-    onSuccess
+    redirectTo
 }: RecoverAccountFormProps) {
     const { authClient, basePath, viewPaths, replace, toast } = useContext(AuthUIContext)
+
+    const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({ redirectTo })
 
     const formSchema = z.object({
         code: z.string().min(1, { message: localization.backupCodeRequired })
@@ -42,30 +45,31 @@ export function RecoverAccountForm({
         }
     })
 
-    const { isSubmitting } = form.formState
+    const isSubmitting = form.formState.isSubmitting || transitionPending
 
-    async function onSubmit({ code }: z.infer<typeof formSchema>) {
+    async function verifyBackupCode({ code }: z.infer<typeof formSchema>) {
         try {
             await (authClient as AuthClient).twoFactor.verifyBackupCode({
                 code,
                 fetchOptions: { throw: true }
             })
 
-            await onSuccess()
+            onSuccess()
         } catch (error) {
-            form.reset()
             toast({ variant: "error", message: getLocalizedError({ error, localization }) })
 
             if ((error as BetterFetchError).error.code === "INVALID_TWO_FACTOR_COOKIE") {
                 replace(`${basePath}/${viewPaths.signIn}`)
             }
+
+            form.reset()
         }
     }
 
     return (
         <Form {...form}>
             <form
-                onSubmit={form.handleSubmit(onSubmit)}
+                onSubmit={form.handleSubmit(verifyBackupCode)}
                 className={cn("grid gap-6", className, classNames?.base)}
             >
                 <FormField

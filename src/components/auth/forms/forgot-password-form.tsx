@@ -7,56 +7,37 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { useIsHydrated } from "../../../hooks/use-hydrated"
-import { useSearchParam } from "../../../hooks/use-search-param"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
-import type { AuthClient } from "../../../types/auth-client"
 import { Button } from "../../ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
 import type { AuthFormClassNames } from "../auth-form"
 
-export interface MagicLinkFormProps {
+export interface ForgotPasswordFormProps {
     className?: string
     classNames?: AuthFormClassNames
-    callbackURL?: string
-    isSubmitting?: boolean
     localization: Partial<AuthLocalization>
-    redirectTo?: string
 }
 
-export function MagicLinkForm({
+export function ForgotPasswordForm({
     className,
     classNames,
-    callbackURL,
-    isSubmitting,
-    localization,
-    redirectTo
-}: MagicLinkFormProps) {
+    localization
+}: ForgotPasswordFormProps) {
     const isHydrated = useIsHydrated()
-
-    const {
-        authClient,
-        basePath,
-        baseURL,
-        persistClient,
-        redirectTo: contextRedirectTo,
-        toast,
-        viewPaths
-    } = useContext(AuthUIContext)
-
-    const redirectToParam = useSearchParam("redirectTo")
-    redirectTo = redirectTo || redirectToParam || contextRedirectTo
-    callbackURL =
-        callbackURL ||
-        `${baseURL}${persistClient ? `${basePath}/${viewPaths.callback}?redirectTo=${redirectTo}` : redirectTo}`
+    const { authClient, basePath, baseURL, toast, viewPaths } = useContext(AuthUIContext)
 
     const formSchema = z.object({
         email: z
             .string()
-            .min(1, { message: `${localization.email} ${localization.isRequired}` })
-            .email({ message: `${localization.email} ${localization.isInvalid}` })
+            .min(1, {
+                message: `${localization.email} ${localization.isRequired}`
+            })
+            .email({
+                message: `${localization.email} ${localization.isInvalid}`
+            })
     })
 
     const form = useForm({
@@ -66,19 +47,19 @@ export function MagicLinkForm({
         }
     })
 
-    isSubmitting = isSubmitting || form.formState.isSubmitting
+    const isSubmitting = form.formState.isSubmitting
 
-    async function sendMagicLink({ email }: z.infer<typeof formSchema>) {
+    async function forgotPassword({ email }: z.infer<typeof formSchema>) {
         try {
-            await (authClient as AuthClient).signIn.magicLink({
+            await authClient.forgetPassword({
                 email,
-                callbackURL,
+                redirectTo: `${baseURL}${basePath}/${viewPaths.resetPassword}`,
                 fetchOptions: { throw: true }
             })
 
             toast({
                 variant: "success",
-                message: localization.magicLinkEmail
+                message: localization.forgotPasswordEmail
             })
         } catch (error) {
             toast({
@@ -91,7 +72,7 @@ export function MagicLinkForm({
     return (
         <Form {...form}>
             <form
-                onSubmit={form.handleSubmit(sendMagicLink)}
+                onSubmit={form.handleSubmit(forgotPassword)}
                 noValidate={isHydrated}
                 className={cn("grid w-full gap-6", className, classNames?.base)}
             >
@@ -127,7 +108,7 @@ export function MagicLinkForm({
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />
                     ) : (
-                        localization.magicLinkAction
+                        localization.forgotPasswordAction
                     )}
                 </Button>
             </form>
