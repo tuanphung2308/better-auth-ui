@@ -3,6 +3,7 @@
 import { ArrowLeftIcon, Loader2 } from "lucide-react"
 import { useContext, useEffect, useState } from "react"
 
+import { useIsHydrated } from "../../hooks/use-hydrated"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
@@ -68,12 +69,7 @@ export function AuthCard({
     otpSeparators = 0
 }: AuthCardProps) {
     const path = pathname?.split("/").pop()
-
-    const [isMounted, setIsMounted] = useState(false)
-
-    useEffect(() => {
-        setIsMounted(true)
-    }, [])
+    const isHydrated = useIsHydrated()
 
     const {
         basePath,
@@ -274,7 +270,7 @@ export function AuthCard({
                     {view === "signIn" || view === "magicLink" || view === "signUp" ? (
                         <Link
                             className={cn("text-foreground underline", classNames?.footerLink)}
-                            href={`${basePath}/${viewPaths[view === "signIn" || view === "magicLink" ? "signUp" : "signIn"]}${isMounted ? window.location.search : ""}`}
+                            href={`${basePath}/${viewPaths[view === "signIn" || view === "magicLink" ? "signUp" : "signIn"]}${isHydrated ? window.location.search : ""}`}
                         >
                             <Button
                                 variant="link"

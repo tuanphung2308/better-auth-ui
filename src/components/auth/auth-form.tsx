@@ -17,6 +17,7 @@ import { SignOut } from "./sign-out"
 export type AuthFormClassNames = {
     base?: string
     button?: string
+    checkbox?: string
     primaryButton?: string
     forgotPasswordLink?: string
     input?: string

@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -37,11 +37,6 @@ export function SignInForm({
     setIsSubmitting
 }: SignInFormProps) {
     const isHydrated = useIsHydrated()
-    const [isMounted, setIsMounted] = useState(false)
-
-    useEffect(() => {
-        setIsMounted(true)
-    }, [])
 
     const {
         authClient,
@@ -177,7 +172,7 @@ export function SignInForm({
                                             "text-sm hover:underline",
                                             classNames?.forgotPasswordLink
                                         )}
-                                        href={`${basePath}/${viewPaths.forgotPassword}${isMounted ? window.location.search : ""}`}
+                                        href={`${basePath}/${viewPaths.forgotPassword}${isHydrated ? window.location.search : ""}`}
                                     >
                                         {localization.forgotPasswordLink}
                                     </Link>

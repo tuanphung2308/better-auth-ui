@@ -1,5 +1,6 @@
 "use client"
 
+import type { BetterFetchError } from "@better-fetch/fetch"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2, QrCodeIcon, SendIcon } from "lucide-react"
 import { useContext, useEffect, useRef, useState } from "react"
@@ -7,13 +8,11 @@ import { useForm } from "react-hook-form"
 import QRCode from "react-qr-code"
 import * as z from "zod"
 
-import type { BetterFetchError } from "@better-fetch/fetch"
-import { useSearchParam } from "../../../hooks/use-search-param"
+import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import { getErrorMessage } from "../../../lib/get-error-message"
-import { cn, getLocalizedError } from "../../../lib/utils"
+import { cn, getLocalizedError, getSearchParam } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
 import { Button } from "../../ui/button"
 import { Checkbox } from "../../ui/checkbox"
@@ -27,7 +26,7 @@ export interface TwoFactorFormProps {
     className?: string
     classNames?: AuthFormClassNames
     isSubmitting?: boolean
-    localization: Partial<AuthLocalization>
+    localization?: Partial<AuthLocalization>
     otpSeparators?: 0 | 1 | 2
     redirectTo?: string
     setIsSubmitting?: (value: boolean) => void
@@ -42,25 +41,22 @@ export function TwoFactorForm({
     redirectTo,
     setIsSubmitting
 }: TwoFactorFormProps) {
-    const totpURI = useSearchParam("totpURI")
+    const isHydrated = useIsHydrated()
+    const totpURI = isHydrated ? getSearchParam("totpURI") : null
     const initialSendRef = useRef(false)
-
-    const [isMounted, setIsMounted] = useState(false)
-
-    useEffect(() => {
-        setIsMounted(true)
-    }, [])
 
     const {
         basePath,
         hooks: { useSession },
         viewPaths,
         twoFactor,
+        localization: contextLocalization,
         Link,
         authClient,
-        replace,
         toast
     } = useContext(AuthUIContext)
+
+    localization = { ...contextLocalization, ...localization }
 
     const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({ redirectTo })
 
@@ -128,7 +124,7 @@ export function TwoFactorForm({
             })
 
             if ((error as BetterFetchError).error.code === "INVALID_TWO_FACTOR_COOKIE") {
-                replace(`${basePath}/${viewPaths.signIn}${window.location.search}`)
+                history.back()
             }
         }
 
@@ -136,7 +132,7 @@ export function TwoFactorForm({
         setIsSendingOtp(false)
     }
 
-    async function onSubmit({ code, trustDevice }: z.infer<typeof formSchema>) {
+    async function verifyCode({ code, trustDevice }: z.infer<typeof formSchema>) {
         try {
             const verifyMethod =
                 method === "totp"
@@ -149,23 +145,19 @@ export function TwoFactorForm({
                 fetchOptions: { throw: true }
             })
 
+            await onSuccess()
+
             if (sessionData && !isTwoFactorEnabled) {
                 toast({
                     variant: "success",
-                    message: localization.twoFactorEnabled
+                    message: localization?.twoFactorEnabled
                 })
             }
-
-            await onSuccess()
         } catch (error) {
             toast({
                 variant: "error",
-                message: getErrorMessage(error) || localization?.requestFailed
+                message: getLocalizedError({ error, localization })
             })
-
-            if ((error as BetterFetchError).error.code === "INVALID_TWO_FACTOR_COOKIE") {
-                replace(`${basePath}/${viewPaths.signIn}${window.location.search}`)
-            }
 
             form.reset()
         }
@@ -174,7 +166,7 @@ export function TwoFactorForm({
     return (
         <Form {...form}>
             <form
-                onSubmit={form.handleSubmit(onSubmit)}
+                onSubmit={form.handleSubmit(verifyCode)}
                 className={cn("grid w-full gap-6", className, classNames?.base)}
             >
                 {twoFactor?.includes("totp") && totpURI && method === "totp" && (
@@ -207,7 +199,7 @@ export function TwoFactorForm({
                                                 "-my-1 ml-auto inline-block text-sm hover:underline",
                                                 classNames?.forgotPasswordLink
                                             )}
-                                            href={`${basePath}/${viewPaths.recoverAccount}${isMounted ? window.location.search : ""}`}
+                                            href={`${basePath}/${viewPaths.recoverAccount}${isHydrated ? window.location.search : ""}`}
                                         >
                                             {localization.forgotAuthenticator}
                                         </Link>
@@ -221,7 +213,7 @@ export function TwoFactorForm({
                                                 field.onChange(value)
 
                                                 if (value.length === 6) {
-                                                    form.handleSubmit(onSubmit)()
+                                                    form.handleSubmit(verifyCode)()
                                                 }
                                             }}
                                             containerClassName={classNames?.otpInputContainer}
@@ -247,6 +239,7 @@ export function TwoFactorForm({
                                             checked={field.value}
                                             onCheckedChange={field.onChange}
                                             disabled={isSubmitting}
+                                            className={classNames?.checkbox}
                                         />
                                     </FormControl>
 
