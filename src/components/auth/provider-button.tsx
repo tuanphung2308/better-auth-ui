@@ -1,14 +1,16 @@
 import type { SocialProvider } from "better-auth/social-providers"
 import { useCallback, useContext } from "react"
+
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { Provider } from "../../lib/social-providers"
-import { cn, getSearchParam } from "../../lib/utils"
+import { cn, getLocalizedError, getSearchParam } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
 import { Button } from "../ui/button"
 import type { AuthCardClassNames } from "./auth-card"
 
 interface ProviderButtonProps {
+    className?: string
     classNames?: AuthCardClassNames
     callbackURL?: string
     isSubmitting: boolean
@@ -16,47 +18,48 @@ interface ProviderButtonProps {
     other?: boolean
     provider: Provider
     redirectTo?: string
-    setIsSubmitting: (value: boolean) => void
     socialLayout: "auto" | "horizontal" | "grid" | "vertical"
+    setIsSubmitting: (isSubmitting: boolean) => void
 }
 
 export function ProviderButton({
+    className,
     classNames,
-    callbackURL: propsCallbackURL,
+    callbackURL: callbackURLProp,
     isSubmitting,
     localization,
     other,
     provider,
-    redirectTo: propsRedirectTo,
-    setIsSubmitting,
-    socialLayout
+    redirectTo: redirectToProp,
+    socialLayout,
+    setIsSubmitting
 }: ProviderButtonProps) {
     const {
         authClient,
         basePath,
         baseURL,
+        colorIcons,
+        noColorIcons,
         persistClient,
         redirectTo: contextRedirectTo,
         viewPaths,
-        toast,
-        colorIcons,
-        noColorIcons
+        toast
     } = useContext(AuthUIContext)
 
     const getRedirectTo = useCallback(
-        () => propsRedirectTo || getSearchParam("redirectTo") || contextRedirectTo,
-        [propsRedirectTo, contextRedirectTo]
+        () => redirectToProp || getSearchParam("redirectTo") || contextRedirectTo,
+        [redirectToProp, contextRedirectTo]
     )
 
     const getCallbackURL = useCallback(
         () =>
             `${baseURL}${
-                propsCallbackURL ||
+                callbackURLProp ||
                 (persistClient
                     ? `${basePath}/${viewPaths.callback}?redirectTo=${getRedirectTo()}`
                     : getRedirectTo())
             }`,
-        [propsCallbackURL, persistClient, basePath, viewPaths, baseURL, getRedirectTo]
+        [callbackURLProp, persistClient, basePath, viewPaths, baseURL, getRedirectTo]
     )
 
     const signInSocial = async () => {
@@ -79,7 +82,7 @@ export function ProviderButton({
         } catch (error) {
             toast({
                 variant: "error",
-                message: error instanceof Error ? error.message : localization.requestFailed
+                message: getLocalizedError({ error, localization })
             })
 
             setIsSubmitting(false)
@@ -90,7 +93,9 @@ export function ProviderButton({
         <Button
             className={cn(
                 socialLayout === "vertical" ? "w-full" : "grow",
+                className,
                 classNames?.form?.button,
+                classNames?.form?.outlineButton,
                 classNames?.form?.providerButton
             )}
             disabled={isSubmitting}
@@ -99,13 +104,18 @@ export function ProviderButton({
         >
             {provider.icon &&
                 (colorIcons ? (
-                    <provider.icon variant="color" />
+                    <provider.icon variant="color" className={classNames?.form?.icon} />
                 ) : noColorIcons ? (
-                    <provider.icon />
+                    <provider.icon className={classNames?.form?.icon} />
                 ) : (
                     <>
-                        <provider.icon className="dark:hidden" variant="color" />
-                        <provider.icon className="hidden dark:block" />
+                        <provider.icon
+                            className={cn("dark:hidden", classNames?.form?.icon)}
+                            variant="color"
+                        />
+                        <provider.icon
+                            className={cn("hidden dark:block", classNames?.form?.icon)}
+                        />
                     </>
                 ))}
 

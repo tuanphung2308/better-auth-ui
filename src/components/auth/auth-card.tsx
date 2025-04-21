@@ -27,8 +27,9 @@ export interface AuthCardClassNames {
     footer?: string
     footerLink?: string
     form?: AuthFormClassNames
-    settings?: SettingsCardsClassNames
     header?: string
+    separator?: string
+    settings?: SettingsCardsClassNames
     title?: string
 }
 
@@ -76,13 +77,13 @@ export function AuthCard({
         credentials,
         localization: contextLocalization,
         magicLink,
+        otherProviders,
         passkey,
         providers,
-        otherProviders,
-        replace,
         settingsURL,
         signUp,
         viewPaths,
+        replace,
         Link
     } = useContext(AuthUIContext)
 
@@ -148,14 +149,14 @@ export function AuthCard({
             <CardContent className={cn("grid gap-6", classNames?.content)}>
                 <div className="grid gap-4">
                     <AuthForm
-                        callbackURL={callbackURL}
                         classNames={classNames?.form}
+                        callbackURL={callbackURL}
                         isSubmitting={isSubmitting}
                         localization={localization}
+                        otpSeparators={otpSeparators}
                         pathname={pathname}
                         redirectTo={redirectTo}
                         setIsSubmitting={setIsSubmitting}
-                        otpSeparators={otpSeparators}
                     />
 
                     {magicLink &&
@@ -174,13 +175,13 @@ export function AuthCard({
                     <>
                         {credentials && (
                             <div className="flex items-center gap-2">
-                                <Separator className="!w-auto grow" />
+                                <Separator className={cn("!w-auto grow", classNames?.separator)} />
 
                                 <span className="flex-shrink-0 text-muted-foreground text-sm">
                                     {localization.orContinueWith}
                                 </span>
 
-                                <Separator className="!w-auto grow" />
+                                <Separator className={cn("!w-auto grow", classNames?.separator)} />
                             </div>
                         )}
 
@@ -207,10 +208,10 @@ export function AuthCard({
                                                 classNames={classNames}
                                                 isSubmitting={isSubmitting}
                                                 localization={localization}
+                                                provider={socialProvider}
                                                 redirectTo={redirectTo}
                                                 setIsSubmitting={setIsSubmitting}
                                                 socialLayout={socialLayout}
-                                                provider={socialProvider}
                                             />
                                         )
                                     })}
@@ -221,10 +222,10 @@ export function AuthCard({
                                             classNames={classNames}
                                             isSubmitting={isSubmitting}
                                             localization={localization}
+                                            provider={provider}
                                             redirectTo={redirectTo}
                                             setIsSubmitting={setIsSubmitting}
                                             socialLayout={socialLayout}
-                                            provider={provider}
                                             other
                                         />
                                     ))}

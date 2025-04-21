@@ -25,18 +25,21 @@ export function MagicLinkButton({
 
     return (
         <Button
-            className={cn("w-full", classNames?.form?.button)}
+            className={cn("w-full", classNames?.form?.button, classNames?.form?.secondaryButton)}
             disabled={isSubmitting}
             type="button"
             variant="secondary"
             onClick={() =>
                 navigate(
-                    (view === "magicLink" ? viewPaths.signIn : viewPaths.magicLink) +
-                        window.location.search
+                    `${view === "magicLink" ? viewPaths.signIn : viewPaths.magicLink}${window.location.search}`
                 )
             }
         >
-            {view === "magicLink" ? <LockIcon /> : <MailIcon />}
+            {view === "magicLink" ? (
+                <LockIcon className={classNames?.form?.icon} />
+            ) : (
+                <MailIcon className={classNames?.form?.icon} />
+            )}
             {localization.signInWith}{" "}
             {view === "magicLink" ? localization.password : localization.magicLink}
         </Button>

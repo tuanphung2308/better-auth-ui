@@ -1,4 +1,5 @@
 "use client"
+
 import { useContext, useEffect } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
@@ -18,17 +19,19 @@ export type AuthFormClassNames = {
     base?: string
     button?: string
     checkbox?: string
-    primaryButton?: string
-    forgotPasswordLink?: string
-    input?: string
-    label?: string
     description?: string
     error?: string
-    providerButton?: string
-    secondaryButton?: string
-    qrCode?: string
+    forgotPasswordLink?: string
+    icon?: string
+    input?: string
+    label?: string
     otpInput?: string
     otpInputContainer?: string
+    outlineButton?: string
+    primaryButton?: string
+    providerButton?: string
+    qrCode?: string
+    secondaryButton?: string
 }
 
 export interface AuthFormProps {
@@ -47,6 +50,7 @@ export interface AuthFormProps {
 export function AuthForm({
     className,
     classNames,
+    callbackURL,
     isSubmitting,
     localization,
     pathname,
@@ -60,10 +64,10 @@ export function AuthForm({
         credentials,
         localization: contextLocalization,
         magicLink,
-        replace,
         signUp: signUpEnabled,
         twoFactor: twoFactorEnabled,
-        viewPaths
+        viewPaths,
+        replace
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
@@ -126,6 +130,7 @@ export function AuthForm({
     if (view === "signIn") {
         return credentials || !magicLink ? (
             <SignInForm
+                className={className}
                 classNames={classNames}
                 localization={localization}
                 redirectTo={redirectTo}
@@ -134,7 +139,9 @@ export function AuthForm({
             />
         ) : (
             <MagicLinkForm
+                className={className}
                 classNames={classNames}
+                callbackURL={callbackURL}
                 localization={localization}
                 redirectTo={redirectTo}
                 isSubmitting={isSubmitting}
@@ -146,6 +153,7 @@ export function AuthForm({
     if (view === "twoFactor") {
         return (
             <TwoFactorForm
+                className={className}
                 classNames={classNames}
                 localization={localization}
                 otpSeparators={otpSeparators}
@@ -174,6 +182,7 @@ export function AuthForm({
             <MagicLinkForm
                 className={className}
                 classNames={classNames}
+                callbackURL={callbackURL}
                 localization={localization}
                 redirectTo={redirectTo}
                 isSubmitting={isSubmitting}
