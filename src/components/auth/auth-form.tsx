@@ -190,16 +190,6 @@ export function AuthForm({
         )
     }
 
-    if (view === "resetPassword") {
-        return (
-            <ResetPasswordForm
-                className={className}
-                classNames={classNames}
-                localization={localization}
-            />
-        )
-    }
-
     if (view === "forgotPassword") {
         return (
             <ForgotPasswordForm
@@ -208,6 +198,16 @@ export function AuthForm({
                 localization={localization}
                 isSubmitting={isSubmitting}
                 setIsSubmitting={setIsSubmitting}
+            />
+        )
+    }
+
+    if (view === "resetPassword") {
+        return (
+            <ResetPasswordForm
+                className={className}
+                classNames={classNames}
+                localization={localization}
             />
         )
     }

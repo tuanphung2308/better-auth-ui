@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { useContext, useEffect } from "react"
+import { useCallback, useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -10,7 +10,7 @@ import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import { cn, getLocalizedError } from "../../../lib/utils"
+import { cn, getLocalizedError, getSearchParam } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
@@ -22,6 +22,7 @@ import type { AuthFormClassNames } from "../auth-form"
 export interface SignUpFormProps {
     className?: string
     classNames?: AuthFormClassNames
+    callbackURL?: string
     isSubmitting?: boolean
     localization: Partial<AuthLocalization>
     redirectTo?: string
@@ -31,6 +32,7 @@ export interface SignUpFormProps {
 export function SignUpForm({
     className,
     classNames,
+    callbackURL,
     isSubmitting,
     localization,
     redirectTo,
@@ -42,14 +44,37 @@ export function SignUpForm({
         additionalFields,
         authClient,
         basePath,
+        baseURL,
         confirmPassword: confirmPasswordEnabled,
+        emailVerification,
+        localization: contextLocalization,
         nameRequired,
+        persistClient,
+        redirectTo: contextRedirectTo,
         signUpFields,
-        toast,
         username: usernameEnabled,
         viewPaths,
-        navigate
+        navigate,
+        toast
     } = useContext(AuthUIContext)
+
+    localization = { ...contextLocalization, ...localization }
+
+    const getRedirectTo = useCallback(
+        () => redirectTo || getSearchParam("redirectTo") || contextRedirectTo,
+        [redirectTo, contextRedirectTo]
+    )
+
+    const getCallbackURL = useCallback(
+        () =>
+            `${baseURL}${
+                callbackURL ||
+                (persistClient
+                    ? `${basePath}/${viewPaths.callback}?redirectTo=${getRedirectTo()}`
+                    : getRedirectTo())
+            }`,
+        [callbackURL, persistClient, basePath, viewPaths, baseURL, getRedirectTo]
+    )
 
     const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({ redirectTo })
 
@@ -126,9 +151,11 @@ export function SignUpForm({
                           .refine((val) => val === true, {
                               message: `${additionalField.label} ${localization.isRequired}`
                           })
-                    : z.coerce.boolean({
-                          invalid_type_error: `${additionalField.label} ${localization.isInvalid}`
-                      })
+                    : z.coerce
+                          .boolean({
+                              invalid_type_error: `${additionalField.label} ${localization.isInvalid}`
+                          })
+                          .optional()
             } else {
                 fieldSchema = additionalField.required
                     ? z.string().min(1, `${additionalField.label} ${localization.isRequired}`)
@@ -139,7 +166,6 @@ export function SignUpForm({
         }
     }
 
-    // Create the form schema
     const formSchema = z.object(schemaFields).refine(
         (data) => {
             // Skip validation if confirmPassword is not enabled
@@ -201,19 +227,17 @@ export function SignUpForm({
                     form.setError(field, {
                         message: `${additionalField.label} ${localization.isInvalid}`
                     })
-                    return // Stop submission if validation fails
+                    return
                 }
             }
 
-            // Call sign-up API directly with all fields
-            // @ts-expect-error - We're handling dynamic fields that TypeScript can't statically verify
             const data = await (authClient as AuthClient).signUp.email({
                 email,
                 password,
-                ...(name !== undefined && { name }),
+                name: name || "",
                 ...(username !== undefined && { username }),
-                ...(redirectTo && { callbackURL: redirectTo }),
                 ...additionalFieldValues,
+                ...(emailVerification && persistClient && { callbackURL: getCallbackURL() }),
                 fetchOptions: { throw: true }
             })
 
@@ -241,7 +265,6 @@ export function SignUpForm({
                 noValidate={isHydrated}
                 className={cn("grid w-full gap-6", className, classNames?.base)}
             >
-                {/* Name field */}
                 {(nameRequired || signUpFields?.includes("name")) && (
                     <FormField
                         control={form.control}
@@ -267,7 +290,6 @@ export function SignUpForm({
                     />
                 )}
 
-                {/* Username field */}
                 {usernameEnabled && (
                     <FormField
                         control={form.control}
@@ -293,7 +315,6 @@ export function SignUpForm({
                     />
                 )}
 
-                {/* Email field */}
                 <FormField
                     control={form.control}
                     name="email"
@@ -318,7 +339,6 @@ export function SignUpForm({
                     )}
                 />
 
-                {/* Password field */}
                 <FormField
                     control={form.control}
                     name="password"
@@ -334,6 +354,7 @@ export function SignUpForm({
                                     className={classNames?.input}
                                     placeholder={localization.passwordPlaceholder}
                                     disabled={isSubmitting}
+                                    enableToggle
                                     {...field}
                                 />
                             </FormControl>
@@ -343,7 +364,6 @@ export function SignUpForm({
                     )}
                 />
 
-                {/* Confirm Password field */}
                 {confirmPasswordEnabled && (
                     <FormField
                         control={form.control}
@@ -360,6 +380,7 @@ export function SignUpForm({
                                         className={classNames?.input}
                                         placeholder={localization.confirmPasswordPlaceholder}
                                         disabled={isSubmitting}
+                                        enableToggle
                                         {...field}
                                     />
                                 </FormControl>
@@ -370,7 +391,6 @@ export function SignUpForm({
                     />
                 )}
 
-                {/* Additional fields */}
                 {signUpFields
                     ?.filter((field) => field !== "name")
                     .map((field) => {
@@ -386,7 +406,7 @@ export function SignUpForm({
                                 control={form.control}
                                 name={field}
                                 render={({ field: formField }) => (
-                                    <FormItem className="flex items-center gap-2">
+                                    <FormItem className="flex">
                                         <FormControl>
                                             <Checkbox
                                                 checked={formField.value as boolean}

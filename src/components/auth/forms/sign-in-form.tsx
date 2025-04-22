@@ -42,13 +42,16 @@ export function SignInForm({
         authClient,
         basePath,
         forgotPassword,
+        localization: contextLocalization,
         rememberMe: rememberMeEnabled,
-        toast,
         username: usernameEnabled,
         viewPaths,
         navigate,
+        toast,
         Link
     } = useContext(AuthUIContext)
+
+    localization = { ...contextLocalization, ...localization }
 
     const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({ redirectTo })
 

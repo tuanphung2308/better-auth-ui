@@ -31,7 +31,17 @@ export function ForgotPasswordForm({
     setIsSubmitting
 }: ForgotPasswordFormProps) {
     const isHydrated = useIsHydrated()
-    const { authClient, basePath, baseURL, navigate, toast, viewPaths } = useContext(AuthUIContext)
+    const {
+        authClient,
+        basePath,
+        baseURL,
+        localization: contextLocalization,
+        navigate,
+        toast,
+        viewPaths
+    } = useContext(AuthUIContext)
+
+    localization = { ...contextLocalization, ...localization }
 
     const formSchema = z.object({
         email: z

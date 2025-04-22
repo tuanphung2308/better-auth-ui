@@ -1,6 +1,4 @@
 "use client"
-
-import type { BetterFetchError } from "@better-fetch/fetch"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
 import { useContext, useEffect } from "react"
@@ -34,7 +32,9 @@ export function RecoverAccountForm({
     redirectTo,
     setIsSubmitting
 }: RecoverAccountFormProps) {
-    const { authClient, basePath, viewPaths, replace, toast } = useContext(AuthUIContext)
+    const { authClient, localization: contextLocalization, toast } = useContext(AuthUIContext)
+
+    localization = { ...contextLocalization, ...localization }
 
     const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({ redirectTo })
 
@@ -66,10 +66,6 @@ export function RecoverAccountForm({
         } catch (error) {
             toast({ variant: "error", message: getLocalizedError({ error, localization }) })
 
-            if ((error as BetterFetchError).error.code === "INVALID_TWO_FACTOR_COOKIE") {
-                replace(`${basePath}/${viewPaths.signIn}${window.location.search}`)
-            }
-
             form.reset()
         }
     }
@@ -92,7 +88,7 @@ export function RecoverAccountForm({
                             <FormControl>
                                 <Input
                                     placeholder={localization.backupCodePlaceholder}
-                                    autoComplete="one-time-code"
+                                    autoComplete="off"
                                     className={classNames?.input}
                                     disabled={isSubmitting}
                                     {...field}

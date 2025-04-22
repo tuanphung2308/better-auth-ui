@@ -42,10 +42,13 @@ export function MagicLinkForm({
         basePath,
         baseURL,
         persistClient,
+        localization: contextLocalization,
         redirectTo: contextRedirectTo,
         viewPaths,
         toast
     } = useContext(AuthUIContext)
+
+    localization = { ...contextLocalization, ...localization }
 
     const getRedirectTo = useCallback(
         () => redirectToProp || getSearchParam("redirectTo") || contextRedirectTo,

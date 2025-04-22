@@ -27,10 +27,13 @@ export function ResetPasswordForm({ className, classNames, localization }: Reset
         authClient,
         basePath,
         confirmPassword: confirmPasswordEnabled,
-        toast,
+        localization: contextLocalization,
         viewPaths,
-        navigate
+        navigate,
+        toast
     } = useContext(AuthUIContext)
+
+    localization = { ...contextLocalization, ...localization }
 
     const formSchema = z
         .object({
