@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useContext } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
@@ -34,11 +33,12 @@ export function ChangePasswordCard({
     const {
         authClient,
         basePath,
+        baseURL,
         confirmPassword: confirmPasswordEnabled,
         hooks: { useSession, useListAccounts },
         localization: contextLocalization,
-        toast,
-        viewPaths
+        viewPaths,
+        toast
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
@@ -84,7 +84,7 @@ export function ChangePasswordCard({
         try {
             await authClient.forgetPassword({
                 email,
-                redirectTo: `${basePath}/${viewPaths.resetPassword}`,
+                redirectTo: `${baseURL}${basePath}/${viewPaths.resetPassword}`,
                 fetchOptions: { throw: true }
             })
 
@@ -134,13 +134,13 @@ export function ChangePasswordCard({
         <Form {...form}>
             <form onSubmit={form.handleSubmit(changePassword)}>
                 <SettingsCard
-                    title={localization.changePassword}
-                    description={localization.changePasswordDescription}
-                    actionLabel={localization.save}
-                    isPending={isPending}
-                    instructions={localization.changePasswordInstructions}
                     className={className}
                     classNames={classNames}
+                    actionLabel={localization.save}
+                    description={localization.changePasswordDescription}
+                    instructions={localization.changePasswordInstructions}
+                    isPending={isPending}
+                    title={localization.changePassword}
                 >
                     <CardContent className={cn("grid gap-6", classNames?.content)}>
                         {isPending || !accounts ? (
@@ -175,7 +175,7 @@ export function ChangePasswordCard({
                                                 />
                                             </FormControl>
 
-                                            <FormMessage />
+                                            <FormMessage className={classNames?.error} />
                                         </FormItem>
                                     )}
                                 />
@@ -193,16 +193,16 @@ export function ChangePasswordCard({
                                                 <PasswordInput
                                                     className={classNames?.input}
                                                     autoComplete="new-password"
+                                                    disabled={isSubmitting}
                                                     placeholder={
                                                         localization.newPasswordPlaceholder
                                                     }
                                                     enableToggle
-                                                    disabled={isSubmitting}
                                                     {...field}
                                                 />
                                             </FormControl>
 
-                                            <FormMessage />
+                                            <FormMessage className={classNames?.error} />
                                         </FormItem>
                                     )}
                                 />
@@ -230,7 +230,7 @@ export function ChangePasswordCard({
                                                     />
                                                 </FormControl>
 
-                                                <FormMessage />
+                                                <FormMessage className={classNames?.error} />
                                             </FormItem>
                                         )}
                                     />

@@ -43,22 +43,22 @@ export function DeleteAccountCard({
     return (
         <div>
             <SettingsCard
-                title={localization?.deleteAccount}
-                description={localization?.deleteAccountDescription}
-                actionLabel={localization?.deleteAccount}
-                action={() => setShowDialog(true)}
                 className={className}
                 classNames={classNames}
-                variant="destructive"
+                actionLabel={localization?.deleteAccount}
+                description={localization?.deleteAccountDescription}
                 isPending={isPending}
+                title={localization?.deleteAccount}
+                variant="destructive"
+                action={() => setShowDialog(true)}
             />
 
             <DeleteAccountDialog
-                open={showDialog}
-                onOpenChange={setShowDialog}
-                localization={localization}
                 classNames={classNames}
                 accounts={accounts}
+                localization={localization}
+                open={showDialog}
+                onOpenChange={setShowDialog}
             />
         </div>
     )

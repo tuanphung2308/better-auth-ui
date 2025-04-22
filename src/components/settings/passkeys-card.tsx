@@ -69,11 +69,11 @@ export function PasskeysCard({
                 <SettingsCard
                     className={className}
                     classNames={classNames}
-                    title={localization.passkeys}
-                    description={localization.passkeysDescription}
                     actionLabel={localization.addPasskey}
+                    description={localization.passkeysDescription}
                     instructions={localization.passkeysInstructions}
                     isPending={isPending}
+                    title={localization.passkeys}
                 >
                     <CardContent className={cn("grid gap-4", classNames?.content)}>
                         {isPending ? (
@@ -83,8 +83,8 @@ export function PasskeysCard({
                                 <PasskeyCell
                                     key={passkey.id}
                                     classNames={classNames}
-                                    passkey={passkey}
                                     localization={localization}
+                                    passkey={passkey}
                                     refetch={refetch}
                                 />
                             ))

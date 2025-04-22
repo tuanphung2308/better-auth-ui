@@ -31,15 +31,15 @@ export function TwoFactorCard({ className, classNames, localization }: TwoFactor
             <SettingsCard
                 className={className}
                 classNames={classNames}
-                isPending={isPending}
-                description={localization.twoFactorCardDescription}
-                title={localization.twoFactor}
                 actionLabel={isTwoFactorEnabled ? localization.disable : localization.enable}
+                description={localization.twoFactorCardDescription}
                 instructions={
                     isTwoFactorEnabled
                         ? localization.twoFactorDisableInstructions
                         : localization.twoFactorEnableInstructions
                 }
+                isPending={isPending}
+                title={localization.twoFactor}
                 action={() => setShowPasswordDialog(true)}
             />
 

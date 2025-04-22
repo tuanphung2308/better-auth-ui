@@ -16,7 +16,7 @@ import type { SettingsCardClassNames } from "./shared/settings-card"
 export interface ProviderCellProps {
     className?: string
     classNames?: SettingsCardClassNames
-    accounts?: { accountId: string; provider: string }[] | null
+    account?: { accountId: string; provider: string } | null
     isPending?: boolean
     localization?: Partial<AuthLocalization>
     other?: boolean
@@ -27,7 +27,7 @@ export interface ProviderCellProps {
 export function ProviderCell({
     className,
     classNames,
-    accounts,
+    account,
     localization,
     other,
     provider,
@@ -36,16 +36,14 @@ export function ProviderCell({
     const {
         authClient,
         basePath,
+        baseURL,
         colorIcons,
-        mutators: { unlinkAccount },
         localization: contextLocalization,
+        mutators: { unlinkAccount },
         noColorIcons,
-        toast,
-        viewPaths
+        viewPaths,
+        toast
     } = useContext(AuthUIContext)
-
-    const account = accounts?.find((acc) => acc.provider === provider.provider)
-    const isLinked = !!account
 
     localization = { ...contextLocalization, ...localization }
 
@@ -53,7 +51,7 @@ export function ProviderCell({
 
     const handleLink = async () => {
         setIsLoading(true)
-        const callbackURL = `${basePath}/${viewPaths.callback}?redirectTo=${window.location.pathname}`
+        const callbackURL = `${baseURL}${basePath}/${viewPaths.callback}?redirectTo=${window.location.pathname}`
 
         try {
             if (other) {
@@ -103,13 +101,18 @@ export function ProviderCell({
         <Card className={cn("flex-row items-center gap-3 px-4 py-3", className, classNames?.cell)}>
             {provider.icon &&
                 (colorIcons ? (
-                    <provider.icon className="size-4" variant="color" />
+                    <provider.icon className={cn("size-4", classNames?.icon)} variant="color" />
                 ) : noColorIcons ? (
-                    <provider.icon className="size-4" />
+                    <provider.icon className={cn("size-4", classNames?.icon)} />
                 ) : (
                     <>
-                        <provider.icon className="size-4 dark:hidden" variant="color" />
-                        <provider.icon className="hidden size-4 dark:block" />
+                        <provider.icon
+                            className={cn("size-4 dark:hidden", classNames?.icon)}
+                            variant="color"
+                        />
+                        <provider.icon
+                            className={cn("hidden size-4 dark:block", classNames?.icon)}
+                        />
                     </>
                 ))}
 
@@ -120,11 +123,11 @@ export function ProviderCell({
                 disabled={isLoading}
                 size="sm"
                 type="button"
-                variant={isLinked ? "outline" : "default"}
-                onClick={isLinked ? handleUnlink : handleLink}
+                variant={account ? "outline" : "default"}
+                onClick={account ? handleUnlink : handleLink}
             >
                 {isLoading && <Loader2 className="animate-spin" />}
-                {isLinked ? localization.unlink : localization.link}
+                {account ? localization.unlink : localization.link}
             </Button>
         </Card>
     )

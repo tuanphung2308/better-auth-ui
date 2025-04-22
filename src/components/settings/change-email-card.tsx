@@ -49,7 +49,9 @@ export function ChangeEmailCard({
 
     const form = useForm({
         resolver: zodResolver(formSchema),
-        values: { email: sessionData?.user.email || "" }
+        values: {
+            email: sessionData?.user.email || ""
+        }
     })
 
     const resendForm = useForm()
@@ -139,7 +141,7 @@ export function ChangeEmailCard({
                                                 />
                                             </FormControl>
 
-                                            <FormMessage />
+                                            <FormMessage className={classNames?.error} />
                                         </FormItem>
                                     )}
                                 />

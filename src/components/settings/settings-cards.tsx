@@ -117,13 +117,13 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
             >
                 <TabsList className={cn("grid w-full grid-cols-2", classNames?.tabs?.list)}>
                     <TabsTrigger value="account" className={classNames?.tabs?.trigger}>
-                        <UserIcon />
+                        <UserIcon className={classNames?.card?.icon} />
 
                         {localization.account}
                     </TabsTrigger>
 
                     <TabsTrigger value="security" className={classNames?.tabs?.trigger}>
-                        <KeyIcon />
+                        <KeyIcon className={classNames?.card?.icon} />
 
                         {localization.security}
                     </TabsTrigger>

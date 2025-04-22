@@ -13,6 +13,7 @@ export type SettingsCardClassNames = {
     avatar?: UserAvatarClassNames
     button?: string
     cell?: string
+    checkbox?: string
     destructiveButton?: string
     content?: string
     description?: string
@@ -21,13 +22,16 @@ export type SettingsCardClassNames = {
         footer?: string
         header?: string
     }
+    error?: string
     footer?: string
     header?: string
+    icon?: string
     input?: string
     instructions?: string
     label?: string
     primaryButton?: string
     secondaryButton?: string
+    outlineButton?: string
     skeleton?: string
     title?: string
 }
@@ -39,13 +43,13 @@ export interface SettingsCardProps {
     title: ReactNode
     description?: ReactNode
     instructions?: ReactNode
-    action?: () => Promise<unknown> | unknown
     actionLabel?: ReactNode
     isSubmitting?: boolean
     disabled?: boolean
     isPending?: boolean
     optimistic?: boolean
     variant?: "default" | "destructive"
+    action?: () => Promise<unknown> | unknown
 }
 
 export function SettingsCard({
@@ -55,13 +59,13 @@ export function SettingsCard({
     title,
     description,
     instructions,
-    action,
     actionLabel,
     disabled,
     isPending,
     isSubmitting,
     optimistic,
-    variant
+    variant,
+    action
 }: SettingsCardProps) {
     return (
         <Card
@@ -73,24 +77,24 @@ export function SettingsCard({
             )}
         >
             <SettingsCardHeader
-                title={title}
+                classNames={classNames}
                 description={description}
                 isPending={isPending}
-                classNames={classNames}
+                title={title}
             />
 
             {children}
 
             <SettingsCardFooter
-                action={action}
+                classNames={classNames}
                 actionLabel={actionLabel}
                 disabled={disabled}
                 isPending={isPending}
                 isSubmitting={isSubmitting}
                 instructions={instructions}
-                classNames={classNames}
                 optimistic={optimistic}
                 variant={variant}
+                action={action}
             />
         </Card>
     )

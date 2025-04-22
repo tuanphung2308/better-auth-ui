@@ -3,7 +3,6 @@ import { Loader2 } from "lucide-react"
 import { type ComponentProps, useContext } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
@@ -28,21 +27,22 @@ export interface DeleteAccountDialogProps extends ComponentProps<typeof Dialog> 
 
 export function DeleteAccountDialog({
     classNames,
-    onOpenChange,
     accounts,
     localization,
+    onOpenChange,
     ...props
 }: DeleteAccountDialogProps) {
     const {
         authClient,
         basePath,
+        baseURL,
         deleteAccountVerification,
         freshAge,
         hooks: { useSession },
         localization: contextLocalization,
+        viewPaths,
         navigate,
-        toast,
-        viewPaths
+        toast
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
@@ -79,7 +79,7 @@ export function DeleteAccountDialog({
         }
 
         if (deleteAccountVerification) {
-            params.callbackURL = `${basePath}/${viewPaths.signOut}`
+            params.callbackURL = `${baseURL}${basePath}/${viewPaths.signOut}`
         }
 
         try {
@@ -145,7 +145,7 @@ export function DeleteAccountDialog({
                                             />
                                         </FormControl>
 
-                                        <FormMessage />
+                                        <FormMessage className={classNames?.error} />
                                     </FormItem>
                                 )}
                             />

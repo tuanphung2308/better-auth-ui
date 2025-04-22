@@ -49,9 +49,9 @@ export function SessionsCard({
         <SettingsCard
             className={className}
             classNames={classNames}
-            title={localization.sessions}
             description={localization.sessionsDescription}
             isPending={isPending}
+            title={localization.sessions}
         >
             <CardContent className={cn("grid gap-4", classNames?.content)}>
                 {isPending ? (
@@ -61,8 +61,8 @@ export function SessionsCard({
                         <SessionCell
                             key={session.id}
                             classNames={classNames}
-                            session={session}
                             localization={localization}
+                            session={session}
                             refetch={refetch}
                         />
                     ))

@@ -90,20 +90,28 @@ export function AccountCell({
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button
-                        className={cn("relative ms-auto", classNames?.button)}
+                        className={cn(
+                            "relative ms-auto",
+                            classNames?.button,
+                            classNames?.outlineButton
+                        )}
                         disabled={isLoading}
                         size="icon"
                         type="button"
                         variant="outline"
                     >
-                        {isLoading ? <Loader2 className="animate-spin" /> : <EllipsisIcon />}
+                        {isLoading ? (
+                            <Loader2 className="animate-spin" />
+                        ) : (
+                            <EllipsisIcon className={classNames?.icon} />
+                        )}
                     </Button>
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent>
                     {!isCurrentSession && (
                         <DropdownMenuItem onClick={handleSetActiveSession}>
-                            <RepeatIcon />
+                            <RepeatIcon className={classNames?.icon} />
 
                             {localization.switchAccount}
                         </DropdownMenuItem>
@@ -119,7 +127,7 @@ export function AccountCell({
                             handleRevoke()
                         }}
                     >
-                        <LogOutIcon />
+                        <LogOutIcon className={classNames?.icon} />
 
                         {isCurrentSession ? localization.signOut : localization.revoke}
                     </DropdownMenuItem>

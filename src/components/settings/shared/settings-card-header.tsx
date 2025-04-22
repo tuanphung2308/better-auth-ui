@@ -8,19 +8,19 @@ import { Skeleton } from "../../ui/skeleton"
 import type { SettingsCardClassNames } from "./settings-card"
 
 export interface SettingsCardHeaderProps {
-    title: ReactNode
+    className?: string
+    classNames?: SettingsCardClassNames
     description?: ReactNode
     isPending?: boolean
-    classNames?: SettingsCardClassNames
-    className?: string
+    title: ReactNode
 }
 
 export function SettingsCardHeader({
-    title,
+    className,
+    classNames,
     description,
     isPending,
-    classNames,
-    className
+    title
 }: SettingsCardHeaderProps) {
     return (
         <CardHeader className={cn(classNames?.header, className)}>

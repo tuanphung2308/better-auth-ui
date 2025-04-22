@@ -55,9 +55,9 @@ export function AccountsCard({
             title={localization.accounts}
             description={localization.accountsDescription}
             actionLabel={localization.addAccount}
-            action={() => navigate(`${basePath}/${viewPaths.signIn}`)}
             instructions={localization.accountsInstructions}
             isPending={isPending}
+            action={() => navigate(`${basePath}/${viewPaths.signIn}`)}
         >
             <CardContent className={cn("grid gap-4", classNames?.content)}>
                 {isPending ? (

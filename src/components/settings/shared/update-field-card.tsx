@@ -28,8 +28,8 @@ export interface UpdateFieldCardProps {
     required?: boolean
     label?: ReactNode
     type?: FieldType
-    validate?: (value: string) => boolean | Promise<boolean>
     value?: unknown
+    validate?: (value: string) => boolean | Promise<boolean>
 }
 
 export function UpdateFieldCard({
@@ -44,8 +44,8 @@ export function UpdateFieldCard({
     required,
     label,
     type,
-    validate,
-    value
+    value,
+    validate
 }: UpdateFieldCardProps) {
     const {
         hooks: { useSession },
@@ -157,17 +157,19 @@ export function UpdateFieldCard({
                                 control={form.control}
                                 name={name}
                                 render={({ field }) => (
-                                    <FormItem className="flex items-center gap-3">
+                                    <FormItem className="flex">
                                         <FormControl>
                                             <Checkbox
                                                 checked={field.value as boolean}
                                                 onCheckedChange={field.onChange}
+                                                disabled={isSubmitting}
+                                                className={classNames?.checkbox}
                                             />
                                         </FormControl>
 
                                         <FormLabel className={classNames?.label}>{label}</FormLabel>
 
-                                        <FormMessage />
+                                        <FormMessage className={classNames?.error} />
                                     </FormItem>
                                 )}
                             />
@@ -193,7 +195,7 @@ export function UpdateFieldCard({
                                             />
                                         </FormControl>
 
-                                        <FormMessage />
+                                        <FormMessage className={classNames?.error} />
                                     </FormItem>
                                 )}
                             />

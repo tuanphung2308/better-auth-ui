@@ -44,10 +44,16 @@ export function TwoFactorPasswordDialog({
         password: z.string().min(1, { message: localization.passwordRequired })
     })
 
-    const form = useForm({ resolver: zodResolver(formSchema), defaultValues: { password: "" } })
+    const form = useForm({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            password: ""
+        }
+    })
+
     const { isSubmitting } = form.formState
 
-    async function handleEnableTwoFactor({ password }: z.infer<typeof formSchema>) {
+    async function enableTwoFactor({ password }: z.infer<typeof formSchema>) {
         try {
             const response = await (authClient as AuthClient).twoFactor.enable({
                 password,
@@ -72,7 +78,7 @@ export function TwoFactorPasswordDialog({
         }
     }
 
-    async function handleDisableTwoFactor({ password }: z.infer<typeof formSchema>) {
+    async function disableTwoFactor({ password }: z.infer<typeof formSchema>) {
         try {
             await (authClient as AuthClient).twoFactor.disable({
                 password,
@@ -112,7 +118,7 @@ export function TwoFactorPasswordDialog({
                     <Form {...form}>
                         <form
                             onSubmit={form.handleSubmit(
-                                isTwoFactorEnabled ? handleDisableTwoFactor : handleEnableTwoFactor
+                                isTwoFactorEnabled ? disableTwoFactor : enableTwoFactor
                             )}
                             className="grid gap-4"
                         >
@@ -134,7 +140,7 @@ export function TwoFactorPasswordDialog({
                                             />
                                         </FormControl>
 
-                                        <FormMessage />
+                                        <FormMessage className={classNames?.error} />
                                     </FormItem>
                                 )}
                             />

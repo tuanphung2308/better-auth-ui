@@ -34,8 +34,8 @@ export function ProvidersCard({
     const {
         hooks: { useListAccounts },
         localization: contextLocalization,
-        providers,
-        otherProviders
+        otherProviders,
+        providers
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
@@ -71,8 +71,8 @@ export function ProvidersCard({
                                 <ProviderCell
                                     key={provider}
                                     classNames={classNames}
+                                    account={accounts?.find((acc) => acc.provider === provider)}
                                     provider={socialProvider}
-                                    accounts={accounts}
                                     refetch={refetch}
                                 />
                             )
@@ -82,8 +82,10 @@ export function ProvidersCard({
                             <ProviderCell
                                 key={provider.provider}
                                 classNames={classNames}
+                                account={accounts?.find(
+                                    (acc) => acc.provider === provider.provider
+                                )}
                                 provider={provider}
-                                accounts={accounts}
                                 refetch={refetch}
                                 other
                             />

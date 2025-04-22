@@ -13,16 +13,16 @@ import type { SettingsCardClassNames } from "./shared/settings-card"
 export interface PasskeyCellProps {
     className?: string
     classNames?: SettingsCardClassNames
-    passkey: { id: string; createdAt: Date }
     localization?: Partial<AuthLocalization>
+    passkey: { id: string; createdAt: Date }
     refetch?: () => Promise<void>
 }
 
 export function PasskeyCell({
     className,
     classNames,
-    passkey,
     localization,
+    passkey,
     refetch
 }: PasskeyCellProps) {
     const {
@@ -54,12 +54,12 @@ export function PasskeyCell({
     return (
         <Card className={cn("flex-row items-center p-4", className, classNames?.cell)}>
             <div className="flex items-center gap-3">
-                <FingerprintIcon className="size-4" />
+                <FingerprintIcon className={cn("size-4", classNames?.icon)} />
                 <span className="text-sm">{passkey.createdAt.toLocaleString()}</span>
             </div>
 
             <Button
-                className={cn("relative ms-auto", classNames?.button)}
+                className={cn("relative ms-auto", classNames?.button, classNames?.outlineButton)}
                 disabled={isLoading}
                 size="sm"
                 variant="outline"

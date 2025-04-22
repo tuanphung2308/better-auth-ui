@@ -11,7 +11,6 @@ import type { SettingsCardClassNames } from "./settings-card"
 export interface SettingsCardFooterProps {
     className?: string
     classNames?: SettingsCardClassNames
-    action?: () => Promise<unknown> | unknown
     actionLabel?: ReactNode
     disabled?: boolean
     instructions?: ReactNode
@@ -19,10 +18,10 @@ export interface SettingsCardFooterProps {
     isSubmitting?: boolean
     optimistic?: boolean
     variant?: "default" | "destructive"
+    action?: () => Promise<unknown> | unknown
 }
 
 export function SettingsCardFooter({
-    action,
     className,
     classNames,
     actionLabel,
@@ -30,7 +29,8 @@ export function SettingsCardFooter({
     instructions,
     isPending,
     isSubmitting,
-    variant
+    variant,
+    action
 }: SettingsCardFooterProps) {
     return (
         <CardFooter
@@ -76,10 +76,10 @@ export function SettingsCardFooter({
                         <SettingsActionButton
                             classNames={classNames}
                             actionLabel={actionLabel}
-                            onClick={action}
                             disabled={disabled}
                             isSubmitting={isSubmitting}
                             variant={variant}
+                            onClick={action}
                         />
                     )}
                 </>

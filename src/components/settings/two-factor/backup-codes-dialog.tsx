@@ -23,8 +23,8 @@ interface BackupCodesDialogProps extends ComponentProps<typeof Dialog> {
 
 export function BackupCodesDialog({
     classNames,
-    onOpenChange,
     backupCodes,
+    onOpenChange,
     ...props
 }: BackupCodesDialogProps) {
     const { localization } = useContext(AuthUIContext)
@@ -72,16 +72,16 @@ export function BackupCodesDialog({
                         variant="outline"
                         onClick={handleCopy}
                         disabled={copied}
-                        className={classNames?.button}
+                        className={cn(classNames?.button, classNames?.outlineButton)}
                     >
                         {copied ? (
                             <>
-                                <CheckIcon />
+                                <CheckIcon className={classNames?.icon} />
                                 {localization.copiedToClipboard}
                             </>
                         ) : (
                             <>
-                                <CopyIcon />
+                                <CopyIcon className={classNames?.icon} />
                                 {localization.copyAllCodes}
                             </>
                         )}

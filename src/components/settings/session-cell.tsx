@@ -4,7 +4,6 @@ import type { Session } from "better-auth"
 import { LaptopIcon, Loader2, SmartphoneIcon } from "lucide-react"
 import { useContext, useState } from "react"
 import { UAParser } from "ua-parser-js"
-
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
@@ -15,26 +14,26 @@ import type { SettingsCardClassNames } from "./shared/settings-card"
 export interface SessionCellProps {
     className?: string
     classNames?: SettingsCardClassNames
-    session: Session
     localization?: Partial<AuthLocalization>
+    session: Session
     refetch?: () => Promise<void>
 }
 
 export function SessionCell({
     className,
     classNames,
-    session,
     localization,
+    session,
     refetch
 }: SessionCellProps) {
     const {
-        hooks: { useSession },
-        mutators: { revokeSession },
-        localization: contextLocalization,
-        navigate,
-        toast,
         basePath,
-        viewPaths
+        hooks: { useSession },
+        localization: contextLocalization,
+        mutators: { revokeSession },
+        viewPaths,
+        navigate,
+        toast
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
@@ -45,23 +44,23 @@ export function SessionCell({
     const [isLoading, setIsLoading] = useState(false)
 
     const handleRevoke = async () => {
+        setIsLoading(true)
+
         if (isCurrentSession) {
             navigate(`${basePath}/${viewPaths.signOut}`)
             return
         }
 
-        setIsLoading(true)
-
         try {
             await revokeSession({ token: session.token })
             refetch?.()
         } catch (error) {
-            setIsLoading(false)
-
             toast({
                 variant: "error",
                 message: getLocalizedError({ error, localization })
             })
+
+            setIsLoading(false)
         }
     }
 
@@ -70,7 +69,11 @@ export function SessionCell({
 
     return (
         <Card className={cn("flex-row items-center gap-3 px-4 py-3", className, classNames?.cell)}>
-            {isMobile ? <SmartphoneIcon className="size-4" /> : <LaptopIcon className="size-4" />}
+            {isMobile ? (
+                <SmartphoneIcon className={cn("size-4", classNames?.icon)} />
+            ) : (
+                <LaptopIcon className={cn("size-4", classNames?.icon)} />
+            )}
 
             <div className="flex flex-col">
                 <span className="font-semibold text-sm">
@@ -83,7 +86,7 @@ export function SessionCell({
             </div>
 
             <Button
-                className={cn("relative ms-auto", classNames?.button)}
+                className={cn("relative ms-auto", classNames?.button, classNames?.outlineButton)}
                 disabled={isLoading}
                 size="sm"
                 variant="outline"
