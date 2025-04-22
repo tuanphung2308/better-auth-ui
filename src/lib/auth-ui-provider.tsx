@@ -280,9 +280,9 @@ export const AuthUIProvider = ({
     changeEmail = true,
     forgotPassword = true,
     freshAge = 60 * 60 * 24,
-    hooks,
-    mutators,
-    localization,
+    hooks: hooksProp,
+    mutators: mutatorsProp,
+    localization: localizationProp,
     nameRequired = true,
     settingsFields = ["name"],
     signUp = true,
@@ -347,6 +347,18 @@ export const AuthUIProvider = ({
         return { ...authViewPaths, ...viewPathsProp } as AuthViewPaths
     }, [viewPathsProp])
 
+    const localization = useMemo(() => {
+        return { ...authLocalization, ...localizationProp } as AuthLocalization
+    }, [localizationProp])
+
+    const hooks = useMemo(() => {
+        return { ...defaultHooks, ...hooksProp } as AuthHooks
+    }, [defaultHooks, hooksProp])
+
+    const mutators = useMemo(() => {
+        return { ...defaultMutators, ...mutatorsProp } as AuthMutators
+    }, [defaultMutators, mutatorsProp])
+
     return (
         <AuthUIContext.Provider
             value={{
@@ -360,9 +372,9 @@ export const AuthUIProvider = ({
                 credentials,
                 forgotPassword,
                 freshAge,
-                hooks: { ...defaultHooks, ...hooks },
-                mutators: { ...defaultMutators, ...mutators },
-                localization: { ...authLocalization, ...localization },
+                hooks,
+                mutators,
+                localization,
                 nameRequired,
                 settingsFields,
                 signUp,
