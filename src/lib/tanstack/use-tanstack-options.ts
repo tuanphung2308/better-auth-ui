@@ -31,7 +31,10 @@ export function useTanstackOptions({
     const { sessionKey } = useContext(AuthQueryContext)
 
     const hooks = useMemo(
-        () => createAuthHooks(authClient as AuthClient) as AuthHooks,
+        () => ({
+            ...(createAuthHooks(authClient as AuthClient) as AuthHooks),
+            useIsRestoring
+        }),
         [authClient]
     )
 
@@ -100,7 +103,7 @@ export function useTanstackOptions({
     }, [queryClient, sessionKey])
 
     return {
-        hooks: { ...hooks, useIsRestoring },
+        hooks,
         mutators,
         onSessionChange,
         optimistic: true
