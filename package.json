@@ -53,8 +53,17 @@
             }
         }
     },
-    "files": ["src", "dist"],
-    "keywords": ["typescript", "react", "better-auth", "shadcn", "nextjs"],
+    "files": [
+        "src",
+        "dist"
+    ],
+    "keywords": [
+        "typescript",
+        "react",
+        "better-auth",
+        "shadcn",
+        "nextjs"
+    ],
     "author": "daveycodez",
     "license": "MIT",
     "devDependencies": {
@@ -80,7 +89,7 @@
         "dotenv": "^16.5.0",
         "esbuild-plugin-preserve-directives": "^0.0.11",
         "ignore": "^7.0.3",
-        "lucide-react": "^0.501.0",
+        "lucide-react": "^0.503.0",
         "next": "^15.3.1",
         "nodemon": "^3.1.9",
         "react-router": "^7.5.1",
@@ -130,5 +139,5 @@
     "pnpm": {
         "overrides": {}
     },
-    "packageManager": "pnpm@10.8.1"
+    "packageManager": "pnpm@10.9.0"
 }
