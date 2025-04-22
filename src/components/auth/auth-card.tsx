@@ -8,7 +8,7 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { socialProviders } from "../../lib/social-providers"
-import { cn } from "../../lib/utils"
+import { cn, getKeyByValue } from "../../lib/utils"
 import { SettingsCards, type SettingsCardsClassNames } from "../settings/settings-cards"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
@@ -69,7 +69,6 @@ export function AuthCard({
     view,
     otpSeparators = 0
 }: AuthCardProps) {
-    const path = pathname?.split("/").pop()
     const isHydrated = useIsHydrated()
 
     const {
@@ -97,10 +96,8 @@ export function AuthCard({
               : "vertical"
     }
 
-    view =
-        view ||
-        ((Object.entries(viewPaths).find(([_, value]) => value === path)?.[0] ||
-            "signIn") as AuthView)
+    const path = pathname?.split("/").pop()
+    view = view || getKeyByValue(viewPaths, path) || "signIn"
 
     const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -108,17 +105,12 @@ export function AuthCard({
         if (view === "settings" && settingsURL) replace(settingsURL)
     }, [replace, settingsURL, view])
 
-    if (view === "callback") {
-        return <AuthCallback redirectTo={redirectTo} />
-    }
-
-    if (view === "signOut") {
-        return <SignOut />
-    }
+    if (view === "callback") return <AuthCallback redirectTo={redirectTo} />
+    if (view === "signOut") return <SignOut />
 
     if (view === "settings")
         return settingsURL ? (
-            <Loader2 className="mx-auto my-auto animate-spin self-center justify-self-center" />
+            <Loader2 className="animate-spin" />
         ) : (
             <SettingsCards
                 localization={localization}
@@ -173,7 +165,7 @@ export function AuthCard({
 
                 {view !== "resetPassword" && (providers?.length || otherProviders?.length) && (
                     <>
-                        {credentials && (
+                        {(credentials || magicLink) && (
                             <div className="flex items-center gap-2">
                                 <Separator className={cn("!w-auto grow", classNames?.separator)} />
 
@@ -189,8 +181,7 @@ export function AuthCard({
                             {(providers?.length || otherProviders?.length) && (
                                 <div
                                     className={cn(
-                                        "flex w-full items-center gap-4",
-                                        "justify-between",
+                                        "flex w-full items-center justify-between gap-4",
                                         socialLayout === "horizontal" && "flex-wrap",
                                         socialLayout === "vertical" && "flex-col",
                                         socialLayout === "grid" && "grid grid-cols-2"
@@ -206,6 +197,7 @@ export function AuthCard({
                                             <ProviderButton
                                                 key={provider}
                                                 classNames={classNames}
+                                                callbackURL={callbackURL}
                                                 isSubmitting={isSubmitting}
                                                 localization={localization}
                                                 provider={socialProvider}
@@ -220,6 +212,7 @@ export function AuthCard({
                                         <ProviderButton
                                             key={provider.provider}
                                             classNames={classNames}
+                                            callbackURL={callbackURL}
                                             isSubmitting={isSubmitting}
                                             localization={localization}
                                             provider={provider}

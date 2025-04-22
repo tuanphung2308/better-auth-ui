@@ -46,14 +46,14 @@ export function TwoFactorForm({
     const initialSendRef = useRef(false)
 
     const {
+        authClient,
         basePath,
         hooks: { useSession },
-        viewPaths,
-        twoFactor,
         localization: contextLocalization,
-        Link,
-        authClient,
-        toast
+        twoFactor,
+        viewPaths,
+        toast,
+        Link
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
@@ -84,7 +84,9 @@ export function TwoFactorForm({
 
     const form = useForm({
         resolver: zodResolver(formSchema),
-        defaultValues: { code: "" }
+        defaultValues: {
+            code: ""
+        }
     })
 
     isSubmitting = isSubmitting || form.formState.isSubmitting || transitionPending
@@ -140,7 +142,7 @@ export function TwoFactorForm({
                     : (authClient as AuthClient).twoFactor.verifyOtp
 
             await verifyMethod({
-                code: code,
+                code,
                 trustDevice,
                 fetchOptions: { throw: true }
             })
@@ -188,15 +190,15 @@ export function TwoFactorForm({
                             control={form.control}
                             name="code"
                             render={({ field }) => (
-                                <FormItem className="space-y-3">
-                                    <div className="flex items-center">
+                                <FormItem>
+                                    <div className="flex items-center justify-between">
                                         <FormLabel className={classNames?.label}>
                                             {localization.oneTimePassword}
                                         </FormLabel>
 
                                         <Link
                                             className={cn(
-                                                "-my-1 ml-auto inline-block text-sm hover:underline",
+                                                "text-sm hover:underline",
                                                 classNames?.forgotPasswordLink
                                             )}
                                             href={`${basePath}/${viewPaths.recoverAccount}${isHydrated ? window.location.search : ""}`}
@@ -233,7 +235,7 @@ export function TwoFactorForm({
                             control={form.control}
                             name="trustDevice"
                             render={({ field }) => (
-                                <FormItem className="flex items-center gap-2">
+                                <FormItem className="flex">
                                     <FormControl>
                                         <Checkbox
                                             checked={field.value}
@@ -270,11 +272,16 @@ export function TwoFactorForm({
                             variant="outline"
                             onClick={sendOtp}
                             disabled={cooldownSeconds > 0 || isSendingOtp || isSubmitting}
-                            className={cn(classNames?.button, classNames?.providerButton)}
+                            className={cn(classNames?.button, classNames?.outlineButton)}
                         >
-                            {isSendingOtp ? <Loader2 className="animate-spin" /> : <SendIcon />}
+                            {isSendingOtp ? (
+                                <Loader2 className="animate-spin" />
+                            ) : (
+                                <SendIcon className={classNames?.icon} />
+                            )}
+
                             {localization.resendCode}
-                            {cooldownSeconds > 0 && ` (${cooldownSeconds}s)`}
+                            {cooldownSeconds > 0 && ` (${cooldownSeconds})`}
                         </Button>
                     )}
 
@@ -286,7 +293,7 @@ export function TwoFactorForm({
                             onClick={() => setMethod("otp")}
                             disabled={isSubmitting}
                         >
-                            <SendIcon />
+                            <SendIcon className={classNames?.icon} />
                             {localization.sendVerificationCode}
                         </Button>
                     )}
@@ -299,7 +306,7 @@ export function TwoFactorForm({
                             onClick={() => setMethod("totp")}
                             disabled={isSubmitting}
                         >
-                            <QrCodeIcon />
+                            <QrCodeIcon className={classNames?.icon} />
                             {localization.continueWithAuthenticator}
                         </Button>
                     )}

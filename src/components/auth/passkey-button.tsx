@@ -1,6 +1,6 @@
 import { KeyIcon } from "lucide-react"
-
 import { useContext } from "react"
+
 import { useOnSuccessTransition } from "../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
@@ -24,9 +24,10 @@ export function PasskeyButton({
     redirectTo,
     setIsSubmitting
 }: PasskeyButtonProps) {
-    const { authClient, toast, localization: contextLocalization } = useContext(AuthUIContext)
+    const { authClient, localization: contextLocalization, toast } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
+
     const { onSuccess } = useOnSuccessTransition({ redirectTo })
 
     const signInPassKey = async () => {

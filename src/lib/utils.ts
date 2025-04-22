@@ -54,3 +54,10 @@ export function getSearchParam(paramName: string) {
         ? new URLSearchParams(window.location.search).get(paramName)
         : null
 }
+
+export function getKeyByValue<T extends Record<string, unknown>>(
+    object: T,
+    value?: T[keyof T]
+): keyof T | undefined {
+    return (Object.keys(object) as Array<keyof T>).find((key) => object[key] === value)
+}

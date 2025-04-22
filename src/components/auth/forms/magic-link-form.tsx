@@ -43,8 +43,8 @@ export function MagicLinkForm({
         baseURL,
         persistClient,
         redirectTo: contextRedirectTo,
-        toast,
-        viewPaths
+        viewPaths,
+        toast
     } = useContext(AuthUIContext)
 
     const getRedirectTo = useCallback(

@@ -120,12 +120,7 @@ export function ProviderButton({
                 ))}
 
             {socialLayout === "grid" && provider.name}
-
-            {socialLayout === "vertical" && (
-                <>
-                    {localization.signInWith} {provider.name}
-                </>
-            )}
+            {socialLayout === "vertical" && `${localization.signInWith} ${provider.name}`}
         </Button>
     )
 }

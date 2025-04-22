@@ -5,6 +5,7 @@ import { useContext, useEffect } from "react"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
+import { getKeyByValue } from "../../lib/utils"
 import { AuthCallback } from "./auth-callback"
 import { ForgotPasswordForm } from "./forms/forgot-password-form"
 import { MagicLinkForm } from "./forms/magic-link-form"
@@ -42,9 +43,9 @@ export interface AuthFormProps {
     localization?: Partial<AuthLocalization>
     pathname?: string
     redirectTo?: string
-    setIsSubmitting?: (isSubmitting: boolean) => void
     view?: AuthView
     otpSeparators?: 0 | 1 | 2
+    setIsSubmitting?: (isSubmitting: boolean) => void
 }
 
 export function AuthForm({
@@ -55,9 +56,9 @@ export function AuthForm({
     localization,
     pathname,
     redirectTo,
-    setIsSubmitting,
     view,
-    otpSeparators = 0
+    otpSeparators = 0,
+    setIsSubmitting
 }: AuthFormProps) {
     const {
         basePath,
@@ -75,42 +76,40 @@ export function AuthForm({
     const path = pathname?.split("/").pop()
 
     useEffect(() => {
-        if (path && !Object.values(viewPaths).includes(path)) {
+        if (path && !getKeyByValue(viewPaths, path)) {
             console.error(`Invalid auth view: ${path}`)
             replace(`${basePath}/${viewPaths.signIn}${window.location.search}`)
         }
     }, [path, viewPaths, basePath, replace])
 
-    view =
-        view ||
-        ((Object.entries(viewPaths).find(([_, value]) => value === path)?.[0] ||
-            "signIn") as AuthView)
+    view = view || getKeyByValue(viewPaths, path) || "signIn"
 
     // Redirect to appropriate view based on enabled features
     useEffect(() => {
+        let isInvalidView = false
+
         if (view === "magicLink" && (!magicLink || !credentials)) {
-            replace(`${basePath}/${viewPaths.signIn}${window.location.search}`)
+            isInvalidView = true
         }
 
         if (view === "signUp" && !signUpEnabled) {
-            replace(`${basePath}/${viewPaths.signIn}${window.location.search}`)
+            isInvalidView = true
         }
 
         if (
             !credentials &&
-            [
-                "signUp",
-                "forgotPassword",
-                "resetPassword",
-                "twoFactor",
-                "recoverAccount",
-                "magicLink"
-            ].includes(view)
+            ["signUp", "forgotPassword", "resetPassword", "twoFactor", "recoverAccount"].includes(
+                view
+            )
         ) {
-            replace(`${basePath}/${viewPaths.signIn}${window.location.search}`)
+            isInvalidView = true
         }
 
         if (["twoFactor", "recoverAccount"].includes(view) && !twoFactorEnabled) {
+            isInvalidView = true
+        }
+
+        if (isInvalidView) {
             replace(`${basePath}/${viewPaths.signIn}${window.location.search}`)
         }
     }, [
