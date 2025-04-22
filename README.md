@@ -46,7 +46,7 @@ Plug & play shadcn/ui auth components for [better-auth](https://better-auth.com)
 
 Fully customizable!
 
-Coming Soon: Captcha, 2FA, and more!
+Coming Soon: Captcha, Organization, and more!
 
 ## License
 

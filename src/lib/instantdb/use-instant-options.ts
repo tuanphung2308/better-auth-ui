@@ -1,5 +1,7 @@
 import type { InstantReactWebDatabase } from "@instantdb/react"
 import type { User } from "better-auth"
+import { useMemo } from "react"
+
 import type { Session } from "../../types/auth-client"
 import type { AuthHooks } from "../../types/auth-hooks"
 import type { AuthMutators } from "../../types/auth-mutators"
@@ -20,6 +22,7 @@ export interface UseInstantOptionsProps {
     modelNames?: Partial<ModelNames>
     usePlural?: boolean
     sessionData?: { user: User; session: Session }
+    refetch?: () => Promise<unknown> | unknown
     user?: { id: string } | null
     isPending: boolean
 }
@@ -34,8 +37,8 @@ export function useInstantOptions({
 }: UseInstantOptionsProps) {
     const userId = user?.id || sessionData?.user.id
 
-    return {
-        hooks: {
+    const hooks = useMemo(() => {
+        return {
             useSession: () =>
                 useInstantSession({
                     db,
@@ -60,8 +63,11 @@ export function useInstantOptions({
                     sessionData,
                     isPending
                 })
-        } as AuthHooks,
-        mutators: {
+        } as AuthHooks
+    }, [db, modelNames, usePlural, sessionData, isPending])
+
+    const mutators = useMemo(() => {
+        return {
             updateUser: async (data) => {
                 if (!userId) {
                     throw new Error("Unauthenticated")
@@ -75,5 +81,10 @@ export function useInstantOptions({
                 ])
             }
         } as AuthMutators
+    }, [db, userId])
+
+    return {
+        hooks,
+        mutators
     }
 }

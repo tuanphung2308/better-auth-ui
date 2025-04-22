@@ -5,8 +5,7 @@ import { useContext, useState } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { getErrorMessage } from "../../lib/get-error-message"
-import { cn } from "../../lib/utils"
+import { cn, getLocalizedError } from "../../lib/utils"
 import { Button } from "../ui/button"
 import { Card } from "../ui/card"
 import type { SettingsCardClassNames } from "./shared/settings-card"
@@ -14,25 +13,25 @@ import type { SettingsCardClassNames } from "./shared/settings-card"
 export interface PasskeyCellProps {
     className?: string
     classNames?: SettingsCardClassNames
-    passkey: { id: string; createdAt: Date }
     localization?: Partial<AuthLocalization>
+    passkey: { id: string; createdAt: Date }
     refetch?: () => Promise<void>
 }
 
 export function PasskeyCell({
     className,
     classNames,
-    passkey,
     localization,
+    passkey,
     refetch
 }: PasskeyCellProps) {
     const {
-        localization: authLocalization,
+        localization: contextLocalization,
         mutators: { deletePasskey },
         toast
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     const [isLoading, setIsLoading] = useState(false)
 
@@ -47,7 +46,7 @@ export function PasskeyCell({
 
             toast({
                 variant: "error",
-                message: getErrorMessage(error) || localization.requestFailed
+                message: getLocalizedError({ error, localization })
             })
         }
     }
@@ -55,26 +54,20 @@ export function PasskeyCell({
     return (
         <Card className={cn("flex-row items-center p-4", className, classNames?.cell)}>
             <div className="flex items-center gap-3">
-                <FingerprintIcon className="size-4" />
+                <FingerprintIcon className={cn("size-4", classNames?.icon)} />
                 <span className="text-sm">{passkey.createdAt.toLocaleString()}</span>
             </div>
 
             <Button
-                className={cn("relative ms-auto", classNames?.button)}
+                className={cn("relative ms-auto", classNames?.button, classNames?.outlineButton)}
                 disabled={isLoading}
                 size="sm"
                 variant="outline"
                 onClick={handleDeletePasskey}
             >
-                <span className={isLoading ? "opacity-0" : "opacity-100"}>
-                    {localization.delete}
-                </span>
+                {isLoading && <Loader2 className="animate-spin" />}
 
-                {isLoading && (
-                    <span className="absolute">
-                        <Loader2 className="animate-spin" />
-                    </span>
-                )}
+                {localization.delete}
             </Button>
         </Card>
     )

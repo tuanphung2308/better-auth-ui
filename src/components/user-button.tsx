@@ -13,7 +13,7 @@ import { Fragment, type ReactNode, useContext, useEffect, useState } from "react
 
 import type { AuthLocalization } from "../lib/auth-localization"
 import { AuthUIContext } from "../lib/auth-ui-provider"
-import { getErrorMessage } from "../lib/get-error-message"
+import { getLocalizedError } from "../lib/utils"
 import { cn } from "../lib/utils"
 import { Button } from "./ui/button"
 import {
@@ -24,7 +24,7 @@ import {
     DropdownMenuTrigger
 } from "./ui/dropdown-menu"
 import { UserAvatar, type UserAvatarClassNames } from "./user-avatar"
-import { type UserClassNames, UserView } from "./user-view"
+import { UserView, type UserViewClassNames } from "./user-view"
 
 export interface UserButtonClassNames {
     base?: string
@@ -32,12 +32,12 @@ export interface UserButtonClassNames {
     trigger?: {
         base?: string
         avatar?: UserAvatarClassNames
-        user?: UserClassNames
+        user?: UserViewClassNames
         skeleton?: string
     }
     content?: {
         base?: string
-        user?: UserClassNames
+        user?: UserViewClassNames
         avatar?: UserAvatarClassNames
         menuItem?: string
         separator?: string
@@ -127,7 +127,7 @@ export function UserButton({
         } catch (error) {
             toast({
                 variant: "error",
-                message: getErrorMessage(error) || localization.requestFailed
+                message: getLocalizedError({ error, localization })
             })
             setActiveSessionPending(false)
         }

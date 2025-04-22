@@ -1,10 +1,7 @@
 "use client"
 
-import { type ReactNode, useActionState, useContext } from "react"
+import type { ReactNode } from "react"
 
-import type { AuthLocalization } from "../../../lib/auth-localization"
-import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import { getErrorMessage } from "../../../lib/get-error-message"
 import { cn } from "../../../lib/utils"
 import { Card } from "../../ui/card"
 import type { UserAvatarClassNames } from "../../user-avatar"
@@ -16,19 +13,33 @@ export type SettingsCardClassNames = {
     avatar?: UserAvatarClassNames
     button?: string
     cell?: string
+    checkbox?: string
+    destructiveButton?: string
     content?: string
     description?: string
+    dialog?: {
+        content?: string
+        footer?: string
+        header?: string
+    }
+    error?: string
     footer?: string
     header?: string
+    icon?: string
     input?: string
     instructions?: string
     label?: string
+    primaryButton?: string
+    secondaryButton?: string
+    outlineButton?: string
     skeleton?: string
     title?: string
 }
 
 export interface SettingsCardProps {
     children?: ReactNode
+    className?: string
+    classNames?: SettingsCardClassNames
     title: ReactNode
     description?: ReactNode
     instructions?: ReactNode
@@ -36,79 +47,55 @@ export interface SettingsCardProps {
     isSubmitting?: boolean
     disabled?: boolean
     isPending?: boolean
-    className?: string
-    classNames?: SettingsCardClassNames
-    formAction?: (formData: FormData) => Promise<unknown> | Promise<void> | void
-    localization?: AuthLocalization
     optimistic?: boolean
     variant?: "default" | "destructive"
+    action?: () => Promise<unknown> | unknown
 }
 
 export function SettingsCard({
     children,
+    className,
+    classNames,
     title,
     description,
     instructions,
     actionLabel,
-    isSubmitting: externalIsSubmitting,
     disabled,
     isPending,
-    className,
-    classNames,
-    formAction,
-    localization,
+    isSubmitting,
     optimistic,
-    variant = "default"
+    variant,
+    action
 }: SettingsCardProps) {
-    const { localization: authLocalization, toast } = useContext(AuthUIContext)
-
-    localization = { ...authLocalization, ...localization }
-
-    const performAction = async (_: Record<string, unknown>, formData: FormData) => {
-        try {
-            await formAction?.(formData)
-        } catch (error) {
-            toast({
-                variant: "error",
-                message: getErrorMessage(error) || localization.requestFailed
-            })
-        }
-
-        return {}
-    }
-
-    const [_, internalAction, isSubmitting] = useActionState(performAction, {})
-
     return (
-        <form action={internalAction}>
-            <Card
-                className={cn(
-                    "w-full pb-0 text-start",
-                    variant === "destructive" && "border-destructive/40",
-                    className,
-                    classNames?.base
-                )}
-            >
-                <SettingsCardHeader
-                    title={title}
-                    description={description}
-                    isPending={isPending}
-                    classNames={classNames}
-                />
+        <Card
+            className={cn(
+                "w-full pb-0 text-start",
+                variant === "destructive" && "border-destructive/40",
+                className,
+                classNames?.base
+            )}
+        >
+            <SettingsCardHeader
+                classNames={classNames}
+                description={description}
+                isPending={isPending}
+                title={title}
+            />
 
-                {children}
+            {children}
 
-                <SettingsCardFooter
-                    actionLabel={actionLabel}
-                    disabled={disabled}
-                    isSubmitting={isSubmitting || externalIsSubmitting}
-                    isPending={isPending}
-                    instructions={instructions}
-                    classNames={classNames}
-                    optimistic={optimistic}
-                    variant={variant}
-                />
-            </Card>
-        </form>
+            <SettingsCardFooter
+                classNames={classNames}
+                actionLabel={actionLabel}
+                disabled={disabled}
+                isPending={isPending}
+                isSubmitting={isSubmitting}
+                instructions={instructions}
+                optimistic={optimistic}
+                variant={variant}
+                action={action}
+            />
+        </Card>
     )
 }

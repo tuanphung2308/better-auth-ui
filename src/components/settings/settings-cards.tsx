@@ -50,7 +50,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         changeEmail,
         deleteUser,
         hooks,
-        localization: authLocalization,
+        localization: contextLocalization,
         multiSession,
         nameRequired,
         otherProviders,
@@ -61,7 +61,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         twoFactor
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     const { useListAccounts, useListDeviceSessions, useListPasskeys, useListSessions, useSession } =
         hooks
@@ -117,13 +117,13 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
             >
                 <TabsList className={cn("grid w-full grid-cols-2", classNames?.tabs?.list)}>
                     <TabsTrigger value="account" className={classNames?.tabs?.trigger}>
-                        <UserIcon />
+                        <UserIcon className={classNames?.card?.icon} />
 
                         {localization.account}
                     </TabsTrigger>
 
                     <TabsTrigger value="security" className={classNames?.tabs?.trigger}>
-                        <KeyIcon />
+                        <KeyIcon className={classNames?.card?.icon} />
 
                         {localization.security}
                     </TabsTrigger>
@@ -186,9 +186,9 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             <UpdateFieldCard
                                 key={field}
                                 classNames={classNames?.card}
-                                defaultValue={defaultValue}
+                                value={defaultValue}
                                 description={description}
-                                field={field}
+                                name={field}
                                 instructions={instructions}
                                 isPending={sessionPending}
                                 label={label}
@@ -238,6 +238,10 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         />
                     )}
 
+                    {twoFactor && credentialsLinked && (
+                        <TwoFactorCard classNames={classNames?.card} localization={localization} />
+                    )}
+
                     {passkey && (
                         <PasskeysCard
                             classNames={classNames?.card}
@@ -247,10 +251,6 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             refetch={refetchPasskeys}
                             skipHook
                         />
-                    )}
-
-                    {twoFactor && credentialsLinked && (
-                        <TwoFactorCard classNames={classNames?.card} localization={localization} />
                     )}
 
                     <SessionsCard

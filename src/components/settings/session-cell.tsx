@@ -4,11 +4,9 @@ import type { Session } from "better-auth"
 import { LaptopIcon, Loader2, SmartphoneIcon } from "lucide-react"
 import { useContext, useState } from "react"
 import { UAParser } from "ua-parser-js"
-
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { getErrorMessage } from "../../lib/get-error-message"
-import { cn } from "../../lib/utils"
+import { cn, getLocalizedError } from "../../lib/utils"
 import { Button } from "../ui/button"
 import { Card } from "../ui/card"
 import type { SettingsCardClassNames } from "./shared/settings-card"
@@ -16,29 +14,29 @@ import type { SettingsCardClassNames } from "./shared/settings-card"
 export interface SessionCellProps {
     className?: string
     classNames?: SettingsCardClassNames
-    session: Session
     localization?: Partial<AuthLocalization>
+    session: Session
     refetch?: () => Promise<void>
 }
 
 export function SessionCell({
     className,
     classNames,
-    session,
     localization,
+    session,
     refetch
 }: SessionCellProps) {
     const {
-        hooks: { useSession },
-        mutators: { revokeSession },
-        localization: authLocalization,
-        navigate,
-        toast,
         basePath,
-        viewPaths
+        hooks: { useSession },
+        localization: contextLocalization,
+        mutators: { revokeSession },
+        viewPaths,
+        navigate,
+        toast
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     const { data: sessionData } = useSession()
     const isCurrentSession = session.id === sessionData?.session?.id
@@ -46,23 +44,23 @@ export function SessionCell({
     const [isLoading, setIsLoading] = useState(false)
 
     const handleRevoke = async () => {
+        setIsLoading(true)
+
         if (isCurrentSession) {
             navigate(`${basePath}/${viewPaths.signOut}`)
             return
         }
 
-        setIsLoading(true)
-
         try {
             await revokeSession({ token: session.token })
             refetch?.()
         } catch (error) {
-            setIsLoading(false)
-
             toast({
                 variant: "error",
-                message: getErrorMessage(error) || localization.requestFailed
+                message: getLocalizedError({ error, localization })
             })
+
+            setIsLoading(false)
         }
     }
 
@@ -71,7 +69,11 @@ export function SessionCell({
 
     return (
         <Card className={cn("flex-row items-center gap-3 px-4 py-3", className, classNames?.cell)}>
-            {isMobile ? <SmartphoneIcon className="size-4" /> : <LaptopIcon className="size-4" />}
+            {isMobile ? (
+                <SmartphoneIcon className={cn("size-4", classNames?.icon)} />
+            ) : (
+                <LaptopIcon className={cn("size-4", classNames?.icon)} />
+            )}
 
             <div className="flex flex-col">
                 <span className="font-semibold text-sm">
@@ -84,21 +86,14 @@ export function SessionCell({
             </div>
 
             <Button
-                className={cn("relative ms-auto", classNames?.button)}
+                className={cn("relative ms-auto", classNames?.button, classNames?.outlineButton)}
                 disabled={isLoading}
                 size="sm"
                 variant="outline"
                 onClick={handleRevoke}
             >
-                <span className={isLoading ? "opacity-0" : "opacity-100"}>
-                    {isCurrentSession ? localization.signOut : localization.revoke}
-                </span>
-
-                {isLoading && (
-                    <span className="absolute">
-                        <Loader2 className="animate-spin" />
-                    </span>
-                )}
+                {isLoading && <Loader2 className="animate-spin" />}
+                {isCurrentSession ? localization.signOut : localization.revoke}
             </Button>
         </Card>
     )

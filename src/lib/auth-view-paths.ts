@@ -1,12 +1,12 @@
 export const authViewPaths = {
-    /** @default "recover" */
-    recover: "recover",
     /** @default "callback" */
     callback: "callback",
     /** @default "forgot-password" */
     forgotPassword: "forgot-password",
     /** @default "magic-link" */
     magicLink: "magic-link",
+    /** @default "recover-account" */
+    recoverAccount: "recover-account",
     /** @default "reset-password" */
     resetPassword: "reset-password",
     /** @default "settings" */

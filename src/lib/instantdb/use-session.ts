@@ -8,6 +8,7 @@ export function useSession({
     db,
     sessionData,
     isPending,
+    refetch,
     usePlural,
     modelNames
 }: UseInstantOptionsProps): ReturnType<AuthHooks["useSession"]> {
@@ -43,6 +44,7 @@ export function useSession({
               }
             : undefined,
         isPending,
+        refetch,
         error
     }
 }

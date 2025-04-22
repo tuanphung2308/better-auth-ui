@@ -20,21 +20,23 @@ export function UpdateUsernameCard({
     isPending,
     localization
 }: UpdateUsernameCardProps) {
-    const { hooks, localization: authLocalization } = useContext(AuthUIContext)
-    const { useSession } = hooks
-    localization = { ...authLocalization, ...localization }
+    const {
+        hooks: { useSession },
+        localization: contextLocalization
+    } = useContext(AuthUIContext)
+
+    localization = { ...contextLocalization, ...localization }
 
     const { data: sessionData } = useSession()
-    const defaultValue = sessionData?.user.displayUsername || sessionData?.user.username
+    const value = sessionData?.user.displayUsername || sessionData?.user.username
 
     return (
         <UpdateFieldCard
-            key={defaultValue}
             className={className}
             classNames={classNames}
-            defaultValue={defaultValue}
+            value={value}
             description={localization.usernameDescription}
-            field="username"
+            name="username"
             instructions={localization.usernameInstructions}
             isPending={isPending}
             label={localization.username}

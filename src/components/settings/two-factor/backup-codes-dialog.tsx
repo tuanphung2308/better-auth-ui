@@ -1,8 +1,10 @@
 "use client"
 
 import { CheckIcon, CopyIcon } from "lucide-react"
-import { useContext, useState } from "react"
+import { type ComponentProps, useContext, useState } from "react"
+
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { cn } from "../../../lib/utils"
 import { Button } from "../../ui/button"
 import {
     Dialog,
@@ -12,14 +14,19 @@ import {
     DialogHeader,
     DialogTitle
 } from "../../ui/dialog"
+import type { SettingsCardClassNames } from "../shared/settings-card"
 
-interface BackupCodesDialogProps {
-    open: boolean
-    onOpenChange: (open: boolean) => void
+interface BackupCodesDialogProps extends ComponentProps<typeof Dialog> {
+    classNames?: SettingsCardClassNames
     backupCodes: string[]
 }
 
-export function BackupCodesDialog({ open, onOpenChange, backupCodes }: BackupCodesDialogProps) {
+export function BackupCodesDialog({
+    classNames,
+    backupCodes,
+    onOpenChange,
+    ...props
+}: BackupCodesDialogProps) {
     const { localization } = useContext(AuthUIContext)
     const [copied, setCopied] = useState(false)
 
@@ -31,11 +38,21 @@ export function BackupCodesDialog({ open, onOpenChange, backupCodes }: BackupCod
     }
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
-                <DialogHeader>
-                    <DialogTitle>{localization.backupCodes}</DialogTitle>
-                    <DialogDescription>{localization.backupCodesDescription}</DialogDescription>
+        <Dialog onOpenChange={onOpenChange} {...props}>
+            <DialogContent
+                onOpenAutoFocus={(e) => e.preventDefault()}
+                className={classNames?.dialog?.content}
+            >
+                <DialogHeader className={classNames?.dialog?.header}>
+                    <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                        {localization.backupCodes}
+                    </DialogTitle>
+
+                    <DialogDescription
+                        className={cn("text-xs md:text-sm", classNames?.description)}
+                    >
+                        {localization.backupCodesDescription}
+                    </DialogDescription>
                 </DialogHeader>
 
                 <div className="grid grid-cols-2 gap-2">
@@ -49,22 +66,33 @@ export function BackupCodesDialog({ open, onOpenChange, backupCodes }: BackupCod
                     ))}
                 </div>
 
-                <DialogFooter>
-                    <Button type="button" variant="outline" onClick={handleCopy} disabled={copied}>
+                <DialogFooter className={classNames?.dialog?.footer}>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleCopy}
+                        disabled={copied}
+                        className={cn(classNames?.button, classNames?.outlineButton)}
+                    >
                         {copied ? (
                             <>
-                                <CheckIcon />
+                                <CheckIcon className={classNames?.icon} />
                                 {localization.copiedToClipboard}
                             </>
                         ) : (
                             <>
-                                <CopyIcon />
+                                <CopyIcon className={classNames?.icon} />
                                 {localization.copyAllCodes}
                             </>
                         )}
                     </Button>
 
-                    <Button type="button" variant="default" onClick={() => onOpenChange(false)}>
+                    <Button
+                        type="button"
+                        variant="default"
+                        onClick={() => onOpenChange?.(false)}
+                        className={cn(classNames?.button, classNames?.primaryButton)}
+                    >
                         {localization.continue}
                     </Button>
                 </DialogFooter>

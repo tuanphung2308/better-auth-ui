@@ -8,8 +8,8 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { CardContent } from "../ui/card"
 import { AccountCell } from "./account-cell"
-import type { SettingsCardClassNames } from "./shared/settings-card"
 import { SettingsCard } from "./shared/settings-card"
+import type { SettingsCardClassNames } from "./shared/settings-card"
 import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
 export interface AccountsCardProps {
@@ -33,13 +33,13 @@ export function AccountsCard({
 }: AccountsCardProps) {
     const {
         basePath,
-        hooks: { useSession, useListDeviceSessions },
-        localization: authLocalization,
+        hooks: { useListDeviceSessions },
+        localization: contextLocalization,
         viewPaths,
         navigate
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     if (!skipHook) {
         const result = useListDeviceSessions()
@@ -48,9 +48,6 @@ export function AccountsCard({
         refetch = result.refetch
     }
 
-    const { data: sessionData } = useSession()
-    const session = sessionData?.session
-
     return (
         <SettingsCard
             className={className}
@@ -58,9 +55,9 @@ export function AccountsCard({
             title={localization.accounts}
             description={localization.accountsDescription}
             actionLabel={localization.addAccount}
-            formAction={() => navigate(`${basePath}/${viewPaths.signIn}`)}
             instructions={localization.accountsInstructions}
             isPending={isPending}
+            action={() => navigate(`${basePath}/${viewPaths.signIn}`)}
         >
             <CardContent className={cn("grid gap-4", classNames?.content)}>
                 {isPending ? (
@@ -71,7 +68,6 @@ export function AccountsCard({
                             key={deviceSession.session.id}
                             classNames={classNames}
                             deviceSession={deviceSession}
-                            activeSessionId={session?.id}
                             localization={localization}
                             refetch={refetch}
                         />

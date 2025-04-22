@@ -1,5 +1,6 @@
 "use client"
-import { useContext, useEffect, useRef } from "react"
+
+import { useContext } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
@@ -7,7 +8,8 @@ import { socialProviders } from "../../lib/social-providers"
 import { cn } from "../../lib/utils"
 import { CardContent } from "../ui/card"
 import { ProviderCell } from "./provider-cell"
-import { SettingsCard, type SettingsCardClassNames } from "./shared/settings-card"
+import { SettingsCard } from "./shared/settings-card"
+import type { SettingsCardClassNames } from "./shared/settings-card"
 import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
 export interface ProvidersCardProps {
@@ -17,7 +19,7 @@ export interface ProvidersCardProps {
     isPending?: boolean
     localization?: Partial<AuthLocalization>
     skipHook?: boolean
-    refetch?: () => void
+    refetch?: () => Promise<void>
 }
 
 export function ProvidersCard({
@@ -31,12 +33,12 @@ export function ProvidersCard({
 }: ProvidersCardProps) {
     const {
         hooks: { useListAccounts },
-        localization: authLocalization,
-        providers,
-        otherProviders
+        localization: contextLocalization,
+        otherProviders,
+        providers
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     if (!skipHook) {
         const result = useListAccounts()
@@ -44,22 +46,6 @@ export function ProvidersCard({
         isPending = result.isPending
         refetch = result.refetch
     }
-
-    const hasRefetched = useRef(false)
-
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search)
-        if (params.get("providerLinked") && !hasRefetched.current) {
-            hasRefetched.current = true
-            refetch?.()
-
-            // Remove the parameter from URL
-            params.delete("providerLinked")
-            const query = params.toString()
-            const url = `${window.location.pathname}${query ? `?${query}` : ""}`
-            window.history.replaceState(null, "", url)
-        }
-    }, [refetch])
 
     return (
         <SettingsCard
@@ -85,8 +71,9 @@ export function ProvidersCard({
                                 <ProviderCell
                                     key={provider}
                                     classNames={classNames}
+                                    account={accounts?.find((acc) => acc.provider === provider)}
                                     provider={socialProvider}
-                                    accounts={accounts}
+                                    refetch={refetch}
                                 />
                             )
                         })}
@@ -95,8 +82,11 @@ export function ProvidersCard({
                             <ProviderCell
                                 key={provider.provider}
                                 classNames={classNames}
+                                account={accounts?.find(
+                                    (acc) => acc.provider === provider.provider
+                                )}
                                 provider={provider}
-                                accounts={accounts}
+                                refetch={refetch}
                                 other
                             />
                         ))}
