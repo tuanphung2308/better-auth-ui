@@ -10,7 +10,7 @@ export interface UserViewClassNames {
     small?: string
 }
 
-export interface UserProps {
+export interface UserViewProps {
     className?: string
     classNames?: UserViewClassNames
     isPending?: boolean
@@ -26,7 +26,7 @@ export interface UserProps {
  * - Falls back to generic "User" text when neither name nor email is available
  * - Supports customization through classNames prop
  */
-export function UserView({ user, className, classNames, isPending }: UserProps) {
+export function UserView({ user, className, classNames, isPending }: UserViewProps) {
     return (
         <div className={cn("flex items-center gap-2 truncate", className, classNames?.base)}>
             <UserAvatar
