@@ -3,7 +3,7 @@ import type { Profile } from "../types/profile"
 import { Skeleton } from "./ui/skeleton"
 import { UserAvatar, type UserAvatarClassNames } from "./user-avatar"
 
-export interface UserClassNames {
+export interface UserViewClassNames {
     base?: string
     avatar?: UserAvatarClassNames
     p?: string
@@ -12,7 +12,7 @@ export interface UserClassNames {
 
 export interface UserProps {
     className?: string
-    classNames?: UserClassNames
+    classNames?: UserViewClassNames
     isPending?: boolean
     user?: Profile
 }

@@ -24,7 +24,7 @@ import {
     DropdownMenuTrigger
 } from "./ui/dropdown-menu"
 import { UserAvatar, type UserAvatarClassNames } from "./user-avatar"
-import { type UserClassNames, UserView } from "./user-view"
+import { UserView, type UserViewClassNames } from "./user-view"
 
 export interface UserButtonClassNames {
     base?: string
@@ -32,12 +32,12 @@ export interface UserButtonClassNames {
     trigger?: {
         base?: string
         avatar?: UserAvatarClassNames
-        user?: UserClassNames
+        user?: UserViewClassNames
         skeleton?: string
     }
     content?: {
         base?: string
-        user?: UserClassNames
+        user?: UserViewClassNames
         avatar?: UserAvatarClassNames
         menuItem?: string
         separator?: string
