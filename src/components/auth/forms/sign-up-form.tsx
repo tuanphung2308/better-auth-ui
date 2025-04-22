@@ -242,7 +242,7 @@ export function SignUpForm({
             })
 
             if ("token" in data && data.token) {
-                onSuccess()
+                await onSuccess()
             } else {
                 navigate(`${basePath}/${viewPaths.signIn}${window.location.search}`)
                 toast({ variant: "success", message: localization.signUpEmail! })

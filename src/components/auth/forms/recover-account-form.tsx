@@ -62,7 +62,7 @@ export function RecoverAccountForm({
                 fetchOptions: { throw: true }
             })
 
-            onSuccess()
+            await onSuccess()
         } catch (error) {
             toast({ variant: "error", message: getLocalizedError({ error, localization }) })
 

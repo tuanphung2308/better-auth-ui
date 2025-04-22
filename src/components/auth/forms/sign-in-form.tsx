@@ -112,7 +112,7 @@ export function SignInForm({
             if (response.twoFactorRedirect) {
                 navigate(`${basePath}/${viewPaths.twoFactor}${window.location.search}`)
             } else {
-                onSuccess()
+                await onSuccess()
             }
         } catch (error) {
             form.resetField("password")
