@@ -7,11 +7,7 @@ import type { AuthClient } from "../../types/auth-client"
 import type { AuthHooks } from "../../types/auth-hooks"
 import type { AuthMutators } from "../../types/auth-mutators"
 
-export function useTanstackOptions({
-    authClient
-}: {
-    authClient: AnyAuthClient
-}) {
+export function useTanstackOptions({ authClient }: { authClient: AnyAuthClient }) {
     const {
         useUnlinkAccount,
         useUpdateUser,
