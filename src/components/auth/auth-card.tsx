@@ -145,29 +145,31 @@ export function AuthCard({
             </CardHeader>
 
             <CardContent className={cn("grid gap-6", classNames?.content)}>
-                <div className="grid gap-4">
-                    <AuthForm
-                        classNames={classNames?.form}
-                        callbackURL={callbackURL}
-                        isSubmitting={isSubmitting}
-                        localization={localization}
-                        otpSeparators={otpSeparators}
-                        pathname={pathname}
-                        redirectTo={redirectTo}
-                        setIsSubmitting={setIsSubmitting}
-                    />
+                {(credentials || magicLink) && (
+                    <div className="grid gap-4">
+                        <AuthForm
+                            classNames={classNames?.form}
+                            callbackURL={callbackURL}
+                            isSubmitting={isSubmitting}
+                            localization={localization}
+                            otpSeparators={otpSeparators}
+                            pathname={pathname}
+                            redirectTo={redirectTo}
+                            setIsSubmitting={setIsSubmitting}
+                        />
 
-                    {magicLink &&
-                        credentials &&
-                        ["forgotPassword", "signUp", "signIn", "magicLink"].includes(view) && (
-                            <MagicLinkButton
-                                classNames={classNames}
-                                localization={localization}
-                                view={view}
-                                isSubmitting={isSubmitting}
-                            />
-                        )}
-                </div>
+                        {magicLink &&
+                            credentials &&
+                            ["forgotPassword", "signUp", "signIn", "magicLink"].includes(view) && (
+                                <MagicLinkButton
+                                    classNames={classNames}
+                                    localization={localization}
+                                    view={view}
+                                    isSubmitting={isSubmitting}
+                                />
+                            )}
+                    </div>
+                )}
 
                 {view !== "resetPassword" && (providers?.length || otherProviders?.length) && (
                     <>
