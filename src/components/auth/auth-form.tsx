@@ -127,7 +127,7 @@ export function AuthForm({
     if (view === "callback") return <AuthCallback redirectTo={redirectTo} />
 
     if (view === "signIn") {
-        return credentials || !magicLink ? (
+        return credentials ? (
             <SignInForm
                 className={className}
                 classNames={classNames}
@@ -136,7 +136,7 @@ export function AuthForm({
                 isSubmitting={isSubmitting}
                 setIsSubmitting={setIsSubmitting}
             />
-        ) : (
+        ) : magicLink ? (
             <MagicLinkForm
                 className={className}
                 classNames={classNames}
@@ -146,7 +146,7 @@ export function AuthForm({
                 isSubmitting={isSubmitting}
                 setIsSubmitting={setIsSubmitting}
             />
-        )
+        ) : null
     }
 
     if (view === "twoFactor") {
