@@ -102,6 +102,12 @@ export function AuthCard({
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     useEffect(() => {
+        return () => {
+            setIsSubmitting(false)
+        }
+    }, [])
+
+    useEffect(() => {
         if (view === "settings" && settingsURL) replace(settingsURL)
     }, [replace, settingsURL, view])
 
