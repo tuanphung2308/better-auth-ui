@@ -153,6 +153,7 @@ export function UserButton({
                         className={cn("size-8", className, classNames?.base)}
                         classNames={classNames?.trigger?.avatar}
                         user={user}
+                        aria-label={localization.account}
                     />
                 ) : (
                     <Button
