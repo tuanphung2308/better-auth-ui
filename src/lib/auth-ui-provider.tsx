@@ -359,6 +359,12 @@ export const AuthUIProvider = ({
         return { ...defaultMutators, ...mutatorsProp } as AuthMutators
     }, [defaultMutators, mutatorsProp])
 
+    // Remove trailing slash from baseURL
+    baseURL = baseURL.endsWith("/") ? baseURL.slice(0, -1) : baseURL
+
+    // Remove trailing slash from basePath
+    basePath = basePath.endsWith("/") ? basePath.slice(0, -1) : basePath
+
     return (
         <AuthUIContext.Provider
             value={{
