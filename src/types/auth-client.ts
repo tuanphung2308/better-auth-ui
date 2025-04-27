@@ -1,9 +1,10 @@
-import type {
+import {
     anonymousClient,
     genericOAuthClient,
     magicLinkClient,
     multiSessionClient,
     passkeyClient,
+    oneTapClient,
     twoFactorClient,
     usernameClient
 } from "better-auth/client/plugins"
@@ -11,6 +12,7 @@ import type { createAuthClient } from "better-auth/react"
 
 type MultiSessionClientPlugin = ReturnType<typeof multiSessionClient>
 type PasskeyClientPlugin = ReturnType<typeof passkeyClient>
+type OneTapClientPlugin = ReturnType<typeof oneTapClient>
 type GenericOAuthClientPlugin = ReturnType<typeof genericOAuthClient>
 type AnonymousClientPlugin = ReturnType<typeof anonymousClient>
 type UsernameClientPlugin = ReturnType<typeof usernameClient>
@@ -22,6 +24,7 @@ export type AuthClient = ReturnType<
         plugins: [
             MultiSessionClientPlugin,
             PasskeyClientPlugin,
+            OneTapClientPlugin,
             GenericOAuthClientPlugin,
             AnonymousClientPlugin,
             UsernameClientPlugin,

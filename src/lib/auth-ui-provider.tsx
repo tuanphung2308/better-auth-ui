@@ -155,6 +155,11 @@ export type AuthUIContextType = {
      */
     passkey?: boolean
     /**
+     * Enable or disable One Tap support
+     * @default false
+     */
+    oneTap?: boolean
+    /**
      * Forces better-auth-tanstack to refresh the Session on the auth callback page
      * @default false
      */

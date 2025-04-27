@@ -19,6 +19,7 @@ import { MagicLinkButton } from "./magic-link-button"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
 import { SignOut } from "./sign-out"
+import {OneTapButton} from "./one-tap-button";
 
 export interface AuthCardClassNames {
     base?: string
@@ -78,6 +79,7 @@ export function AuthCard({
         magicLink,
         otherProviders,
         passkey,
+        oneTap,
         providers,
         settingsURL,
         signUp,
@@ -232,6 +234,23 @@ export function AuthCard({
                                     ))}
                                 </div>
                             )}
+
+                            {oneTap &&
+                                [
+                                    "signIn",
+                                    "magicLink",
+                                    "recoverAccount",
+                                    "twoFactor",
+                                    "forgotPassword"
+                                ].includes(view) && (
+                                    <OneTapButton
+                                        classNames={classNames}
+                                        isSubmitting={isSubmitting}
+                                        localization={localization}
+                                        redirectTo={redirectTo}
+                                        setIsSubmitting={setIsSubmitting}
+                                    />
+                                )}
 
                             {passkey &&
                                 [

@@ -233,6 +233,9 @@ export const authLocalization = {
     /** @default "Passkey" */
     passkey: "Passkey",
 
+    /** @default "Google" */
+    oneTap: "Google",
+
     /** @default "Passkeys" */
     passkeys: "Passkeys",
 
