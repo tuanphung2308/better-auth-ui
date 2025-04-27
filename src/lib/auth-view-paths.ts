@@ -5,6 +5,8 @@ export const authViewPaths = {
     forgotPassword: "forgot-password",
     /** @default "magic-link" */
     magicLink: "magic-link",
+    /** @default "email-otp" */
+    emailOTP: "email-otp",
     /** @default "recover-account" */
     recoverAccount: "recover-account",
     /** @default "reset-password" */

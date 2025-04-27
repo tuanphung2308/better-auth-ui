@@ -1,7 +1,8 @@
-import type {
+import {
     anonymousClient,
     genericOAuthClient,
     magicLinkClient,
+    emailOTPClient,
     multiSessionClient,
     passkeyClient,
     twoFactorClient,
@@ -15,6 +16,7 @@ type GenericOAuthClientPlugin = ReturnType<typeof genericOAuthClient>
 type AnonymousClientPlugin = ReturnType<typeof anonymousClient>
 type UsernameClientPlugin = ReturnType<typeof usernameClient>
 type MagicLinkClientPlugin = ReturnType<typeof magicLinkClient>
+type EmailOTPClientPlugin = ReturnType<typeof emailOTPClient>
 type TwoFactorClientPlugin = ReturnType<typeof twoFactorClient>
 
 export type AuthClient = ReturnType<
@@ -26,6 +28,7 @@ export type AuthClient = ReturnType<
             AnonymousClientPlugin,
             UsernameClientPlugin,
             MagicLinkClientPlugin,
+            EmailOTPClientPlugin,
             TwoFactorClientPlugin
         ]
     }>

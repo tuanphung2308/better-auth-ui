@@ -128,6 +128,11 @@ export type AuthUIContextType = {
      */
     magicLink?: boolean
     /**
+     * Enable or disable Email OTP support
+     * @default false
+     */
+    emailOTP?: boolean
+    /**
      * Enable or disable Multi Session support
      * @default false
      */

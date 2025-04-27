@@ -15,6 +15,7 @@ import { SignInForm } from "./forms/sign-in-form"
 import { SignUpForm } from "./forms/sign-up-form"
 import { TwoFactorForm } from "./forms/two-factor-form"
 import { SignOut } from "./sign-out"
+import {EmailOTPForm} from "./forms/email-otp-form";
 
 export type AuthFormClassNames = {
     base?: string
@@ -65,6 +66,7 @@ export function AuthForm({
         credentials,
         localization: contextLocalization,
         magicLink,
+        emailOTP,
         signUp: signUpEnabled,
         twoFactor: twoFactorEnabled,
         viewPaths,
@@ -88,7 +90,11 @@ export function AuthForm({
     useEffect(() => {
         let isInvalidView = false
 
-        if (view === "magicLink" && (!magicLink || !credentials)) {
+        if (view === "magicLink" && (!magicLink || (!credentials && !emailOTP))) {
+            isInvalidView = true
+        }
+
+        if (view === "emailOTP" && (!emailOTP || (!credentials && !magicLink))) {
             isInvalidView = true
         }
 
@@ -146,6 +152,16 @@ export function AuthForm({
                 isSubmitting={isSubmitting}
                 setIsSubmitting={setIsSubmitting}
             />
+        ) : emailOTP ? (
+            <EmailOTPForm
+                className={className}
+                classNames={classNames}
+                callbackURL={callbackURL}
+                localization={localization}
+                redirectTo={redirectTo}
+                isSubmitting={isSubmitting}
+                setIsSubmitting={setIsSubmitting}
+            />
         ) : null
     }
 
@@ -179,6 +195,20 @@ export function AuthForm({
     if (view === "magicLink") {
         return (
             <MagicLinkForm
+                className={className}
+                classNames={classNames}
+                callbackURL={callbackURL}
+                localization={localization}
+                redirectTo={redirectTo}
+                isSubmitting={isSubmitting}
+                setIsSubmitting={setIsSubmitting}
+            />
+        )
+    }
+
+    if (view === "emailOTP") {
+        return (
+            <EmailOTPForm
                 className={className}
                 classNames={classNames}
                 callbackURL={callbackURL}
