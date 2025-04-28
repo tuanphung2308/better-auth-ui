@@ -1,4 +1,4 @@
-import {useContext, useEffect} from "react"
+import { useContext, useEffect } from "react"
 
 import { useOnSuccessTransition } from "../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../lib/auth-localization"
@@ -11,10 +11,7 @@ interface OneTapOpenerProps {
     redirectTo?: string
 }
 
-export function OneTapOpener({
-    localization,
-    redirectTo,
-}: OneTapOpenerProps) {
+export function OneTapOpener({ localization, redirectTo }: OneTapOpenerProps) {
     const { authClient, localization: contextLocalization, toast } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
@@ -22,7 +19,7 @@ export function OneTapOpener({
     const { onSuccess } = useOnSuccessTransition({ redirectTo })
 
     useEffect(() => {
-        (async () => {
+        ;(async () => {
             try {
                 await (authClient as AuthClient).oneTap({
                     fetchOptions: {
@@ -39,7 +36,7 @@ export function OneTapOpener({
                 })
             }
         })()
-    }, []);
+    }, [])
 
     return null
 }
