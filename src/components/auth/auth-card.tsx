@@ -19,7 +19,7 @@ import { MagicLinkButton } from "./magic-link-button"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
 import { SignOut } from "./sign-out"
-import {OneTapButton} from "./one-tap-button";
+import {OneTapOpener} from "./one-tap-opener";
 
 export interface AuthCardClassNames {
     base?: string
@@ -243,12 +243,9 @@ export function AuthCard({
                                     "twoFactor",
                                     "forgotPassword"
                                 ].includes(view) && (
-                                    <OneTapButton
-                                        classNames={classNames}
-                                        isSubmitting={isSubmitting}
+                                    <OneTapOpener
                                         localization={localization}
                                         redirectTo={redirectTo}
-                                        setIsSubmitting={setIsSubmitting}
                                     />
                                 )}
 
