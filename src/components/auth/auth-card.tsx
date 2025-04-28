@@ -19,7 +19,7 @@ import { MagicLinkButton } from "./magic-link-button"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
 import { SignOut } from "./sign-out"
-import { OneTapOpener } from "./one-tap-opener"
+import { OneTap } from "./one-tap"
 
 export interface AuthCardClassNames {
     base?: string
@@ -236,7 +236,7 @@ export function AuthCard({
                             )}
 
                             {oneTap && ["signIn", "signUp", "magicLink"].includes(view) && (
-                                <OneTapOpener localization={localization} redirectTo={redirectTo} />
+                                <OneTap localization={localization} redirectTo={redirectTo} />
                             )}
 
                             {passkey &&

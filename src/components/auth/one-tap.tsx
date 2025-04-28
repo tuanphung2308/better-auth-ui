@@ -6,12 +6,12 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { getLocalizedError } from "../../lib/utils"
 import type { AuthClient } from "../../types/auth-client"
 
-interface OneTapOpenerProps {
+interface OneTapProps {
     localization: Partial<AuthLocalization>
     redirectTo?: string
 }
 
-export function OneTapOpener({ localization, redirectTo }: OneTapOpenerProps) {
+export function OneTap({ localization, redirectTo }: OneTapProps) {
     const { authClient, localization: contextLocalization, toast } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
