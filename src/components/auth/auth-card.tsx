@@ -238,10 +238,8 @@ export function AuthCard({
                             {oneTap &&
                                 [
                                     "signIn",
-                                    "magicLink",
-                                    "recoverAccount",
-                                    "twoFactor",
-                                    "forgotPassword"
+                                    "signUp",
+                                    "magicLink"
                                 ].includes(view) && (
                                     <OneTapOpener
                                         localization={localization}
