@@ -19,7 +19,7 @@ import { MagicLinkButton } from "./magic-link-button"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
 import { SignOut } from "./sign-out"
-import {EmailOTPButton} from "./email-otp-button";
+import { EmailOTPButton } from "./email-otp-button"
 
 export interface AuthCardClassNames {
     base?: string
@@ -162,7 +162,13 @@ export function AuthCard({
 
                         {magicLink &&
                             credentials &&
-                            ["forgotPassword", "signUp", "signIn", "magicLink", "emailOTP"].includes(view) && (
+                            [
+                                "forgotPassword",
+                                "signUp",
+                                "signIn",
+                                "magicLink",
+                                "emailOTP"
+                            ].includes(view) && (
                                 <MagicLinkButton
                                     classNames={classNames}
                                     localization={localization}
@@ -173,7 +179,13 @@ export function AuthCard({
 
                         {emailOTP &&
                             credentials &&
-                            ["forgotPassword", "signUp", "signIn", "magicLink", "emailOTP"].includes(view) && (
+                            [
+                                "forgotPassword",
+                                "signUp",
+                                "signIn",
+                                "magicLink",
+                                "emailOTP"
+                            ].includes(view) && (
                                 <EmailOTPButton
                                     classNames={classNames}
                                     localization={localization}
@@ -283,7 +295,10 @@ export function AuthCard({
                         <ArrowLeftIcon className="size-3" />
                     )}
 
-                    {view === "signIn" || view === "magicLink" || view === "emailOTP" || view === "signUp" ? (
+                    {view === "signIn" ||
+                    view === "magicLink" ||
+                    view === "emailOTP" ||
+                    view === "signUp" ? (
                         <Link
                             className={cn("text-foreground underline", classNames?.footerLink)}
                             href={`${basePath}/${viewPaths[view === "signIn" || view === "magicLink" || view === "emailOTP" ? "signUp" : "signIn"]}${isHydrated ? window.location.search : ""}`}

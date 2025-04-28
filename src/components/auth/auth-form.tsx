@@ -15,7 +15,7 @@ import { SignInForm } from "./forms/sign-in-form"
 import { SignUpForm } from "./forms/sign-up-form"
 import { TwoFactorForm } from "./forms/two-factor-form"
 import { SignOut } from "./sign-out"
-import {EmailOTPForm} from "./forms/email-otp-form";
+import { EmailOTPForm } from "./forms/email-otp-form"
 
 export type AuthFormClassNames = {
     base?: string
