@@ -19,23 +19,19 @@ export function OneTapOpener({ localization, redirectTo }: OneTapOpenerProps) {
     const { onSuccess } = useOnSuccessTransition({ redirectTo })
 
     useEffect(() => {
-        ;(async () => {
-            try {
-                await (authClient as AuthClient).oneTap({
-                    fetchOptions: {
-                        throw: true,
-                        onSuccess: () => {
-                            onSuccess()
-                        }
-                    }
-                })
-            } catch (error) {
-                toast({
-                    variant: "error",
-                    message: getLocalizedError({ error, localization })
-                })
+        ;(authClient as AuthClient).oneTap({
+            fetchOptions: {
+                onError: ({ error }) => {
+                    toast({
+                        variant: "error",
+                        message: getLocalizedError({ error, localization })
+                    })
+                },
+                onSuccess: () => {
+                    onSuccess()
+                }
             }
-        })()
+        })
     }, [])
 
     return null
