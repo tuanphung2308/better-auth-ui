@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useMemo, useRef } from "react"
 
 import { useOnSuccessTransition } from "../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../lib/auth-localization"
@@ -13,26 +13,33 @@ interface OneTapProps {
 
 export function OneTap({ localization, redirectTo }: OneTapProps) {
     const { authClient, localization: contextLocalization, toast } = useContext(AuthUIContext)
+    const oneTapFetched = useRef(false)
 
-    localization = { ...contextLocalization, ...localization }
+    localization = useMemo(
+        () => ({ ...contextLocalization, ...localization }),
+        [contextLocalization, localization]
+    )
 
     const { onSuccess } = useOnSuccessTransition({ redirectTo })
 
     useEffect(() => {
-        ;(authClient as AuthClient).oneTap({
-            fetchOptions: {
-                onError: ({ error }) => {
-                    toast({
-                        variant: "error",
-                        message: getLocalizedError({ error, localization })
-                    })
-                },
-                onSuccess: () => {
-                    onSuccess()
+        if (oneTapFetched.current) return
+        oneTapFetched.current = true
+
+        try {
+            ;(authClient as AuthClient).oneTap({
+                fetchOptions: {
+                    throw: true,
+                    onSuccess
                 }
-            }
-        })
-    }, [])
+            })
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: getLocalizedError({ error, localization })
+            })
+        }
+    }, [authClient, localization, onSuccess, toast])
 
     return null
 }
