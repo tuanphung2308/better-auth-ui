@@ -149,7 +149,7 @@ export function AuthCard({
             </CardHeader>
 
             <CardContent className={cn("grid gap-6", classNames?.content)}>
-                {oneTap && ["signIn", "signUp", "magicLink"].includes(view) && (
+                {oneTap && ["signIn", "signUp", "magicLink", "emailOTP"].includes(view) && (
                     <OneTap localization={localization} redirectTo={redirectTo} />
                 )}
 
