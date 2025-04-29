@@ -16,6 +16,7 @@ import { Separator } from "../ui/separator"
 import { AuthCallback } from "./auth-callback"
 import { AuthForm, type AuthFormClassNames } from "./auth-form"
 import { MagicLinkButton } from "./magic-link-button"
+import { OneTap } from "./one-tap"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
 import { SignOut } from "./sign-out"
@@ -78,6 +79,7 @@ export function AuthCard({
         localization: contextLocalization,
         magicLink,
         emailOTP,
+        oneTap,
         otherProviders,
         passkey,
         providers,
@@ -147,6 +149,10 @@ export function AuthCard({
             </CardHeader>
 
             <CardContent className={cn("grid gap-6", classNames?.content)}>
+                {oneTap && ["signIn", "signUp", "magicLink"].includes(view) && (
+                    <OneTap localization={localization} redirectTo={redirectTo} />
+                )}
+
                 {(credentials || magicLink || emailOTP) && (
                     <div className="grid gap-4">
                         <AuthForm

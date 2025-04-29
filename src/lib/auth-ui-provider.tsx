@@ -150,6 +150,11 @@ export type AuthUIContextType = {
      */
     noColorIcons?: boolean
     /**
+     * Enable or disable One Tap support
+     * @default false
+     */
+    oneTap?: boolean
+    /**
      * Perform some User updates optimistically
      * @default false
      */
