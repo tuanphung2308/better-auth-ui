@@ -56,16 +56,14 @@ export function getSearchParam(paramName: string) {
         : null
 }
 
-export function getAuthViewPath(
+export function getAuthViewByPath(
     authViewPaths: AuthViewPaths,
-    view?: string | undefined,
+    path?: string | undefined,
 ): AuthView | undefined {
-    if (!view) {
-        return undefined
-    }
-
-    if (view in authViewPaths) {
-        return view as AuthView
+    for (const authViewPathsKey in authViewPaths) {
+        if (authViewPaths[authViewPathsKey as AuthView] === path) {
+            return authViewPathsKey as AuthView
+        }
     }
 }
 

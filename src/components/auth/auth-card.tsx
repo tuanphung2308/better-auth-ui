@@ -8,7 +8,7 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { socialProviders } from "../../lib/social-providers"
-import { cn, getAuthViewPath } from "../../lib/utils"
+import { cn, getAuthViewByPath } from "../../lib/utils"
 import { SettingsCards, type SettingsCardsClassNames } from "../settings/settings-cards"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
@@ -99,7 +99,7 @@ export function AuthCard({
     }
 
     const path = pathname?.split("/").pop()
-    view = view || getAuthViewPath(viewPaths, path) || "signIn"
+    view = view || getAuthViewByPath(viewPaths, path) || "signIn"
 
     const [isSubmitting, setIsSubmitting] = useState(false)
 
