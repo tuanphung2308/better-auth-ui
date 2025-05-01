@@ -18,7 +18,6 @@ import type { AuthFormClassNames } from "../auth-form"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import { InputOTP } from "../../ui/input-otp"
 import { OTPInputGroup } from "../otp-input-group"
-import { TwoFactorFormProps } from "./two-factor-form"
 
 export interface EmailOTPFormProps {
     className?: string
@@ -26,6 +25,7 @@ export interface EmailOTPFormProps {
     callbackURL?: string
     isSubmitting?: boolean
     localization: Partial<AuthLocalization>
+    otpSeparators?: 0 | 1 | 2
     redirectTo?: string
     setIsSubmitting?: (value: boolean) => void
 }
@@ -149,7 +149,7 @@ export function OTPForm({
     redirectTo,
     setIsSubmitting,
     email
-}: TwoFactorFormProps & {
+}: EmailOTPFormProps & {
     email: string
 }) {
     const { authClient, localization: contextLocalization, toast } = useContext(AuthUIContext)
