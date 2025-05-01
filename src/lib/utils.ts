@@ -65,6 +65,7 @@ export function getAuthViewByPath(
             return authViewPathsKey as AuthView
         }
     }
+    return undefined;
 }
 
 export function getKeyByValue<T extends Record<string, unknown>>(
