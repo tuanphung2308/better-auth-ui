@@ -3,6 +3,7 @@
 import type { SocialProvider } from "better-auth/social-providers"
 import { type ReactNode, createContext, useMemo } from "react"
 import { toast } from "sonner"
+export type SocialSignInParams = Parameters<AuthClient["signIn"]["social"]>[0]
 
 import { useAuthData } from "../hooks/use-auth-data"
 import type { AdditionalFields } from "../types/additional-fields"
@@ -198,6 +199,10 @@ export type AuthUIContextType = {
      * @default ["name"]
      */
     signUpFields?: string[]
+    /**
+     * Custom social sign in function
+     */
+    socialSignIn?: (params: SocialSignInParams) => Promise<unknown>
     toast: RenderToast
     /**
      * Enable or disable two-factor authentication support
