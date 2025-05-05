@@ -198,6 +198,10 @@ export type AuthUIContextType = {
      * @default ["name"]
      */
     signUpFields?: string[]
+    /**
+     * Custom social sign in function
+     */
+    signInSocial?: (params: Parameters<AuthClient["signIn"]["social"]>[0]) => Promise<unknown>
     toast: RenderToast
     /**
      * Enable or disable two-factor authentication support

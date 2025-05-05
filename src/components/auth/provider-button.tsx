@@ -43,6 +43,7 @@ export function ProviderButton({
         persistClient,
         redirectTo: contextRedirectTo,
         viewPaths,
+        signInSocial,
         toast
     } = useContext(AuthUIContext)
 
@@ -62,7 +63,7 @@ export function ProviderButton({
         [callbackURLProp, persistClient, basePath, viewPaths, baseURL, getRedirectTo]
     )
 
-    const signInSocial = async () => {
+    const doSignInSocial = async () => {
         setIsSubmitting(true)
 
         try {
@@ -73,11 +74,17 @@ export function ProviderButton({
                     fetchOptions: { throw: true }
                 })
             } else {
-                await authClient.signIn.social({
+                const socialParams = {
                     provider: provider.provider as SocialProvider,
                     callbackURL: getCallbackURL(),
                     fetchOptions: { throw: true }
-                })
+                }
+
+                if (signInSocial) {
+                    await signInSocial(socialParams)
+                } else {
+                    await authClient.signIn.social(socialParams)
+                }
             }
         } catch (error) {
             toast({
@@ -100,7 +107,7 @@ export function ProviderButton({
             )}
             disabled={isSubmitting}
             variant="outline"
-            onClick={signInSocial}
+            onClick={doSignInSocial}
         >
             {provider.icon &&
                 (colorIcons ? (
