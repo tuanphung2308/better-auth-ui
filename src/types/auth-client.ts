@@ -1,11 +1,11 @@
 import type {
     anonymousClient,
+    emailOTPClient,
     genericOAuthClient,
     magicLinkClient,
-    emailOTPClient,
     multiSessionClient,
-    passkeyClient,
     oneTapClient,
+    passkeyClient,
     twoFactorClient,
     usernameClient
 } from "better-auth/client/plugins"

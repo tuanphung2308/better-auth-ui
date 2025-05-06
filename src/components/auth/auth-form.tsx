@@ -7,6 +7,7 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { getKeyByValue } from "../../lib/utils"
 import { AuthCallback } from "./auth-callback"
+import { EmailOTPForm } from "./forms/email-otp-form"
 import { ForgotPasswordForm } from "./forms/forgot-password-form"
 import { MagicLinkForm } from "./forms/magic-link-form"
 import { RecoverAccountForm } from "./forms/recover-account-form"
@@ -15,7 +16,6 @@ import { SignInForm } from "./forms/sign-in-form"
 import { SignUpForm } from "./forms/sign-up-form"
 import { TwoFactorForm } from "./forms/two-factor-form"
 import { SignOut } from "./sign-out"
-import { EmailOTPForm } from "./forms/email-otp-form"
 
 export type AuthFormClassNames = {
     base?: string
@@ -124,6 +124,7 @@ export function AuthForm({
         viewPaths,
         credentials,
         replace,
+        emailOTP,
         signUpEnabled,
         magicLink,
         twoFactorEnabled
