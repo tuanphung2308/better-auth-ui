@@ -1,5 +1,5 @@
 {
     "icon": "Database",
     "defaultOpen": true,
-    "pages": ["tanstack-query", "instantdb"]
+    "pages": ["tanstack-query", "triplit", "instantdb"]
 }

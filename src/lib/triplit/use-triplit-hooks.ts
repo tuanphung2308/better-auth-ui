@@ -1,11 +1,9 @@
-import type { InstantReactWebDatabase } from "@instantdb/react"
+import type { TriplitClient } from "@triplit/client"
 import type { User } from "better-auth"
 import { useMemo } from "react"
 
 import type { Session } from "../../types/auth-client"
 import type { AuthHooks } from "../../types/auth-hooks"
-import type { AuthMutators } from "../../types/auth-mutators"
-import { getModelName } from "./model-names"
 import { useListAccounts } from "./use-list-accounts"
 import { useListSessions } from "./use-list-sessions"
 import { useSession } from "./use-session"
@@ -17,32 +15,28 @@ type ModelNames = {
     [key in Namespace]: string
 }
 
-export interface UseInstantOptionsProps {
+export interface UseTriplitOptionsProps {
     // biome-ignore lint/suspicious/noExplicitAny:
-    db: InstantReactWebDatabase<any>
+    triplit: TriplitClient<any>
     modelNames?: Partial<ModelNames>
     usePlural?: boolean
     sessionData?: { user: User; session: Session }
     refetch?: () => Promise<unknown> | unknown
-    user?: { id: string } | null
     isPending: boolean
 }
 
-export function useInstantOptions({
-    db,
+export function useTriplitHooks({
+    triplit,
     usePlural = true,
     modelNames,
     sessionData,
-    isPending,
-    user
-}: UseInstantOptionsProps) {
-    const userId = user?.id || sessionData?.user.id
-
+    isPending
+}: UseTriplitOptionsProps) {
     const hooks = useMemo(() => {
         return {
             useSession: () =>
                 useSession({
-                    db,
+                    triplit,
                     modelNames,
                     usePlural,
                     sessionData,
@@ -50,7 +44,7 @@ export function useInstantOptions({
                 }),
             useListAccounts: () =>
                 useListAccounts({
-                    db,
+                    triplit,
                     modelNames,
                     usePlural,
                     sessionData,
@@ -58,40 +52,16 @@ export function useInstantOptions({
                 }),
             useListSessions: () =>
                 useListSessions({
-                    db,
+                    triplit,
                     modelNames,
                     usePlural,
                     sessionData,
                     isPending
                 })
         } as AuthHooks
-    }, [db, modelNames, usePlural, sessionData, isPending])
-
-    const mutators = useMemo(() => {
-        return {
-            updateUser: async (data) => {
-                if (!userId) {
-                    throw new Error("Unauthenticated")
-                }
-
-                const modelName = getModelName({
-                    namespace: "user",
-                    modelNames,
-                    usePlural
-                })
-
-                db.transact([
-                    db.tx[modelName][userId].update({
-                        ...data,
-                        updatedAt: Date.now()
-                    })
-                ])
-            }
-        } as AuthMutators
-    }, [db, userId, modelNames, usePlural])
+    }, [triplit, modelNames, usePlural, sessionData, isPending])
 
     return {
-        hooks,
-        mutators
+        hooks
     }
 }
