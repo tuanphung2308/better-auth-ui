@@ -203,6 +203,21 @@ export const authLocalization = {
     /** @default "Check your email for the magic link" */
     magicLinkEmail: "Check your email for the magic link",
 
+    /** @default "Email Code" */
+    emailOTP: "Email Code",
+
+    /** @default "Send code" */
+    emailOTPSendAction: "Send code",
+
+    /** @default "Verify code" */
+    emailOTPVerifyAction: "Verify code",
+
+    /** @default "Enter your email to receive a code" */
+    emailOTPDescription: "Enter your email to receive a code",
+
+    /** @default "Please check your email for the verification code." */
+    emailOTPVerificationSent: "Please check your email for the verification code.",
+
     /** @default "Name" */
     name: "Name",
 

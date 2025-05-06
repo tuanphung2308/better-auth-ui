@@ -7,6 +7,7 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { getAuthViewByPath } from "../../lib/utils"
 import { AuthCallback } from "./auth-callback"
+import { EmailOTPForm } from "./forms/email-otp-form"
 import { ForgotPasswordForm } from "./forms/forgot-password-form"
 import { MagicLinkForm } from "./forms/magic-link-form"
 import { RecoverAccountForm } from "./forms/recover-account-form"
@@ -65,6 +66,7 @@ export function AuthForm({
         credentials,
         localization: contextLocalization,
         magicLink,
+        emailOTP,
         signUp: signUpEnabled,
         twoFactor: twoFactorEnabled,
         viewPaths,
@@ -88,7 +90,11 @@ export function AuthForm({
     useEffect(() => {
         let isInvalidView = false
 
-        if (view === "magicLink" && (!magicLink || !credentials)) {
+        if (view === "magicLink" && (!magicLink || (!credentials && !emailOTP))) {
+            isInvalidView = true
+        }
+
+        if (view === "emailOTP" && (!emailOTP || (!credentials && !magicLink))) {
             isInvalidView = true
         }
 
@@ -118,6 +124,7 @@ export function AuthForm({
         viewPaths,
         credentials,
         replace,
+        emailOTP,
         signUpEnabled,
         magicLink,
         twoFactorEnabled
@@ -138,6 +145,16 @@ export function AuthForm({
             />
         ) : magicLink ? (
             <MagicLinkForm
+                className={className}
+                classNames={classNames}
+                callbackURL={callbackURL}
+                localization={localization}
+                redirectTo={redirectTo}
+                isSubmitting={isSubmitting}
+                setIsSubmitting={setIsSubmitting}
+            />
+        ) : emailOTP ? (
+            <EmailOTPForm
                 className={className}
                 classNames={classNames}
                 callbackURL={callbackURL}
@@ -179,6 +196,20 @@ export function AuthForm({
     if (view === "magicLink") {
         return (
             <MagicLinkForm
+                className={className}
+                classNames={classNames}
+                callbackURL={callbackURL}
+                localization={localization}
+                redirectTo={redirectTo}
+                isSubmitting={isSubmitting}
+                setIsSubmitting={setIsSubmitting}
+            />
+        )
+    }
+
+    if (view === "emailOTP") {
+        return (
+            <EmailOTPForm
                 className={className}
                 classNames={classNames}
                 callbackURL={callbackURL}

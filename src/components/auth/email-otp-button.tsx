@@ -8,20 +8,20 @@ import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
 import type { AuthCardClassNames } from "./auth-card"
 
-interface MagicLinkButtonProps {
+interface EmailOTPButtonProps {
     classNames?: AuthCardClassNames
     isSubmitting?: boolean
     localization: Partial<AuthLocalization>
     view: AuthView
 }
 
-export function MagicLinkButton({
+export function EmailOTPButton({
     classNames,
     isSubmitting,
     localization,
     view
-}: MagicLinkButtonProps) {
-    const { viewPaths, navigate, basePath, credentials } = useContext(AuthUIContext)
+}: EmailOTPButtonProps) {
+    const { viewPaths, navigate, basePath } = useContext(AuthUIContext)
 
     return (
         <Button
@@ -31,17 +31,17 @@ export function MagicLinkButton({
             variant="secondary"
             onClick={() =>
                 navigate(
-                    `${basePath}/${view === "magicLink" || !credentials ? viewPaths.signIn : viewPaths.magicLink}${window.location.search}`
+                    `${basePath}/${view === "emailOTP" ? viewPaths.signIn : viewPaths.emailOTP}${window.location.search}`
                 )
             }
         >
-            {view === "magicLink" ? (
+            {view === "emailOTP" ? (
                 <LockIcon className={classNames?.form?.icon} />
             ) : (
                 <MailIcon className={classNames?.form?.icon} />
             )}
             {localization.signInWith}{" "}
-            {view === "magicLink" ? localization.password : localization.magicLink}
+            {view === "emailOTP" ? localization.password : localization.emailOTP}
         </Button>
     )
 }

@@ -15,6 +15,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Separator } from "../ui/separator"
 import { AuthCallback } from "./auth-callback"
 import { AuthForm, type AuthFormClassNames } from "./auth-form"
+import { EmailOTPButton } from "./email-otp-button"
 import { MagicLinkButton } from "./magic-link-button"
 import { OneTap } from "./one-tap"
 import { PasskeyButton } from "./passkey-button"
@@ -77,6 +78,7 @@ export function AuthCard({
         credentials,
         localization: contextLocalization,
         magicLink,
+        emailOTP,
         oneTap,
         otherProviders,
         passkey,
@@ -128,7 +130,7 @@ export function AuthCard({
         )
 
     const description =
-        !credentials && !magicLink
+        !credentials && !magicLink && !emailOTP
             ? localization.disabledCredentialsDescription
             : localization[`${view}Description` as keyof typeof localization]
 
@@ -147,11 +149,11 @@ export function AuthCard({
             </CardHeader>
 
             <CardContent className={cn("grid gap-6", classNames?.content)}>
-                {oneTap && ["signIn", "signUp", "magicLink"].includes(view) && (
+                {oneTap && ["signIn", "signUp", "magicLink", "emailOTP"].includes(view) && (
                     <OneTap localization={localization} redirectTo={redirectTo} />
                 )}
 
-                {(credentials || magicLink) && (
+                {(credentials || magicLink || emailOTP) && (
                     <div className="grid gap-4">
                         <AuthForm
                             classNames={classNames?.form}
@@ -165,9 +167,34 @@ export function AuthCard({
                         />
 
                         {magicLink &&
-                            credentials &&
-                            ["forgotPassword", "signUp", "signIn", "magicLink"].includes(view) && (
+                            ((credentials &&
+                                [
+                                    "forgotPassword",
+                                    "signUp",
+                                    "signIn",
+                                    "magicLink",
+                                    "emailOTP"
+                                ].includes(view)) ||
+                                (emailOTP && view === "emailOTP")) && (
                                 <MagicLinkButton
+                                    classNames={classNames}
+                                    localization={localization}
+                                    view={view}
+                                    isSubmitting={isSubmitting}
+                                />
+                            )}
+
+                        {emailOTP &&
+                            ((credentials &&
+                                [
+                                    "forgotPassword",
+                                    "signUp",
+                                    "signIn",
+                                    "magicLink",
+                                    "emailOTP"
+                                ].includes(view)) ||
+                                (magicLink && ["signIn", "magicLink"].includes(view))) && (
+                                <EmailOTPButton
                                     classNames={classNames}
                                     localization={localization}
                                     view={view}
@@ -179,7 +206,7 @@ export function AuthCard({
 
                 {view !== "resetPassword" && (providers?.length || otherProviders?.length) && (
                     <>
-                        {(credentials || magicLink) && (
+                        {(credentials || magicLink || emailOTP) && (
                             <div className="flex items-center gap-2">
                                 <Separator className={cn("!w-auto grow", classNames?.separator)} />
 
@@ -243,6 +270,7 @@ export function AuthCard({
                                 [
                                     "signIn",
                                     "magicLink",
+                                    "emailOTP",
                                     "recoverAccount",
                                     "twoFactor",
                                     "forgotPassword"
@@ -267,7 +295,7 @@ export function AuthCard({
                         classNames?.footer
                     )}
                 >
-                    {view === "signIn" || view === "magicLink" ? (
+                    {view === "signIn" || view === "magicLink" || view === "emailOTP" ? (
                         localization.dontHaveAnAccount
                     ) : view === "signUp" ? (
                         localization.alreadyHaveAnAccount
@@ -275,10 +303,13 @@ export function AuthCard({
                         <ArrowLeftIcon className="size-3" />
                     )}
 
-                    {view === "signIn" || view === "magicLink" || view === "signUp" ? (
+                    {view === "signIn" ||
+                    view === "magicLink" ||
+                    view === "emailOTP" ||
+                    view === "signUp" ? (
                         <Link
                             className={cn("text-foreground underline", classNames?.footerLink)}
-                            href={`${basePath}/${viewPaths[view === "signIn" || view === "magicLink" ? "signUp" : "signIn"]}${isHydrated ? window.location.search : ""}`}
+                            href={`${basePath}/${viewPaths[view === "signIn" || view === "magicLink" || view === "emailOTP" ? "signUp" : "signIn"]}${isHydrated ? window.location.search : ""}`}
                         >
                             <Button
                                 variant="link"
@@ -288,7 +319,7 @@ export function AuthCard({
                                     classNames?.footerLink
                                 )}
                             >
-                                {view === "signIn" || view === "magicLink"
+                                {view === "signIn" || view === "magicLink" || view === "emailOTP"
                                     ? localization.signUp
                                     : localization.signIn}
                             </Button>
