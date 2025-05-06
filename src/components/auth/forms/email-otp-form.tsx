@@ -31,13 +31,13 @@ export interface EmailOTPFormProps {
 }
 
 export function EmailOTPForm(props: EmailOTPFormProps) {
-    const [email, setEmail] = useState<string | null>(null)
+    const [email, setEmail] = useState<string | undefined>()
 
-    if (email === null) {
+    if (!email) {
         return <EmailForm {...props} setEmail={setEmail} />
-    } else {
-        return <OTPForm {...props} email={email} />
     }
+
+    return <OTPForm {...props} email={email} />
 }
 
 function EmailForm({
@@ -82,6 +82,11 @@ function EmailForm({
                 email,
                 type: "sign-in",
                 fetchOptions: { throw: true }
+            })
+
+            toast({
+                variant: "success",
+                message: localization.emailOTPVerificationSent
             })
 
             setEmail(email)

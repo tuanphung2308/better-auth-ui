@@ -215,6 +215,9 @@ export const authLocalization = {
     /** @default "Enter your email to receive a code" */
     emailOTPDescription: "Enter your email to receive a code",
 
+    /** @default "Please check your email for the verification code." */
+    emailOTPVerificationSent: "Please check your email for the verification code.",
+
     /** @default "Name" */
     name: "Name",
 
