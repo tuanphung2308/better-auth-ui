@@ -3,8 +3,8 @@ import type {
     genericOAuthClient,
     magicLinkClient,
     multiSessionClient,
-    passkeyClient,
     oneTapClient,
+    passkeyClient,
     twoFactorClient,
     usernameClient
 } from "better-auth/client/plugins"
