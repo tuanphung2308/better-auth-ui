@@ -63,17 +63,8 @@
             }
         }
     },
-    "files": [
-        "src",
-        "dist"
-    ],
-    "keywords": [
-        "typescript",
-        "react",
-        "better-auth",
-        "shadcn",
-        "nextjs"
-    ],
+    "files": ["src", "dist"],
+    "keywords": ["typescript", "react", "better-auth", "shadcn", "nextjs"],
     "author": "daveycodez",
     "license": "MIT",
     "devDependencies": {
