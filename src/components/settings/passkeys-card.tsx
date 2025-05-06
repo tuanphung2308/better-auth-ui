@@ -75,21 +75,23 @@ export function PasskeysCard({
                     isPending={isPending}
                     title={localization.passkeys}
                 >
-                    <CardContent className={cn("grid gap-4", classNames?.content)}>
-                        {isPending ? (
-                            <SettingsCellSkeleton classNames={classNames} />
-                        ) : (
-                            passkeys?.map((passkey) => (
-                                <PasskeyCell
-                                    key={passkey.id}
-                                    classNames={classNames}
-                                    localization={localization}
-                                    passkey={passkey}
-                                    refetch={refetch}
-                                />
-                            ))
-                        )}
-                    </CardContent>
+                    {(isPending || passkeys?.length) && (
+                        <CardContent className={cn("grid gap-4", classNames?.content)}>
+                            {isPending ? (
+                                <SettingsCellSkeleton classNames={classNames} />
+                            ) : (
+                                passkeys?.map((passkey) => (
+                                    <PasskeyCell
+                                        key={passkey.id}
+                                        classNames={classNames}
+                                        localization={localization}
+                                        passkey={passkey}
+                                        refetch={refetch}
+                                    />
+                                ))
+                            )}
+                        </CardContent>
+                    )}
                 </SettingsCard>
             </form>
         </Form>
