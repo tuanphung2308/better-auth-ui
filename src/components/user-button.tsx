@@ -95,6 +95,7 @@ export function UserButton({
         localization: authLocalization,
         multiSession,
         settingsURL,
+        signUp,
         toast,
         viewPaths,
         onSessionChange,
@@ -230,13 +231,15 @@ export function UserButton({
                             </DropdownMenuItem>
                         </Link>
 
-                        <Link href={`${basePath}/${viewPaths.signUp}`}>
-                            <DropdownMenuItem className={classNames?.content?.menuItem}>
-                                <UserRoundPlus />
+                        {signUp && (
+                            <Link href={`${basePath}/${viewPaths.signUp}`}>
+                                <DropdownMenuItem className={classNames?.content?.menuItem}>
+                                    <UserRoundPlus />
 
-                                {localization.signUp}
-                            </DropdownMenuItem>
-                        </Link>
+                                    {localization.signUp}
+                                </DropdownMenuItem>
+                            </Link>
+                        )}
                     </>
                 ) : (
                     <>

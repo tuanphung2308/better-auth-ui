@@ -214,14 +214,16 @@ export function AuthForm({
 
     if (view === "signUp") {
         return (
-            <SignUpForm
-                className={className}
-                classNames={classNames}
-                localization={localization}
-                redirectTo={redirectTo}
-                isSubmitting={isSubmitting}
-                setIsSubmitting={setIsSubmitting}
-            />
+            signUpEnabled && (
+                <SignUpForm
+                    className={className}
+                    classNames={classNames}
+                    localization={localization}
+                    redirectTo={redirectTo}
+                    isSubmitting={isSubmitting}
+                    setIsSubmitting={setIsSubmitting}
+                />
+            )
         )
     }
 }
