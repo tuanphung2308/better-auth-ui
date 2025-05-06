@@ -15,12 +15,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Separator } from "../ui/separator"
 import { AuthCallback } from "./auth-callback"
 import { AuthForm, type AuthFormClassNames } from "./auth-form"
+import { EmailOTPButton } from "./email-otp-button"
 import { MagicLinkButton } from "./magic-link-button"
 import { OneTap } from "./one-tap"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
 import { SignOut } from "./sign-out"
-import { EmailOTPButton } from "./email-otp-button"
 
 export interface AuthCardClassNames {
     base?: string
@@ -167,14 +167,15 @@ export function AuthCard({
                         />
 
                         {magicLink &&
-                            credentials &&
-                            [
-                                "forgotPassword",
-                                "signUp",
-                                "signIn",
-                                "magicLink",
-                                "emailOTP"
-                            ].includes(view) && (
+                            ((credentials &&
+                                [
+                                    "forgotPassword",
+                                    "signUp",
+                                    "signIn",
+                                    "magicLink",
+                                    "emailOTP"
+                                ].includes(view)) ||
+                                (emailOTP && view === "emailOTP")) && (
                                 <MagicLinkButton
                                     classNames={classNames}
                                     localization={localization}
@@ -184,14 +185,15 @@ export function AuthCard({
                             )}
 
                         {emailOTP &&
-                            credentials &&
-                            [
-                                "forgotPassword",
-                                "signUp",
-                                "signIn",
-                                "magicLink",
-                                "emailOTP"
-                            ].includes(view) && (
+                            ((credentials &&
+                                [
+                                    "forgotPassword",
+                                    "signUp",
+                                    "signIn",
+                                    "magicLink",
+                                    "emailOTP"
+                                ].includes(view)) ||
+                                (magicLink && ["signIn", "magicLink"].includes(view))) && (
                                 <EmailOTPButton
                                     classNames={classNames}
                                     localization={localization}

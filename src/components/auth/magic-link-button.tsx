@@ -21,7 +21,7 @@ export function MagicLinkButton({
     localization,
     view
 }: MagicLinkButtonProps) {
-    const { viewPaths, navigate, basePath } = useContext(AuthUIContext)
+    const { viewPaths, navigate, basePath, credentials } = useContext(AuthUIContext)
 
     return (
         <Button
@@ -31,7 +31,7 @@ export function MagicLinkButton({
             variant="secondary"
             onClick={() =>
                 navigate(
-                    `${basePath}/${view === "magicLink" ? viewPaths.signIn : viewPaths.magicLink}${window.location.search}`
+                    `${basePath}/${view === "magicLink" || !credentials ? viewPaths.signIn : viewPaths.magicLink}${window.location.search}`
                 )
             }
         >
