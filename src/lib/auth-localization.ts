@@ -96,6 +96,9 @@ export const authLocalization = {
     /** @default "Delete" */
     delete: "Delete",
 
+    /** @default "Delete Avatar" */
+    deleteAvatar: "Delete Avatar",
+
     /** @default "Delete Account" */
     deleteAccount: "Delete Account",
 
@@ -440,7 +443,10 @@ export const authLocalization = {
     invalidPassword: "Invalid password",
 
     /** @default "Password too short" */
-    passwordTooShort: "Password too short"
+    passwordTooShort: "Password too short",
+
+    /** @default "Upload Avatar" */
+    uploadAvatar: "Upload Avatar"
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>
