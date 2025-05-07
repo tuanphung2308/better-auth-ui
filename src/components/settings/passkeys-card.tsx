@@ -75,7 +75,7 @@ export function PasskeysCard({
                     isPending={isPending}
                     title={localization.passkeys}
                 >
-                    {(isPending || passkeys?.length) && (
+                    {(isPending || (passkeys && passkeys.length > 0)) && (
                         <CardContent className={cn("grid gap-4", classNames?.content)}>
                             {isPending ? (
                                 <SettingsCellSkeleton classNames={classNames} />
