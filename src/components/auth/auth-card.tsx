@@ -1,7 +1,7 @@
 "use client"
 
 import { ArrowLeftIcon, Loader2 } from "lucide-react"
-import { useContext, useEffect, useState } from "react"
+import { type ReactNode, useContext, useEffect, useState } from "react"
 
 import { useIsHydrated } from "../../hooks/use-hydrated"
 import type { AuthLocalization } from "../../lib/auth-localization"
@@ -39,6 +39,7 @@ export interface AuthCardProps {
     className?: string
     classNames?: AuthCardClassNames
     callbackURL?: string
+    cardHeader?: ReactNode
     /**
      * @default authLocalization
      * @remarks `AuthLocalization`
@@ -64,6 +65,7 @@ export function AuthCard({
     className,
     classNames,
     callbackURL,
+    cardHeader,
     localization,
     pathname,
     redirectTo,
@@ -137,14 +139,22 @@ export function AuthCard({
     return (
         <Card className={cn("w-full max-w-sm", className, classNames?.base)}>
             <CardHeader className={classNames?.header}>
-                <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                    {localization[view as keyof typeof localization]}
-                </CardTitle>
+                {cardHeader ? (
+                    cardHeader
+                ) : (
+                    <>
+                        <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                            {localization[view as keyof typeof localization]}
+                        </CardTitle>
 
-                {description && (
-                    <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
-                        {description}
-                    </CardDescription>
+                        {description && (
+                            <CardDescription
+                                className={cn("text-xs md:text-sm", classNames?.description)}
+                            >
+                                {description}
+                            </CardDescription>
+                        )}
+                    </>
                 )}
             </CardHeader>
 
