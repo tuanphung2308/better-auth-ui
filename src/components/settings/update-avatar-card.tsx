@@ -181,25 +181,19 @@ export function UpdateAvatarCard({
                 />
 
                 <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <button
-                            className={cn("me-6")}
-                            type="button"
-                            aria-label={localization.uploadAvatar}
-                        >
-                            {isPending || loading ? (
-                                <Skeleton
-                                    className={cn("size-20 rounded-full", classNames?.avatar?.base)}
-                                />
-                            ) : (
-                                <UserAvatar
-                                    key={sessionData?.user.image}
-                                    className="size-20 text-2xl"
-                                    classNames={classNames?.avatar}
-                                    user={sessionData?.user}
-                                />
-                            )}
-                        </button>
+                    <DropdownMenuTrigger className="me-6 rounded-full">
+                        {isPending || loading ? (
+                            <Skeleton
+                                className={cn("size-20 rounded-full", classNames?.avatar?.base)}
+                            />
+                        ) : (
+                            <UserAvatar
+                                key={sessionData?.user.image}
+                                className="size-20 text-2xl"
+                                classNames={classNames?.avatar}
+                                user={sessionData?.user}
+                            />
+                        )}
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={openFileDialog} disabled={loading}>
