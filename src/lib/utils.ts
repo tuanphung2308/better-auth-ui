@@ -70,3 +70,18 @@ export function getKeyByValue<T extends Record<string, unknown>>(
 ): keyof T | undefined {
     return (Object.keys(object) as Array<keyof T>).find((key) => object[key] === value)
 }
+
+export async function getRecaptchaToken(siteKey: string, action: string) {
+    let recaptchaToken: string | undefined
+    grecaptcha.ready(() => {
+        grecaptcha.execute(siteKey, { action }).then((token) => {
+            recaptchaToken = token
+        })
+    })
+
+    while (!recaptchaToken) {
+        await new Promise((resolve) => requestAnimationFrame(resolve))
+    }
+
+    return recaptchaToken
+}

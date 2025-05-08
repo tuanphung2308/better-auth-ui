@@ -6,11 +6,12 @@ import { useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
+import type { BetterFetchOption } from "@better-fetch/fetch"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import { cn, getLocalizedError, isValidEmail } from "../../../lib/utils"
+import { cn, getLocalizedError, getRecaptchaToken, isValidEmail } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
@@ -18,6 +19,7 @@ import { Checkbox } from "../../ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
 import type { AuthFormClassNames } from "../auth-form"
+import { RecaptchaBranding } from "../recaptcha-branding"
 
 export interface SignInFormProps {
     className?: string
@@ -46,6 +48,7 @@ export function SignInForm({
         rememberMe: rememberMeEnabled,
         username: usernameEnabled,
         viewPaths,
+        captcha,
         navigate,
         toast,
         Link
@@ -90,6 +93,14 @@ export function SignInForm({
     }, [form.formState.isSubmitting, transitionPending, setIsSubmitting])
 
     async function signIn({ email, password, rememberMe }: z.infer<typeof formSchema>) {
+        const fetchOptions: BetterFetchOption = { throw: true }
+
+        if (captcha?.provider === "google-recaptcha-v3" && captcha?.siteKey) {
+            fetchOptions.headers = {
+                "x-captcha-response": await getRecaptchaToken(captcha.siteKey, "signIn")
+            }
+        }
+
         try {
             let response: Record<string, unknown> = {}
 
@@ -98,14 +109,14 @@ export function SignInForm({
                     username: email,
                     password,
                     rememberMe,
-                    fetchOptions: { throw: true }
+                    fetchOptions
                 })
             } else {
                 response = await authClient.signIn.email({
                     email,
                     password,
                     rememberMe,
-                    fetchOptions: { throw: true }
+                    fetchOptions
                 })
             }
 
@@ -215,6 +226,10 @@ export function SignInForm({
                             </FormItem>
                         )}
                     />
+                )}
+
+                {captcha?.provider === "google-recaptcha-v3" && captcha.hideBadge && (
+                    <RecaptchaBranding localization={localization} />
                 )}
 
                 <Button

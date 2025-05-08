@@ -6,11 +6,12 @@ import { useCallback, useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
+import type { BetterFetchOption } from "@better-fetch/fetch"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import { cn, getLocalizedError, getSearchParam } from "../../../lib/utils"
+import { cn, getLocalizedError, getRecaptchaToken, getSearchParam } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
@@ -18,6 +19,7 @@ import { Checkbox } from "../../ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
 import type { AuthFormClassNames } from "../auth-form"
+import { RecaptchaBranding } from "../recaptcha-branding"
 
 export interface SignUpFormProps {
     className?: string
@@ -45,6 +47,7 @@ export function SignUpForm({
         authClient,
         basePath,
         baseURL,
+        captcha,
         confirmPassword: confirmPasswordEnabled,
         emailVerification,
         localization: contextLocalization,
@@ -231,6 +234,14 @@ export function SignUpForm({
                 }
             }
 
+            const fetchOptions: BetterFetchOption = { throw: true }
+
+            if (captcha?.provider === "google-recaptcha-v3" && captcha?.siteKey) {
+                fetchOptions.headers = {
+                    "x-captcha-response": await getRecaptchaToken(captcha.siteKey, "signUp")
+                }
+            }
+
             const data = await (authClient as AuthClient).signUp.email({
                 email,
                 password,
@@ -238,7 +249,7 @@ export function SignUpForm({
                 ...(username !== undefined && { username }),
                 ...additionalFieldValues,
                 ...(emailVerification && persistClient && { callbackURL: getCallbackURL() }),
-                fetchOptions: { throw: true }
+                fetchOptions
             })
 
             if ("token" in data && data.token) {
@@ -459,6 +470,10 @@ export function SignUpForm({
                             />
                         )
                     })}
+
+                {captcha?.provider === "google-recaptcha-v3" && captcha.hideBadge && (
+                    <RecaptchaBranding localization={localization} />
+                )}
 
                 <Button
                     type="submit"
