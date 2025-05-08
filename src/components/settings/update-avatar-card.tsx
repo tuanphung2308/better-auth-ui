@@ -1,17 +1,23 @@
 "use client"
 
+import { Trash2Icon, UploadCloudIcon } from "lucide-react"
 import { useContext, useRef, useState } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { getErrorMessage } from "../../lib/get-error-message"
-import { cn } from "../../lib/utils"
+import { cn, getLocalizedError } from "../../lib/utils"
 import { Card } from "../ui/card"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from "../ui/dropdown-menu"
 import { Skeleton } from "../ui/skeleton"
 import { UserAvatar } from "../user-avatar"
-import type { SettingsCardClassNames } from "./settings-card"
-import { SettingsCardFooter } from "./settings-card-footer"
-import { SettingsCardHeader } from "./settings-card-header"
+import type { SettingsCardClassNames } from "./shared/settings-card"
+import { SettingsCardFooter } from "./shared/settings-card-footer"
+import { SettingsCardHeader } from "./shared/settings-card-header"
 
 async function resizeAndCropImage(
     file: File,
@@ -121,7 +127,24 @@ export function UpdateAvatarCard({
         } catch (error) {
             toast({
                 variant: "error",
-                message: getErrorMessage(error) || localization.requestFailed
+                message: getLocalizedError({ error, localization })
+            })
+        }
+
+        setLoading(false)
+    }
+
+    const handleDeleteAvatar = async () => {
+        if (!sessionData) return
+
+        setLoading(true)
+
+        try {
+            await updateUser({ image: null })
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: getLocalizedError({ error, localization })
             })
         }
 
@@ -143,6 +166,8 @@ export function UpdateAvatarCard({
                 onChange={(e) => {
                     const file = e.target.files?.item(0)
                     if (file) handleAvatarChange(file)
+
+                    e.target.value = ""
                 }}
             />
 
@@ -155,20 +180,38 @@ export function UpdateAvatarCard({
                     classNames={classNames}
                 />
 
-                <button className={cn("me-6")} type="button" onClick={openFileDialog}>
-                    {isPending || loading ? (
-                        <Skeleton
-                            className={cn("size-20 rounded-full", classNames?.avatar?.base)}
-                        />
-                    ) : (
-                        <UserAvatar
-                            key={sessionData?.user.image}
-                            className="size-20 text-2xl"
-                            classNames={classNames?.avatar}
-                            user={sessionData?.user}
-                        />
-                    )}
-                </button>
+                <DropdownMenu>
+                    <DropdownMenuTrigger className="me-6 rounded-full">
+                        {isPending || loading ? (
+                            <Skeleton
+                                className={cn("size-20 rounded-full", classNames?.avatar?.base)}
+                            />
+                        ) : (
+                            <UserAvatar
+                                key={sessionData?.user.image}
+                                className="size-20 text-2xl"
+                                classNames={classNames?.avatar}
+                                user={sessionData?.user}
+                            />
+                        )}
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={openFileDialog} disabled={loading}>
+                            <UploadCloudIcon />
+                            {localization.uploadAvatar}
+                        </DropdownMenuItem>
+                        {sessionData?.user.image && (
+                            <DropdownMenuItem
+                                onClick={handleDeleteAvatar}
+                                disabled={loading}
+                                variant="destructive"
+                            >
+                                <Trash2Icon />
+                                {localization.deleteAvatar}
+                            </DropdownMenuItem>
+                        )}
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
 
             <SettingsCardFooter

@@ -7,7 +7,8 @@ export default defineConfig((env) => {
             index: "./src/index.ts",
             server: "./src/server.ts",
             tanstack: "./src/tanstack.ts",
-            instantdb: "./src/instantdb.ts"
+            instantdb: "./src/instantdb.ts",
+            triplit: "./src/triplit.ts"
         },
         format: ["esm", "cjs"],
         splitting: true,

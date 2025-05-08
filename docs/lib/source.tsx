@@ -18,6 +18,7 @@ export const source = loader({
         if (icon === "React") return <ReactIcon />
         if (icon === "ReactQuery") return <ReactQueryIcon />
         if (icon === "InstantDB") return <InstantDBIcon />
+        if (icon === "Triplit") return <TriplitIcon />
 
         if (icon in icons) return createElement(icons[icon as keyof typeof icons])
     }
@@ -76,6 +77,26 @@ export function InstantDBIcon({ className }: { className?: string }) {
         >
             <rect width="512" height="512" fill="currentColor" />
             <rect x="97.0973" y="91.3297" width="140" height="330" fill="white" />
+        </svg>
+    )
+}
+
+export function TriplitIcon({ className }: { className?: string }) {
+    return (
+        <svg
+            width={1024}
+            height={1024}
+            viewBox="0 0 1024 1024"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className={className}
+        >
+            <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M320.499 460C320.499 381.5 391.5 294.5 512.001 294.5C632.503 294.5 704.5 375 703.5 460C703.5 460 885.999 493 885.999 564C885.999 635 693.499 683 511.999 683C330.499 683 141 636 139.499 564C137.999 492 320.499 460 320.499 460ZM511.999 341C433.499 341 367.999 391 367.999 459.5C367.999 498 423.499 525 512.001 525C600.503 525 656.999 499 656.999 460C656.999 387 590.499 341 511.999 341Z"
+                fill="currentColor"
+            />
         </svg>
     )
 }

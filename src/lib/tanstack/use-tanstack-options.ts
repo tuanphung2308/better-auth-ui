@@ -1,15 +1,13 @@
 import { AuthQueryContext, createAuthHooks } from "@daveyplate/better-auth-tanstack"
 import { useIsRestoring, useQueryClient } from "@tanstack/react-query"
-import { useContext } from "react"
+import { useCallback, useContext, useMemo } from "react"
+
 import type { AnyAuthClient } from "../../types/any-auth-client"
+import type { AuthClient } from "../../types/auth-client"
 import type { AuthHooks } from "../../types/auth-hooks"
 import type { AuthMutators } from "../../types/auth-mutators"
 
-export function useTanstackOptions({
-    authClient
-}: {
-    authClient: AnyAuthClient
-}) {
+export function useTanstackOptions({ authClient }: { authClient: AnyAuthClient }) {
     const {
         useUnlinkAccount,
         useUpdateUser,
@@ -28,60 +26,80 @@ export function useTanstackOptions({
     const { setActiveSessionAsync } = useSetActiveSession()
     const { sessionKey } = useContext(AuthQueryContext)
 
-    const hooks: AuthHooks = createAuthHooks(authClient)
+    const hooks = useMemo(
+        () => ({
+            ...(createAuthHooks(authClient as AuthClient) as AuthHooks),
+            useIsRestoring
+        }),
+        [authClient]
+    )
 
-    const mutators: AuthMutators = {
-        updateUser: async (params) => {
-            const { error } = await updateUserAsync({ ...params, fetchOptions: { throw: false } })
-            if (error) throw error
-        },
-        unlinkAccount: async (params) => {
-            const { error } = await unlinkAccountAsync({
-                ...params,
-                fetchOptions: { throw: false }
-            })
-            if (error) throw error
-        },
-        deletePasskey: async (params) => {
-            const { error } = await deletePasskeyAsync({
-                ...params,
-                fetchOptions: { throw: false }
-            })
-            if (error) throw error
-        },
-        revokeSession: async (params) => {
-            const { error } = await revokeSessionAsync({
-                ...params,
-                fetchOptions: { throw: false }
-            })
-            if (error) throw error
-        },
-        setActiveSession: async (params) => {
-            const { error } = await setActiveSessionAsync({
-                ...params,
-                fetchOptions: { throw: false }
-            })
-            if (error) throw error
-        },
-        revokeDeviceSession: async (params) => {
-            const { error } = await revokeDeviceSessionAsync({
-                ...params,
-                fetchOptions: { throw: false }
-            })
-            if (error) throw error
-        }
-    }
+    const mutators = useMemo(
+        () =>
+            ({
+                updateUser: async (params) => {
+                    const { error } = await updateUserAsync({
+                        ...params,
+                        fetchOptions: { throw: false }
+                    })
+                    if (error) throw error
+                },
+                unlinkAccount: async (params) => {
+                    const { error } = await unlinkAccountAsync({
+                        ...params,
+                        fetchOptions: { throw: false }
+                    })
+                    if (error) throw error
+                },
+                deletePasskey: async (params) => {
+                    const { error } = await deletePasskeyAsync({
+                        ...params,
+                        fetchOptions: { throw: false }
+                    })
+                    if (error) throw error
+                },
+                revokeSession: async (params) => {
+                    const { error } = await revokeSessionAsync({
+                        ...params,
+                        fetchOptions: { throw: false }
+                    })
+                    if (error) throw error
+                },
+                setActiveSession: async (params) => {
+                    const { error } = await setActiveSessionAsync({
+                        ...params,
+                        fetchOptions: { throw: false }
+                    })
+                    if (error) throw error
+                },
+                revokeDeviceSession: async (params) => {
+                    const { error } = await revokeDeviceSessionAsync({
+                        ...params,
+                        fetchOptions: { throw: false }
+                    })
+                    if (error) throw error
+                }
+            }) as AuthMutators,
+        [
+            updateUserAsync,
+            deletePasskeyAsync,
+            unlinkAccountAsync,
+            revokeSessionAsync,
+            revokeDeviceSessionAsync,
+            setActiveSessionAsync
+        ]
+    )
 
-    const onSessionChange = async () => {
+    const onSessionChange = useCallback(async () => {
         await queryClient.refetchQueries({ queryKey: sessionKey })
 
         queryClient.invalidateQueries({
             predicate: (query) => query.queryKey !== sessionKey
         })
-    }
+    }, [queryClient, sessionKey])
 
     return {
-        hooks: { ...hooks, useIsRestoring },
+        hooks,
         mutators,
         onSessionChange,
         optimistic: true

@@ -1,10 +1,14 @@
 import type { InstantReactWebDatabase } from "@instantdb/react"
-import type { Session, User } from "../../types/auth-client"
+import type { User } from "better-auth"
+import { useMemo } from "react"
+
+import type { Session } from "../../types/auth-client"
 import type { AuthHooks } from "../../types/auth-hooks"
 import type { AuthMutators } from "../../types/auth-mutators"
+import { getModelName } from "./model-names"
 import { useListAccounts } from "./use-list-accounts"
 import { useListSessions } from "./use-list-sessions"
-import { useSession as useInstantSession } from "./use-session"
+import { useSession } from "./use-session"
 
 const namespaces = ["user", "session", "account", "passkey"] as const
 type Namespace = (typeof namespaces)[number]
@@ -19,6 +23,7 @@ export interface UseInstantOptionsProps {
     modelNames?: Partial<ModelNames>
     usePlural?: boolean
     sessionData?: { user: User; session: Session }
+    refetch?: () => Promise<unknown> | unknown
     user?: { id: string } | null
     isPending: boolean
 }
@@ -33,10 +38,10 @@ export function useInstantOptions({
 }: UseInstantOptionsProps) {
     const userId = user?.id || sessionData?.user.id
 
-    return {
-        hooks: {
+    const hooks = useMemo(() => {
+        return {
             useSession: () =>
-                useInstantSession({
+                useSession({
                     db,
                     modelNames,
                     usePlural,
@@ -59,20 +64,34 @@ export function useInstantOptions({
                     sessionData,
                     isPending
                 })
-        } as AuthHooks,
-        mutators: {
+        } as AuthHooks
+    }, [db, modelNames, usePlural, sessionData, isPending])
+
+    const mutators = useMemo(() => {
+        return {
             updateUser: async (data) => {
                 if (!userId) {
                     throw new Error("Unauthenticated")
                 }
 
+                const modelName = getModelName({
+                    namespace: "user",
+                    modelNames,
+                    usePlural
+                })
+
                 db.transact([
-                    db.tx.users[userId].update({
+                    db.tx[modelName][userId].update({
                         ...data,
                         updatedAt: Date.now()
                     })
                 ])
             }
         } as AuthMutators
+    }, [db, userId, modelNames, usePlural])
+
+    return {
+        hooks,
+        mutators
     }
 }

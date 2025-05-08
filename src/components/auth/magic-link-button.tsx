@@ -1,36 +1,45 @@
 import { LockIcon, MailIcon } from "lucide-react"
 import { useContext } from "react"
-import { useFormStatus } from "react-dom"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
+import type { AuthCardClassNames } from "./auth-card"
 
-export function MagicLinkButton({
-    className,
-    isLoading,
-    localization,
-    view
-}: {
-    className?: string
-    isLoading?: boolean
+interface MagicLinkButtonProps {
+    classNames?: AuthCardClassNames
+    isSubmitting?: boolean
     localization: Partial<AuthLocalization>
     view: AuthView
-}) {
-    const { pending } = useFormStatus()
-    const { viewPaths, navigate } = useContext(AuthUIContext)
+}
+
+export function MagicLinkButton({
+    classNames,
+    isSubmitting,
+    localization,
+    view
+}: MagicLinkButtonProps) {
+    const { viewPaths, navigate, basePath, credentials } = useContext(AuthUIContext)
 
     return (
         <Button
-            className={cn("w-full", className)}
-            disabled={pending || isLoading}
+            className={cn("w-full", classNames?.form?.button, classNames?.form?.secondaryButton)}
+            disabled={isSubmitting}
             type="button"
             variant="secondary"
-            onClick={() => navigate(view === "magicLink" ? viewPaths.signIn : viewPaths.magicLink)}
+            onClick={() =>
+                navigate(
+                    `${basePath}/${view === "magicLink" || !credentials ? viewPaths.signIn : viewPaths.magicLink}${window.location.search}`
+                )
+            }
         >
-            {view === "magicLink" ? <LockIcon /> : <MailIcon />}
+            {view === "magicLink" ? (
+                <LockIcon className={classNames?.form?.icon} />
+            ) : (
+                <MailIcon className={classNames?.form?.icon} />
+            )}
             {localization.signInWith}{" "}
             {view === "magicLink" ? localization.password : localization.magicLink}
         </Button>

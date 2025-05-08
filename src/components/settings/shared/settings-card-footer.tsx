@@ -1,45 +1,45 @@
 "use client"
 
-import { Loader2 } from "lucide-react"
 import type { ReactNode } from "react"
 
-import { cn } from "../../lib/utils"
-import { Button } from "../ui/button"
-import { CardDescription, CardFooter } from "../ui/card"
-import { Skeleton } from "../ui/skeleton"
+import { cn } from "../../../lib/utils"
+import { CardDescription, CardFooter } from "../../ui/card"
+import { Skeleton } from "../../ui/skeleton"
+import { SettingsActionButton } from "./settings-action-button"
 import type { SettingsCardClassNames } from "./settings-card"
 
 export interface SettingsCardFooterProps {
+    className?: string
+    classNames?: SettingsCardClassNames
     actionLabel?: ReactNode
     disabled?: boolean
-    isSubmitting?: boolean
-    isPending?: boolean
     instructions?: ReactNode
-    classNames?: SettingsCardClassNames
-    className?: string
+    isPending?: boolean
+    isSubmitting?: boolean
     optimistic?: boolean
     variant?: "default" | "destructive"
+    action?: () => Promise<unknown> | unknown
 }
 
 export function SettingsCardFooter({
+    className,
+    classNames,
     actionLabel,
     disabled,
-    isSubmitting,
-    isPending,
     instructions,
-    classNames,
-    className,
-    optimistic,
-    variant = "default"
+    isPending,
+    isSubmitting,
+    variant,
+    action
 }: SettingsCardFooterProps) {
     return (
         <CardFooter
             className={cn(
                 "flex flex-col justify-between gap-4 rounded-b-xl md:flex-row",
                 (actionLabel || instructions) && "!py-4 border-t",
-                variant === "default"
-                    ? "bg-muted dark:bg-transparent"
-                    : "border-destructive/30 bg-destructive/10",
+                variant === "destructive"
+                    ? "border-destructive/30 bg-destructive/10"
+                    : "bg-muted dark:bg-transparent",
                 className,
                 classNames?.footer
             )}
@@ -73,23 +73,14 @@ export function SettingsCardFooter({
                     )}
 
                     {actionLabel && (
-                        <Button
-                            className={cn("md:ms-auto", classNames?.button)}
-                            disabled={disabled || isSubmitting}
-                            size="sm"
-                            type="submit"
-                            variant={variant === "destructive" ? "destructive" : "default"}
-                        >
-                            <span className={cn(!optimistic && isSubmitting && "opacity-0")}>
-                                {actionLabel}
-                            </span>
-
-                            {!optimistic && isSubmitting && (
-                                <span className="absolute">
-                                    <Loader2 className="animate-spin" />
-                                </span>
-                            )}
-                        </Button>
+                        <SettingsActionButton
+                            classNames={classNames}
+                            actionLabel={actionLabel}
+                            disabled={disabled}
+                            isSubmitting={isSubmitting}
+                            variant={variant}
+                            onClick={action}
+                        />
                     )}
                 </>
             )}

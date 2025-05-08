@@ -1,10 +1,12 @@
+"use client"
+
 import { useContext, useState } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { DeleteAccountDialog } from "./delete-account-dialog"
-import { SettingsCard } from "./settings-card"
-import type { SettingsCardClassNames } from "./settings-card"
+import { SettingsCard } from "./shared/settings-card"
+import type { SettingsCardClassNames } from "./shared/settings-card"
 
 export interface DeleteAccountCardProps {
     className?: string
@@ -24,11 +26,12 @@ export function DeleteAccountCard({
     skipHook
 }: DeleteAccountCardProps) {
     const {
-        hooks: { useSession, useListAccounts },
-        localization: authLocalization
+        hooks: { useListAccounts },
+        localization: contextLocalization
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
+
     const [showDialog, setShowDialog] = useState(false)
 
     if (!skipHook) {
@@ -38,25 +41,25 @@ export function DeleteAccountCard({
     }
 
     return (
-        <>
+        <div>
             <SettingsCard
-                title={localization?.deleteAccount}
-                description={localization?.deleteAccountDescription}
-                actionLabel={localization?.deleteAccount}
-                formAction={() => setShowDialog(true)}
                 className={className}
                 classNames={classNames}
-                variant="destructive"
+                actionLabel={localization?.deleteAccount}
+                description={localization?.deleteAccountDescription}
                 isPending={isPending}
+                title={localization?.deleteAccount}
+                variant="destructive"
+                action={() => setShowDialog(true)}
             />
 
             <DeleteAccountDialog
-                open={showDialog}
-                onOpenChange={setShowDialog}
-                localization={localization}
                 classNames={classNames}
                 accounts={accounts}
+                localization={localization}
+                open={showDialog}
+                onOpenChange={setShowDialog}
             />
-        </>
+        </div>
     )
 }

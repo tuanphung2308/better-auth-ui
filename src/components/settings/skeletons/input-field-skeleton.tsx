@@ -2,7 +2,7 @@
 
 import { cn } from "../../../lib/utils"
 import { Skeleton } from "../../ui/skeleton"
-import type { SettingsCardClassNames } from "../settings-card"
+import type { SettingsCardClassNames } from "../shared/settings-card"
 
 export function InputFieldSkeleton({ classNames }: { classNames?: SettingsCardClassNames }) {
     return (

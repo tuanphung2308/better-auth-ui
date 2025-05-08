@@ -29,6 +29,28 @@ export const authLocalization = {
     /** @default "An avatar is optional but strongly recommended." */
     avatarInstructions: "An avatar is optional but strongly recommended.",
 
+    /** @default "Backup code is required" */
+    backupCodeRequired: "Backup code is required",
+
+    /** @default "Backup Codes" */
+    backupCodes: "Backup Codes",
+
+    /** @default "Save these backup codes in a secure place. You can use them to access your account if you lose your two-factor authentication method." */
+    backupCodesDescription:
+        "Save these backup codes in a secure place. You can use them to access your account if you lose your two-factor authentication method.",
+
+    /** @default "Enter one of your backup codes. Once used, each code can only be used once and will be invalidated after use." */
+    backupCodePlaceholder: "Backup Code",
+
+    /** @default "Backup Code" */
+    backupCode: "Backup Code",
+
+    /** @default "Recover account" */
+    backupCodeAction: "Recover account",
+
+    /** @default "Cancel" */
+    cancel: "Cancel",
+
     /** @default "Change Password" */
     changePassword: "Change Password",
 
@@ -47,6 +69,21 @@ export const authLocalization = {
     /** @default "Confirm Password" */
     confirmPasswordPlaceholder: "Confirm Password",
 
+    /** @default "Confirm password is required" */
+    confirmPasswordRequired: "Confirm password is required",
+
+    /** @default "Continue with Authenticator" */
+    continueWithAuthenticator: "Continue with Authenticator",
+
+    /** @default "Copied to clipboard" */
+    copiedToClipboard: "Copied to clipboard",
+
+    /** @default "Copy all codes" */
+    copyAllCodes: "Copy all codes",
+
+    /** @default "Continue" */
+    continue: "Continue",
+
     /** @default "Current Password" */
     currentPassword: "Current Password",
 
@@ -58,6 +95,9 @@ export const authLocalization = {
 
     /** @default "Delete" */
     delete: "Delete",
+
+    /** @default "Delete Avatar" */
+    deleteAvatar: "Delete Avatar",
 
     /** @default "Delete Account" */
     deleteAccount: "Delete Account",
@@ -71,13 +111,16 @@ export const authLocalization = {
         "Please confirm the deletion of your account. This action is not reversible, so please continue with caution.",
 
     /** @default "Please check your email to verify the deletion of your account." */
-    deleteAccountEmail: "Please check your email to verify the deletion of your account.",
+    deleteAccountVerify: "Please check your email to verify the deletion of your account.",
 
     /** @default "Your account has been deleted." */
     deleteAccountSuccess: "Your account has been deleted.",
 
     /** @default "You must be recently logged in to delete your account." */
     deleteAccountNotFresh: "You must be recently logged in to delete your account.",
+
+    /** @default "Disable" */
+    disable: "Disable",
 
     /** @default "Choose a provider to login to your account" */
     disabledCredentialsDescription: "Choose a provider to login to your account",
@@ -91,11 +134,20 @@ export const authLocalization = {
     /** @default "Enter the email address you want to use to log in." */
     emailDescription: "Enter the email address you want to use to log in.",
 
-    /** @default "Please use a valid email address." */
-    emailInstructions: "Please use a valid email address.",
+    /** @default "Please enter a valid email address." */
+    emailInstructions: "Please enter a valid email address.",
+
+    /** @default "Email address is invalid" */
+    emailInvalid: "Email address is invalid",
+
+    /** @default "Email is the same" */
+    emailIsTheSame: "Email is the same",
 
     /** @default "m@example.com" */
     emailPlaceholder: "m@example.com",
+
+    /** @default "Email address is required" */
+    emailRequired: "Email address is required",
 
     /** @default "Please check your email to verify the change." */
     emailVerifyChange: "Please check your email to verify the change.",
@@ -103,8 +155,23 @@ export const authLocalization = {
     /** @default "Please check your email for the verification link." */
     emailVerification: "Please check your email for the verification link.",
 
-    /** @default "Failed to validate" */
-    failedToValidate: "Failed to validate",
+    /** @default "Enable" */
+    enable: "Enable",
+
+    /** @default "Error" */
+    error: "Error",
+
+    /** @default "is invalid" */
+    isInvalid: "is invalid",
+
+    /** @default "is required" */
+    isRequired: "is required",
+
+    /** @default "is the same" */
+    isTheSame: "is the same",
+
+    /** @default "Forgot authenticator?" */
+    forgotAuthenticator: "Forgot authenticator?",
 
     /** @default "Forgot Password" */
     forgotPassword: "Forgot Password",
@@ -121,6 +188,9 @@ export const authLocalization = {
     /** @default "Forgot your password?" */
     forgotPasswordLink: "Forgot your password?",
 
+    /** @default "Invalid two factor cookie" */
+    invalidTwoFactorCookie: "Invalid two factor cookie",
+
     /** @default "Link" */
     link: "Link",
 
@@ -135,6 +205,21 @@ export const authLocalization = {
 
     /** @default "Check your email for the magic link" */
     magicLinkEmail: "Check your email for the magic link",
+
+    /** @default "Email Code" */
+    emailOTP: "Email Code",
+
+    /** @default "Send code" */
+    emailOTPSendAction: "Send code",
+
+    /** @default "Verify code" */
+    emailOTPVerifyAction: "Verify code",
+
+    /** @default "Enter your email to receive a code" */
+    emailOTPDescription: "Enter your email to receive a code",
+
+    /** @default "Please check your email for the verification code." */
+    emailOTPVerificationSent: "Please check your email for the verification code.",
 
     /** @default "Name" */
     name: "Name",
@@ -154,6 +239,12 @@ export const authLocalization = {
     /** @default "New Password" */
     newPasswordPlaceholder: "New Password",
 
+    /** @default "New password is required" */
+    newPasswordRequired: "New password is required",
+
+    /** @default "One-Time Password" */
+    oneTimePassword: "One-Time Password",
+
     /** @default "Or continue with" */
     orContinueWith: "Or continue with",
 
@@ -172,17 +263,14 @@ export const authLocalization = {
     /** @default "Password" */
     password: "Password",
 
-    /** @default "Enter your current password." */
-    passwordDescription: "Enter your current password.",
-
-    /** @default "Passwords do not match." */
-    passwordsDoNotMatch: "Passwords do not match",
-
-    /** @default "Please use 8 characters at minimum." */
-    passwordInstructions: "Please use 8 characters at minimum.",
-
     /** @default "Password" */
     passwordPlaceholder: "Password",
+
+    /** @default "Password is required" */
+    passwordRequired: "Password is required",
+
+    /** @default "Passwords do not match" */
+    passwordsDoNotMatch: "Passwords do not match",
 
     /** @default "Providers" */
     providers: "Providers",
@@ -190,8 +278,20 @@ export const authLocalization = {
     /** @default "Connect your account with a third-party service." */
     providersDescription: "Connect your account with a third-party service.",
 
+    /** @default "Recover Account" */
+    recoverAccount: "Recover Account",
+
+    /** @default "Recover account" */
+    recoverAccountAction: "Recover account",
+
+    /** @default "Please enter a backup code to access your account" */
+    recoverAccountDescription: "Please enter a backup code to access your account",
+
     /** @default "Remember me" */
     rememberMe: "Remember me",
+
+    /** @default "Resend code" */
+    resendCode: "Resend code",
 
     /** @default "Resend verification email" */
     resendVerificationEmail: "Resend Verification Email",
@@ -226,8 +326,8 @@ export const authLocalization = {
     /** @default "Enter your email below to login to your account" */
     signInDescription: "Enter your email below to login to your account",
 
-    /** @default "Enter your username below to login to your account" */
-    signInUsernameDescription: "Enter your username below to login to your account",
+    /** @default "Enter your username or email below to login to your account" */
+    signInUsernameDescription: "Enter your username or email to login to your account",
 
     /** @default "Sign in with" */
     signInWith: "Sign in with",
@@ -256,12 +356,9 @@ export const authLocalization = {
     /** @default "Set Password" */
     setPassword: "Set Password",
 
-    /** @default "You registered with a third-party service. Click the button below to set a password for your account." */
+    /** @default "Click the button below to receive an email to set up a password for your account." */
     setPasswordDescription:
-        "You registered with a third-party service. Click the button below to set a password for your account.",
-
-    /** @default "Check your email to set your password." */
-    setPasswordEmailSent: "Check your email to set your password.",
+        "Click the button below to receive an email to set up a password for your account.",
 
     /** @default "Settings" */
     settings: "Settings",
@@ -275,8 +372,47 @@ export const authLocalization = {
     /** @default "Switch Account" */
     switchAccount: "Switch Account",
 
+    /** @default "Trust this device" */
+    trustDevice: "Trust this device",
+
+    /** @default "Two-Factor" */
+    twoFactor: "Two-Factor",
+
+    /** @default "Verify code" */
+    twoFactorAction: "Verify code",
+
+    /** @default "Please enter your one-time password to continue" */
+    twoFactorDescription: "Please enter your one-time password to continue",
+
+    /** @default "Add an extra layer of security to your account." */
+    twoFactorCardDescription: "Add an extra layer of security to your account.",
+
+    /** @default "Please enter your password to disable 2FA." */
+    twoFactorDisableInstructions: "Please enter your password to disable 2FA.",
+
+    /** @default "Please enter your password to enable 2FA" */
+    twoFactorEnableInstructions: "Please enter your password to enable 2FA.",
+
+    /** @default "Two-factor authentication has been enabled" */
+    twoFactorEnabled: "Two-factor authentication has been enabled",
+
+    /** @default "Two-Factor Authentication has been disabled" */
+    twoFactorDisabled: "Two-Factor Authentication has been disabled",
+
+    /** @default "Two-Factor Authentication" */
+    twoFactorPrompt: "Two-Factor Authentication",
+
+    /** @default "Scan the QR Code with your Authenticator" */
+    twoFactorTotpLabel: "Scan the QR Code with your Authenticator",
+
+    /** @default "Send verification code" */
+    sendVerificationCode: "Send verification code",
+
     /** @default "Unlink" */
     unlink: "Unlink",
+
+    /** @default "Updated successfully" */
+    updatedSuccessfully: "updated successfully",
 
     /** @default "Username" */
     username: "Username",
@@ -291,14 +427,26 @@ export const authLocalization = {
     usernamePlaceholder: "Username",
 
     /** @default "Username or email" */
-    usernameSignInPlaceholder: "Username or email",
+    signInUsernamePlaceholder: "Username or email",
 
     /** @default "Verify Your Email" */
     verifyYourEmail: "Verify Your Email",
 
     /** @default "Please verify your email address. Check your inbox for the verification email. If you haven't received the email, click the button below to resend." */
     verifyYourEmailDescription:
-        "Please verify your email address. Check your inbox for the verification email. If you haven't received the email, click the button below to resend."
+        "Please verify your email address. Check your inbox for the verification email. If you haven't received the email, click the button below to resend.",
+
+    /** @default "Go back" */
+    goBack: "Go back",
+
+    /** @default "Invalid password" */
+    invalidPassword: "Invalid password",
+
+    /** @default "Password too short" */
+    passwordTooShort: "Password too short",
+
+    /** @default "Upload Avatar" */
+    uploadAvatar: "Upload Avatar"
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>

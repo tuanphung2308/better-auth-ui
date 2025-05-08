@@ -5,6 +5,10 @@ export const authViewPaths = {
     forgotPassword: "forgot-password",
     /** @default "magic-link" */
     magicLink: "magic-link",
+    /** @default "email-otp" */
+    emailOTP: "email-otp",
+    /** @default "recover-account" */
+    recoverAccount: "recover-account",
     /** @default "reset-password" */
     resetPassword: "reset-password",
     /** @default "settings" */
@@ -14,8 +18,10 @@ export const authViewPaths = {
     /** @default "sign-out" */
     signOut: "sign-out",
     /** @default "sign-up" */
-    signUp: "sign-up"
+    signUp: "sign-up",
+    /** @default "two-factor" */
+    twoFactor: "two-factor"
 }
 
 export type AuthViewPaths = typeof authViewPaths
-export type AuthView = keyof typeof authViewPaths
+export type AuthView = keyof AuthViewPaths

@@ -6,7 +6,7 @@ import { useContext, useState } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { getErrorMessage } from "../../lib/get-error-message"
+import { getLocalizedError } from "../../lib/utils"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/button"
 import { Card } from "../ui/card"
@@ -17,13 +17,12 @@ import {
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
 import { UserView } from "../user-view"
-import type { SettingsCardClassNames } from "./settings-card"
+import type { SettingsCardClassNames } from "./shared/settings-card"
 
 export interface AccountCellProps {
     className?: string
     classNames?: SettingsCardClassNames
     deviceSession: { user: User; session: Session }
-    activeSessionId?: string
     localization?: Partial<AuthLocalization>
     refetch?: () => Promise<void>
 }
@@ -32,21 +31,22 @@ export function AccountCell({
     className,
     classNames,
     deviceSession,
-    activeSessionId,
     localization,
     refetch
 }: AccountCellProps) {
     const {
         basePath,
-        localization: authLocalization,
+        localization: contextLocalization,
+        hooks: { useSession },
         mutators: { revokeDeviceSession, setActiveSession },
         toast,
         viewPaths,
         navigate
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
+    const { data: sessionData } = useSession()
     const [isLoading, setIsLoading] = useState(false)
 
     const handleRevoke = async () => {
@@ -60,7 +60,7 @@ export function AccountCell({
 
             toast({
                 variant: "error",
-                message: getErrorMessage(error) || localization.requestFailed
+                message: getLocalizedError({ error, localization })
             })
         }
     }
@@ -76,12 +76,12 @@ export function AccountCell({
 
             toast({
                 variant: "error",
-                message: getErrorMessage(error) || localization.requestFailed
+                message: getLocalizedError({ error, localization })
             })
         }
     }
 
-    const isCurrentSession = deviceSession.session.id === activeSessionId
+    const isCurrentSession = deviceSession.session.id === sessionData?.session.id
 
     return (
         <Card className={cn("flex-row p-4", className, classNames?.cell)}>
@@ -90,20 +90,20 @@ export function AccountCell({
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button
-                        className={cn("relative ms-auto", classNames?.button)}
+                        className={cn(
+                            "relative ms-auto",
+                            classNames?.button,
+                            classNames?.outlineButton
+                        )}
                         disabled={isLoading}
                         size="icon"
                         type="button"
                         variant="outline"
                     >
-                        <span className={isLoading ? "opacity-0" : "opacity-100"}>
-                            <EllipsisIcon />
-                        </span>
-
-                        {isLoading && (
-                            <span className="absolute">
-                                <Loader2 className="animate-spin" />
-                            </span>
+                        {isLoading ? (
+                            <Loader2 className="animate-spin" />
+                        ) : (
+                            <EllipsisIcon className={classNames?.icon} />
                         )}
                     </Button>
                 </DropdownMenuTrigger>
@@ -111,7 +111,7 @@ export function AccountCell({
                 <DropdownMenuContent>
                     {!isCurrentSession && (
                         <DropdownMenuItem onClick={handleSetActiveSession}>
-                            <RepeatIcon />
+                            <RepeatIcon className={classNames?.icon} />
 
                             {localization.switchAccount}
                         </DropdownMenuItem>
@@ -127,7 +127,7 @@ export function AccountCell({
                             handleRevoke()
                         }}
                     >
-                        <LogOutIcon />
+                        <LogOutIcon className={classNames?.icon} />
 
                         {isCurrentSession ? localization.signOut : localization.revoke}
                     </DropdownMenuItem>

@@ -4,8 +4,8 @@ import { useContext } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import type { SettingsCardClassNames } from "./settings-card"
-import { UpdateFieldCard } from "./update-field-card"
+import type { SettingsCardClassNames } from "./shared/settings-card"
+import { UpdateFieldCard } from "./shared/update-field-card"
 
 export interface UpdateNameCardProps {
     className?: string
@@ -22,10 +22,11 @@ export function UpdateNameCard({
 }: UpdateNameCardProps) {
     const {
         hooks: { useSession },
-        localization: authLocalization,
+        localization: contextLocalization,
         nameRequired
     } = useContext(AuthUIContext)
-    localization = { ...authLocalization, ...localization }
+
+    localization = { ...contextLocalization, ...localization }
 
     const { data: sessionData } = useSession()
 
@@ -33,9 +34,9 @@ export function UpdateNameCard({
         <UpdateFieldCard
             className={className}
             classNames={classNames}
-            defaultValue={sessionData?.user.name}
+            value={sessionData?.user.name}
             description={localization.nameDescription}
-            field="name"
+            name="name"
             instructions={localization.nameInstructions}
             isPending={isPending}
             label={localization.name}

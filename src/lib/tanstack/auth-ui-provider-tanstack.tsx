@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from "react"
 import { AuthUIProvider, type AuthUIProviderProps } from "../../lib/auth-ui-provider"
 import { useTanstackOptions } from "./use-tanstack-options"
 
@@ -9,17 +10,30 @@ export function AuthUIProviderTanstack({
     onSessionChange: onSessionChangeProp,
     ...props
 }: AuthUIProviderProps) {
-    const { hooks, mutators, onSessionChange, optimistic } = useTanstackOptions({ authClient })
+    const {
+        hooks: contextHooks,
+        mutators: contextMutators,
+        onSessionChange,
+        optimistic
+    } = useTanstackOptions({ authClient })
+
+    const hooks = useMemo(() => ({ ...contextHooks, ...hooksProp }), [contextHooks, hooksProp])
+    const mutators = useMemo(
+        () => ({ ...contextMutators, ...mutatorsProp }),
+        [contextMutators, mutatorsProp]
+    )
+
+    const onSessionChangeCallback = useCallback(async () => {
+        await onSessionChange()
+        await onSessionChangeProp?.()
+    }, [onSessionChangeProp, onSessionChange])
 
     return (
         <AuthUIProvider
             authClient={authClient}
-            hooks={{ ...hooks, ...hooksProp }}
-            mutators={{ ...mutators, ...mutatorsProp }}
-            onSessionChange={async () => {
-                await onSessionChange()
-                await onSessionChangeProp?.()
-            }}
+            hooks={hooks}
+            mutators={mutators}
+            onSessionChange={onSessionChangeCallback}
             optimistic={optimistic}
             {...props}
         >

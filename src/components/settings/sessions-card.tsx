@@ -8,8 +8,8 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { CardContent } from "../ui/card"
 import { SessionCell } from "./session-cell"
-import type { SettingsCardClassNames } from "./settings-card"
-import { SettingsCard } from "./settings-card"
+import { SettingsCard } from "./shared/settings-card"
+import type { SettingsCardClassNames } from "./shared/settings-card"
 import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
 export interface SessionsCardProps {
@@ -33,10 +33,10 @@ export function SessionsCard({
 }: SessionsCardProps) {
     const {
         hooks: { useListSessions },
-        localization: authLocalization
+        localization: contextLocalization
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     if (!skipHook) {
         const result = useListSessions()
@@ -49,9 +49,9 @@ export function SessionsCard({
         <SettingsCard
             className={className}
             classNames={classNames}
-            title={localization.sessions}
             description={localization.sessionsDescription}
             isPending={isPending}
+            title={localization.sessions}
         >
             <CardContent className={cn("grid gap-4", classNames?.content)}>
                 {isPending ? (
@@ -61,8 +61,8 @@ export function SessionsCard({
                         <SessionCell
                             key={session.id}
                             classNames={classNames}
-                            session={session}
                             localization={localization}
+                            session={session}
                             refetch={refetch}
                         />
                     ))
