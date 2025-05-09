@@ -85,12 +85,10 @@ export function RecaptchaV3Badge({
         }
     }, [captcha])
 
-    if (!isVisible) return null
-
     if (!captcha || captcha.provider !== "google-recaptcha-v3") return null
 
     if (!captcha.hideBadge) {
-        return isHydrated ? (
+        return isHydrated && isVisible ? (
             <style>{`
                 .grecaptcha-badge { visibility: visible; }
             `}</style>
@@ -99,7 +97,7 @@ export function RecaptchaV3Badge({
 
     return (
         <p className={cn("text-muted-foreground text-xs", className)}>
-            {localization.protectedByRecaptcha} {localization.byContinuingYouAgreeTo} Google's{" "}
+            {localization.protectedByRecaptcha} {localization.byContinuingYouAgreeTo} Google{" "}
             <a
                 className="text-foreground hover:underline"
                 href="https://policies.google.com/privacy"

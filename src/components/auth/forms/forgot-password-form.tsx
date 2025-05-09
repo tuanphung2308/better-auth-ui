@@ -6,10 +6,12 @@ import { useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
+import type { BetterFetchOption } from "@better-fetch/fetch"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import { cn, getLocalizedError } from "../../../lib/utils"
+import { cn, getLocalizedError, getRecaptchaToken } from "../../../lib/utils"
+import { RecaptchaV3Badge } from "../../captcha/recaptcha-v3-badge"
 import { Button } from "../../ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
@@ -38,7 +40,8 @@ export function ForgotPasswordForm({
         localization: contextLocalization,
         navigate,
         toast,
-        viewPaths
+        viewPaths,
+        captcha
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
@@ -68,11 +71,19 @@ export function ForgotPasswordForm({
     }, [form.formState.isSubmitting, setIsSubmitting])
 
     async function forgotPassword({ email }: z.infer<typeof formSchema>) {
+        const fetchOptions: BetterFetchOption = { throw: true }
+
+        if (captcha?.provider === "google-recaptcha-v3" && captcha?.siteKey) {
+            fetchOptions.headers = {
+                "x-captcha-response": await getRecaptchaToken(captcha.siteKey, "forgotPassword")
+            }
+        }
+
         try {
             await authClient.forgetPassword({
                 email,
                 redirectTo: `${baseURL}${basePath}/${viewPaths.resetPassword}`,
-                fetchOptions: { throw: true }
+                fetchOptions
             })
 
             toast({
@@ -119,6 +130,8 @@ export function ForgotPasswordForm({
                         </FormItem>
                     )}
                 />
+
+                <RecaptchaV3Badge localization={localization} />
 
                 <Button
                     type="submit"

@@ -3,7 +3,6 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 
 export function RecaptchaV3() {
     const { captcha } = useContext(AuthUIContext)
-
     if (captcha?.provider !== "google-recaptcha-v3") return null
 
     return (

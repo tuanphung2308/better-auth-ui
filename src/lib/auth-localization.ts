@@ -457,8 +457,8 @@ export const authLocalization = {
     /** @default "This site is protected by reCAPTCHA." */
     protectedByRecaptcha: "This site is protected by reCAPTCHA.",
 
-    /** @default "By continuing, you agree to" */
-    byContinuingYouAgreeTo: "By continuing, you agree to"
+    /** @default "By continuing, you agree to the" */
+    byContinuingYouAgreeTo: "By continuing, you agree to the"
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>
