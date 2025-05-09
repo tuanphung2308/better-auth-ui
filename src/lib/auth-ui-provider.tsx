@@ -4,6 +4,7 @@ import type { SocialProvider } from "better-auth/social-providers"
 import { type ReactNode, createContext, useMemo } from "react"
 import { toast } from "sonner"
 
+import { RecaptchaV3 } from "../components/captcha/recaptcha-v3"
 import { useAuthData } from "../hooks/use-auth-data"
 import type { AdditionalFields } from "../types/additional-fields"
 import type { AnyAuthClient } from "../types/any-auth-client"
@@ -419,19 +420,8 @@ export const AuthUIProvider = ({
                 ...props
             }}
         >
-            {captcha?.provider === "google-recaptcha-v3" && (
-                <>
-                    {captcha.hideBadge && (
-                        <style>{`
-                            .grecaptcha-badge { visibility: hidden; }
-                        `}</style>
-                    )}
+            <RecaptchaV3 />
 
-                    <script
-                        src={`https://www.google.com/recaptcha/api.js?render=${captcha.siteKey}`}
-                    />
-                </>
-            )}
             {children}
         </AuthUIContext.Provider>
     )

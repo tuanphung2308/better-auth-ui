@@ -13,6 +13,7 @@ import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError, getRecaptchaToken, isValidEmail } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
+import { RecaptchaV3Badge } from "../../captcha/recaptcha-v3-badge"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
 import { Checkbox } from "../../ui/checkbox"
@@ -137,6 +138,8 @@ export function SignInForm({
 
     return (
         <Form {...form}>
+            <RecaptchaV3Badge />
+
             <form
                 onSubmit={form.handleSubmit(signIn)}
                 noValidate={isHydrated}
