@@ -5,6 +5,27 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 export function RecaptchaV3() {
     const isHydrated = useIsHydrated()
     const { captcha } = useContext(AuthUIContext)
+    const [initialized, setInitialized] = useState(false)
+
+    useEffect(() => {
+        if (initialized) return
+
+        const checkInitialized = () => {
+            const iframe = document.querySelector("iframe[title='reCAPTCHA']") as HTMLIFrameElement
+            if (!iframe) return
+
+            iframe.onload = () => {
+                setInitialized(true)
+            }
+        }
+
+        grecaptcha.ready(() => {
+            checkInitialized()
+            setTimeout(() => setInitialized(true), 100)
+        })
+
+        checkInitialized()
+    }, [initialized])
 
     const checkVisible = () => {
         if (!isHydrated) return false
@@ -22,18 +43,19 @@ export function RecaptchaV3() {
     const [isVisible, setIsVisible] = useState(checkVisible())
 
     useEffect(() => {
+        if (!initialized) return
         if (captcha?.provider !== "google-recaptcha-v3") return
         if (captcha.hideBadge) return
 
         const checkTheme = async () => {
-            console.log("checkTheme")
             const isDark =
                 document.documentElement.classList.contains("dark") ||
                 document.documentElement.getAttribute("style")?.includes("color-scheme: dark")
             const theme = isDark ? "dark" : "light"
 
             // get lang attribute from html tag
-            const lang = document.documentElement.getAttribute("lang") || "en"
+            const lang = document.documentElement.getAttribute("lang")
+            if (!lang) return
 
             // find iframe with title "reCAPTCHA"
             const iframe = document.querySelector("iframe[title='reCAPTCHA']") as HTMLIFrameElement
@@ -74,7 +96,7 @@ export function RecaptchaV3() {
         return () => {
             observer.disconnect()
         }
-    }, [captcha])
+    }, [captcha, initialized])
 
     if (captcha?.provider !== "google-recaptcha-v3") return null
 
@@ -86,7 +108,7 @@ export function RecaptchaV3() {
                     border-radius: var(--radius) !important;
                     --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, #0000000d);
                     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow) !important;
-                    border-style: var(--tw-borde    r-style) !important;
+                    border-style: var(--tw-border-style) !important;
                     border-width: 1px;
                 }
 
