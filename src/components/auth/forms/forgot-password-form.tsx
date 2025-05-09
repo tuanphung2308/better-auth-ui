@@ -12,8 +12,8 @@ import { useIsHydrated } from "../../../hooks/use-hydrated"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError, getRecaptchaToken } from "../../../lib/utils"
+import { RecaptchaBadge } from "../../captcha/recaptcha-badge"
 import { RecaptchaV2 } from "../../captcha/recaptcha-v2"
-import { RecaptchaV3Badge } from "../../captcha/recaptcha-v3-badge"
 import { Button } from "../../ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
@@ -147,7 +147,7 @@ export function ForgotPasswordForm({
                 />
 
                 <RecaptchaV2 ref={recaptchaRef} localization={localization} />
-                <RecaptchaV3Badge localization={localization} />
+                <RecaptchaBadge localization={localization} />
 
                 <Button
                     type="submit"

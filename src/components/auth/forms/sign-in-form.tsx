@@ -14,8 +14,8 @@ import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError, getRecaptchaToken, isValidEmail } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
+import { RecaptchaBadge } from "../../captcha/recaptcha-badge"
 import { RecaptchaV2 } from "../../captcha/recaptcha-v2"
-import { RecaptchaV3Badge } from "../../captcha/recaptcha-v3-badge"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
 import { Checkbox } from "../../ui/checkbox"
@@ -244,7 +244,7 @@ export function SignInForm({
                 )}
 
                 <RecaptchaV2 ref={recaptchaRef} localization={localization} />
-                <RecaptchaV3Badge localization={localization} />
+                <RecaptchaBadge localization={localization} />
 
                 <Button
                     type="submit"

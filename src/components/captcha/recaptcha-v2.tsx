@@ -40,39 +40,6 @@ export function RecaptchaV2({
                 }
             `}</style>
 
-            {captcha.hideBadge && (
-                <>
-                    <style>{`
-                    .grecaptcha-badge {
-                        visibility: hidden !important;
-                    }
-                `}</style>
-
-                    <p className={cn("text-muted-foreground text-xs")}>
-                        {localization.protectedByRecaptcha} {localization.byContinuingYouAgreeTo}{" "}
-                        Google{" "}
-                        <a
-                            className="text-foreground hover:underline"
-                            href="https://policies.google.com/privacy"
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            {localization.privacyPolicy}
-                        </a>{" "}
-                        &{" "}
-                        <a
-                            className="text-foreground hover:underline"
-                            href="https://policies.google.com/terms"
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            {localization.termsOfService}
-                        </a>
-                        .
-                    </p>
-                </>
-            )}
-
             <ReCAPTCHA
                 ref={ref}
                 key={`${theme}-${lang}`}
