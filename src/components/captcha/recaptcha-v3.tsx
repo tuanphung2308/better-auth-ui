@@ -1,14 +1,19 @@
 import { useContext, useEffect, useState } from "react"
 import { useIsHydrated } from "../../hooks/use-hydrated"
+import { useLang } from "../../hooks/use-lang"
+import { useTheme } from "../../hooks/use-theme"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 
 export function RecaptchaV3() {
     const isHydrated = useIsHydrated()
+    const { theme } = useTheme()
+    const { lang } = useLang()
     const { captcha } = useContext(AuthUIContext)
     const [initialized, setInitialized] = useState(false)
 
     useEffect(() => {
         if (initialized) return
+        if (captcha?.provider !== "google-recaptcha-v3") return
 
         const checkInitialized = () => {
             const iframe = document.querySelector("iframe[title='reCAPTCHA']") as HTMLIFrameElement
@@ -25,7 +30,7 @@ export function RecaptchaV3() {
         })
 
         checkInitialized()
-    }, [initialized])
+    }, [initialized, captcha])
 
     const checkVisible = () => {
         if (!isHydrated) return false
@@ -47,14 +52,7 @@ export function RecaptchaV3() {
         if (captcha?.provider !== "google-recaptcha-v3") return
         if (captcha.hideBadge) return
 
-        const checkTheme = async () => {
-            const isDark =
-                document.documentElement.classList.contains("dark") ||
-                document.documentElement.getAttribute("style")?.includes("color-scheme: dark")
-            const theme = isDark ? "dark" : "light"
-
-            // get lang attribute from html tag
-            const lang = document.documentElement.getAttribute("lang")
+        const updateRecaptcha = async () => {
             if (!lang) return
 
             // find iframe with title "reCAPTCHA"
@@ -78,25 +76,10 @@ export function RecaptchaV3() {
             }
         }
 
-        // Listen for changes to html tag?
-        const observer = new MutationObserver((mutations) => {
-            for (const mutation of mutations) {
-                if (mutation.attributeName === "style" || mutation.attributeName === "lang") {
-                    checkTheme()
-                }
-            }
-        })
-
-        observer.observe(document.documentElement, { attributes: true })
-
         grecaptcha.ready(() => {
-            checkTheme()
+            updateRecaptcha()
         })
-
-        return () => {
-            observer.disconnect()
-        }
-    }, [captcha, initialized])
+    }, [captcha, initialized, theme, lang])
 
     if (captcha?.provider !== "google-recaptcha-v3") return null
 

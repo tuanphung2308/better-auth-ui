@@ -85,3 +85,18 @@ export async function getRecaptchaToken(siteKey: string, action: string) {
 
     return recaptchaToken
 }
+
+export async function getRecaptchaInvisibleToken() {
+    let recaptchaToken: string | undefined
+    grecaptcha.ready(() => {
+        grecaptcha.execute().then(() => {
+            recaptchaToken = grecaptcha.getResponse()
+        })
+    })
+
+    while (!recaptchaToken) {
+        await new Promise((resolve) => requestAnimationFrame(resolve))
+    }
+
+    return recaptchaToken
+}

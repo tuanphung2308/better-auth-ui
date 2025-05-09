@@ -2,17 +2,19 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useRef } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import type { BetterFetchOption } from "@better-fetch/fetch"
+import type ReCAPTCHA from "react-google-recaptcha"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError, getRecaptchaToken, isValidEmail } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
+import { RecaptchaV2 } from "../../captcha/recaptcha-v2"
 import { RecaptchaV3Badge } from "../../captcha/recaptcha-v3-badge"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
@@ -39,6 +41,7 @@ export function SignInForm({
     setIsSubmitting
 }: SignInFormProps) {
     const isHydrated = useIsHydrated()
+    const recaptchaRef = useRef<ReCAPTCHA>(null)
 
     const {
         authClient,
@@ -98,6 +101,18 @@ export function SignInForm({
         if (captcha?.provider === "google-recaptcha-v3" && captcha?.siteKey) {
             fetchOptions.headers = {
                 "x-captcha-response": await getRecaptchaToken(captcha.siteKey, "signIn")
+            }
+        }
+
+        if (captcha?.provider === "google-recaptcha-v2-checkbox" && captcha?.siteKey) {
+            fetchOptions.headers = {
+                "x-captcha-response": grecaptcha.getResponse()
+            }
+        }
+
+        if (captcha?.provider === "google-recaptcha-v2-invisible" && captcha?.siteKey) {
+            fetchOptions.headers = {
+                "x-captcha-response": (await recaptchaRef.current!.executeAsync()) as string
             }
         }
 
@@ -228,6 +243,7 @@ export function SignInForm({
                     />
                 )}
 
+                <RecaptchaV2 ref={recaptchaRef} localization={localization} />
                 <RecaptchaV3Badge localization={localization} />
 
                 <Button

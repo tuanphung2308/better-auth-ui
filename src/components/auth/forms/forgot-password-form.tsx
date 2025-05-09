@@ -2,15 +2,17 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useRef } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import type { BetterFetchOption } from "@better-fetch/fetch"
+import type ReCAPTCHA from "react-google-recaptcha"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError, getRecaptchaToken } from "../../../lib/utils"
+import { RecaptchaV2 } from "../../captcha/recaptcha-v2"
 import { RecaptchaV3Badge } from "../../captcha/recaptcha-v3-badge"
 import { Button } from "../../ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
@@ -43,6 +45,7 @@ export function ForgotPasswordForm({
         viewPaths,
         captcha
     } = useContext(AuthUIContext)
+    const recaptchaRef = useRef<ReCAPTCHA>(null)
 
     localization = { ...contextLocalization, ...localization }
 
@@ -76,6 +79,18 @@ export function ForgotPasswordForm({
         if (captcha?.provider === "google-recaptcha-v3" && captcha?.siteKey) {
             fetchOptions.headers = {
                 "x-captcha-response": await getRecaptchaToken(captcha.siteKey, "forgotPassword")
+            }
+        }
+
+        if (captcha?.provider === "google-recaptcha-v2-checkbox" && captcha?.siteKey) {
+            fetchOptions.headers = {
+                "x-captcha-response": grecaptcha.getResponse()
+            }
+        }
+
+        if (captcha?.provider === "google-recaptcha-v2-invisible" && captcha?.siteKey) {
+            fetchOptions.headers = {
+                "x-captcha-response": (await recaptchaRef.current!.executeAsync()) as string
             }
         }
 
@@ -131,6 +146,7 @@ export function ForgotPasswordForm({
                     )}
                 />
 
+                <RecaptchaV2 ref={recaptchaRef} localization={localization} />
                 <RecaptchaV3Badge localization={localization} />
 
                 <Button
