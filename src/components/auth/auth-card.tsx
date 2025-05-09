@@ -108,8 +108,15 @@ export function AuthCard({
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     useEffect(() => {
+        const handlePageHide = () => {
+            setIsSubmitting(false)
+        }
+
+        window.addEventListener("pagehide", handlePageHide)
+
         return () => {
             setIsSubmitting(false)
+            window.removeEventListener("pagehide", handlePageHide)
         }
     }, [])
 

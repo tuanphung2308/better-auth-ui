@@ -82,6 +82,10 @@ export function ProviderButton({
 
                 if (signInSocial) {
                     await signInSocial(socialParams)
+
+                    setTimeout(() => {
+                        setIsSubmitting(false)
+                    }, 10000)
                 } else {
                     await authClient.signIn.social(socialParams)
                 }
