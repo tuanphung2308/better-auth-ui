@@ -2,17 +2,40 @@ import { useEffect, useState } from "react"
 
 import { useContext } from "react"
 import { useIsHydrated } from "../../hooks/use-hydrated"
+import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
+import { cn } from "../../lib/utils"
 
-export function RecaptchaV3Badge() {
+export interface RecaptchaV3BadgeProps {
+    className?: string
+    localization?: Partial<AuthLocalization>
+}
+
+export function RecaptchaV3Badge({
+    className,
+    localization: propLocalization
+}: RecaptchaV3BadgeProps) {
     const isHydrated = useIsHydrated()
-    const { captcha } = useContext(AuthUIContext)
-    const [isVisible, setIsVisible] = useState(false)
+    const { captcha, localization: contextLocalization } = useContext(AuthUIContext)
+    const localization = { ...contextLocalization, ...propLocalization }
+
+    const checkVisible = () => {
+        if (!isHydrated) return false
+        if (captcha?.hideBadge) return false
+
+        const iframe = document.querySelector("iframe[title='reCAPTCHA']") as HTMLIFrameElement
+        if (!iframe) return false
+
+        return true
+    }
+
+    const [isVisible, setIsVisible] = useState(checkVisible())
 
     useEffect(() => {
-        if (captcha?.hideBadge) return
+        if (!captcha) return
+        if (captcha.hideBadge) return
 
-        const checkTheme = () => {
+        const checkTheme = async () => {
             const isDark =
                 document.documentElement.classList.contains("dark") ||
                 document.documentElement.getAttribute("style")?.includes("color-scheme: dark")
@@ -25,11 +48,20 @@ export function RecaptchaV3Badge() {
             const iframe = document.querySelector("iframe[title='reCAPTCHA']") as HTMLIFrameElement
             if (iframe) {
                 const iframeSrcUrl = new URL(iframe.src)
+                iframe.style.backgroundColor = "transparent"
+
                 iframeSrcUrl.searchParams.set("theme", theme)
                 iframeSrcUrl.searchParams.set("hl", lang)
-                iframe.src = iframeSrcUrl.toString()
 
-                setIsVisible(true)
+                if (iframeSrcUrl.toString() === iframe.src) return
+
+                iframe.onload = () => {
+                    setTimeout(() => {
+                        setIsVisible(true)
+                    }, 100)
+                }
+
+                iframe.src = iframeSrcUrl.toString()
             }
         }
 
@@ -44,7 +76,9 @@ export function RecaptchaV3Badge() {
 
         observer.observe(document.documentElement, { attributes: true })
 
-        checkTheme()
+        grecaptcha.ready(() => {
+            checkTheme()
+        })
 
         return () => {
             observer.disconnect()
@@ -53,13 +87,37 @@ export function RecaptchaV3Badge() {
 
     if (!isVisible) return null
 
+    if (!captcha || captcha.provider !== "google-recaptcha-v3") return null
+
+    if (!captcha.hideBadge) {
+        return isHydrated ? (
+            <style>{`
+                .grecaptcha-badge { visibility: visible; }
+            `}</style>
+        ) : null
+    }
+
     return (
-        <>
-            {isHydrated && captcha && !captcha.hideBadge && (
-                <style>{`
-                    .grecaptcha-badge { visibility: visible; }
-                `}</style>
-            )}
-        </>
+        <p className={cn("text-muted-foreground text-xs", className)}>
+            {localization.protectedByRecaptcha} {localization.byContinuingYouAgreeTo} Google's{" "}
+            <a
+                className="text-foreground hover:underline"
+                href="https://policies.google.com/privacy"
+                target="_blank"
+                rel="noreferrer"
+            >
+                {localization.privacyPolicy}
+            </a>{" "}
+            &{" "}
+            <a
+                className="text-foreground hover:underline"
+                href="https://policies.google.com/terms"
+                target="_blank"
+                rel="noreferrer"
+            >
+                {localization.termsOfService}
+            </a>
+            .
+        </p>
     )
 }

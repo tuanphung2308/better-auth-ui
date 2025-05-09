@@ -20,7 +20,6 @@ import { Checkbox } from "../../ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
 import type { AuthFormClassNames } from "../auth-form"
-import { RecaptchaBranding } from "../recaptcha-branding"
 
 export interface SignInFormProps {
     className?: string
@@ -138,8 +137,6 @@ export function SignInForm({
 
     return (
         <Form {...form}>
-            <RecaptchaV3Badge />
-
             <form
                 onSubmit={form.handleSubmit(signIn)}
                 noValidate={isHydrated}
@@ -231,9 +228,7 @@ export function SignInForm({
                     />
                 )}
 
-                {captcha?.provider === "google-recaptcha-v3" && captcha.hideBadge && (
-                    <RecaptchaBranding localization={localization} />
-                )}
+                <RecaptchaV3Badge localization={localization} />
 
                 <Button
                     type="submit"

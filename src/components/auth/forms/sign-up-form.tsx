@@ -13,13 +13,13 @@ import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError, getRecaptchaToken, getSearchParam } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
+import { RecaptchaV3Badge } from "../../captcha/recaptcha-v3-badge"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
 import { Checkbox } from "../../ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
 import type { AuthFormClassNames } from "../auth-form"
-import { RecaptchaBranding } from "../recaptcha-branding"
 
 export interface SignUpFormProps {
     className?: string
@@ -471,9 +471,7 @@ export function SignUpForm({
                         )
                     })}
 
-                {captcha?.provider === "google-recaptcha-v3" && captcha.hideBadge && (
-                    <RecaptchaBranding localization={localization} />
-                )}
+                <RecaptchaV3Badge localization={localization} />
 
                 <Button
                     type="submit"
