@@ -26,6 +26,9 @@ export function RecaptchaV3Badge({
         const iframe = document.querySelector("iframe[title='reCAPTCHA']") as HTMLIFrameElement
         if (!iframe) return false
 
+        const iframeSrcUrl = new URL(iframe.src)
+        if (!iframeSrcUrl.searchParams.has("theme")) return false
+
         return true
     }
 
