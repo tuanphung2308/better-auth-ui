@@ -221,7 +221,7 @@ export function AuthCard({
                     </div>
                 )}
 
-                {view !== "resetPassword" && (providers?.length || otherProviders?.length) && (
+                {view !== "resetPassword" && (providers?.length || otherProviders?.length || passkey) && (
                     <>
                         {(credentials || magicLink || emailOTP) && (
                             <div className="flex items-center gap-2">
