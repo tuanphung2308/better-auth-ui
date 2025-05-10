@@ -14,6 +14,7 @@ export function RecaptchaV3() {
     useEffect(() => {
         if (initialized) return
         if (captcha?.provider !== "google-recaptcha-v3") return
+        if (typeof grecaptcha === "undefined") return
 
         const checkInitialized = () => {
             const iframe = document.querySelector("iframe[title='reCAPTCHA']") as HTMLIFrameElement
