@@ -77,6 +77,8 @@ export type AuthUIContextType = {
         siteKey: string
         provider: CaptchaProvider
         hideBadge?: boolean
+        recaptchaNet?: boolean
+        enterprise?: boolean
     }
     /**
      * Force color icons for both light and dark themes
@@ -420,9 +422,11 @@ export const AuthUIProvider = ({
                 ...props
             }}
         >
-            <RecaptchaV3 />
-
-            {children}
+            {captcha?.provider === "google-recaptcha-v3" ? (
+                <RecaptchaV3>{children}</RecaptchaV3>
+            ) : (
+                children
+            )}
         </AuthUIContext.Provider>
     )
 }
