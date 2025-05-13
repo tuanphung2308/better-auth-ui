@@ -23,19 +23,19 @@ export function RecaptchaV3({
         >
             {isHydrated && (
                 <style>{`
-                 .grecaptcha-badge {
-                    visibility: hidden;
-                    border-radius: var(--radius) !important;
-                    --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, #0000000d);
-                    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow) !important;
-                    border-style: var(--tw-border-style) !important;
-                    border-width: 1px;
-                }
+                    .grecaptcha-badge {
+                        visibility: hidden;
+                        border-radius: var(--radius) !important;
+                        --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, #0000000d);
+                        box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow) !important;
+                        border-style: var(--tw-border-style) !important;
+                        border-width: 1px;
+                    }
 
-                .dark .grecaptcha-badge {
-                    border-color: var(--input) !important;
-                }
-             `}</style>
+                    .dark .grecaptcha-badge {
+                        border-color: var(--input) !important;
+                    }
+                `}</style>
             )}
 
             <RecaptchaV3Style />

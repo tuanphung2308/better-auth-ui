@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import ReCAPTCHA from "react-google-recaptcha"
 import { useLang } from "../../hooks/use-lang"
 import { useTheme } from "../../hooks/use-theme"
@@ -17,6 +17,14 @@ export function RecaptchaV2({
     localization = { ...contextLocalization, ...localization }
     const { theme } = useTheme()
     const { lang } = useLang()
+
+    useEffect(() => {
+        // biome-ignore lint/suspicious/noExplicitAny:
+        ;(window as any).recaptchaOptions = {
+            useRecaptchaNet: captcha?.recaptchaNet,
+            enterprise: captcha?.enterprise
+        }
+    }, [captcha])
 
     if (
         captcha?.provider !== "google-recaptcha-v2-checkbox" &&
@@ -49,7 +57,7 @@ export function RecaptchaV2({
                 size={captcha.provider === "google-recaptcha-v2-invisible" ? "invisible" : "normal"}
                 className={cn(
                     captcha.provider === "google-recaptcha-v2-invisible"
-                        ? "absolute rounded"
+                        ? "absolute"
                         : "mx-auto h-[76px] w-[302px] overflow-hidden rounded bg-muted"
                 )}
             />

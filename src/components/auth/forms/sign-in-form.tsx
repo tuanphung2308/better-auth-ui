@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import type { BetterFetchOption } from "@better-fetch/fetch"
-import type ReCAPTCHA from "react-google-recaptcha"
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
@@ -42,7 +41,8 @@ export function SignInForm({
     setIsSubmitting
 }: SignInFormProps) {
     const isHydrated = useIsHydrated()
-    const recaptchaRef = useRef<ReCAPTCHA>(null)
+    // biome-ignore lint/suspicious/noExplicitAny:
+    const captchaRef = useRef<any>(null)
     const { executeRecaptcha } = useGoogleReCaptcha()
 
     const {
@@ -114,7 +114,7 @@ export function SignInForm({
 
         if (captcha?.provider === "google-recaptcha-v2-invisible" && captcha?.siteKey) {
             fetchOptions.headers = {
-                "x-captcha-response": (await recaptchaRef.current!.executeAsync()) as string
+                "x-captcha-response": (await captchaRef.current!.executeAsync()) as string
             }
         }
 
@@ -245,7 +245,7 @@ export function SignInForm({
                     />
                 )}
 
-                <RecaptchaV2 ref={recaptchaRef} localization={localization} />
+                <RecaptchaV2 ref={captchaRef} localization={localization} />
                 <RecaptchaBadge localization={localization} />
 
                 <Button
