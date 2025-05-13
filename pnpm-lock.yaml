@@ -42,10 +42,10 @@ importers:
         specifier: '>=18.0.0'
         version: 19.1.0(react@19.1.0)
       react-google-recaptcha:
-        specifier: ^3.1.0
+        specifier: '>=3.1.0'
         version: 3.1.0(react@19.1.0)
       react-google-recaptcha-v3:
-        specifier: ^1.10.1
+        specifier: '>=1.10.0'
         version: 1.10.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-hook-form:
         specifier: '>=7.55.0'
@@ -152,7 +152,7 @@ importers:
         version: 3.2.0
       tailwindcss-animate:
         specifier: ^1.0.7
-        version: 1.0.7
+        version: 1.0.7(tailwindcss@4.1.4)
       tsc-watch:
         specifier: ^6.2.1
         version: 6.2.1(typescript@5.8.3)
@@ -4298,7 +4298,9 @@ snapshots:
 
   tailwind-merge@3.2.0: {}
 
-  tailwindcss-animate@1.0.7: {}
+  tailwindcss-animate@1.0.7(tailwindcss@4.1.4):
+    dependencies:
+      tailwindcss: 4.1.4
 
   tailwindcss@4.1.4: {}
 

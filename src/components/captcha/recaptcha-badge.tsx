@@ -18,9 +18,8 @@ export function RecaptchaBadge({
     const localization = { ...contextLocalization, ...propLocalization }
 
     if (
-        !captcha ||
-        (captcha.provider !== "google-recaptcha-v3" &&
-            captcha.provider !== "google-recaptcha-v2-invisible")
+        captcha?.provider !== "google-recaptcha-v3" &&
+        captcha?.provider !== "google-recaptcha-v2-invisible"
     )
         return null
 
@@ -39,7 +38,7 @@ export function RecaptchaBadge({
             `}</style>
 
             <p className={cn("text-muted-foreground text-xs", className)}>
-                {localization.protectedByRecaptcha} {localization.byContinuingYouAgreeTo} Google{" "}
+                {localization.protectedByRecaptcha} {localization.byContinuingYouAgree} Google{" "}
                 <a
                     className="text-foreground hover:underline"
                     href="https://policies.google.com/privacy"

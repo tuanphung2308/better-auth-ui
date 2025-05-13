@@ -8,11 +8,12 @@ import * as z from "zod"
 
 import type { BetterFetchOption } from "@better-fetch/fetch"
 import type ReCAPTCHA from "react-google-recaptcha"
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import { cn, getLocalizedError, getRecaptchaToken, isValidEmail } from "../../../lib/utils"
+import { cn, getLocalizedError, isValidEmail } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
 import { RecaptchaBadge } from "../../captcha/recaptcha-badge"
 import { RecaptchaV2 } from "../../captcha/recaptcha-v2"
@@ -42,6 +43,7 @@ export function SignInForm({
 }: SignInFormProps) {
     const isHydrated = useIsHydrated()
     const recaptchaRef = useRef<ReCAPTCHA>(null)
+    const { executeRecaptcha } = useGoogleReCaptcha()
 
     const {
         authClient,
@@ -98,9 +100,9 @@ export function SignInForm({
     async function signIn({ email, password, rememberMe }: z.infer<typeof formSchema>) {
         const fetchOptions: BetterFetchOption = { throw: true }
 
-        if (captcha?.provider === "google-recaptcha-v3" && captcha?.siteKey) {
+        if (captcha?.provider === "google-recaptcha-v3" && captcha?.siteKey && executeRecaptcha) {
             fetchOptions.headers = {
-                "x-captcha-response": await getRecaptchaToken(captcha.siteKey, "signIn")
+                "x-captcha-response": await executeRecaptcha("signIn")
             }
         }
 
