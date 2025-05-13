@@ -2,19 +2,15 @@ import { useContext, useEffect } from "react"
 import ReCAPTCHA from "react-google-recaptcha"
 import { useLang } from "../../hooks/use-lang"
 import { useTheme } from "../../hooks/use-theme"
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 
 export function RecaptchaV2({
-    ref,
-    localization
+    ref
 }: {
     ref: React.RefObject<ReCAPTCHA | null>
-    localization: Partial<AuthLocalization>
 }) {
-    const { captcha, localization: contextLocalization } = useContext(AuthUIContext)
-    localization = { ...contextLocalization, ...localization }
+    const { captcha } = useContext(AuthUIContext)
     const { theme } = useTheme()
     const { lang } = useLang()
 
@@ -26,11 +22,7 @@ export function RecaptchaV2({
         }
     }, [captcha])
 
-    if (
-        captcha?.provider !== "google-recaptcha-v2-checkbox" &&
-        captcha?.provider !== "google-recaptcha-v2-invisible"
-    )
-        return null
+    if (!captcha) return null
 
     return (
         <>

@@ -1,21 +1,20 @@
 "use client"
 
+import type { BetterFetchOption } from "@better-fetch/fetch"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { useContext, useEffect, useRef } from "react"
+import { useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
-import type { BetterFetchOption } from "@better-fetch/fetch"
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3"
+import { useCaptcha } from "../../../hooks/use-captcha"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError, isValidEmail } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
-import { RecaptchaBadge } from "../../captcha/recaptcha-badge"
-import { RecaptchaV2 } from "../../captcha/recaptcha-v2"
+import { Captcha } from "../../captcha/captcha"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
 import { Checkbox } from "../../ui/checkbox"
@@ -41,9 +40,7 @@ export function SignInForm({
     setIsSubmitting
 }: SignInFormProps) {
     const isHydrated = useIsHydrated()
-    // biome-ignore lint/suspicious/noExplicitAny:
-    const captchaRef = useRef<any>(null)
-    const { executeRecaptcha } = useGoogleReCaptcha()
+    const { captchaRef, executeCaptcha } = useCaptcha()
 
     const {
         authClient,
@@ -98,27 +95,15 @@ export function SignInForm({
     }, [form.formState.isSubmitting, transitionPending, setIsSubmitting])
 
     async function signIn({ email, password, rememberMe }: z.infer<typeof formSchema>) {
-        const fetchOptions: BetterFetchOption = { throw: true }
-
-        if (captcha?.provider === "google-recaptcha-v3" && captcha?.siteKey && executeRecaptcha) {
-            fetchOptions.headers = {
-                "x-captcha-response": await executeRecaptcha("signIn")
-            }
-        }
-
-        if (captcha?.provider === "google-recaptcha-v2-checkbox" && captcha?.siteKey) {
-            fetchOptions.headers = {
-                "x-captcha-response": grecaptcha.getResponse()
-            }
-        }
-
-        if (captcha?.provider === "google-recaptcha-v2-invisible" && captcha?.siteKey) {
-            fetchOptions.headers = {
-                "x-captcha-response": (await captchaRef.current!.executeAsync()) as string
-            }
-        }
-
         try {
+            const fetchOptions: BetterFetchOption = { throw: true }
+
+            if (captcha) {
+                fetchOptions.headers = {
+                    "x-captcha-response": await executeCaptcha("signIn")
+                }
+            }
+
             let response: Record<string, unknown> = {}
 
             if (usernameEnabled && !isValidEmail(email)) {
@@ -245,8 +230,7 @@ export function SignInForm({
                     />
                 )}
 
-                <RecaptchaV2 ref={captchaRef} localization={localization} />
-                <RecaptchaBadge localization={localization} />
+                <Captcha ref={captchaRef} localization={localization} />
 
                 <Button
                     type="submit"

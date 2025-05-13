@@ -2,18 +2,17 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { useContext, useEffect, useRef } from "react"
+import { useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import type { BetterFetchOption } from "@better-fetch/fetch"
-import type ReCAPTCHA from "react-google-recaptcha"
+import { useCaptcha } from "../../../hooks/use-captcha"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import { cn, getLocalizedError, getRecaptchaToken } from "../../../lib/utils"
-import { RecaptchaBadge } from "../../captcha/recaptcha-badge"
-import { RecaptchaV2 } from "../../captcha/recaptcha-v2"
+import { cn, getLocalizedError } from "../../../lib/utils"
+import { Captcha } from "../../captcha/captcha"
 import { Button } from "../../ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
@@ -35,6 +34,8 @@ export function ForgotPasswordForm({
     setIsSubmitting
 }: ForgotPasswordFormProps) {
     const isHydrated = useIsHydrated()
+    const { captchaRef, executeCaptcha } = useCaptcha()
+
     const {
         authClient,
         basePath,
@@ -45,7 +46,6 @@ export function ForgotPasswordForm({
         viewPaths,
         captcha
     } = useContext(AuthUIContext)
-    const recaptchaRef = useRef<ReCAPTCHA>(null)
 
     localization = { ...contextLocalization, ...localization }
 
@@ -74,27 +74,15 @@ export function ForgotPasswordForm({
     }, [form.formState.isSubmitting, setIsSubmitting])
 
     async function forgotPassword({ email }: z.infer<typeof formSchema>) {
-        const fetchOptions: BetterFetchOption = { throw: true }
-
-        if (captcha?.provider === "google-recaptcha-v3" && captcha?.siteKey) {
-            fetchOptions.headers = {
-                "x-captcha-response": await getRecaptchaToken(captcha.siteKey, "forgotPassword")
-            }
-        }
-
-        if (captcha?.provider === "google-recaptcha-v2-checkbox" && captcha?.siteKey) {
-            fetchOptions.headers = {
-                "x-captcha-response": grecaptcha.getResponse()
-            }
-        }
-
-        if (captcha?.provider === "google-recaptcha-v2-invisible" && captcha?.siteKey) {
-            fetchOptions.headers = {
-                "x-captcha-response": (await recaptchaRef.current!.executeAsync()) as string
-            }
-        }
-
         try {
+            const fetchOptions: BetterFetchOption = { throw: true }
+
+            if (captcha) {
+                fetchOptions.headers = {
+                    "x-captcha-response": await executeCaptcha("forgotPassword")
+                }
+            }
+
             await authClient.forgetPassword({
                 email,
                 redirectTo: `${baseURL}${basePath}/${viewPaths.resetPassword}`,
@@ -146,8 +134,7 @@ export function ForgotPasswordForm({
                     )}
                 />
 
-                <RecaptchaV2 ref={recaptchaRef} localization={localization} />
-                <RecaptchaBadge localization={localization} />
+                <Captcha ref={captchaRef} localization={localization} />
 
                 <Button
                     type="submit"

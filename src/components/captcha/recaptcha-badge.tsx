@@ -17,11 +17,7 @@ export function RecaptchaBadge({
     const { captcha, localization: contextLocalization } = useContext(AuthUIContext)
     const localization = { ...contextLocalization, ...propLocalization }
 
-    if (
-        captcha?.provider !== "google-recaptcha-v3" &&
-        captcha?.provider !== "google-recaptcha-v2-invisible"
-    )
-        return null
+    if (!captcha) return null
 
     if (!captcha.hideBadge) {
         return isHydrated ? (
