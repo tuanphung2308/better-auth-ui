@@ -1,12 +1,11 @@
 "use client"
 
+import type { BetterFetchOption } from "@better-fetch/fetch"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
 import { useCallback, useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-
-import type { BetterFetchOption } from "@better-fetch/fetch"
 import { useCaptcha } from "../../../hooks/use-captcha"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
@@ -42,7 +41,7 @@ export function SignUpForm({
     setIsSubmitting
 }: SignUpFormProps) {
     const isHydrated = useIsHydrated()
-    const { captchaRef, executeCaptcha } = useCaptcha()
+    const { captchaRef, getCaptchaHeaders } = useCaptcha()
 
     const {
         additionalFields,
@@ -236,12 +235,9 @@ export function SignUpForm({
                 }
             }
 
-            const fetchOptions: BetterFetchOption = { throw: true }
-
-            if (captcha) {
-                fetchOptions.headers = {
-                    "x-captcha-response": await executeCaptcha("signUp")
-                }
+            const fetchOptions: BetterFetchOption = {
+                throw: true,
+                headers: await getCaptchaHeaders("signUp")
             }
 
             const data = await (authClient as AuthClient).signUp.email({

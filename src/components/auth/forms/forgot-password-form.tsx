@@ -34,7 +34,7 @@ export function ForgotPasswordForm({
     setIsSubmitting
 }: ForgotPasswordFormProps) {
     const isHydrated = useIsHydrated()
-    const { captchaRef, executeCaptcha } = useCaptcha()
+    const { captchaRef, getCaptchaHeaders } = useCaptcha()
 
     const {
         authClient,
@@ -75,12 +75,9 @@ export function ForgotPasswordForm({
 
     async function forgotPassword({ email }: z.infer<typeof formSchema>) {
         try {
-            const fetchOptions: BetterFetchOption = { throw: true }
-
-            if (captcha) {
-                fetchOptions.headers = {
-                    "x-captcha-response": await executeCaptcha("forgotPassword")
-                }
+            const fetchOptions: BetterFetchOption = {
+                throw: true,
+                headers: await getCaptchaHeaders("forgotPassword")
             }
 
             await authClient.forgetPassword({

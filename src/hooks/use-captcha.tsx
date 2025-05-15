@@ -28,10 +28,11 @@ export function useCaptcha() {
         return ""
     }
 
+    const getCaptchaHeaders = async (action: string) =>
+        captcha && { "x-captcha-response": await executeCaptcha(action) }
+
     return {
         captchaRef,
-        executeCaptcha,
-        hasCaptcha: !!captcha?.provider,
-        captchaProvider: captcha?.provider
+        getCaptchaHeaders
     }
 }

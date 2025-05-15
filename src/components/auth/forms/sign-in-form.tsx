@@ -40,7 +40,7 @@ export function SignInForm({
     setIsSubmitting
 }: SignInFormProps) {
     const isHydrated = useIsHydrated()
-    const { captchaRef, executeCaptcha } = useCaptcha()
+    const { captchaRef, getCaptchaHeaders } = useCaptcha()
 
     const {
         authClient,
@@ -96,12 +96,9 @@ export function SignInForm({
 
     async function signIn({ email, password, rememberMe }: z.infer<typeof formSchema>) {
         try {
-            const fetchOptions: BetterFetchOption = { throw: true }
-
-            if (captcha) {
-                fetchOptions.headers = {
-                    "x-captcha-response": await executeCaptcha("signIn")
-                }
+            const fetchOptions: BetterFetchOption = {
+                throw: true,
+                headers: await getCaptchaHeaders("signIn")
             }
 
             let response: Record<string, unknown> = {}
