@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
 
 export function useLang() {
-    const [lang, setLang] = useState<string>("")
+    const [lang, setLang] = useState<string>()
 
     useEffect(() => {
         const checkLang = () => {
-            const currentLang = document.documentElement.getAttribute("lang") || ""
-            setLang(currentLang)
+            const currentLang = document.documentElement.getAttribute("lang")
+            setLang(currentLang ?? undefined)
         }
 
         // Initial check
