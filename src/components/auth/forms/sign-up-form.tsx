@@ -40,7 +40,7 @@ export function SignUpForm({
     setIsSubmitting
 }: SignUpFormProps) {
     const isHydrated = useIsHydrated()
-    const { captchaRef, getCaptchaHeaders } = useCaptcha()
+    const { captchaRef, getCaptchaHeaders } = useCaptcha({ localization })
 
     const {
         additionalFields,

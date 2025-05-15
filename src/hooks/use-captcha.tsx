@@ -1,6 +1,7 @@
 import { type RefObject, useContext, useRef } from "react"
 import type ReCAPTCHA from "react-google-recaptcha"
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3"
+import type { AuthLocalization } from "../lib/auth-localization"
 import { AuthUIContext } from "../lib/auth-ui-provider"
 
 // Default captcha endpoints
@@ -23,32 +24,47 @@ const sanitizeActionName = (action: string): string => {
     return result
 }
 
-export function useCaptcha() {
-    const { captcha } = useContext(AuthUIContext)
+export function useCaptcha({
+    localization
+}: {
+    localization: Partial<AuthLocalization>
+}) {
+    const { captcha, localization: contextLocalization } = useContext(AuthUIContext)
+
+    localization = { ...contextLocalization, ...localization }
+
     // biome-ignore lint/suspicious/noExplicitAny:
     const captchaRef = useRef<any>(null)
     const { executeRecaptcha } = useGoogleReCaptcha()
 
     const executeCaptcha = async (action: string) => {
-        if (!captcha) return ""
+        if (!captcha) throw new Error(localization.missingCaptchaResponse)
 
         // Sanitize the action name for reCAPTCHA
         const sanitizedAction = sanitizeActionName(action)
+        let response: string | undefined | null
 
         switch (captcha.provider) {
             case "google-recaptcha-v3":
-                return (await executeRecaptcha?.(sanitizedAction)) || ""
-            case "google-recaptcha-v2-checkbox":
+                response = await executeRecaptcha?.(sanitizedAction)
+                break
+            case "google-recaptcha-v2-checkbox": {
+                const recaptchaRef = captchaRef as RefObject<ReCAPTCHA>
+                response = recaptchaRef.current.getValue()
+                break
+            }
             case "google-recaptcha-v2-invisible": {
                 const recaptchaRef = captchaRef as RefObject<ReCAPTCHA>
-                if (captchaRef.current) {
-                    const response = await recaptchaRef.current.executeAsync()
-                    return response || ""
-                }
+                response = await recaptchaRef.current.executeAsync()
+                break
             }
         }
 
-        return ""
+        if (!response) {
+            throw new Error(localization.missingCaptchaResponse)
+        }
+
+        return response
     }
 
     const getCaptchaHeaders = async (action: string) => {

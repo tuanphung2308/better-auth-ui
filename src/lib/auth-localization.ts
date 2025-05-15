@@ -458,7 +458,10 @@ export const authLocalization = {
     protectedByRecaptcha: "This site is protected by reCAPTCHA.",
 
     /** @default "By continuing, you agree to the" */
-    byContinuingYouAgree: "By continuing, you agree to the"
+    byContinuingYouAgree: "By continuing, you agree to the",
+
+    /** @default "Missing CAPTCHA response" */
+    missingCaptchaResponse: "Missing CAPTCHA response"
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>

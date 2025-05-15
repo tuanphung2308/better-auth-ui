@@ -42,7 +42,7 @@ export function RecaptchaV2({
 
             <ReCAPTCHA
                 ref={ref}
-                key={`${theme}-${lang}`}
+                key={`${theme}-${lang}-${captcha.provider}`}
                 sitekey={captcha.siteKey}
                 theme={theme}
                 hl={lang}

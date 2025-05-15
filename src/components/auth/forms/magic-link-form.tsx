@@ -39,7 +39,7 @@ export function MagicLinkForm({
     setIsSubmitting
 }: MagicLinkFormProps) {
     const isHydrated = useIsHydrated()
-    const { captchaRef, getCaptchaHeaders } = useCaptcha()
+    const { captchaRef, getCaptchaHeaders } = useCaptcha({ localization })
 
     const {
         authClient,

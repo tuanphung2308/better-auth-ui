@@ -33,7 +33,7 @@ export function ForgotPasswordForm({
     setIsSubmitting
 }: ForgotPasswordFormProps) {
     const isHydrated = useIsHydrated()
-    const { captchaRef, getCaptchaHeaders } = useCaptcha()
+    const { captchaRef, getCaptchaHeaders } = useCaptcha({ localization })
 
     const {
         authClient,
@@ -42,8 +42,7 @@ export function ForgotPasswordForm({
         localization: contextLocalization,
         navigate,
         toast,
-        viewPaths,
-        captcha
+        viewPaths
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
