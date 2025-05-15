@@ -1,12 +1,11 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import type { BetterFetchOption } from "better-auth/react"
 import { Loader2 } from "lucide-react"
 import { useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-
-import type { BetterFetchOption } from "@better-fetch/fetch"
 import { useCaptcha } from "../../../hooks/use-captcha"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import type { AuthLocalization } from "../../../lib/auth-localization"
@@ -77,7 +76,7 @@ export function ForgotPasswordForm({
         try {
             const fetchOptions: BetterFetchOption = {
                 throw: true,
-                headers: await getCaptchaHeaders("forgotPassword")
+                headers: await getCaptchaHeaders("/forget-password")
             }
 
             await authClient.forgetPassword({
@@ -131,7 +130,7 @@ export function ForgotPasswordForm({
                     )}
                 />
 
-                <Captcha ref={captchaRef} localization={localization} />
+                <Captcha ref={captchaRef} localization={localization} action="/forget-password" />
 
                 <Button
                     type="submit"

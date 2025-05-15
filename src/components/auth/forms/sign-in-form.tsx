@@ -96,14 +96,14 @@ export function SignInForm({
 
     async function signIn({ email, password, rememberMe }: z.infer<typeof formSchema>) {
         try {
-            const fetchOptions: BetterFetchOption = {
-                throw: true,
-                headers: await getCaptchaHeaders("signIn")
-            }
-
             let response: Record<string, unknown> = {}
 
             if (usernameEnabled && !isValidEmail(email)) {
+                const fetchOptions: BetterFetchOption = {
+                    throw: true,
+                    headers: await getCaptchaHeaders("/sign-in/username")
+                }
+
                 response = await (authClient as AuthClient).signIn.username({
                     username: email,
                     password,
@@ -111,6 +111,11 @@ export function SignInForm({
                     fetchOptions
                 })
             } else {
+                const fetchOptions: BetterFetchOption = {
+                    throw: true,
+                    headers: await getCaptchaHeaders("/sign-in/email")
+                }
+
                 response = await authClient.signIn.email({
                     email,
                     password,
@@ -227,7 +232,7 @@ export function SignInForm({
                     />
                 )}
 
-                <Captcha ref={captchaRef} localization={localization} />
+                <Captcha ref={captchaRef} localization={localization} action="/sign-in/email" />
 
                 <Button
                     type="submit"

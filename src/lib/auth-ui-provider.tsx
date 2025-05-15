@@ -79,6 +79,11 @@ export type AuthUIContextType = {
         hideBadge?: boolean
         recaptchaNet?: boolean
         enterprise?: boolean
+        /**
+         * Overrides the default array of paths where captcha validation is enforced
+         * @default ["/sign-up/email", "/sign-in/email", "/forget-password"]
+         */
+        endpoints?: string[]
     }
     /**
      * Force color icons for both light and dark themes

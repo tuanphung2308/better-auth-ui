@@ -1,7 +1,6 @@
 "use client"
-
-import type { BetterFetchOption } from "@better-fetch/fetch"
 import { zodResolver } from "@hookform/resolvers/zod"
+import type { BetterFetchOption } from "better-auth/react"
 import { Loader2 } from "lucide-react"
 import { useCallback, useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
@@ -237,7 +236,7 @@ export function SignUpForm({
 
             const fetchOptions: BetterFetchOption = {
                 throw: true,
-                headers: await getCaptchaHeaders("signUp")
+                headers: await getCaptchaHeaders("/sign-up/email")
             }
 
             const data = await (authClient as AuthClient).signUp.email({
@@ -469,7 +468,7 @@ export function SignUpForm({
                         )
                     })}
 
-                <Captcha ref={captchaRef} localization={localization} />
+                <Captcha ref={captchaRef} localization={localization} action="/sign-up/email" />
 
                 <Button
                     type="submit"
