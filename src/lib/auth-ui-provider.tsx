@@ -4,12 +4,14 @@ import type { SocialProvider } from "better-auth/social-providers"
 import { type ReactNode, createContext, useMemo } from "react"
 import { toast } from "sonner"
 
+import { RecaptchaV3 } from "../components/captcha/recaptcha-v3"
 import { useAuthData } from "../hooks/use-auth-data"
 import type { AdditionalFields } from "../types/additional-fields"
 import type { AnyAuthClient } from "../types/any-auth-client"
 import type { AuthClient } from "../types/auth-client"
 import type { AuthHooks } from "../types/auth-hooks"
 import type { AuthMutators } from "../types/auth-mutators"
+import type { CaptchaProvider } from "../types/captcha-provider"
 import type { Link } from "../types/link"
 import type { RenderToast } from "../types/render-toast"
 import { type AuthLocalization, authLocalization } from "./auth-localization"
@@ -68,6 +70,21 @@ export type AuthUIContextType = {
      * Front end base URL for auth API callbacks
      */
     baseURL?: string
+    /**
+     * Captcha configuration
+     */
+    captcha?: {
+        siteKey: string
+        provider: CaptchaProvider
+        hideBadge?: boolean
+        recaptchaNet?: boolean
+        enterprise?: boolean
+        /**
+         * Overrides the default array of paths where captcha validation is enforced
+         * @default ["/sign-up/email", "/sign-in/email", "/forget-password"]
+         */
+        endpoints?: string[]
+    }
     /**
      * Force color icons for both light and dark themes
      * @default false
@@ -289,6 +306,7 @@ export const AuthUIProvider = ({
     avatarSize,
     basePath = "/auth",
     baseURL = "",
+    captcha,
     redirectTo = "/",
     credentials = true,
     changeEmail = true,
@@ -387,6 +405,7 @@ export const AuthUIProvider = ({
                 avatarSize: avatarSize || (uploadAvatar ? 256 : 128),
                 basePath: basePath === "/" ? "" : basePath,
                 baseURL,
+                captcha,
                 redirectTo,
                 changeEmail,
                 credentials,
@@ -408,7 +427,11 @@ export const AuthUIProvider = ({
                 ...props
             }}
         >
-            {children}
+            {captcha?.provider === "google-recaptcha-v3" ? (
+                <RecaptchaV3>{children}</RecaptchaV3>
+            ) : (
+                children
+            )}
         </AuthUIContext.Provider>
     )
 }

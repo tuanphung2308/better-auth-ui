@@ -1,17 +1,20 @@
 "use client"
 
+import type { BetterFetchOption } from "@better-fetch/fetch"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
 import { useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { useCaptcha } from "../../../hooks/use-captcha"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError, isValidEmail } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
+import { Captcha } from "../../captcha/captcha"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
 import { Checkbox } from "../../ui/checkbox"
@@ -37,6 +40,7 @@ export function SignInForm({
     setIsSubmitting
 }: SignInFormProps) {
     const isHydrated = useIsHydrated()
+    const { captchaRef, getCaptchaHeaders } = useCaptcha({ localization })
 
     const {
         authClient,
@@ -46,6 +50,7 @@ export function SignInForm({
         rememberMe: rememberMeEnabled,
         username: usernameEnabled,
         viewPaths,
+        captcha,
         navigate,
         toast,
         Link
@@ -94,18 +99,28 @@ export function SignInForm({
             let response: Record<string, unknown> = {}
 
             if (usernameEnabled && !isValidEmail(email)) {
+                const fetchOptions: BetterFetchOption = {
+                    throw: true,
+                    headers: await getCaptchaHeaders("/sign-in/username")
+                }
+
                 response = await (authClient as AuthClient).signIn.username({
                     username: email,
                     password,
                     rememberMe,
-                    fetchOptions: { throw: true }
+                    fetchOptions
                 })
             } else {
+                const fetchOptions: BetterFetchOption = {
+                    throw: true,
+                    headers: await getCaptchaHeaders("/sign-in/email")
+                }
+
                 response = await authClient.signIn.email({
                     email,
                     password,
                     rememberMe,
-                    fetchOptions: { throw: true }
+                    fetchOptions
                 })
             }
 
@@ -216,6 +231,8 @@ export function SignInForm({
                         )}
                     />
                 )}
+
+                <Captcha ref={captchaRef} localization={localization} action="/sign-in/email" />
 
                 <Button
                     type="submit"

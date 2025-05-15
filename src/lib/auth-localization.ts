@@ -449,7 +449,22 @@ export const authLocalization = {
     passwordTooShort: "Password too short",
 
     /** @default "Upload Avatar" */
-    uploadAvatar: "Upload Avatar"
+    uploadAvatar: "Upload Avatar",
+
+    /** @default "Privacy Policy" */
+    privacyPolicy: "Privacy Policy",
+
+    /** @default "Terms of Service" */
+    termsOfService: "Terms of Service",
+
+    /** @default "This site is protected by reCAPTCHA." */
+    protectedByRecaptcha: "This site is protected by reCAPTCHA.",
+
+    /** @default "By continuing, you agree to the" */
+    byContinuingYouAgree: "By continuing, you agree to the",
+
+    /** @default "Missing CAPTCHA response" */
+    missingCaptchaResponse: "Missing CAPTCHA response"
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>

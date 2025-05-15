@@ -1,16 +1,19 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import type { BetterFetchOption } from "better-auth/react"
 import { Loader2 } from "lucide-react"
 import { useCallback, useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { useCaptcha } from "../../../hooks/use-captcha"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError, getSearchParam } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
+import { Captcha } from "../../captcha/captcha"
 import { Button } from "../../ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
@@ -36,6 +39,7 @@ export function MagicLinkForm({
     setIsSubmitting
 }: MagicLinkFormProps) {
     const isHydrated = useIsHydrated()
+    const { captchaRef, getCaptchaHeaders } = useCaptcha({ localization })
 
     const {
         authClient,
@@ -88,10 +92,15 @@ export function MagicLinkForm({
 
     async function sendMagicLink({ email }: z.infer<typeof formSchema>) {
         try {
+            const fetchOptions: BetterFetchOption = {
+                throw: true,
+                headers: await getCaptchaHeaders("/sign-in/magic-link")
+            }
+
             await (authClient as AuthClient).signIn.magicLink({
                 email,
                 callbackURL: getCallbackURL(),
-                fetchOptions: { throw: true }
+                fetchOptions
             })
 
             toast({
@@ -137,6 +146,12 @@ export function MagicLinkForm({
                             <FormMessage className={classNames?.error} />
                         </FormItem>
                     )}
+                />
+
+                <Captcha
+                    ref={captchaRef}
+                    localization={localization}
+                    action="/sign-in/magic-link"
                 />
 
                 <Button
