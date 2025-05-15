@@ -1,6 +1,9 @@
+import type HCaptcha from "@hcaptcha/react-hcaptcha"
+import type { TurnstileInstance } from "@marsidev/react-turnstile"
 import { type RefObject, useContext, useRef } from "react"
 import type ReCAPTCHA from "react-google-recaptcha"
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3"
+
 import type { AuthLocalization } from "../lib/auth-localization"
 import { AuthUIContext } from "../lib/auth-ui-provider"
 
@@ -41,13 +44,14 @@ export function useCaptcha({
         if (!captcha) throw new Error(localization.missingCaptchaResponse)
 
         // Sanitize the action name for reCAPTCHA
-        const sanitizedAction = sanitizeActionName(action)
         let response: string | undefined | null
 
         switch (captcha.provider) {
-            case "google-recaptcha-v3":
+            case "google-recaptcha-v3": {
+                const sanitizedAction = sanitizeActionName(action)
                 response = await executeRecaptcha?.(sanitizedAction)
                 break
+            }
             case "google-recaptcha-v2-checkbox": {
                 const recaptchaRef = captchaRef as RefObject<ReCAPTCHA>
                 response = recaptchaRef.current.getValue()
@@ -56,6 +60,16 @@ export function useCaptcha({
             case "google-recaptcha-v2-invisible": {
                 const recaptchaRef = captchaRef as RefObject<ReCAPTCHA>
                 response = await recaptchaRef.current.executeAsync()
+                break
+            }
+            case "cloudflare-turnstile": {
+                const turnstileRef = captchaRef as RefObject<TurnstileInstance>
+                response = turnstileRef.current.getResponse()
+                break
+            }
+            case "hcaptcha": {
+                const hcaptchaRef = captchaRef as RefObject<HCaptcha>
+                response = hcaptchaRef.current.getResponse()
                 break
             }
         }

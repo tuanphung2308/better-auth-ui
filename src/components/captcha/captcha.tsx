@@ -1,6 +1,8 @@
+import HCaptcha from "@hcaptcha/react-hcaptcha"
+import { Turnstile } from "@marsidev/react-turnstile"
 import { useContext } from "react"
-import type ReCAPTCHA from "react-google-recaptcha"
 
+import { useTheme } from "../../hooks/use-theme"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { RecaptchaBadge } from "./recaptcha-badge"
@@ -10,7 +12,8 @@ import { RecaptchaV2 } from "./recaptcha-v2"
 const DEFAULT_CAPTCHA_ENDPOINTS = ["/sign-up/email", "/sign-in/email", "/forget-password"]
 
 interface CaptchaProps {
-    ref: React.RefObject<ReCAPTCHA | null>
+    // biome-ignore lint/suspicious/noExplicitAny:
+    ref: React.RefObject<any>
     localization: Partial<AuthLocalization>
     action?: string // Optional action to check if it's in the endpoints list
 }
@@ -27,6 +30,8 @@ export function Captcha({ ref, localization, action }: CaptchaProps) {
         }
     }
 
+    const { theme } = useTheme()
+
     const showRecaptchaV2 =
         captcha.provider === "google-recaptcha-v2-checkbox" ||
         captcha.provider === "google-recaptcha-v2-invisible"
@@ -35,10 +40,20 @@ export function Captcha({ ref, localization, action }: CaptchaProps) {
         captcha.provider === "google-recaptcha-v3" ||
         captcha.provider === "google-recaptcha-v2-invisible"
 
+    const showTurnstile = captcha.provider === "cloudflare-turnstile"
+
+    const showHCaptcha = captcha.provider === "hcaptcha"
+
     return (
         <>
             {showRecaptchaV2 && <RecaptchaV2 ref={ref} />}
             {showRecaptchaBadge && <RecaptchaBadge localization={localization} />}
+            {showTurnstile && <Turnstile className="mx-auto" ref={ref} siteKey={captcha.siteKey} />}
+            {showHCaptcha && (
+                <div className="mx-auto">
+                    <HCaptcha ref={ref} sitekey={captcha.siteKey} theme={theme} />
+                </div>
+            )}
         </>
     )
 }
