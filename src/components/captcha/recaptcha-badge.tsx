@@ -22,7 +22,7 @@ export function RecaptchaBadge({
     if (!captcha.hideBadge) {
         return isHydrated ? (
             <style>{`
-                .grecaptcha-badge { visibility: visible; }
+                .grecaptcha-badge { visibility: visible !important; }
             `}</style>
         ) : null
     }
