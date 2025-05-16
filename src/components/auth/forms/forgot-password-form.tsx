@@ -1,15 +1,17 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import type { BetterFetchOption } from "better-auth/react"
 import { Loader2 } from "lucide-react"
 import { useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-
+import { useCaptcha } from "../../../hooks/use-captcha"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
+import { Captcha } from "../../captcha/captcha"
 import { Button } from "../../ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
@@ -31,6 +33,8 @@ export function ForgotPasswordForm({
     setIsSubmitting
 }: ForgotPasswordFormProps) {
     const isHydrated = useIsHydrated()
+    const { captchaRef, getCaptchaHeaders } = useCaptcha({ localization })
+
     const {
         authClient,
         basePath,
@@ -69,10 +73,15 @@ export function ForgotPasswordForm({
 
     async function forgotPassword({ email }: z.infer<typeof formSchema>) {
         try {
+            const fetchOptions: BetterFetchOption = {
+                throw: true,
+                headers: await getCaptchaHeaders("/forget-password")
+            }
+
             await authClient.forgetPassword({
                 email,
                 redirectTo: `${baseURL}${basePath}/${viewPaths.resetPassword}`,
-                fetchOptions: { throw: true }
+                fetchOptions
             })
 
             toast({
@@ -119,6 +128,8 @@ export function ForgotPasswordForm({
                         </FormItem>
                     )}
                 />
+
+                <Captcha ref={captchaRef} localization={localization} action="/forget-password" />
 
                 <Button
                     type="submit"

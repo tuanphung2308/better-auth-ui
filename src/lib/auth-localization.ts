@@ -445,6 +445,12 @@ export const authLocalization = {
     /** @default "Invalid password" */
     passwordInvalid: "Invalid password",
 
+    /** @default "Your session is not fresh. Please sign in again." */
+    sessionNotFresh: "Your session is not fresh. Please sign in again.",
+
+    /** @default "Session Expired" */
+    sessionExpired: "Session Expired",
+
     /** @default "Password too short" */
     passwordTooShort: "Password too short",
 
@@ -452,7 +458,22 @@ export const authLocalization = {
     passwordTooLong: "Password too long",
 
     /** @default "Upload Avatar" */
-    uploadAvatar: "Upload Avatar"
+    uploadAvatar: "Upload Avatar",
+
+    /** @default "Privacy Policy" */
+    privacyPolicy: "Privacy Policy",
+
+    /** @default "Terms of Service" */
+    termsOfService: "Terms of Service",
+
+    /** @default "This site is protected by reCAPTCHA." */
+    protectedByRecaptcha: "This site is protected by reCAPTCHA.",
+
+    /** @default "By continuing, you agree to the" */
+    byContinuingYouAgree: "By continuing, you agree to the",
+
+    /** @default "Missing CAPTCHA response" */
+    missingCaptchaResponse: "Missing CAPTCHA response"
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>

@@ -1,17 +1,18 @@
 "use client"
-
 import { zodResolver } from "@hookform/resolvers/zod"
+import type { BetterFetchOption } from "better-auth/react"
 import { Loader2 } from "lucide-react"
 import { useCallback, useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-
+import { useCaptcha } from "../../../hooks/use-captcha"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext, type PasswordValidation } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError, getPasswordSchema, getSearchParam } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
+import { Captcha } from "../../captcha/captcha"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
 import { Checkbox } from "../../ui/checkbox"
@@ -41,12 +42,14 @@ export function SignUpForm({
     passwordValidation
 }: SignUpFormProps) {
     const isHydrated = useIsHydrated()
+    const { captchaRef, getCaptchaHeaders } = useCaptcha({ localization })
 
     const {
         additionalFields,
         authClient,
         basePath,
         baseURL,
+        captcha,
         confirmPassword: confirmPasswordEnabled,
         emailVerification,
         localization: contextLocalization,
@@ -236,6 +239,11 @@ export function SignUpForm({
                 }
             }
 
+            const fetchOptions: BetterFetchOption = {
+                throw: true,
+                headers: await getCaptchaHeaders("/sign-up/email")
+            }
+
             const data = await (authClient as AuthClient).signUp.email({
                 email,
                 password,
@@ -243,7 +251,7 @@ export function SignUpForm({
                 ...(username !== undefined && { username }),
                 ...additionalFieldValues,
                 ...(emailVerification && persistClient && { callbackURL: getCallbackURL() }),
-                fetchOptions: { throw: true }
+                fetchOptions
             })
 
             if ("token" in data && data.token) {
@@ -464,6 +472,8 @@ export function SignUpForm({
                             />
                         )
                     })}
+
+                <Captcha ref={captchaRef} localization={localization} action="/sign-up/email" />
 
                 <Button
                     type="submit"
