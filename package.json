@@ -1,7 +1,7 @@
 {
     "name": "@daveyplate/better-auth-ui",
     "homepage": "https://better-auth-ui.com",
-    "version": "1.6.2",
+    "version": "1.6.3",
     "description": "Plug & play shadcn/ui components for better-auth",
     "scripts": {
         "build": "tsup --clean --dts",
