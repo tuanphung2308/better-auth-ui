@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import * as z from "zod"
 import type { AuthLocalization } from "./auth-localization"
-import { PasswordValidation } from "./auth-ui-provider"
+import type { PasswordValidation } from "./auth-ui-provider"
 import type { AuthView, AuthViewPaths } from "./auth-view-paths"
 
 export function cn(...inputs: ClassValue[]) {

@@ -221,88 +221,94 @@ export function AuthCard({
                     </div>
                 )}
 
-                {view !== "resetPassword" && (providers?.length || otherProviders?.length || passkey) && (
-                    <>
-                        {(credentials || magicLink || emailOTP) && (
-                            <div className="flex items-center gap-2">
-                                <Separator className={cn("!w-auto grow", classNames?.separator)} />
+                {view !== "resetPassword" &&
+                    (providers?.length || otherProviders?.length || passkey) && (
+                        <>
+                            {(credentials || magicLink || emailOTP) && (
+                                <div className="flex items-center gap-2">
+                                    <Separator
+                                        className={cn("!w-auto grow", classNames?.separator)}
+                                    />
 
-                                <span className="flex-shrink-0 text-muted-foreground text-sm">
-                                    {localization.orContinueWith}
-                                </span>
+                                    <span className="flex-shrink-0 text-muted-foreground text-sm">
+                                        {localization.orContinueWith}
+                                    </span>
 
-                                <Separator className={cn("!w-auto grow", classNames?.separator)} />
-                            </div>
-                        )}
+                                    <Separator
+                                        className={cn("!w-auto grow", classNames?.separator)}
+                                    />
+                                </div>
+                            )}
 
-                        <div className="grid gap-4">
-                            {(providers?.length || otherProviders?.length) && (
-                                <div
-                                    className={cn(
-                                        "flex w-full items-center justify-between gap-4",
-                                        socialLayout === "horizontal" && "flex-wrap",
-                                        socialLayout === "vertical" && "flex-col",
-                                        socialLayout === "grid" && "grid grid-cols-2"
-                                    )}
-                                >
-                                    {providers?.map((provider) => {
-                                        const socialProvider = socialProviders.find(
-                                            (socialProvider) => socialProvider.provider === provider
-                                        )
-                                        if (!socialProvider) return null
+                            <div className="grid gap-4">
+                                {(providers?.length || otherProviders?.length) && (
+                                    <div
+                                        className={cn(
+                                            "flex w-full items-center justify-between gap-4",
+                                            socialLayout === "horizontal" && "flex-wrap",
+                                            socialLayout === "vertical" && "flex-col",
+                                            socialLayout === "grid" && "grid grid-cols-2"
+                                        )}
+                                    >
+                                        {providers?.map((provider) => {
+                                            const socialProvider = socialProviders.find(
+                                                (socialProvider) =>
+                                                    socialProvider.provider === provider
+                                            )
+                                            if (!socialProvider) return null
 
-                                        return (
+                                            return (
+                                                <ProviderButton
+                                                    key={provider}
+                                                    classNames={classNames}
+                                                    callbackURL={callbackURL}
+                                                    isSubmitting={isSubmitting}
+                                                    localization={localization}
+                                                    provider={socialProvider}
+                                                    redirectTo={redirectTo}
+                                                    setIsSubmitting={setIsSubmitting}
+                                                    socialLayout={socialLayout}
+                                                />
+                                            )
+                                        })}
+
+                                        {otherProviders?.map((provider) => (
                                             <ProviderButton
-                                                key={provider}
+                                                key={provider.provider}
                                                 classNames={classNames}
                                                 callbackURL={callbackURL}
                                                 isSubmitting={isSubmitting}
                                                 localization={localization}
-                                                provider={socialProvider}
+                                                provider={provider}
                                                 redirectTo={redirectTo}
                                                 setIsSubmitting={setIsSubmitting}
                                                 socialLayout={socialLayout}
+                                                other
                                             />
-                                        )
-                                    })}
+                                        ))}
+                                    </div>
+                                )}
 
-                                    {otherProviders?.map((provider) => (
-                                        <ProviderButton
-                                            key={provider.provider}
+                                {passkey &&
+                                    [
+                                        "signIn",
+                                        "magicLink",
+                                        "emailOTP",
+                                        "recoverAccount",
+                                        "twoFactor",
+                                        "forgotPassword"
+                                    ].includes(view) && (
+                                        <PasskeyButton
                                             classNames={classNames}
-                                            callbackURL={callbackURL}
                                             isSubmitting={isSubmitting}
                                             localization={localization}
-                                            provider={provider}
                                             redirectTo={redirectTo}
                                             setIsSubmitting={setIsSubmitting}
-                                            socialLayout={socialLayout}
-                                            other
                                         />
-                                    ))}
-                                </div>
-                            )}
-
-                            {passkey &&
-                                [
-                                    "signIn",
-                                    "magicLink",
-                                    "emailOTP",
-                                    "recoverAccount",
-                                    "twoFactor",
-                                    "forgotPassword"
-                                ].includes(view) && (
-                                    <PasskeyButton
-                                        classNames={classNames}
-                                        isSubmitting={isSubmitting}
-                                        localization={localization}
-                                        redirectTo={redirectTo}
-                                        setIsSubmitting={setIsSubmitting}
-                                    />
-                                )}
-                        </div>
-                    </>
-                )}
+                                    )}
+                            </div>
+                        </>
+                    )}
             </CardContent>
 
             {credentials && signUp && (

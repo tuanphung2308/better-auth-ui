@@ -66,11 +66,11 @@ export function ChangePasswordCard({
             }),
             confirmPassword: confirmPasswordEnabled
                 ? getPasswordSchema(passwordValidation, {
-                    passwordRequired: localization.confirmPasswordRequired,
-                    passwordTooShort: localization.passwordTooShort,
-                    passwordTooLong: localization.passwordTooLong,
-                    passwordInvalid: localization.passwordInvalid
-                })
+                      passwordRequired: localization.confirmPasswordRequired,
+                      passwordTooShort: localization.passwordTooShort,
+                      passwordTooLong: localization.passwordTooLong,
+                      passwordInvalid: localization.passwordInvalid
+                  })
                 : z.string().optional()
         })
         .refine((data) => !confirmPasswordEnabled || data.newPassword === data.confirmPassword, {

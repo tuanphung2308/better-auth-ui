@@ -41,8 +41,8 @@ const defaultToast: RenderToast = ({ variant = "default", message }) => {
 }
 
 /**
-* Customize the password validation
-*/
+ * Customize the password validation
+ */
 export type PasswordValidation = {
     /**
      * Maximum password length
