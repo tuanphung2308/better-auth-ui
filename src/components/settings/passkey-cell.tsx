@@ -8,6 +8,7 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import { Button } from "../ui/button"
 import { Card } from "../ui/card"
+import { SessionFreshnessDialog } from "./session-freshness-dialog"
 import type { SettingsCardClassNames } from "./shared/settings-card"
 
 export interface PasskeyCellProps {
@@ -26,6 +27,8 @@ export function PasskeyCell({
     refetch
 }: PasskeyCellProps) {
     const {
+        freshAge,
+        hooks: { useSession },
         localization: contextLocalization,
         mutators: { deletePasskey },
         toast
@@ -33,9 +36,20 @@ export function PasskeyCell({
 
     localization = { ...contextLocalization, ...localization }
 
+    const { data: sessionData } = useSession()
+    const session = sessionData?.session
+    const isFresh = session ? Date.now() - session?.createdAt.getTime() < freshAge * 1000 : false
+
+    const [showFreshnessDialog, setShowFreshnessDialog] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
 
     const handleDeletePasskey = async () => {
+        // If session isn't fresh, show the freshness dialog
+        if (!isFresh) {
+            setShowFreshnessDialog(true)
+            return
+        }
+
         setIsLoading(true)
 
         try {
@@ -52,23 +66,36 @@ export function PasskeyCell({
     }
 
     return (
-        <Card className={cn("flex-row items-center p-4", className, classNames?.cell)}>
-            <div className="flex items-center gap-3">
-                <FingerprintIcon className={cn("size-4", classNames?.icon)} />
-                <span className="text-sm">{passkey.createdAt.toLocaleString()}</span>
-            </div>
+        <>
+            <SessionFreshnessDialog
+                open={showFreshnessDialog}
+                onOpenChange={setShowFreshnessDialog}
+                classNames={classNames}
+                localization={localization}
+            />
 
-            <Button
-                className={cn("relative ms-auto", classNames?.button, classNames?.outlineButton)}
-                disabled={isLoading}
-                size="sm"
-                variant="outline"
-                onClick={handleDeletePasskey}
-            >
-                {isLoading && <Loader2 className="animate-spin" />}
+            <Card className={cn("flex-row items-center p-4", className, classNames?.cell)}>
+                <div className="flex items-center gap-3">
+                    <FingerprintIcon className={cn("size-4", classNames?.icon)} />
+                    <span className="text-sm">{passkey.createdAt.toLocaleString()}</span>
+                </div>
 
-                {localization.delete}
-            </Button>
-        </Card>
+                <Button
+                    className={cn(
+                        "relative ms-auto",
+                        classNames?.button,
+                        classNames?.outlineButton
+                    )}
+                    disabled={isLoading}
+                    size="sm"
+                    variant="outline"
+                    onClick={handleDeletePasskey}
+                >
+                    {isLoading && <Loader2 className="animate-spin" />}
+
+                    {localization.delete}
+                </Button>
+            </Card>
+        </>
     )
 }

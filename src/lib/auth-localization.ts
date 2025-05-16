@@ -441,9 +441,15 @@ export const authLocalization = {
 
     /** @default "Invalid password" */
     invalidPassword: "Invalid password",
-    
+
     /** @default "Invalid email or password" */
     invalidEmailOrPassword: "Invalid email or password",
+
+    /** @default "Your session is not fresh. Please sign in again." */
+    sessionNotFresh: "Your session is not fresh. Please sign in again.",
+
+    /** @default "Session Expired" */
+    sessionExpired: "Session Expired",
 
     /** @default "Password too short" */
     passwordTooShort: "Password too short",
