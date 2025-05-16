@@ -11,8 +11,8 @@ import { useCaptcha } from "../../../hooks/use-captcha"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../../lib/auth-localization"
-import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import { cn, getLocalizedError, isValidEmail } from "../../../lib/utils"
+import { AuthUIContext, type PasswordValidation } from "../../../lib/auth-ui-provider"
+import { cn, getLocalizedError, getPasswordSchema, isValidEmail } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
 import { Captcha } from "../../captcha/captcha"
 import { PasswordInput } from "../../password-input"
@@ -29,6 +29,7 @@ export interface SignInFormProps {
     localization: Partial<AuthLocalization>
     redirectTo?: string
     setIsSubmitting?: (isSubmitting: boolean) => void
+    passwordValidation?: PasswordValidation
 }
 
 export function SignInForm({
@@ -37,7 +38,8 @@ export function SignInForm({
     isSubmitting,
     localization,
     redirectTo,
-    setIsSubmitting
+    setIsSubmitting,
+    passwordValidation
 }: SignInFormProps) {
     const isHydrated = useIsHydrated()
     const { captchaRef, getCaptchaHeaders } = useCaptcha({ localization })
@@ -50,13 +52,14 @@ export function SignInForm({
         rememberMe: rememberMeEnabled,
         username: usernameEnabled,
         viewPaths,
-        captcha,
         navigate,
         toast,
-        Link
+        Link,
+        passwordValidation: contextPasswordValidation
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
+    passwordValidation = { ...contextPasswordValidation, ...passwordValidation }
 
     const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({ redirectTo })
 
@@ -73,9 +76,7 @@ export function SignInForm({
                   .email({
                       message: `${localization.email} ${localization.isInvalid}`
                   }),
-        password: z.string().min(1, {
-            message: `${localization.password} ${localization.isRequired}`
-        }),
+        password: getPasswordSchema(passwordValidation, localization),
         rememberMe: z.boolean().optional()
     })
 

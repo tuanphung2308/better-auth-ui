@@ -439,11 +439,11 @@ export const authLocalization = {
     /** @default "Go back" */
     goBack: "Go back",
 
-    /** @default "Invalid password" */
-    invalidPassword: "Invalid password",
-
     /** @default "Invalid email or password" */
     invalidEmailOrPassword: "Invalid email or password",
+
+    /** @default "Invalid password" */
+    passwordInvalid: "Invalid password",
 
     /** @default "Your session is not fresh. Please sign in again." */
     sessionNotFresh: "Your session is not fresh. Please sign in again.",
@@ -453,6 +453,9 @@ export const authLocalization = {
 
     /** @default "Password too short" */
     passwordTooShort: "Password too short",
+
+    /** @default "Password too long" */
+    passwordTooLong: "Password too long",
 
     /** @default "Upload Avatar" */
     uploadAvatar: "Upload Avatar",
