@@ -316,7 +316,6 @@ export type AuthUIProviderProps = {
      * ADVANCED: Custom mutators for updating auth data
      */
     mutators?: Partial<AuthMutators>
-    passwordValidation?: PasswordValidation
 } & Partial<Omit<AuthUIContextType, "viewPaths" | "localization" | "mutators" | "toast" | "hooks">>
 
 export const AuthUIContext = createContext<AuthUIContextType>({} as unknown as AuthUIContextType)
