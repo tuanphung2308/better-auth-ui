@@ -40,9 +40,6 @@ const defaultToast: RenderToast = ({ variant = "default", message }) => {
     }
 }
 
-/**
- * Customize the password validation
- */
 export type PasswordValidation = {
     /**
      * Maximum password length
@@ -280,6 +277,9 @@ export type AuthUIContextType = {
      * @default <a>
      */
     Link: Link
+    /**
+     * Customize the password validation
+     */
     passwordValidation?: PasswordValidation
 }
 

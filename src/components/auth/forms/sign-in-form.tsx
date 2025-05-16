@@ -52,7 +52,6 @@ export function SignInForm({
         rememberMe: rememberMeEnabled,
         username: usernameEnabled,
         viewPaths,
-        captcha,
         navigate,
         toast,
         Link,
