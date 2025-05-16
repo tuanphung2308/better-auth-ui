@@ -48,7 +48,17 @@ export function Captcha({ ref, localization, action }: CaptchaProps) {
         <>
             {showRecaptchaV2 && <RecaptchaV2 ref={ref} />}
             {showRecaptchaBadge && <RecaptchaBadge localization={localization} />}
-            {showTurnstile && <Turnstile className="mx-auto" ref={ref} siteKey={captcha.siteKey} />}
+            {showTurnstile && (
+                <Turnstile
+                    className="mx-auto"
+                    ref={ref}
+                    siteKey={captcha.siteKey}
+                    options={{
+                        theme: theme,
+                        size: "flexible"
+                    }}
+                />
+            )}
             {showHCaptcha && (
                 <div className="mx-auto">
                     <HCaptcha ref={ref} sitekey={captcha.siteKey} theme={theme} />
