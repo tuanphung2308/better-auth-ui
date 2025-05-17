@@ -6,10 +6,10 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { Loader2 } from "lucide-react"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn, getLocalizedError } from "../../lib/utils"
-import type { AuthClient } from "../../types/auth-client"
-import { Button } from "../ui/button"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { cn, getLocalizedError } from "../../../lib/utils"
+import type { AuthClient } from "../../../types/auth-client"
+import { Button } from "../../ui/button"
 import {
     Dialog,
     DialogContent,
@@ -17,11 +17,11 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle
-} from "../ui/dialog"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
-import { Input } from "../ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import type { SettingsCardClassNames } from "./shared/settings-card"
+} from "../../ui/dialog"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import { Input } from "../../ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
+import type { SettingsCardClassNames } from "../shared/settings-card"
 
 interface ApiKeyNameDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames

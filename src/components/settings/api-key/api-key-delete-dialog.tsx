@@ -3,10 +3,10 @@
 import { Loader2 } from "lucide-react"
 import { type ComponentProps, useContext, useState } from "react"
 
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn, getLocalizedError } from "../../lib/utils"
-import type { ApiKey } from "../../types/api-key"
-import { Button } from "../ui/button"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { cn, getLocalizedError } from "../../../lib/utils"
+import type { ApiKey } from "../../../types/api-key"
+import { Button } from "../../ui/button"
 import {
     Dialog,
     DialogContent,
@@ -14,8 +14,8 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle
-} from "../ui/dialog"
-import type { SettingsCardClassNames } from "./shared/settings-card"
+} from "../../ui/dialog"
+import type { SettingsCardClassNames } from "../shared/settings-card"
 
 interface ApiKeyDeleteDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames

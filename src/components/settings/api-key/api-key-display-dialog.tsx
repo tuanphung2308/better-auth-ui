@@ -3,9 +3,9 @@
 import { CheckIcon, CopyIcon } from "lucide-react"
 import { type ComponentProps, useContext, useState } from "react"
 
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn } from "../../lib/utils"
-import { Button } from "../ui/button"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { cn } from "../../../lib/utils"
+import { Button } from "../../ui/button"
 import {
     Dialog,
     DialogContent,
@@ -13,8 +13,8 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle
-} from "../ui/dialog"
-import type { SettingsCardClassNames } from "./shared/settings-card"
+} from "../../ui/dialog"
+import type { SettingsCardClassNames } from "../shared/settings-card"
 
 interface ApiKeyDisplayDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames

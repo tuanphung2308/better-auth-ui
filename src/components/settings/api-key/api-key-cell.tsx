@@ -3,14 +3,14 @@
 import { KeyIcon } from "lucide-react"
 import { useContext, useState } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn } from "../../lib/utils"
-import type { ApiKey } from "../../types/api-key"
-import { Button } from "../ui/button"
-import { Card } from "../ui/card"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { cn } from "../../../lib/utils"
+import type { ApiKey } from "../../../types/api-key"
+import { Button } from "../../ui/button"
+import { Card } from "../../ui/card"
+import type { SettingsCardClassNames } from "../shared/settings-card"
 import { ApiKeyDeleteDialog } from "./api-key-delete-dialog"
-import type { SettingsCardClassNames } from "./shared/settings-card"
 
 export interface APIKeyCellProps {
     className?: string

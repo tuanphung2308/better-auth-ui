@@ -2,17 +2,17 @@
 
 import { useContext, useState } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn } from "../../lib/utils"
-import type { ApiKey } from "../../types/api-key"
-import { CardContent } from "../ui/card"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { cn } from "../../../lib/utils"
+import type { ApiKey } from "../../../types/api-key"
+import { CardContent } from "../../ui/card"
+import { SettingsCard } from "../shared/settings-card"
+import type { SettingsCardClassNames } from "../shared/settings-card"
+import { SettingsCellSkeleton } from "../skeletons/settings-cell-skeleton"
 import { APIKeyCell } from "./api-key-cell"
 import { ApiKeyDisplayDialog } from "./api-key-display-dialog"
 import { ApiKeyNameDialog } from "./api-key-name-dialog"
-import { SettingsCard } from "./shared/settings-card"
-import type { SettingsCardClassNames } from "./shared/settings-card"
-import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
 export interface APIKeysCardProps {
     className?: string
