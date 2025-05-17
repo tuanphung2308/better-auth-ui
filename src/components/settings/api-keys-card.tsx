@@ -1,16 +1,15 @@
 "use client"
 
-import { useContext } from "react"
-import { useForm } from "react-hook-form"
+import { useContext, useState } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn, getLocalizedError } from "../../lib/utils"
+import { cn } from "../../lib/utils"
 import type { ApiKey } from "../../types/api-key"
-import type { AuthClient } from "../../types/auth-client"
 import { CardContent } from "../ui/card"
-import { Form } from "../ui/form"
 import { APIKeyCell } from "./api-key-cell"
+import { ApiKeyDisplayDialog } from "./api-key-display-dialog"
+import { ApiKeyNameDialog } from "./api-key-name-dialog"
 import { SettingsCard } from "./shared/settings-card"
 import type { SettingsCardClassNames } from "./shared/settings-card"
 import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
@@ -35,10 +34,8 @@ export function APIKeysCard({
     refetch
 }: APIKeysCardProps) {
     const {
-        authClient,
         hooks: { useListApiKeys },
-        localization: authLocalization,
-        toast
+        localization: authLocalization
     } = useContext(AuthUIContext)
 
     localization = { ...authLocalization, ...localization }
@@ -50,56 +47,60 @@ export function APIKeysCard({
         refetch = result.refetch
     }
 
-    const addApiKey = async () => {
-        try {
-            await (authClient as AuthClient).apiKey.create({
-                name: "test-key",
-                fetchOptions: { throw: true }
-            })
-            await refetch?.()
-        } catch (error) {
-            toast({
-                variant: "error",
-                message: getLocalizedError({ error, localization })
-            })
-        }
-    }
+    const [nameDialogOpen, setNameDialogOpen] = useState(false)
+    const [displayDialogOpen, setDisplayDialogOpen] = useState(false)
+    const [createdApiKey, setCreatedApiKey] = useState("")
 
-    const form = useForm()
+    const handleCreateApiKey = (apiKey: string) => {
+        setCreatedApiKey(apiKey)
+        setDisplayDialogOpen(true)
+    }
 
     return (
         <>
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(addApiKey)}>
-                    <SettingsCard
-                        className={className}
-                        classNames={classNames}
-                        actionLabel={localization.create}
-                        description={localization.apiKeysDescription}
-                        instructions={localization.apiKeysInstructions}
-                        isPending={isPending}
-                        title={localization.apiKeys}
-                    >
-                        {(isPending || (apiKeys && apiKeys.length > 0)) && (
-                            <CardContent className={cn("grid gap-4", classNames?.content)}>
-                                {isPending ? (
-                                    <SettingsCellSkeleton classNames={classNames} />
-                                ) : (
-                                    apiKeys?.map((apiKey) => (
-                                        <APIKeyCell
-                                            key={apiKey.id}
-                                            classNames={classNames}
-                                            localization={localization}
-                                            apiKey={apiKey}
-                                            refetch={refetch}
-                                        />
-                                    ))
-                                )}
-                            </CardContent>
+            <SettingsCard
+                className={className}
+                classNames={classNames}
+                actionLabel={localization.create}
+                description={localization.apiKeysDescription}
+                instructions={localization.apiKeysInstructions}
+                isPending={isPending}
+                title={localization.apiKeys}
+                action={() => setNameDialogOpen(true)}
+            >
+                {(isPending || (apiKeys && apiKeys.length > 0)) && (
+                    <CardContent className={cn("grid gap-4", classNames?.content)}>
+                        {isPending ? (
+                            <SettingsCellSkeleton classNames={classNames} />
+                        ) : (
+                            apiKeys?.map((apiKey) => (
+                                <APIKeyCell
+                                    key={apiKey.id}
+                                    classNames={classNames}
+                                    localization={localization}
+                                    apiKey={apiKey}
+                                    refetch={refetch}
+                                />
+                            ))
                         )}
-                    </SettingsCard>
-                </form>
-            </Form>
+                    </CardContent>
+                )}
+            </SettingsCard>
+
+            <ApiKeyNameDialog
+                open={nameDialogOpen}
+                onOpenChange={setNameDialogOpen}
+                classNames={classNames}
+                onSuccess={handleCreateApiKey}
+                refetch={refetch}
+            />
+
+            <ApiKeyDisplayDialog
+                open={displayDialogOpen}
+                onOpenChange={setDisplayDialogOpen}
+                classNames={classNames}
+                apiKey={createdApiKey}
+            />
         </>
     )
 }
