@@ -46,13 +46,13 @@ export function ApiKeyDeleteDialog({
             await refetch?.()
             onOpenChange?.(false)
         } catch (error) {
-            setIsLoading(false)
-
             toast({
                 variant: "error",
                 message: getLocalizedError({ error, localization })
             })
         }
+
+        setIsLoading(false)
     }
 
     return (
