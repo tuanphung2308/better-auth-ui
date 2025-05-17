@@ -295,6 +295,12 @@ export const authLocalization = {
     /** @default "Expires In" */
     expiresIn: "Expires In",
 
+    /** @default "Never Expires" */
+    neverExpires: "Never Expires",
+
+    /** @default "Expires" */
+    expires: "Expires",
+
     /** @default "No Expiration" */
     noExpiration: "No Expiration",
 
@@ -366,6 +372,15 @@ export const authLocalization = {
 
     /** @default "Revoke" */
     revoke: "Revoke",
+
+    /** @default "Delete API Key" */
+    deleteApiKey: "Delete API Key",
+
+    /** @default "Are you sure you want to delete this API key?" */
+    deleteApiKeyConfirmation: "Are you sure you want to delete this API key?",
+
+    /** @default "API Key" */
+    apiKey: "API Key",
 
     /** @default "Sign In" */
     signIn: "Sign In",

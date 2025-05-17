@@ -55,10 +55,9 @@ export function ApiKeyNameDialog({
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            // Convert expiresInDays to milliseconds if provided
             const expiresIn =
                 values.expiresInDays && values.expiresInDays !== "none"
-                    ? Number.parseInt(values.expiresInDays) * 24 * 60 * 60 * 1000
+                    ? Number.parseInt(values.expiresInDays) * 60 * 60 * 24
                     : undefined
 
             const result = await (authClient as AuthClient).apiKey.create({
