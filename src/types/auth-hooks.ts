@@ -16,5 +16,6 @@ export type AuthHooks = {
     useListDeviceSessions: () => AuthHook<{ session: Session; user: AnyUser }[]>
     useListSessions: () => AuthHook<Session[]>
     useListPasskeys: () => AuthHook<{ id: string; createdAt: Date }[]>
+    useListApiKeys: () => AuthHook<{ id: string }[]>
     useIsRestoring?: () => boolean
 }

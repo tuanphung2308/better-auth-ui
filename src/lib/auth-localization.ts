@@ -260,6 +260,18 @@ export const authLocalization = {
     /** @default "Securely access your account without a password." */
     passkeysInstructions: "Securely access your account without a password.",
 
+    /** @default "API Keys" */
+    apiKeys: "API Keys",
+
+    /** @default "Manage your API keys for secure access." */
+    apiKeysDescription: "Manage your API keys for secure access.",
+
+    /** @default "Generate API keys to access your account programmatically." */
+    apiKeysInstructions: "Generate API keys to access your account programmatically.",
+
+    /** @default "Create" */
+    create: "Create",
+
     /** @default "Password" */
     password: "Password",
 

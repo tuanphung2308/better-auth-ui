@@ -10,6 +10,7 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { AccountsCard } from "./accounts-card"
+import { APIKeysCard } from "./api-keys-card"
 import { ChangeEmailCard } from "./change-email-card"
 import { ChangePasswordCard } from "./change-password-card"
 import { DeleteAccountCard } from "./delete-account-card"
@@ -45,6 +46,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
 
     const {
         additionalFields,
+        apiKeys: contextApiKeys,
         avatar,
         credentials,
         changeEmail,
@@ -63,8 +65,14 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
 
     localization = { ...contextLocalization, ...localization }
 
-    const { useListAccounts, useListDeviceSessions, useListPasskeys, useListSessions, useSession } =
-        hooks
+    const {
+        useListAccounts,
+        useListDeviceSessions,
+        useListPasskeys,
+        useListSessions,
+        useListApiKeys,
+        useSession
+    } = hooks
     const { data: sessionData, isPending: sessionPending } = useSession()
 
     const {
@@ -101,6 +109,17 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         deviceSessions = result.data
         deviceSessionsPending = result.isPending
         refetchDeviceSessions = result.refetch
+    }
+
+    let apiKeys: { id: string }[] | undefined | null = undefined
+    let apiKeysPending: boolean | undefined = undefined
+    let refetchApiKeys: (() => Promise<void>) | undefined = undefined
+
+    if (contextApiKeys) {
+        const result = useListApiKeys()
+        apiKeys = result.data
+        apiKeysPending = result.isPending
+        refetchApiKeys = result.refetch
     }
 
     return (
@@ -261,6 +280,17 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         refetch={refetchSessions}
                         skipHook
                     />
+
+                    {contextApiKeys && (
+                        <APIKeysCard
+                            classNames={classNames?.card}
+                            isPending={apiKeysPending}
+                            localization={localization}
+                            apiKeys={apiKeys}
+                            refetch={refetchApiKeys}
+                            skipHook
+                        />
+                    )}
 
                     {deleteUser && (
                         <DeleteAccountCard

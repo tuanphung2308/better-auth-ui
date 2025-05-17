@@ -63,17 +63,8 @@
             }
         }
     },
-    "files": [
-        "src",
-        "dist"
-    ],
-    "keywords": [
-        "typescript",
-        "react",
-        "better-auth",
-        "shadcn",
-        "nextjs"
-    ],
+    "files": ["src", "dist"],
+    "keywords": ["typescript", "react", "better-auth", "shadcn", "nextjs"],
     "author": "daveycodez",
     "license": "MIT",
     "devDependencies": {
@@ -155,7 +146,9 @@
         "zod": ">=3.24.0"
     },
     "pnpm": {
-        "overrides": {}
+        "overrides": {
+            "@daveyplate/better-auth-tanstack": "file:../better-auth-tanstack"
+        }
     },
     "packageManager": "pnpm@10.11.0"
 }
