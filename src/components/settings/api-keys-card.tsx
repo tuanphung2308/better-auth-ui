@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
+import type { ApiKey } from "../../types/api-key"
 import type { AuthClient } from "../../types/auth-client"
 import { CardContent } from "../ui/card"
 import { Form } from "../ui/form"
@@ -19,7 +20,7 @@ export interface APIKeysCardProps {
     classNames?: SettingsCardClassNames
     isPending?: boolean
     localization?: AuthLocalization
-    apiKeys?: { id: string }[] | null
+    apiKeys?: ApiKey[] | null
     skipHook?: boolean
     refetch?: () => Promise<void>
 }
@@ -35,7 +36,7 @@ export function APIKeysCard({
 }: APIKeysCardProps) {
     const {
         authClient,
-        hooks: { useListApiKeys, useSession },
+        hooks: { useListApiKeys },
         localization: authLocalization,
         toast
     } = useContext(AuthUIContext)

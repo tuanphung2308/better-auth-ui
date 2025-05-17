@@ -8,6 +8,7 @@ import { useAuthenticate } from "../../hooks/use-authenticate"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
+import type { ApiKey } from "../../types/api-key"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { AccountsCard } from "./accounts-card"
 import { APIKeysCard } from "./api-keys-card"
@@ -111,7 +112,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         refetchDeviceSessions = result.refetch
     }
 
-    let apiKeys: { id: string }[] | undefined | null = undefined
+    let apiKeys: ApiKey[] | undefined | null = undefined
     let apiKeysPending: boolean | undefined = undefined
     let refetchApiKeys: (() => Promise<void>) | undefined = undefined
 
@@ -272,15 +273,6 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         />
                     )}
 
-                    <SessionsCard
-                        classNames={classNames?.card}
-                        isPending={sessionsPending}
-                        localization={localization}
-                        sessions={sessions}
-                        refetch={refetchSessions}
-                        skipHook
-                    />
-
                     {contextApiKeys && (
                         <APIKeysCard
                             classNames={classNames?.card}
@@ -291,6 +283,15 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             skipHook
                         />
                     )}
+
+                    <SessionsCard
+                        classNames={classNames?.card}
+                        isPending={sessionsPending}
+                        localization={localization}
+                        sessions={sessions}
+                        refetch={refetchSessions}
+                        skipHook
+                    />
 
                     {deleteUser && (
                         <DeleteAccountCard
