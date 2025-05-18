@@ -3,6 +3,7 @@
 import { KeyIcon } from "lucide-react"
 import { useContext, useState } from "react"
 
+import { useLang } from "../../../hooks/use-lang"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn } from "../../../lib/utils"
@@ -15,21 +16,23 @@ import { ApiKeyDeleteDialog } from "./api-key-delete-dialog"
 export interface APIKeyCellProps {
     className?: string
     classNames?: SettingsCardClassNames
-    localization?: Partial<AuthLocalization>
     apiKey: ApiKey
+    localization?: Partial<AuthLocalization>
     refetch?: () => Promise<void>
 }
 
 export function APIKeyCell({
     className,
     classNames,
-    localization,
     apiKey,
+    localization,
     refetch
 }: APIKeyCellProps) {
     const { localization: contextLocalization } = useContext(AuthUIContext)
-
     localization = { ...contextLocalization, ...localization }
+
+    const { lang } = useLang()
+
     const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
     // Format expiration date or show "Never expires"
@@ -37,7 +40,7 @@ export function APIKeyCell({
         if (!apiKey.expiresAt) return localization.neverExpires
 
         const expiresDate = new Date(apiKey.expiresAt)
-        return `${localization.expires} ${expiresDate.toLocaleDateString("en-US", {
+        return `${localization.expires} ${expiresDate.toLocaleDateString(lang ?? "en", {
             month: "short",
             day: "numeric",
             year: "numeric"
@@ -79,8 +82,9 @@ export function APIKeyCell({
             </Card>
 
             <ApiKeyDeleteDialog
-                apiKey={apiKey}
                 classNames={classNames}
+                apiKey={apiKey}
+                localization={localization}
                 open={showDeleteDialog}
                 onOpenChange={setShowDeleteDialog}
                 refetch={refetch}

@@ -3,6 +3,7 @@
 import { Loader2 } from "lucide-react"
 import { type ComponentProps, useContext, useState } from "react"
 
+import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
 import type { ApiKey } from "../../../types/api-key"
@@ -20,21 +21,25 @@ import type { SettingsCardClassNames } from "../shared/settings-card"
 interface ApiKeyDeleteDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     apiKey: ApiKey
+    localization?: AuthLocalization
     refetch?: () => Promise<void>
 }
 
 export function ApiKeyDeleteDialog({
     classNames,
     apiKey,
+    localization,
     refetch,
     onOpenChange,
     ...props
 }: ApiKeyDeleteDialogProps) {
     const {
-        localization,
+        localization: contextLocalization,
         mutators: { deleteApiKey },
         toast
     } = useContext(AuthUIContext)
+
+    localization = { ...contextLocalization, ...localization }
 
     const [isLoading, setIsLoading] = useState(false)
 

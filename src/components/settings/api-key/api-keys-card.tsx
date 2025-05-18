@@ -17,9 +17,9 @@ import { ApiKeyNameDialog } from "./api-key-name-dialog"
 export interface APIKeysCardProps {
     className?: string
     classNames?: SettingsCardClassNames
+    apiKeys?: ApiKey[] | null
     isPending?: boolean
     localization?: AuthLocalization
-    apiKeys?: ApiKey[] | null
     skipHook?: boolean
     refetch?: () => Promise<void>
 }
@@ -27,9 +27,9 @@ export interface APIKeysCardProps {
 export function APIKeysCard({
     className,
     classNames,
+    apiKeys,
     isPending,
     localization,
-    apiKeys,
     skipHook,
     refetch
 }: APIKeysCardProps) {
@@ -77,8 +77,8 @@ export function APIKeysCard({
                                 <APIKeyCell
                                     key={apiKey.id}
                                     classNames={classNames}
-                                    localization={localization}
                                     apiKey={apiKey}
+                                    localization={localization}
                                     refetch={refetch}
                                 />
                             ))
@@ -88,18 +88,20 @@ export function APIKeysCard({
             </SettingsCard>
 
             <ApiKeyNameDialog
+                classNames={classNames}
+                localization={localization}
                 open={nameDialogOpen}
                 onOpenChange={setNameDialogOpen}
-                classNames={classNames}
                 onSuccess={handleCreateApiKey}
                 refetch={refetch}
             />
 
             <ApiKeyDisplayDialog
-                open={displayDialogOpen}
-                onOpenChange={setDisplayDialogOpen}
                 classNames={classNames}
                 apiKey={createdApiKey}
+                localization={localization}
+                open={displayDialogOpen}
+                onOpenChange={setDisplayDialogOpen}
             />
         </>
     )

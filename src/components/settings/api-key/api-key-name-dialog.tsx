@@ -1,11 +1,13 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Loader2 } from "lucide-react"
 import { type ComponentProps, useContext } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
-import { Loader2 } from "lucide-react"
+import { useLang } from "../../../hooks/use-lang"
+import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
 import type { AuthClient } from "../../../types/auth-client"
@@ -25,18 +27,29 @@ import type { SettingsCardClassNames } from "../shared/settings-card"
 
 interface ApiKeyNameDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
+    localization?: AuthLocalization
     onSuccess: (key: string) => void
     refetch?: () => Promise<void>
 }
 
 export function ApiKeyNameDialog({
     classNames,
+    localization,
     onSuccess,
     refetch,
     onOpenChange,
     ...props
 }: ApiKeyNameDialogProps) {
-    const { authClient, localization, toast } = useContext(AuthUIContext)
+    const {
+        authClient,
+        apiKeys,
+        localization: contextLocalization,
+        toast
+    } = useContext(AuthUIContext)
+
+    localization = { ...contextLocalization, ...localization }
+
+    const { lang } = useLang()
 
     const formSchema = z.object({
         name: z.string().min(1, `${localization.name} ${localization.isRequired}`),
@@ -63,6 +76,8 @@ export function ApiKeyNameDialog({
             const result = await (authClient as AuthClient).apiKey.create({
                 name: values.name,
                 expiresIn,
+                prefix: typeof apiKeys === "object" ? apiKeys.prefix : undefined,
+                metadata: typeof apiKeys === "object" ? apiKeys.metadata : undefined,
                 fetchOptions: { throw: true }
             })
 
@@ -77,6 +92,8 @@ export function ApiKeyNameDialog({
             })
         }
     }
+
+    const rtf = new Intl.RelativeTimeFormat(lang ?? "en")
 
     return (
         <Dialog onOpenChange={onOpenChange} {...props}>
@@ -117,6 +134,7 @@ export function ApiKeyNameDialog({
                                                 {...field}
                                             />
                                         </FormControl>
+
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -128,8 +146,9 @@ export function ApiKeyNameDialog({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className={classNames?.label}>
-                                            {localization.expiresIn}
+                                            {localization.expires}
                                         </FormLabel>
+
                                         <Select
                                             onValueChange={field.onChange}
                                             defaultValue={field.value}
@@ -142,6 +161,7 @@ export function ApiKeyNameDialog({
                                                     />
                                                 </SelectTrigger>
                                             </FormControl>
+
                                             <SelectContent>
                                                 <SelectItem value="none">
                                                     {localization.noExpiration}
@@ -150,12 +170,13 @@ export function ApiKeyNameDialog({
                                                 {[1, 7, 30, 60, 90, 180, 365].map((days) => (
                                                     <SelectItem key={days} value={days.toString()}>
                                                         {days === 365
-                                                            ? `1 ${localization.year}`
-                                                            : `${days} ${days === 1 ? localization.day : localization.days}`}
+                                                            ? rtf.format(1, "year")
+                                                            : rtf.format(days, "day")}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
                                         </Select>
+
                                         <FormMessage />
                                     </FormItem>
                                 )}

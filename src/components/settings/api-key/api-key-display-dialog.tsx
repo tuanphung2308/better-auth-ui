@@ -3,6 +3,7 @@
 import { CheckIcon, CopyIcon } from "lucide-react"
 import { type ComponentProps, useContext, useState } from "react"
 
+import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn } from "../../../lib/utils"
 import { Button } from "../../ui/button"
@@ -18,16 +19,20 @@ import type { SettingsCardClassNames } from "../shared/settings-card"
 
 interface ApiKeyDisplayDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
+    localization?: AuthLocalization
     apiKey: string
 }
 
 export function ApiKeyDisplayDialog({
     classNames,
     apiKey,
+    localization,
     onOpenChange,
     ...props
 }: ApiKeyDisplayDialogProps) {
-    const { localization } = useContext(AuthUIContext)
+    const { localization: contextLocalization } = useContext(AuthUIContext)
+    localization = { ...contextLocalization, ...localization }
+
     const [copied, setCopied] = useState(false)
 
     const handleCopy = () => {
@@ -83,7 +88,7 @@ export function ApiKeyDisplayDialog({
                         onClick={() => onOpenChange?.(false)}
                         className={cn(classNames?.button, classNames?.primaryButton)}
                     >
-                        {localization.done || localization.continue}
+                        {localization.done}
                     </Button>
                 </DialogFooter>
             </DialogContent>

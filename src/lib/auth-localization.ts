@@ -292,9 +292,6 @@ export const authLocalization = {
     apiKeyCreatedDescription:
         "Please copy your API key and store it in a safe place. For security reasons we cannot show it again.",
 
-    /** @default "Expires In" */
-    expiresIn: "Expires In",
-
     /** @default "Never Expires" */
     neverExpires: "Never Expires",
 
@@ -303,15 +300,6 @@ export const authLocalization = {
 
     /** @default "No Expiration" */
     noExpiration: "No Expiration",
-
-    /** @default "Day" */
-    day: "Day",
-
-    /** @default "Days" */
-    days: "Days",
-
-    /** @default "Year" */
-    year: "Year",
 
     /** @default "Create" */
     create: "Create",
