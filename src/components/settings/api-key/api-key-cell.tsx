@@ -49,22 +49,22 @@ export function APIKeyCell({
 
     return (
         <>
-            <Card className={cn("flex-row items-center p-4", className, classNames?.cell)}>
-                <div className="flex items-center gap-3">
-                    <KeyIcon className={cn("size-4", classNames?.icon)} />
+            <Card
+                className={cn("flex-row items-center gap-3 px-4 py-3", className, classNames?.cell)}
+            >
+                <KeyIcon className={cn("size-4", classNames?.icon)} />
 
-                    <div className="flex flex-col">
-                        <div className="flex items-center gap-2">
-                            <span className="font-medium">{apiKey.name}</span>
+                <div className="flex flex-col">
+                    <div className="flex items-center gap-2">
+                        <span className="font-semibold text-sm">{apiKey.name}</span>
 
-                            <span className="text-muted-foreground text-sm">
-                                {apiKey.start}
-                                {"******"}
-                            </span>
-                        </div>
-
-                        <div className="text-muted-foreground text-sm">{formatExpiration()}</div>
+                        <span className="text-muted-foreground text-sm">
+                            {apiKey.start}
+                            {"******"}
+                        </span>
                     </div>
+
+                    <div className="text-muted-foreground text-xs">{formatExpiration()}</div>
                 </div>
 
                 <Button
