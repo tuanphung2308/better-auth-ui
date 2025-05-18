@@ -1,8 +1,8 @@
 import type HCaptcha from "@hcaptcha/react-hcaptcha"
 import type { TurnstileInstance } from "@marsidev/react-turnstile"
+import { useGoogleReCaptcha } from "@wojtekmaj/react-recaptcha-v3"
 import { type RefObject, useContext, useRef } from "react"
 import type ReCAPTCHA from "react-google-recaptcha"
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3"
 
 import type { AuthLocalization } from "../lib/auth-localization"
 import { AuthUIContext } from "../lib/auth-ui-provider"

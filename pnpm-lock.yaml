@@ -41,6 +41,9 @@ importers:
       '@triplit/react':
         specifier: '>=1.0.0'
         version: 1.0.36(react@19.1.0)(typescript@5.8.3)
+      '@wojtekmaj/react-recaptcha-v3':
+        specifier: '>=0.1.4'
+        version: 0.1.4(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       input-otp:
         specifier: '>=1.4.0'
         version: 1.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -53,9 +56,6 @@ importers:
       react-google-recaptcha:
         specifier: '>=3.1.0'
         version: 3.1.0(react@19.1.0)
-      react-google-recaptcha-v3:
-        specifier: '>=1.10.0'
-        version: 1.10.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-hook-form:
         specifier: '>=7.55.0'
         version: 7.56.4(react@19.1.0)
@@ -161,7 +161,7 @@ importers:
         version: 3.3.0
       tailwindcss-animate:
         specifier: ^1.0.7
-        version: 1.0.7
+        version: 1.0.7(tailwindcss@4.1.7)
       tsc-watch:
         specifier: ^6.2.1
         version: 6.2.1(typescript@5.8.3)
@@ -1360,6 +1360,16 @@ packages:
   '@types/react@19.1.4':
     resolution: {integrity: sha512-EB1yiiYdvySuIITtD5lhW4yPyJ31RkJkkDw794LaQYrxCSaQV/47y5o1FMC4zF9ZyjUjzJMZwbovEnT5yHTW6g==}
 
+  '@wojtekmaj/react-recaptcha-v3@0.1.4':
+    resolution: {integrity: sha512-zszMOdgI+y1Dz3496pRFr3t68n9+OmX/puLQNnOBDC7WrjM+nOKGyjIMCTe+3J14KDvzcxETeiglyDMGl0Yh/Q==}
+    peerDependencies:
+      '@types/react': ^18.0.0 || ^19.0.0
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+
   acorn@8.14.1:
     resolution: {integrity: sha512-OvQ/2pUDKmgfCg++xsTX1wGxfTaszcHVcTctW4UJB4hibJx2HXxxO5UmVgyjMa+ZDsiaf5wWLXYpRWMmBI0QHg==}
     engines: {node: '>=0.4.0'}
@@ -2015,12 +2025,6 @@ packages:
     peerDependencies:
       react: ^19.1.0
 
-  react-google-recaptcha-v3@1.10.1:
-    resolution: {integrity: sha512-K3AYzSE0SasTn+XvV2tq+6YaxM+zQypk9rbCgG4OVUt7Rh4ze9basIKefoBz9sC0CNslJj9N1uwTTgRMJQbQJQ==}
-    peerDependencies:
-      react: ^16.3 || ^17.0 || ^18.0
-      react-dom: ^17.0 || ^18.0
-
   react-google-recaptcha@3.1.0:
     resolution: {integrity: sha512-cYW2/DWas8nEKZGD7SCu9BSuVz8iOcOLHChHyi7upUuVhkpkhYG/6N3KDiTQ3XAiZ2UAZkfvYKMfAHOzBOcGEg==}
     peerDependencies:
@@ -2389,6 +2393,9 @@ packages:
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
+
+  warning@4.0.3:
+    resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
 
   web-worker@1.5.0:
     resolution: {integrity: sha512-RiMReJrTAiA+mBjGONMnjVDP2u3p9R1vkcGz6gDIrOMT3oGuYwX2WRMYI9ipkphSuE5XKEhydbhNEJh4NY9mlw==}
@@ -3419,6 +3426,14 @@ snapshots:
     dependencies:
       csstype: 3.1.3
 
+  '@wojtekmaj/react-recaptcha-v3@0.1.4(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+      warning: 4.0.3
+    optionalDependencies:
+      '@types/react': 19.1.4
+
   acorn@8.14.1: {}
 
   ansi-regex@5.0.1: {}
@@ -4052,12 +4067,6 @@ snapshots:
       react: 19.1.0
       scheduler: 0.26.0
 
-  react-google-recaptcha-v3@1.10.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
-    dependencies:
-      hoist-non-react-statics: 3.3.2
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-
   react-google-recaptcha@3.1.0(react@19.1.0):
     dependencies:
       prop-types: 15.8.1
@@ -4280,7 +4289,9 @@ snapshots:
 
   tailwind-merge@3.3.0: {}
 
-  tailwindcss-animate@1.0.7: {}
+  tailwindcss-animate@1.0.7(tailwindcss@4.1.7):
+    dependencies:
+      tailwindcss: 4.1.7
 
   tailwindcss@4.1.7: {}
 
@@ -4431,6 +4442,10 @@ snapshots:
       react: 19.1.0
 
   uuid@9.0.1: {}
+
+  warning@4.0.3:
+    dependencies:
+      loose-envify: 1.4.0
 
   web-worker@1.5.0: {}
 

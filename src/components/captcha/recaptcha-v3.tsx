@@ -1,5 +1,6 @@
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from "@wojtekmaj/react-recaptcha-v3"
 import { useContext, useEffect } from "react"
-import { GoogleReCaptchaProvider, useGoogleReCaptcha } from "react-google-recaptcha-v3"
+
 import { useIsHydrated } from "../../hooks/use-hydrated"
 import { useLang } from "../../hooks/use-lang"
 import { useTheme } from "../../hooks/use-theme"
