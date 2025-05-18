@@ -1,7 +1,7 @@
 {
     "name": "@daveyplate/better-auth-ui",
     "homepage": "https://better-auth-ui.com",
-    "version": "1.7.0",
+    "version": "1.7.1",
     "description": "Plug & play shadcn/ui components for better-auth",
     "scripts": {
         "build": "tsup --clean --dts",
@@ -63,8 +63,17 @@
             }
         }
     },
-    "files": ["src", "dist"],
-    "keywords": ["typescript", "react", "better-auth", "shadcn", "nextjs"],
+    "files": [
+        "src",
+        "dist"
+    ],
+    "keywords": [
+        "typescript",
+        "react",
+        "better-auth",
+        "shadcn",
+        "nextjs"
+    ],
     "author": "daveycodez",
     "license": "MIT",
     "devDependencies": {
