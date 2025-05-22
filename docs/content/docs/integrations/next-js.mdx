@@ -155,7 +155,6 @@ export default function App({ Component, pageProps }: AppProps) {
             authClient={authClient}
             navigate={router.push}
             replace={router.replace}
-            onSessionChange={() => router.reload()}
             Link={Link}
         >
             <Component {...pageProps} />
