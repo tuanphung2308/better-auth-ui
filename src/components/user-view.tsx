@@ -57,7 +57,7 @@ export function UserView({
     return (
         <div className={cn("flex items-center gap-2", className, classNames?.base)}>
             <UserAvatar
-                className="my-0.5"
+                className={cn(size !== "sm" && "my-0.5")}
                 classNames={classNames?.avatar}
                 isPending={isPending}
                 size={size}
@@ -69,18 +69,22 @@ export function UserView({
                     <>
                         <Skeleton
                             className={cn(
-                                "my-0.5 h-3.5 w-24 max-w-full",
+                                "max-w-full",
+                                size === "lg" ? "h-4.5 w-32" : "h-3.5 w-24",
                                 classNames?.title,
                                 classNames?.skeleton
                             )}
                         />
-                        <Skeleton
-                            className={cn(
-                                "my-0.5 h-3 w-32 max-w-full",
-                                classNames?.subtitle,
-                                classNames?.skeleton
-                            )}
-                        />
+                        {size !== "sm" && (
+                            <Skeleton
+                                className={cn(
+                                    "mt-1.5 max-w-full",
+                                    size === "lg" ? "h-3.5 w-40" : "h-3 w-32",
+                                    classNames?.subtitle,
+                                    classNames?.skeleton
+                                )}
+                            />
+                        )}
                     </>
                 ) : (
                     <>
