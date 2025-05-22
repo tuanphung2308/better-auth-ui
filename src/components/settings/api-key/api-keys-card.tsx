@@ -9,7 +9,6 @@ import type { ApiKey } from "../../../types/api-key"
 import { CardContent } from "../../ui/card"
 import { SettingsCard } from "../shared/settings-card"
 import type { SettingsCardClassNames } from "../shared/settings-card"
-import { SettingsCellSkeleton } from "../skeletons/settings-cell-skeleton"
 import { APIKeyCell } from "./api-key-cell"
 import { ApiKeyDisplayDialog } from "./api-key-display-dialog"
 import { ApiKeyNameDialog } from "./api-key-name-dialog"
@@ -68,21 +67,17 @@ export function APIKeysCard({
                 title={localization.apiKeys}
                 action={() => setNameDialogOpen(true)}
             >
-                {(isPending || (apiKeys && apiKeys.length > 0)) && (
+                {apiKeys && apiKeys.length > 0 && (
                     <CardContent className={cn("grid gap-4", classNames?.content)}>
-                        {isPending ? (
-                            <SettingsCellSkeleton classNames={classNames} />
-                        ) : (
-                            apiKeys?.map((apiKey) => (
-                                <APIKeyCell
-                                    key={apiKey.id}
-                                    classNames={classNames}
-                                    apiKey={apiKey}
-                                    localization={localization}
-                                    refetch={refetch}
-                                />
-                            ))
-                        )}
+                        {apiKeys?.map((apiKey) => (
+                            <APIKeyCell
+                                key={apiKey.id}
+                                classNames={classNames}
+                                apiKey={apiKey}
+                                localization={localization}
+                                refetch={refetch}
+                            />
+                        ))}
                     </CardContent>
                 )}
             </SettingsCard>

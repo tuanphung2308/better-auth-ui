@@ -17,7 +17,10 @@ export function useListAccounts({
         usePlural
     })
 
-    const { results, error, fetching } = useQuery(triplit, triplit.query(modelName))
+    const { results, error, fetching } = useQuery(
+        triplit,
+        triplit.query(modelName).Where([!!triplit.token])
+    )
 
     const accounts = useMemo(() => {
         return results?.map((account) => ({
@@ -28,7 +31,7 @@ export function useListAccounts({
 
     return {
         data: accounts,
-        isPending: !accounts && (isPending || fetching),
+        isPending: !accounts && (isPending || fetching || !triplit.token),
         error
     }
 }
