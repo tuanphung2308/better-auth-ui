@@ -40,10 +40,10 @@ export function UserAvatar({
     const name =
         user?.displayUsername ||
         user?.username ||
-        user?.name ||
         user?.displayName ||
-        user?.fullName ||
         user?.firstName ||
+        user?.name ||
+        user?.fullName ||
         user?.email
     const src = user?.image || user?.avatar || user?.avatarUrl
 

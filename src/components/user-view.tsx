@@ -97,8 +97,10 @@ export function UserView({
                         >
                             {user?.displayUsername ||
                                 user?.username ||
-                                user?.name ||
                                 user?.displayName ||
+                                user?.firstName ||
+                                user?.name ||
+                                user?.fullName ||
                                 user?.email ||
                                 localization?.user}
                         </span>
