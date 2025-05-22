@@ -85,7 +85,7 @@ export function AccountCell({
 
     return (
         <Card className={cn("flex-row p-4", className, classNames?.cell)}>
-            <UserView user={deviceSession.user} />
+            <UserView user={deviceSession.user} localization={localization} />
 
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>

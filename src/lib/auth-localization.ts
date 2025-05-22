@@ -526,7 +526,10 @@ export const authLocalization = {
     byContinuingYouAgree: "By continuing, you agree to the",
 
     /** @default "Missing CAPTCHA response" */
-    missingCaptchaResponse: "Missing CAPTCHA response"
+    missingCaptchaResponse: "Missing CAPTCHA response",
+
+    /** @default "User" */
+    user: "User"
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>

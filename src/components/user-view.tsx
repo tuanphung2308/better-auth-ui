@@ -1,5 +1,8 @@
 "use client"
 
+import { useContext, useMemo } from "react"
+import type { AuthLocalization } from "../lib/auth-localization"
+import { AuthUIContext } from "../lib/auth-ui-provider"
 import { cn } from "../lib/utils"
 import type { Profile } from "../types/profile"
 import { Skeleton } from "./ui/skeleton"
@@ -20,6 +23,11 @@ export interface UserViewProps {
     isPending?: boolean
     size?: "sm" | "default" | "lg" | null
     user?: Profile | null
+    /**
+     * @default authLocalization
+     * @remarks `AuthLocalization`
+     */
+    localization?: AuthLocalization
 }
 
 /**
@@ -31,7 +39,21 @@ export interface UserViewProps {
  * - Falls back to generic "User" text when neither name nor email is available
  * - Supports customization through classNames prop
  */
-export function UserView({ className, classNames, isPending, size, user }: UserViewProps) {
+export function UserView({
+    className,
+    classNames,
+    isPending,
+    size,
+    user,
+    localization: propLocalization
+}: UserViewProps) {
+    const { localization: contextLocalization } = useContext(AuthUIContext)
+
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...propLocalization }),
+        [contextLocalization, propLocalization]
+    )
+
     return (
         <div className={cn("flex items-center gap-2", className, classNames?.base)}>
             <UserAvatar
@@ -74,7 +96,7 @@ export function UserView({ className, classNames, isPending, size, user }: UserV
                                 user?.name ||
                                 user?.displayName ||
                                 user?.email ||
-                                "User"}
+                                localization?.user}
                         </span>
 
                         {!user?.isAnonymous && size !== "sm" && (user?.name || user?.username) && (

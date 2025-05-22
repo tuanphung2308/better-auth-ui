@@ -182,7 +182,7 @@ export function UserButton({
                             <UserAvatar
                                 key={user?.image}
                                 isPending={isPending}
-                                className={cn("size-8", className, classNames?.base)}
+                                className={cn(className, classNames?.base)}
                                 classNames={classNames?.trigger?.avatar}
                                 user={user}
                                 aria-label={localization.account}
@@ -196,11 +196,10 @@ export function UserButton({
                         >
                             <UserView
                                 size={size}
-                                user={
-                                    (!user?.isAnonymous && user) || { name: localization?.account }
-                                }
+                                user={!user?.isAnonymous ? user : null}
                                 isPending={isPending}
                                 classNames={classNames?.trigger?.user}
+                                localization={localization}
                             />
 
                             <ChevronsUpDown className="ml-auto" />
@@ -222,6 +221,7 @@ export function UserButton({
                             user={user}
                             isPending={isPending}
                             classNames={classNames?.content?.user}
+                            localization={localization}
                         />
                     ) : (
                         <div className="-my-1 text-muted-foreground text-xs">
