@@ -9,7 +9,12 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { socialProviders } from "../../lib/social-providers"
 import { cn, getAuthViewByPath } from "../../lib/utils"
-import { SettingsCards, type SettingsCardsClassNames } from "../settings/settings-cards"
+import {
+    SettingsCards,
+    type SettingsCardsClassNames,
+    type SettingsView,
+    settingsViews
+} from "../settings/settings-cards"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { Separator } from "../ui/separator"
@@ -127,14 +132,15 @@ export function AuthCard({
     if (view === "callback") return <AuthCallback redirectTo={redirectTo} />
     if (view === "signOut") return <SignOut />
 
-    if (view === "settings")
+    if (settingsViews.includes(view as SettingsView))
         return settingsURL ? (
             <Loader2 className="animate-spin" />
         ) : (
             <SettingsCards
-                localization={localization}
                 className={cn(className)}
                 classNames={classNames?.settings}
+                localization={localization}
+                view={view as SettingsView}
             />
         )
 

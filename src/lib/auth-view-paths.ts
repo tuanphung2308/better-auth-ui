@@ -1,6 +1,6 @@
 export const authViewPaths = {
     /** @default "api-keys" */
-    apiKey: "api-keys",
+    apiKeys: "api-keys",
     /** @default "callback" */
     callback: "callback",
     /** @default "forgot-password" */

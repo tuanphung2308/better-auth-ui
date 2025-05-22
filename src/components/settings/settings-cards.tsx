@@ -2,13 +2,12 @@
 
 import type { Session, User } from "better-auth"
 import { KeyIcon, MenuIcon, ShieldCheckIcon, UserIcon } from "lucide-react"
-import { useContext, useState } from "react"
+import { useContext } from "react"
 
 import { useAuthenticate } from "../../hooks/use-authenticate"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
-import type { ApiKey } from "../../types/api-key"
 import { Button } from "../ui/button"
 import {
     DropdownMenu,
@@ -18,19 +17,14 @@ import {
 } from "../ui/dropdown-menu"
 import { UserButton } from "../user-button"
 import { AccountsCard } from "./account/accounts-card"
-import { DeleteAccountCard } from "./account/delete-account-card"
 import { UpdateAvatarCard } from "./account/update-avatar-card"
 import { UpdateFieldCard } from "./account/update-field-card"
 import { UpdateNameCard } from "./account/update-name-card"
 import { UpdateUsernameCard } from "./account/update-username-card"
 import { APIKeysCard } from "./api-key/api-keys-card"
-import { PasskeysCard } from "./passkey/passkeys-card"
+import { SecuritySettingsCards } from "./security-settings-cards"
 import { ChangeEmailCard } from "./security/change-email-card"
-import { ChangePasswordCard } from "./security/change-password-card"
-import { ProvidersCard } from "./security/providers-card"
-import { SessionsCard } from "./security/sessions-card"
 import type { SettingsCardClassNames } from "./shared/settings-card"
-import { TwoFactorCard } from "./two-factor/two-factor-card"
 
 export type SettingsCardsClassNames = {
     base?: string
@@ -50,71 +44,39 @@ export type SettingsCardsClassNames = {
     }
 }
 
+export const settingsViews = ["settings", "security", "apiKeys"] as const
+export type SettingsView = (typeof settingsViews)[number]
+
 export interface SettingsCardsProps {
     className?: string
     classNames?: SettingsCardsClassNames
     localization?: AuthLocalization
+    view?: SettingsView
 }
 
-export function SettingsCards({ className, classNames, localization }: SettingsCardsProps) {
+export function SettingsCards({ className, classNames, localization, view }: SettingsCardsProps) {
     useAuthenticate()
-    const [tab, setTab] = useState<"account" | "security" | "api-keys">("account")
 
     const {
         additionalFields,
         apiKey,
         avatar,
-        credentials,
+        basePath,
         changeEmail,
-        deleteUser,
         hooks,
         localization: contextLocalization,
         multiSession,
         nameRequired,
-        otherProviders,
-        passkey,
-        providers,
         settingsFields,
         username,
-        twoFactor
+        viewPaths,
+        Link
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
 
-    const {
-        useListAccounts,
-        useListDeviceSessions,
-        useListPasskeys,
-        useListSessions,
-        useListApiKeys,
-        useSession
-    } = hooks
+    const { useListDeviceSessions, useSession } = hooks
     const { data: sessionData, isPending: sessionPending } = useSession()
-
-    const {
-        data: accounts,
-        isPending: accountsPending,
-        refetch: refetchAccounts
-    } = useListAccounts()
-
-    const credentialsLinked = accounts?.some((acc) => acc.provider === "credential")
-
-    const {
-        data: sessions,
-        isPending: sessionsPending,
-        refetch: refetchSessions
-    } = useListSessions()
-
-    let passkeys: { id: string; createdAt: Date }[] | undefined | null = undefined
-    let passkeysPending: boolean | undefined = undefined
-    let refetchPasskeys: (() => Promise<void>) | undefined = undefined
-
-    if (passkey) {
-        const result = useListPasskeys()
-        passkeys = result.data
-        passkeysPending = result.isPending
-        refetchPasskeys = result.refetch
-    }
 
     let deviceSessions: { user: User; session: Session }[] | undefined | null = undefined
     let deviceSessionsPending: boolean | undefined = undefined
@@ -125,17 +87,6 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
         deviceSessions = result.data
         deviceSessionsPending = result.isPending
         refetchDeviceSessions = result.refetch
-    }
-
-    let apiKeys: ApiKey[] | undefined | null = undefined
-    let apiKeysPending: boolean | undefined = undefined
-    let refetchApiKeys: (() => Promise<void>) | undefined = undefined
-
-    if (apiKey) {
-        const result = useListApiKeys()
-        apiKeys = result.data
-        apiKeysPending = result.isPending
-        refetchApiKeys = result.refetch
     }
 
     return (
@@ -158,21 +109,21 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         )}
                         variant="secondary"
                     >
-                        {tab === "account" && (
+                        {view === "settings" && (
                             <>
                                 <UserIcon className={classNames?.icon} />
                                 {localization.account}
                             </>
                         )}
 
-                        {tab === "security" && (
+                        {view === "security" && (
                             <>
                                 <ShieldCheckIcon className={classNames?.icon} />
                                 {localization.security}
                             </>
                         )}
 
-                        {tab === "api-keys" && (
+                        {view === "apiKeys" && (
                             <>
                                 <KeyIcon className={classNames?.icon} />
                                 {localization.apiKeys}
@@ -186,17 +137,17 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                 <DropdownMenuContent
                     className={cn("w-[calc(100svw-1rem)]", classNames?.dropdown?.content)}
                 >
-                    <DropdownMenuItem onClick={() => setTab("account")}>
+                    <DropdownMenuItem>
                         <UserIcon />
                         {localization.account}
                     </DropdownMenuItem>
 
-                    <DropdownMenuItem onClick={() => setTab("security")}>
+                    <DropdownMenuItem>
                         <ShieldCheckIcon />
                         {localization.security}
                     </DropdownMenuItem>
 
-                    <DropdownMenuItem onClick={() => setTab("api-keys")}>
+                    <DropdownMenuItem>
                         <KeyIcon />
                         {localization.apiKeys}
                     </DropdownMenuItem>
@@ -207,52 +158,55 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                 <div className={cn("grid w-64 gap-1 xl:w-72", classNames?.sidebar?.base)}>
                     <UserButton variant="ghost" size="sm" className="mb-3" />
 
-                    <Button
-                        size="lg"
-                        className={cn(
-                            "w-full justify-start",
-                            classNames?.sidebar?.button,
-                            tab === "account" && classNames?.sidebar?.buttonActive
-                        )}
-                        variant={tab === "account" ? "secondary" : "ghost"}
-                        onClick={() => setTab("account")}
-                    >
-                        <UserIcon className={classNames?.icon} />
-                        {localization.account}
-                    </Button>
+                    <Link href={`${basePath}/${viewPaths.settings}`}>
+                        <Button
+                            size="lg"
+                            className={cn(
+                                "w-full justify-start",
+                                classNames?.sidebar?.button,
+                                view === "settings" && classNames?.sidebar?.buttonActive
+                            )}
+                            variant={view === "settings" ? "secondary" : "ghost"}
+                        >
+                            <UserIcon className={classNames?.icon} />
+                            {localization.account}
+                        </Button>
+                    </Link>
 
-                    <Button
-                        size="lg"
-                        className={cn(
-                            "w-full justify-start",
-                            classNames?.sidebar?.button,
-                            tab === "security" && classNames?.sidebar?.buttonActive
-                        )}
-                        variant={tab === "security" ? "secondary" : "ghost"}
-                        onClick={() => setTab("security")}
-                    >
-                        <ShieldCheckIcon className={classNames?.icon} />
-                        {localization.security}
-                    </Button>
+                    <Link href={`${basePath}/${viewPaths.security}`}>
+                        <Button
+                            size="lg"
+                            className={cn(
+                                "w-full justify-start",
+                                classNames?.sidebar?.button,
+                                view === "security" && classNames?.sidebar?.buttonActive
+                            )}
+                            variant={view === "security" ? "secondary" : "ghost"}
+                        >
+                            <ShieldCheckIcon className={classNames?.icon} />
+                            {localization.security}
+                        </Button>
+                    </Link>
 
-                    <Button
-                        size="lg"
-                        className={cn(
-                            "w-full justify-start",
-                            classNames?.sidebar?.button,
-                            tab === "api-keys" && classNames?.sidebar?.buttonActive
-                        )}
-                        variant={tab === "api-keys" ? "secondary" : "ghost"}
-                        onClick={() => setTab("api-keys")}
-                    >
-                        <KeyIcon className={classNames?.icon} />
-                        {localization.apiKeys}
-                    </Button>
+                    <Link href={`${basePath}/${viewPaths.apiKeys}`}>
+                        <Button
+                            size="lg"
+                            className={cn(
+                                "w-full justify-start",
+                                classNames?.sidebar?.button,
+                                view === "apiKeys" && classNames?.sidebar?.buttonActive
+                            )}
+                            variant={view === "apiKeys" ? "secondary" : "ghost"}
+                        >
+                            <KeyIcon className={classNames?.icon} />
+                            {localization.apiKeys}
+                        </Button>
+                    </Link>
                 </div>
             </div>
 
             <div className={cn("flex w-full flex-col gap-4 md:gap-6", classNames?.cards)}>
-                {tab === "account" && (
+                {view === "settings" && (
                     <>
                         {avatar && (
                             <UpdateAvatarCard
@@ -335,77 +289,12 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                     </>
                 )}
 
-                {tab === "security" && (
-                    <>
-                        {credentials && (
-                            <ChangePasswordCard
-                                accounts={accounts}
-                                classNames={classNames?.card}
-                                isPending={sessionPending}
-                                localization={localization}
-                                skipHook
-                            />
-                        )}
-
-                        {(providers?.length || otherProviders?.length) && (
-                            <ProvidersCard
-                                accounts={accounts}
-                                classNames={classNames?.card}
-                                isPending={accountsPending}
-                                localization={localization}
-                                refetch={refetchAccounts}
-                                skipHook
-                            />
-                        )}
-
-                        {twoFactor && credentialsLinked && (
-                            <TwoFactorCard
-                                classNames={classNames?.card}
-                                localization={localization}
-                            />
-                        )}
-
-                        {passkey && (
-                            <PasskeysCard
-                                classNames={classNames?.card}
-                                isPending={passkeysPending}
-                                localization={localization}
-                                passkeys={passkeys}
-                                refetch={refetchPasskeys}
-                                skipHook
-                            />
-                        )}
-
-                        <SessionsCard
-                            classNames={classNames?.card}
-                            isPending={sessionsPending}
-                            localization={localization}
-                            sessions={sessions}
-                            refetch={refetchSessions}
-                            skipHook
-                        />
-
-                        {deleteUser && (
-                            <DeleteAccountCard
-                                accounts={accounts}
-                                classNames={classNames?.card}
-                                isPending={sessionPending}
-                                localization={localization}
-                                skipHook
-                            />
-                        )}
-                    </>
+                {view === "security" && (
+                    <SecuritySettingsCards classNames={classNames} localization={localization} />
                 )}
 
-                {tab === "api-keys" && apiKey && (
-                    <APIKeysCard
-                        classNames={classNames?.card}
-                        isPending={apiKeysPending}
-                        localization={localization}
-                        apiKeys={apiKeys}
-                        refetch={refetchApiKeys}
-                        skipHook
-                    />
+                {view === "apiKeys" && apiKey && (
+                    <APIKeysCard classNames={classNames?.card} localization={localization} />
                 )}
             </div>
         </div>
