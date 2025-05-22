@@ -16,6 +16,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
+import { UserButton } from "../user-button"
 import { AccountsCard } from "./accounts-card"
 import { APIKeysCard } from "./api-key/api-keys-card"
 import { ChangeEmailCard } from "./change-email-card"
@@ -45,6 +46,7 @@ export type SettingsCardsClassNames = {
     sidebar?: {
         base?: string
         button?: string
+        buttonActive?: string
     }
 }
 
@@ -144,6 +146,8 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                 classNames?.base
             )}
         >
+            <UserButton variant="ghost" size="sm" className="md:hidden" />
+
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button
@@ -152,6 +156,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                             "w-full justify-start md:hidden",
                             classNames?.dropdown?.trigger
                         )}
+                        variant="secondary"
                     >
                         {tab === "account" && (
                             <>
@@ -200,10 +205,16 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
 
             <div className="hidden md:block">
                 <div className={cn("grid w-64 gap-1 xl:w-72", classNames?.sidebar?.base)}>
+                    <UserButton variant="ghost" size="sm" className="mb-3" />
+
                     <Button
                         size="lg"
-                        className={cn("w-full justify-start", classNames?.sidebar?.button)}
-                        variant={tab === "account" ? "default" : "ghost"}
+                        className={cn(
+                            "w-full justify-start",
+                            classNames?.sidebar?.button,
+                            tab === "account" && classNames?.sidebar?.buttonActive
+                        )}
+                        variant={tab === "account" ? "secondary" : "ghost"}
                         onClick={() => setTab("account")}
                     >
                         <UserIcon className={classNames?.icon} />
@@ -212,8 +223,12 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
 
                     <Button
                         size="lg"
-                        className={cn("w-full justify-start", classNames?.sidebar?.button)}
-                        variant={tab === "security" ? "default" : "ghost"}
+                        className={cn(
+                            "w-full justify-start",
+                            classNames?.sidebar?.button,
+                            tab === "security" && classNames?.sidebar?.buttonActive
+                        )}
+                        variant={tab === "security" ? "secondary" : "ghost"}
                         onClick={() => setTab("security")}
                     >
                         <LockIcon className={classNames?.icon} />
@@ -222,8 +237,12 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
 
                     <Button
                         size="lg"
-                        className={cn("w-full justify-start", classNames?.sidebar?.button)}
-                        variant={tab === "api-keys" ? "default" : "ghost"}
+                        className={cn(
+                            "w-full justify-start",
+                            classNames?.sidebar?.button,
+                            tab === "api-keys" && classNames?.sidebar?.buttonActive
+                        )}
+                        variant={tab === "api-keys" ? "secondary" : "ghost"}
                         onClick={() => setTab("api-keys")}
                     >
                         <KeyIcon className={classNames?.icon} />
