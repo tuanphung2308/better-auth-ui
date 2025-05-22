@@ -1,3 +1,5 @@
+"use client"
+
 import { cn } from "../lib/utils"
 import type { Profile } from "../types/profile"
 import { Skeleton } from "./ui/skeleton"
@@ -6,15 +8,18 @@ import { UserAvatar, type UserAvatarClassNames } from "./user-avatar"
 export interface UserViewClassNames {
     base?: string
     avatar?: UserAvatarClassNames
-    p?: string
-    small?: string
+    content?: string
+    title?: string
+    subtitle?: string
+    skeleton?: string
 }
 
 export interface UserViewProps {
     className?: string
     classNames?: UserViewClassNames
     isPending?: boolean
-    user?: Profile
+    size?: "sm" | "default" | "lg" | null
+    user?: Profile | null
 }
 
 /**
@@ -26,36 +31,61 @@ export interface UserViewProps {
  * - Falls back to generic "User" text when neither name nor email is available
  * - Supports customization through classNames prop
  */
-export function UserView({ user, className, classNames, isPending }: UserViewProps) {
+export function UserView({ className, classNames, isPending, size, user }: UserViewProps) {
     return (
-        <div className={cn("flex items-center gap-2 truncate", className, classNames?.base)}>
+        <div className={cn("flex items-center gap-2", className, classNames?.base)}>
             <UserAvatar
-                isPending={isPending}
-                user={user}
                 className="my-0.5"
                 classNames={classNames?.avatar}
+                isPending={isPending}
+                size={size}
+                user={user}
             />
 
-            <div className="flex flex-col truncate text-left">
+            <div className={cn("grid flex-1 text-left leading-tight", classNames?.content)}>
                 {isPending ? (
                     <>
-                        <Skeleton className={cn("my-0.5 h-4 w-24 max-w-full", classNames?.p)} />
-                        <Skeleton className={cn("my-0.5 h-3 w-32 max-w-full", classNames?.small)} />
+                        <Skeleton
+                            className={cn(
+                                "my-0.5 h-3.5 w-24 max-w-full",
+                                classNames?.title,
+                                classNames?.skeleton
+                            )}
+                        />
+                        <Skeleton
+                            className={cn(
+                                "my-0.5 h-3 w-32 max-w-full",
+                                classNames?.subtitle,
+                                classNames?.skeleton
+                            )}
+                        />
                     </>
                 ) : (
                     <>
-                        <span className={cn("truncate font-medium text-sm", classNames?.p)}>
-                            {user?.name || user?.email || "User"}
+                        <span
+                            className={cn(
+                                "truncate font-semibold",
+                                size === "lg" ? "text-base" : "text-sm",
+                                classNames?.title
+                            )}
+                        >
+                            {user?.displayUsername ||
+                                user?.username ||
+                                user?.name ||
+                                user?.displayName ||
+                                user?.email ||
+                                "User"}
                         </span>
 
-                        {user?.name && user?.email && (
+                        {!user?.isAnonymous && size !== "sm" && (user?.name || user?.username) && (
                             <span
                                 className={cn(
-                                    "!font-light truncate text-muted-foreground text-xs",
-                                    classNames?.small
+                                    "truncate opacity-70",
+                                    size === "lg" ? "text-sm" : "text-xs",
+                                    classNames?.subtitle
                                 )}
                             >
-                                {user.email}
+                                {user?.email}
                             </span>
                         )}
                     </>

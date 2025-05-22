@@ -37,7 +37,14 @@ export function UserAvatar({
     user,
     ...props
 }: UserAvatarProps & ComponentProps<typeof Avatar>) {
-    const name = user?.username || user?.name || user?.fullName || user?.firstName || user?.email
+    const name =
+        user?.displayUsername ||
+        user?.username ||
+        user?.name ||
+        user?.displayName ||
+        user?.fullName ||
+        user?.firstName ||
+        user?.email
     const src = user?.image || user?.avatar || user?.avatarUrl
 
     if (isPending) {

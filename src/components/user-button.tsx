@@ -9,7 +9,14 @@ import {
     SettingsIcon,
     UserRoundPlus
 } from "lucide-react"
-import { Fragment, type ReactNode, useContext, useEffect, useState } from "react"
+import {
+    type ComponentProps,
+    Fragment,
+    type ReactNode,
+    useContext,
+    useEffect,
+    useState
+} from "react"
 
 import type { AuthLocalization } from "../lib/auth-localization"
 import { AuthUIContext } from "../lib/auth-ui-provider"
@@ -47,22 +54,20 @@ export interface UserButtonClassNames {
 export interface UserButtonProps {
     className?: string
     classNames?: UserButtonClassNames
+    align?: "center" | "start" | "end"
     additionalLinks?: {
         href: string
         icon?: ReactNode
         label: ReactNode
         signedIn?: boolean
     }[]
+    customTrigger?: ReactNode
     disableDefaultLinks?: boolean
     /**
      * @default authLocalization
      * @remarks `AuthLocalization`
      */
     localization?: AuthLocalization
-    /**
-     * @default "icon"
-     */
-    size?: "icon" | "full"
 }
 
 type DeviceSession = {
@@ -83,11 +88,14 @@ type DeviceSession = {
 export function UserButton({
     className,
     classNames,
+    align,
+    customTrigger,
     additionalLinks,
     disableDefaultLinks,
     localization,
-    size = "icon"
-}: UserButtonProps) {
+    size,
+    ...props
+}: UserButtonProps & ComponentProps<typeof Button>) {
     const {
         basePath,
         hooks: { useSession, useListDeviceSessions },
@@ -144,50 +152,47 @@ export function UserButton({
     return (
         <DropdownMenu>
             <DropdownMenuTrigger
-                asChild={size === "full"}
+                asChild
                 className={cn(size === "icon" && "rounded-full", classNames?.trigger?.base)}
             >
-                {size === "icon" ? (
-                    <UserAvatar
-                        key={user?.image}
-                        isPending={isPending}
-                        className={cn("size-8", className, classNames?.base)}
-                        classNames={classNames?.trigger?.avatar}
-                        user={user}
-                        aria-label={localization.account}
-                    />
-                ) : (
-                    <Button
-                        className={cn(
-                            "h-fit justify-between",
-                            className,
-                            classNames?.trigger?.base
-                        )}
-                        variant="outline"
-                    >
-                        {(user && !user.isAnonymous) || isPending ? (
-                            <UserView
+                {customTrigger ||
+                    (size === "icon" ? (
+                        <Button size="icon" className="size-fit">
+                            <UserAvatar
+                                key={user?.image}
+                                isPending={isPending}
+                                className={cn("size-8", className, classNames?.base)}
+                                classNames={classNames?.trigger?.avatar}
                                 user={user}
+                                aria-label={localization.account}
+                            />
+                        </Button>
+                    ) : (
+                        <Button
+                            className={cn("!p-2 h-fit", className, classNames?.trigger?.base)}
+                            size={size}
+                            {...props}
+                        >
+                            <UserView
+                                size={size}
+                                user={
+                                    (!user?.isAnonymous && user) || { name: localization?.account }
+                                }
                                 isPending={isPending}
                                 classNames={classNames?.trigger?.user}
                             />
-                        ) : (
-                            <div className="flex items-center gap-2 truncate">
-                                <UserAvatar className={cn("my-0.5", classNames?.trigger?.avatar)} />
 
-                                <span className="truncate font-medium text-sm">
-                                    {localization?.account}
-                                </span>
-                            </div>
-                        )}
-
-                        <ChevronsUpDown />
-                    </Button>
-                )}
+                            <ChevronsUpDown className="ml-auto" />
+                        </Button>
+                    ))}
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
-                className={cn("max-w-64", classNames?.content?.base)}
+                className={cn(
+                    "w-[--radix-dropdown-menu-trigger-width] min-w-56 max-w-64",
+                    classNames?.content?.base
+                )}
+                align={align}
                 onCloseAutoFocus={(e) => e.preventDefault()}
             >
                 <div className={cn("p-2", classNames?.content?.menuItem)}>
