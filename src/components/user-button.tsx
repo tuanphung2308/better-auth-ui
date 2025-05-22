@@ -15,6 +15,7 @@ import {
     type ReactNode,
     useContext,
     useEffect,
+    useRef,
     useState
 } from "react"
 
@@ -149,6 +150,18 @@ export function UserButton({
         setActiveSessionPending(false)
     }, [sessionData, multiSession])
 
+    const warningLogged = useRef(false)
+
+    useEffect(() => {
+        if (size || warningLogged.current) return
+
+        console.warn(
+            "[Better Auth UI] The `size` prop of `UserButton` no longer defaults to `icon`. Please pass `size='icon'` to the `UserButton` component to get the same behaviour as before. This warning will be removed in a future release. It can be suppressed in the meantime by setting the `size` prop."
+        )
+
+        warningLogged.current = true
+    }, [size])
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger
@@ -157,7 +170,7 @@ export function UserButton({
             >
                 {customTrigger ||
                     (size === "icon" ? (
-                        <Button size="icon" className="size-fit">
+                        <Button size="icon" className="size-fit" variant="ghost">
                             <UserAvatar
                                 key={user?.image}
                                 isPending={isPending}
