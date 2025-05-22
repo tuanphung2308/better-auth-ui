@@ -105,7 +105,7 @@ import { AuthCard } from "@daveyplate/better-auth-ui"
 
 export function AuthView({ pathname }: { pathname: string }) {
     return (
-        <main className="flex flex-col grow p-4 items-center justify-center">
+        <main className="container flex grow flex-col items-center justify-center gap-3 self-center p-4 md:p-6">
             <AuthCard pathname={pathname} />
         </main>
     )
@@ -178,7 +178,7 @@ import { authViewPaths } from "@daveyplate/better-auth-ui/server"
 
 export default function AuthPage({ pathname }: { pathname: string }) {
     return (
-        <main className="flex flex-col grow p-4 items-center justify-center">
+        <main className="container flex grow flex-col items-center justify-center gap-3 self-center p-4 md:p-6">
             <AuthCard pathname={pathname} />
         </main>
     )
