@@ -64,7 +64,7 @@ export function SettingsCardFooter({
                     {instructions && (
                         <CardDescription
                             className={cn(
-                                "text-muted-foreground text-xs md:text-sm",
+                                "text-center text-muted-foreground text-xs md:text-start md:text-sm",
                                 classNames?.instructions
                             )}
                         >

@@ -1,15 +1,21 @@
 "use client"
 
 import type { Session, User } from "better-auth"
-import { KeyIcon, UserIcon } from "lucide-react"
-import { useContext } from "react"
+import { KeyIcon, LockIcon, MenuIcon, UserIcon } from "lucide-react"
+import { useContext, useState } from "react"
 
 import { useAuthenticate } from "../../hooks/use-authenticate"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import type { ApiKey } from "../../types/api-key"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
+import { Button } from "../ui/button"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from "../ui/dropdown-menu"
 import { AccountsCard } from "./accounts-card"
 import { APIKeysCard } from "./api-key/api-keys-card"
 import { ChangeEmailCard } from "./change-email-card"
@@ -28,11 +34,17 @@ import { UpdateUsernameCard } from "./update-username-card"
 export type SettingsCardsClassNames = {
     base?: string
     card?: SettingsCardClassNames
-    tabs?: {
+    cards?: string
+    icon?: string
+    dropdown?: {
         base?: string
-        list?: string
         trigger?: string
         content?: string
+        menuIcon?: string
+    }
+    sidebar?: {
+        base?: string
+        button?: string
     }
 }
 
@@ -44,6 +56,7 @@ export interface SettingsCardsProps {
 
 export function SettingsCards({ className, classNames, localization }: SettingsCardsProps) {
     useAuthenticate()
+    const [tab, setTab] = useState<"account" | "security" | "api-keys">("account")
 
     const {
         additionalFields,
@@ -126,184 +139,256 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
     return (
         <div
             className={cn(
-                "flex w-full max-w-xl grow flex-col items-center gap-4",
+                "flex w-full grow flex-col gap-4 md:flex-row md:gap-12",
                 className,
                 classNames?.base
             )}
         >
-            <Tabs
-                defaultValue="account"
-                className={cn("flex w-full flex-col gap-4", classNames?.tabs?.base)}
-            >
-                <TabsList className={cn("grid w-full grid-cols-2", classNames?.tabs?.list)}>
-                    <TabsTrigger value="account" className={classNames?.tabs?.trigger}>
-                        <UserIcon className={classNames?.card?.icon} />
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button
+                        size="lg"
+                        className={cn(
+                            "w-full justify-start md:hidden",
+                            classNames?.dropdown?.trigger
+                        )}
+                    >
+                        {tab === "account" && (
+                            <>
+                                <UserIcon className={classNames?.icon} />
+                                {localization.account}
+                            </>
+                        )}
 
+                        {tab === "security" && (
+                            <>
+                                <LockIcon className={classNames?.icon} />
+                                {localization.security}
+                            </>
+                        )}
+
+                        {tab === "api-keys" && (
+                            <>
+                                <KeyIcon className={classNames?.icon} />
+                                {localization.apiKeys}
+                            </>
+                        )}
+
+                        <MenuIcon className={cn("ml-auto", classNames?.dropdown?.menuIcon)} />
+                    </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent
+                    className={cn("w-[calc(100svw-1rem)]", classNames?.dropdown?.content)}
+                >
+                    <DropdownMenuItem onClick={() => setTab("account")}>
+                        <UserIcon />
                         {localization.account}
-                    </TabsTrigger>
+                    </DropdownMenuItem>
 
-                    <TabsTrigger value="security" className={classNames?.tabs?.trigger}>
-                        <KeyIcon className={classNames?.card?.icon} />
-
+                    <DropdownMenuItem onClick={() => setTab("security")}>
+                        <LockIcon />
                         {localization.security}
-                    </TabsTrigger>
-                </TabsList>
+                    </DropdownMenuItem>
 
-                <TabsContent
-                    value="account"
-                    className={cn("flex flex-col gap-4", classNames?.tabs?.content)}
-                >
-                    {avatar && (
-                        <UpdateAvatarCard
-                            classNames={classNames?.card}
-                            isPending={sessionPending}
-                            localization={localization}
-                        />
-                    )}
+                    <DropdownMenuItem onClick={() => setTab("api-keys")}>
+                        <KeyIcon />
+                        {localization.apiKeys}
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
 
-                    {username && (
-                        <UpdateUsernameCard
-                            classNames={classNames?.card}
-                            isPending={sessionPending}
-                            localization={localization}
-                        />
-                    )}
+            <div className="hidden md:block">
+                <div className={cn("grid w-64 gap-1 xl:w-72", classNames?.sidebar?.base)}>
+                    <Button
+                        size="lg"
+                        className={cn("w-full justify-start", classNames?.sidebar?.button)}
+                        variant={tab === "account" ? "default" : "ghost"}
+                        onClick={() => setTab("account")}
+                    >
+                        <UserIcon className={classNames?.icon} />
+                        {localization.account}
+                    </Button>
 
-                    {(settingsFields?.includes("name") || nameRequired) && (
-                        <UpdateNameCard
-                            classNames={classNames?.card}
-                            isPending={sessionPending}
-                            localization={localization}
-                        />
-                    )}
+                    <Button
+                        size="lg"
+                        className={cn("w-full justify-start", classNames?.sidebar?.button)}
+                        variant={tab === "security" ? "default" : "ghost"}
+                        onClick={() => setTab("security")}
+                    >
+                        <LockIcon className={classNames?.icon} />
+                        {localization.security}
+                    </Button>
 
-                    {changeEmail && (
-                        <ChangeEmailCard
-                            classNames={classNames?.card}
-                            isPending={sessionPending}
-                            localization={localization}
-                        />
-                    )}
+                    <Button
+                        size="lg"
+                        className={cn("w-full justify-start", classNames?.sidebar?.button)}
+                        variant={tab === "api-keys" ? "default" : "ghost"}
+                        onClick={() => setTab("api-keys")}
+                    >
+                        <KeyIcon className={classNames?.icon} />
+                        {localization.apiKeys}
+                    </Button>
+                </div>
+            </div>
 
-                    {settingsFields?.map((field) => {
-                        const additionalField = additionalFields?.[field]
-                        if (!additionalField) return null
-
-                        const {
-                            label,
-                            description,
-                            instructions,
-                            placeholder,
-                            required,
-                            type,
-                            validate
-                        } = additionalField
-
-                        // @ts-ignore Custom fields are not typed
-                        const defaultValue = sessionData?.user[field] as unknown
-
-                        return (
-                            <UpdateFieldCard
-                                key={field}
+            <div className={cn("flex w-full flex-col gap-4 md:gap-6", classNames?.cards)}>
+                {tab === "account" && (
+                    <>
+                        {avatar && (
+                            <UpdateAvatarCard
                                 classNames={classNames?.card}
-                                value={defaultValue}
-                                description={description}
-                                name={field}
-                                instructions={instructions}
                                 isPending={sessionPending}
-                                label={label}
                                 localization={localization}
-                                placeholder={placeholder}
-                                required={required}
-                                type={type}
-                                validate={validate}
                             />
-                        )
-                    })}
+                        )}
 
-                    {multiSession && (
-                        <AccountsCard
+                        {username && (
+                            <UpdateUsernameCard
+                                classNames={classNames?.card}
+                                isPending={sessionPending}
+                                localization={localization}
+                            />
+                        )}
+
+                        {(settingsFields?.includes("name") || nameRequired) && (
+                            <UpdateNameCard
+                                classNames={classNames?.card}
+                                isPending={sessionPending}
+                                localization={localization}
+                            />
+                        )}
+
+                        {changeEmail && (
+                            <ChangeEmailCard
+                                classNames={classNames?.card}
+                                isPending={sessionPending}
+                                localization={localization}
+                            />
+                        )}
+
+                        {settingsFields?.map((field) => {
+                            const additionalField = additionalFields?.[field]
+                            if (!additionalField) return null
+
+                            const {
+                                label,
+                                description,
+                                instructions,
+                                placeholder,
+                                required,
+                                type,
+                                validate
+                            } = additionalField
+
+                            // @ts-ignore Custom fields are not typed
+                            const defaultValue = sessionData?.user[field] as unknown
+
+                            return (
+                                <UpdateFieldCard
+                                    key={field}
+                                    classNames={classNames?.card}
+                                    value={defaultValue}
+                                    description={description}
+                                    name={field}
+                                    instructions={instructions}
+                                    isPending={sessionPending}
+                                    label={label}
+                                    localization={localization}
+                                    placeholder={placeholder}
+                                    required={required}
+                                    type={type}
+                                    validate={validate}
+                                />
+                            )
+                        })}
+
+                        {multiSession && (
+                            <AccountsCard
+                                classNames={classNames?.card}
+                                deviceSessions={deviceSessions}
+                                isPending={deviceSessionsPending}
+                                localization={localization}
+                                refetch={refetchDeviceSessions}
+                                skipHook
+                            />
+                        )}
+                    </>
+                )}
+
+                {tab === "security" && (
+                    <>
+                        {credentials && (
+                            <ChangePasswordCard
+                                accounts={accounts}
+                                classNames={classNames?.card}
+                                isPending={sessionPending}
+                                localization={localization}
+                                skipHook
+                            />
+                        )}
+
+                        {(providers?.length || otherProviders?.length) && (
+                            <ProvidersCard
+                                accounts={accounts}
+                                classNames={classNames?.card}
+                                isPending={accountsPending}
+                                localization={localization}
+                                refetch={refetchAccounts}
+                                skipHook
+                            />
+                        )}
+
+                        {twoFactor && credentialsLinked && (
+                            <TwoFactorCard
+                                classNames={classNames?.card}
+                                localization={localization}
+                            />
+                        )}
+
+                        {passkey && (
+                            <PasskeysCard
+                                classNames={classNames?.card}
+                                isPending={passkeysPending}
+                                localization={localization}
+                                passkeys={passkeys}
+                                refetch={refetchPasskeys}
+                                skipHook
+                            />
+                        )}
+
+                        <SessionsCard
                             classNames={classNames?.card}
-                            deviceSessions={deviceSessions}
-                            isPending={deviceSessionsPending}
+                            isPending={sessionsPending}
                             localization={localization}
-                            refetch={refetchDeviceSessions}
+                            sessions={sessions}
+                            refetch={refetchSessions}
                             skipHook
                         />
-                    )}
-                </TabsContent>
 
-                <TabsContent
-                    value="security"
-                    className={cn("flex flex-col gap-4", classNames?.tabs?.content)}
-                >
-                    {credentials && (
-                        <ChangePasswordCard
-                            accounts={accounts}
-                            classNames={classNames?.card}
-                            isPending={sessionPending}
-                            localization={localization}
-                            skipHook
-                        />
-                    )}
+                        {deleteUser && (
+                            <DeleteAccountCard
+                                accounts={accounts}
+                                classNames={classNames?.card}
+                                isPending={sessionPending}
+                                localization={localization}
+                                skipHook
+                            />
+                        )}
+                    </>
+                )}
 
-                    {(providers?.length || otherProviders?.length) && (
-                        <ProvidersCard
-                            accounts={accounts}
-                            classNames={classNames?.card}
-                            isPending={accountsPending}
-                            localization={localization}
-                            refetch={refetchAccounts}
-                            skipHook
-                        />
-                    )}
-
-                    {twoFactor && credentialsLinked && (
-                        <TwoFactorCard classNames={classNames?.card} localization={localization} />
-                    )}
-
-                    {passkey && (
-                        <PasskeysCard
-                            classNames={classNames?.card}
-                            isPending={passkeysPending}
-                            localization={localization}
-                            passkeys={passkeys}
-                            refetch={refetchPasskeys}
-                            skipHook
-                        />
-                    )}
-
-                    {contextApiKeys && (
-                        <APIKeysCard
-                            classNames={classNames?.card}
-                            isPending={apiKeysPending}
-                            localization={localization}
-                            apiKeys={apiKeys}
-                            refetch={refetchApiKeys}
-                            skipHook
-                        />
-                    )}
-
-                    <SessionsCard
+                {tab === "api-keys" && contextApiKeys && (
+                    <APIKeysCard
                         classNames={classNames?.card}
-                        isPending={sessionsPending}
+                        isPending={apiKeysPending}
                         localization={localization}
-                        sessions={sessions}
-                        refetch={refetchSessions}
+                        apiKeys={apiKeys}
+                        refetch={refetchApiKeys}
                         skipHook
                     />
-
-                    {deleteUser && (
-                        <DeleteAccountCard
-                            accounts={accounts}
-                            classNames={classNames?.card}
-                            isPending={sessionPending}
-                            localization={localization}
-                            skipHook
-                        />
-                    )}
-                </TabsContent>
-            </Tabs>
+                )}
+            </div>
         </div>
     )
 }
