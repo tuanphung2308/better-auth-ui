@@ -3,10 +3,10 @@ import { Loader2 } from "lucide-react"
 import { type ComponentProps, useContext } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn, getLocalizedError } from "../../lib/utils"
-import { Button } from "../ui/button"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { cn, getLocalizedError } from "../../../lib/utils"
+import { Button } from "../../ui/button"
 import {
     Dialog,
     DialogContent,
@@ -14,10 +14,10 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle
-} from "../ui/dialog"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
-import { Input } from "../ui/input"
-import type { SettingsCardClassNames } from "./shared/settings-card"
+} from "../../ui/dialog"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import { Input } from "../../ui/input"
+import type { SettingsCardClassNames } from "../shared/settings-card"
 
 export interface DeleteAccountDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames

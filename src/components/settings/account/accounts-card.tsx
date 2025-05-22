@@ -3,14 +3,14 @@
 import type { Session, User } from "better-auth"
 import { useContext } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn } from "../../lib/utils"
-import { CardContent } from "../ui/card"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { cn } from "../../../lib/utils"
+import { CardContent } from "../../ui/card"
+import { SettingsCard } from "../shared/settings-card"
+import type { SettingsCardClassNames } from "../shared/settings-card"
+import { SettingsCellSkeleton } from "../skeletons/settings-cell-skeleton"
 import { AccountCell } from "./account-cell"
-import { SettingsCard } from "./shared/settings-card"
-import type { SettingsCardClassNames } from "./shared/settings-card"
-import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
 export interface AccountsCardProps {
     className?: string

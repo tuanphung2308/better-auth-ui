@@ -3,17 +3,17 @@
 import { useContext, useState } from "react"
 import { useForm } from "react-hook-form"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn, getLocalizedError } from "../../lib/utils"
-import type { AuthClient } from "../../types/auth-client"
-import { CardContent } from "../ui/card"
-import { Form } from "../ui/form"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { cn, getLocalizedError } from "../../../lib/utils"
+import type { AuthClient } from "../../../types/auth-client"
+import { CardContent } from "../../ui/card"
+import { Form } from "../../ui/form"
+import { SessionFreshnessDialog } from "../shared/session-freshness-dialog"
+import { SettingsCard } from "../shared/settings-card"
+import type { SettingsCardClassNames } from "../shared/settings-card"
+import { SettingsCellSkeleton } from "../skeletons/settings-cell-skeleton"
 import { PasskeyCell } from "./passkey-cell"
-import { SessionFreshnessDialog } from "./session-freshness-dialog"
-import { SettingsCard } from "./shared/settings-card"
-import type { SettingsCardClassNames } from "./shared/settings-card"
-import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
 export interface PasskeysCardProps {
     className?: string

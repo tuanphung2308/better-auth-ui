@@ -1,4 +1,6 @@
 export const authViewPaths = {
+    /** @default "api-keys" */
+    apiKey: "api-keys",
     /** @default "callback" */
     callback: "callback",
     /** @default "forgot-password" */
@@ -11,6 +13,8 @@ export const authViewPaths = {
     recoverAccount: "recover-account",
     /** @default "reset-password" */
     resetPassword: "reset-password",
+    /** @default "security" */
+    security: "security",
     /** @default "settings" */
     settings: "settings",
     /** @default "sign-in" */

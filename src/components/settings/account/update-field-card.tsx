@@ -14,7 +14,7 @@ import { Checkbox } from "../../ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
 import { Skeleton } from "../../ui/skeleton"
-import { SettingsCard, type SettingsCardClassNames } from "./settings-card"
+import { SettingsCard, type SettingsCardClassNames } from "../shared/settings-card"
 
 export interface UpdateFieldCardProps {
     className?: string

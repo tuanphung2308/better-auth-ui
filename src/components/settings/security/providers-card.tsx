@@ -2,15 +2,15 @@
 
 import { useContext } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { socialProviders } from "../../lib/social-providers"
-import { cn } from "../../lib/utils"
-import { CardContent } from "../ui/card"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { socialProviders } from "../../../lib/social-providers"
+import { cn } from "../../../lib/utils"
+import { CardContent } from "../../ui/card"
+import { SettingsCard } from "../shared/settings-card"
+import type { SettingsCardClassNames } from "../shared/settings-card"
+import { SettingsCellSkeleton } from "../skeletons/settings-cell-skeleton"
 import { ProviderCell } from "./provider-cell"
-import { SettingsCard } from "./shared/settings-card"
-import type { SettingsCardClassNames } from "./shared/settings-card"
-import { SettingsCellSkeleton } from "./skeletons/settings-cell-skeleton"
 
 export interface ProvidersCardProps {
     className?: string

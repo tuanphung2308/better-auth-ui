@@ -3,13 +3,13 @@
 import { FingerprintIcon, Loader2 } from "lucide-react"
 import { useContext, useState } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn, getLocalizedError } from "../../lib/utils"
-import { Button } from "../ui/button"
-import { Card } from "../ui/card"
-import { SessionFreshnessDialog } from "./session-freshness-dialog"
-import type { SettingsCardClassNames } from "./shared/settings-card"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { cn, getLocalizedError } from "../../../lib/utils"
+import { Button } from "../../ui/button"
+import { Card } from "../../ui/card"
+import { SessionFreshnessDialog } from "../shared/session-freshness-dialog"
+import type { SettingsCardClassNames } from "../shared/settings-card"
 
 export interface PasskeyCellProps {
     className?: string

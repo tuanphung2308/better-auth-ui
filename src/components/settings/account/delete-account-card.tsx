@@ -2,11 +2,11 @@
 
 import { useContext, useState } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { SettingsCard } from "../shared/settings-card"
+import type { SettingsCardClassNames } from "../shared/settings-card"
 import { DeleteAccountDialog } from "./delete-account-dialog"
-import { SettingsCard } from "./shared/settings-card"
-import type { SettingsCardClassNames } from "./shared/settings-card"
 
 export interface DeleteAccountCardProps {
     className?: string

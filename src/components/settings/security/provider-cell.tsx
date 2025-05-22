@@ -4,14 +4,14 @@ import type { SocialProvider } from "better-auth/social-providers"
 import { Loader2 } from "lucide-react"
 import { useContext, useState } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import type { Provider } from "../../lib/social-providers"
-import { cn, getLocalizedError } from "../../lib/utils"
-import type { AuthClient } from "../../types/auth-client"
-import { Button } from "../ui/button"
-import { Card } from "../ui/card"
-import type { SettingsCardClassNames } from "./shared/settings-card"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import type { Provider } from "../../../lib/social-providers"
+import { cn, getLocalizedError } from "../../../lib/utils"
+import type { AuthClient } from "../../../types/auth-client"
+import { Button } from "../../ui/button"
+import { Card } from "../../ui/card"
+import type { SettingsCardClassNames } from "../shared/settings-card"
 
 export interface ProviderCellProps {
     className?: string

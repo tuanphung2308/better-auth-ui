@@ -5,14 +5,14 @@ import { useContext, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn, getLocalizedError } from "../../lib/utils"
-import { CardContent } from "../ui/card"
-import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
-import { Input } from "../ui/input"
-import { Skeleton } from "../ui/skeleton"
-import { SettingsCard, type SettingsCardClassNames } from "./shared/settings-card"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { cn, getLocalizedError } from "../../../lib/utils"
+import { CardContent } from "../../ui/card"
+import { Form, FormControl, FormField, FormItem, FormMessage } from "../../ui/form"
+import { Input } from "../../ui/input"
+import { Skeleton } from "../../ui/skeleton"
+import { SettingsCard, type SettingsCardClassNames } from "../shared/settings-card"
 
 export interface ChangeEmailCardProps {
     className?: string

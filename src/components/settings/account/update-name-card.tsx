@@ -2,10 +2,10 @@
 
 import { useContext } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import type { SettingsCardClassNames } from "./shared/settings-card"
-import { UpdateFieldCard } from "./shared/update-field-card"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import type { SettingsCardClassNames } from "../shared/settings-card"
+import { UpdateFieldCard } from "./update-field-card"
 
 export interface UpdateNameCardProps {
     className?: string

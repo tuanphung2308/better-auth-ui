@@ -3,21 +3,21 @@
 import { Trash2Icon, UploadCloudIcon } from "lucide-react"
 import { useContext, useRef, useState } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn, getLocalizedError } from "../../lib/utils"
-import { Card } from "../ui/card"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { cn, getLocalizedError } from "../../../lib/utils"
+import { Card } from "../../ui/card"
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger
-} from "../ui/dropdown-menu"
-import { Skeleton } from "../ui/skeleton"
-import { UserAvatar } from "../user-avatar"
-import type { SettingsCardClassNames } from "./shared/settings-card"
-import { SettingsCardFooter } from "./shared/settings-card-footer"
-import { SettingsCardHeader } from "./shared/settings-card-header"
+} from "../../ui/dropdown-menu"
+import { Skeleton } from "../../ui/skeleton"
+import { UserAvatar } from "../../user-avatar"
+import type { SettingsCardClassNames } from "../shared/settings-card"
+import { SettingsCardFooter } from "../shared/settings-card-footer"
+import { SettingsCardHeader } from "../shared/settings-card-header"
 
 async function resizeAndCropImage(
     file: File,

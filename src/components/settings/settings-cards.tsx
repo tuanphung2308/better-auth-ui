@@ -1,7 +1,7 @@
 "use client"
 
 import type { Session, User } from "better-auth"
-import { KeyIcon, LockIcon, MenuIcon, UserIcon } from "lucide-react"
+import { KeyIcon, MenuIcon, ShieldCheckIcon, UserIcon } from "lucide-react"
 import { useContext, useState } from "react"
 
 import { useAuthenticate } from "../../hooks/use-authenticate"
@@ -17,20 +17,20 @@ import {
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
 import { UserButton } from "../user-button"
-import { AccountsCard } from "./accounts-card"
+import { AccountsCard } from "./account/accounts-card"
+import { DeleteAccountCard } from "./account/delete-account-card"
+import { UpdateAvatarCard } from "./account/update-avatar-card"
+import { UpdateFieldCard } from "./account/update-field-card"
+import { UpdateNameCard } from "./account/update-name-card"
+import { UpdateUsernameCard } from "./account/update-username-card"
 import { APIKeysCard } from "./api-key/api-keys-card"
-import { ChangeEmailCard } from "./change-email-card"
-import { ChangePasswordCard } from "./change-password-card"
-import { DeleteAccountCard } from "./delete-account-card"
-import { PasskeysCard } from "./passkeys-card"
-import { ProvidersCard } from "./providers-card"
-import { SessionsCard } from "./sessions-card"
+import { PasskeysCard } from "./passkey/passkeys-card"
+import { ChangeEmailCard } from "./security/change-email-card"
+import { ChangePasswordCard } from "./security/change-password-card"
+import { ProvidersCard } from "./security/providers-card"
+import { SessionsCard } from "./security/sessions-card"
 import type { SettingsCardClassNames } from "./shared/settings-card"
-import { UpdateFieldCard } from "./shared/update-field-card"
 import { TwoFactorCard } from "./two-factor/two-factor-card"
-import { UpdateAvatarCard } from "./update-avatar-card"
-import { UpdateNameCard } from "./update-name-card"
-import { UpdateUsernameCard } from "./update-username-card"
 
 export type SettingsCardsClassNames = {
     base?: string
@@ -167,7 +167,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
 
                         {tab === "security" && (
                             <>
-                                <LockIcon className={classNames?.icon} />
+                                <ShieldCheckIcon className={classNames?.icon} />
                                 {localization.security}
                             </>
                         )}
@@ -192,7 +192,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                     </DropdownMenuItem>
 
                     <DropdownMenuItem onClick={() => setTab("security")}>
-                        <LockIcon />
+                        <ShieldCheckIcon />
                         {localization.security}
                     </DropdownMenuItem>
 
@@ -231,7 +231,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         variant={tab === "security" ? "secondary" : "ghost"}
                         onClick={() => setTab("security")}
                     >
-                        <LockIcon className={classNames?.icon} />
+                        <ShieldCheckIcon className={classNames?.icon} />
                         {localization.security}
                     </Button>
 

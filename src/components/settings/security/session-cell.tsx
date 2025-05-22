@@ -4,12 +4,12 @@ import type { Session } from "better-auth"
 import { LaptopIcon, Loader2, SmartphoneIcon } from "lucide-react"
 import { useContext, useState } from "react"
 import { UAParser } from "ua-parser-js"
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn, getLocalizedError } from "../../lib/utils"
-import { Button } from "../ui/button"
-import { Card } from "../ui/card"
-import type { SettingsCardClassNames } from "./shared/settings-card"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { cn, getLocalizedError } from "../../../lib/utils"
+import { Button } from "../../ui/button"
+import { Card } from "../../ui/card"
+import type { SettingsCardClassNames } from "../shared/settings-card"
 
 export interface SessionCellProps {
     className?: string

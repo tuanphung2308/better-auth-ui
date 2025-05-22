@@ -4,20 +4,20 @@ import type { Session, User } from "better-auth"
 import { EllipsisIcon, Loader2, LogOutIcon, RepeatIcon } from "lucide-react"
 import { useContext, useState } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
-import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { getLocalizedError } from "../../lib/utils"
-import { cn } from "../../lib/utils"
-import { Button } from "../ui/button"
-import { Card } from "../ui/card"
+import type { AuthLocalization } from "../../../lib/auth-localization"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { getLocalizedError } from "../../../lib/utils"
+import { cn } from "../../../lib/utils"
+import { Button } from "../../ui/button"
+import { Card } from "../../ui/card"
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger
-} from "../ui/dropdown-menu"
-import { UserView } from "../user-view"
-import type { SettingsCardClassNames } from "./shared/settings-card"
+} from "../../ui/dropdown-menu"
+import { UserView } from "../../user-view"
+import type { SettingsCardClassNames } from "../shared/settings-card"
 
 export interface AccountCellProps {
     className?: string
