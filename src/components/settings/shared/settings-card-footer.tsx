@@ -39,7 +39,7 @@ export function SettingsCardFooter({
                 (actionLabel || instructions) && "!py-4 border-t",
                 variant === "destructive"
                     ? "border-destructive/30 bg-destructive/10"
-                    : "bg-muted dark:bg-transparent",
+                    : "bg-sidebar",
                 className,
                 classNames?.footer
             )}

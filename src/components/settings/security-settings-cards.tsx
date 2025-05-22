@@ -53,13 +53,15 @@ export function SecuritySettingsCards({ className, classNames, localization }: S
         refetchPasskeys = result.refetch
     }
 
+    const isPending = accountsPending || sessionsPending || passkeysPending || sessionPending
+
     return (
         <div className={cn("flex w-full flex-col gap-4 md:gap-6", className, classNames?.cards)}>
             {credentials && (
                 <ChangePasswordCard
                     accounts={accounts}
                     classNames={classNames?.card}
-                    isPending={sessionPending}
+                    isPending={isPending}
                     localization={localization}
                     skipHook
                 />
@@ -69,7 +71,7 @@ export function SecuritySettingsCards({ className, classNames, localization }: S
                 <ProvidersCard
                     accounts={accounts}
                     classNames={classNames?.card}
-                    isPending={accountsPending}
+                    isPending={isPending}
                     localization={localization}
                     refetch={refetchAccounts}
                     skipHook
@@ -83,7 +85,7 @@ export function SecuritySettingsCards({ className, classNames, localization }: S
             {passkey && (
                 <PasskeysCard
                     classNames={classNames?.card}
-                    isPending={passkeysPending}
+                    isPending={isPending}
                     localization={localization}
                     passkeys={passkeys}
                     refetch={refetchPasskeys}
@@ -93,7 +95,7 @@ export function SecuritySettingsCards({ className, classNames, localization }: S
 
             <SessionsCard
                 classNames={classNames?.card}
-                isPending={sessionsPending}
+                isPending={isPending}
                 localization={localization}
                 sessions={sessions}
                 refetch={refetchSessions}
@@ -104,7 +106,7 @@ export function SecuritySettingsCards({ className, classNames, localization }: S
                 <DeleteAccountCard
                     accounts={accounts}
                     classNames={classNames?.card}
-                    isPending={sessionPending}
+                    isPending={isPending}
                     localization={localization}
                     skipHook
                 />
