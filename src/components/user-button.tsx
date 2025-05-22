@@ -13,8 +13,10 @@ import {
     type ComponentProps,
     Fragment,
     type ReactNode,
+    useCallback,
     useContext,
     useEffect,
+    useMemo,
     useRef,
     useState
 } from "react"
@@ -93,7 +95,7 @@ export function UserButton({
     customTrigger,
     additionalLinks,
     disableDefaultLinks,
-    localization,
+    localization: propLocalization,
     size,
     ...props
 }: UserButtonProps & ComponentProps<typeof Button>) {
@@ -101,7 +103,7 @@ export function UserButton({
         basePath,
         hooks: { useSession, useListDeviceSessions },
         mutators: { setActiveSession },
-        localization: authLocalization,
+        localization: contextLocalization,
         multiSession,
         settingsURL,
         signUp,
@@ -111,7 +113,10 @@ export function UserButton({
         Link
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...propLocalization }),
+        [contextLocalization, propLocalization]
+    )
 
     let deviceSessions: DeviceSession[] | undefined | null = null
     let deviceSessionsPending = false
@@ -128,20 +133,23 @@ export function UserButton({
 
     const isPending = sessionPending || activeSessionPending
 
-    const switchAccount = async (sessionToken: string) => {
-        setActiveSessionPending(true)
+    const switchAccount = useCallback(
+        async (sessionToken: string) => {
+            setActiveSessionPending(true)
 
-        try {
-            await setActiveSession({ sessionToken })
-            onSessionChange?.()
-        } catch (error) {
-            toast({
-                variant: "error",
-                message: getLocalizedError({ error, localization })
-            })
-            setActiveSessionPending(false)
-        }
-    }
+            try {
+                await setActiveSession({ sessionToken })
+                onSessionChange?.()
+            } catch (error) {
+                toast({
+                    variant: "error",
+                    message: getLocalizedError({ error, localization })
+                })
+                setActiveSessionPending(false)
+            }
+        },
+        [setActiveSession, onSessionChange, toast, localization]
+    )
 
     // biome-ignore lint/correctness/useExhaustiveDependencies:
     useEffect(() => {
