@@ -64,9 +64,9 @@ export type AuthUIContextType = {
      */
     additionalFields?: AdditionalFields
     /**
-     * API Keys plugin configuration
+     * API Key plugin configuration
      */
-    apiKeys?:
+    apiKey?:
         | {
               /**
                * Prefix for API Keys

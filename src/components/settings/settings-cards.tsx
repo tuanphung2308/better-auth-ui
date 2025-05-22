@@ -62,7 +62,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
 
     const {
         additionalFields,
-        apiKeys: contextApiKeys,
+        apiKey,
         avatar,
         credentials,
         changeEmail,
@@ -131,7 +131,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
     let apiKeysPending: boolean | undefined = undefined
     let refetchApiKeys: (() => Promise<void>) | undefined = undefined
 
-    if (contextApiKeys) {
+    if (apiKey) {
         const result = useListApiKeys()
         apiKeys = result.data
         apiKeysPending = result.isPending
@@ -397,7 +397,7 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                     </>
                 )}
 
-                {tab === "api-keys" && contextApiKeys && (
+                {tab === "api-keys" && apiKey && (
                     <APIKeysCard
                         classNames={classNames?.card}
                         isPending={apiKeysPending}

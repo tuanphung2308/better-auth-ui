@@ -42,7 +42,7 @@ export function ApiKeyNameDialog({
 }: ApiKeyNameDialogProps) {
     const {
         authClient,
-        apiKeys,
+        apiKey,
         localization: contextLocalization,
         toast
     } = useContext(AuthUIContext)
@@ -76,8 +76,8 @@ export function ApiKeyNameDialog({
             const result = await (authClient as AuthClient).apiKey.create({
                 name: values.name,
                 expiresIn,
-                prefix: typeof apiKeys === "object" ? apiKeys.prefix : undefined,
-                metadata: typeof apiKeys === "object" ? apiKeys.metadata : undefined,
+                prefix: typeof apiKey === "object" ? apiKey.prefix : undefined,
+                metadata: typeof apiKey === "object" ? apiKey.metadata : undefined,
                 fetchOptions: { throw: true }
             })
 
