@@ -15,9 +15,10 @@ export interface UserAvatarClassNames {
 }
 
 export interface UserAvatarProps {
-    user?: Profile
     classNames?: UserAvatarClassNames
     isPending?: boolean
+    size?: "sm" | "default" | "lg" | "xl" | null
+    user?: Profile | null
 }
 
 /**
@@ -29,20 +30,28 @@ export interface UserAvatarProps {
  * - Falls back to a generic user icon when neither image nor name is available
  */
 export function UserAvatar({
-    user,
-    classNames,
     className,
+    classNames,
     isPending,
+    size,
+    user,
     ...props
 }: UserAvatarProps & ComponentProps<typeof Avatar>) {
-    const name = user?.name || user?.fullName || user?.firstName || user?.email
+    const name = user?.username || user?.name || user?.fullName || user?.firstName || user?.email
     const src = user?.image || user?.avatar || user?.avatarUrl
 
     if (isPending) {
         return (
             <Skeleton
                 className={cn(
-                    "size-8 shrink-0 rounded-full",
+                    "shrink-0 rounded-full",
+                    size === "sm"
+                        ? "size-6"
+                        : size === "lg"
+                          ? "size-10"
+                          : size === "xl"
+                            ? "size-12"
+                            : "size-8",
                     className,
                     classNames?.base,
                     classNames?.skeleton
@@ -52,9 +61,23 @@ export function UserAvatar({
     }
 
     return (
-        <Avatar className={cn("bg-muted", className, classNames?.base)} {...props}>
+        <Avatar
+            className={cn(
+                "bg-muted",
+                size === "sm"
+                    ? "size-6"
+                    : size === "lg"
+                      ? "size-10"
+                      : size === "xl"
+                        ? "size-12"
+                        : "size-8",
+                className,
+                classNames?.base
+            )}
+            {...props}
+        >
             <AvatarImage
-                alt={name || "User image"}
+                alt={name || "Avatar"}
                 className={classNames?.image}
                 src={src || undefined}
             />
