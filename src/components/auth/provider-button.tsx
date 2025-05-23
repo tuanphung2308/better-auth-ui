@@ -5,7 +5,6 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { Provider } from "../../lib/social-providers"
 import { cn, getLocalizedError, getSearchParam } from "../../lib/utils"
-import type { AuthClient } from "../../types/auth-client"
 import { Button } from "../ui/button"
 import type { AuthCardClassNames } from "./auth-card"
 
@@ -68,7 +67,7 @@ export function ProviderButton({
 
         try {
             if (other) {
-                await (authClient as AuthClient).signIn.oauth2({
+                await authClient.signIn.oauth2({
                     providerId: provider.provider,
                     callbackURL: getCallbackURL(),
                     fetchOptions: { throw: true }

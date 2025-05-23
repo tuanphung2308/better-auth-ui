@@ -8,7 +8,6 @@ import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import type { Provider } from "../../../lib/social-providers"
 import { cn, getLocalizedError } from "../../../lib/utils"
-import type { AuthClient } from "../../../types/auth-client"
 import { Button } from "../../ui/button"
 import { Card } from "../../ui/card"
 import type { SettingsCardClassNames } from "../shared/settings-card"
@@ -55,7 +54,7 @@ export function ProviderCell({
 
         try {
             if (other) {
-                await (authClient as AuthClient).oauth2.link({
+                await authClient.oauth2.link({
                     providerId: provider.provider as SocialProvider,
                     callbackURL,
                     fetchOptions: { throw: true }

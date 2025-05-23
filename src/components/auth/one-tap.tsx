@@ -4,7 +4,6 @@ import { useOnSuccessTransition } from "../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { getLocalizedError } from "../../lib/utils"
-import type { AuthClient } from "../../types/auth-client"
 
 interface OneTapProps {
     localization: Partial<AuthLocalization>
@@ -27,7 +26,7 @@ export function OneTap({ localization, redirectTo }: OneTapProps) {
         oneTapFetched.current = true
 
         try {
-            ;(authClient as AuthClient).oneTap({
+            authClient.oneTap({
                 fetchOptions: {
                     throw: true,
                     onSuccess

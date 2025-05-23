@@ -8,7 +8,6 @@ import * as z from "zod"
 
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
-import type { AuthClient } from "../../../types/auth-client"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
 import {
@@ -55,7 +54,7 @@ export function TwoFactorPasswordDialog({
 
     async function enableTwoFactor({ password }: z.infer<typeof formSchema>) {
         try {
-            const response = await (authClient as AuthClient).twoFactor.enable({
+            const response = await authClient.twoFactor.enable({
                 password,
                 fetchOptions: { throw: true }
             })
@@ -80,7 +79,7 @@ export function TwoFactorPasswordDialog({
 
     async function disableTwoFactor({ password }: z.infer<typeof formSchema>) {
         try {
-            await (authClient as AuthClient).twoFactor.disable({
+            await authClient.twoFactor.disable({
                 password,
                 fetchOptions: { throw: true }
             })

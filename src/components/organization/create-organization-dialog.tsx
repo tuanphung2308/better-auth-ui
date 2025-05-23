@@ -9,7 +9,6 @@ import * as z from "zod"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
-import type { AuthClient } from "../../types/auth-client"
 import { Button } from "../ui/button"
 import {
     Dialog,
@@ -82,7 +81,7 @@ export function CreateOrganizationDialog({
         try {
             setIsSubmitting(true)
 
-            await (authClient as AuthClient).organization.create({
+            await authClient.organization.create({
                 name: values.name,
                 slug: values.slug,
                 fetchOptions: { throw: true }

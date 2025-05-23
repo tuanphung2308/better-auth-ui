@@ -13,7 +13,6 @@ import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError, getSearchParam } from "../../../lib/utils"
-import type { AuthClient } from "../../../types/auth-client"
 import { Button } from "../../ui/button"
 import { Checkbox } from "../../ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
@@ -117,7 +116,7 @@ export function TwoFactorForm({
 
         try {
             setIsSendingOtp(true)
-            await (authClient as AuthClient).twoFactor.sendOtp({ fetchOptions: { throw: true } })
+            await authClient.twoFactor.sendOtp({ fetchOptions: { throw: true } })
             setCooldownSeconds(60)
         } catch (error) {
             toast({
@@ -137,9 +136,7 @@ export function TwoFactorForm({
     async function verifyCode({ code, trustDevice }: z.infer<typeof formSchema>) {
         try {
             const verifyMethod =
-                method === "totp"
-                    ? (authClient as AuthClient).twoFactor.verifyTotp
-                    : (authClient as AuthClient).twoFactor.verifyOtp
+                method === "totp" ? authClient.twoFactor.verifyTotp : authClient.twoFactor.verifyOtp
 
             await verifyMethod({
                 code,

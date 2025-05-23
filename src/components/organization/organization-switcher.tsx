@@ -13,7 +13,6 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { getLocalizedError } from "../../lib/utils"
 import { cn } from "../../lib/utils"
-import type { AuthClient } from "../../types/auth-client"
 import { Button } from "../ui/button"
 import {
     DropdownMenu,
@@ -90,7 +89,7 @@ export function OrganizationSwitcher({
     const [isCreateOrgDialogOpen, setIsCreateOrgDialogOpen] = useState(false)
 
     const { data: organizations, refetch: refetchOrganizations } = useListOrganizations()
-    const { data } = (authClient as AuthClient).useActiveOrganization()
+    const { data } = authClient.useActiveOrganization()
     const isPending = sessionPending || activeOrganizationPending
 
     const switchOrganization = useCallback(
@@ -98,7 +97,7 @@ export function OrganizationSwitcher({
             setActiveOrganizationPending(true)
 
             try {
-                await (authClient as AuthClient).organization.setActive({
+                await authClient.organization.setActive({
                     organizationId: organizationId,
                     fetchOptions: {
                         throw: true

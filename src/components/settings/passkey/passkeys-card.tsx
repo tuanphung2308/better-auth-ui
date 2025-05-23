@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
-import type { AuthClient } from "../../../types/auth-client"
 import { CardContent } from "../../ui/card"
 import { Form } from "../../ui/form"
 import { SessionFreshnessDialog } from "../shared/session-freshness-dialog"
@@ -64,7 +63,7 @@ export function PasskeysCard({
         }
 
         try {
-            await (authClient as AuthClient).passkey.addPasskey({ fetchOptions: { throw: true } })
+            await authClient.passkey.addPasskey({ fetchOptions: { throw: true } })
             await refetch?.()
         } catch (error) {
             toast({

@@ -13,7 +13,6 @@ import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext, type PasswordValidation } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError, getPasswordSchema, getSearchParam } from "../../../lib/utils"
-import type { AuthClient } from "../../../types/auth-client"
 import { Captcha } from "../../captcha/captcha"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
@@ -245,7 +244,7 @@ export function SignUpForm({
                 headers: await getCaptchaHeaders("/sign-up/email")
             }
 
-            const data = await (authClient as AuthClient).signUp.email({
+            const data = await authClient.signUp.email({
                 email,
                 password,
                 name: name || "",

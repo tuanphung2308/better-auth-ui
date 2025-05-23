@@ -12,7 +12,6 @@ import { useIsHydrated } from "../../../hooks/use-hydrated"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError, getSearchParam } from "../../../lib/utils"
-import type { AuthClient } from "../../../types/auth-client"
 import { Captcha } from "../../captcha/captcha"
 import { Button } from "../../ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
@@ -97,7 +96,7 @@ export function MagicLinkForm({
                 headers: await getCaptchaHeaders("/sign-in/magic-link")
             }
 
-            await (authClient as AuthClient).signIn.magicLink({
+            await authClient.signIn.magicLink({
                 email,
                 callbackURL: getCallbackURL(),
                 fetchOptions

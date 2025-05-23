@@ -10,7 +10,6 @@ import { useLang } from "../../../hooks/use-lang"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
-import type { AuthClient } from "../../../types/auth-client"
 import { Button } from "../../ui/button"
 import {
     Dialog,
@@ -73,7 +72,7 @@ export function ApiKeyNameDialog({
                     ? Number.parseInt(values.expiresInDays) * 60 * 60 * 24
                     : undefined
 
-            const result = await (authClient as AuthClient).apiKey.create({
+            const result = await authClient.apiKey.create({
                 name: values.name,
                 expiresIn,
                 prefix: typeof apiKey === "object" ? apiKey.prefix : undefined,

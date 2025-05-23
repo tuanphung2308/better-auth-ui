@@ -5,7 +5,6 @@ import { useOnSuccessTransition } from "../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
-import type { AuthClient } from "../../types/auth-client"
 import { Button } from "../ui/button"
 import type { AuthCardClassNames } from "./auth-card"
 
@@ -34,7 +33,7 @@ export function PasskeyButton({
         setIsSubmitting?.(true)
 
         try {
-            const response = await (authClient as AuthClient).signIn.passkey({
+            const response = await authClient.signIn.passkey({
                 fetchOptions: { throw: true }
             })
 

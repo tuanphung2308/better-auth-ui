@@ -9,7 +9,6 @@ import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
-import type { AuthClient } from "../../../types/auth-client"
 import { Button } from "../../ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
@@ -57,7 +56,7 @@ export function RecoverAccountForm({
 
     async function verifyBackupCode({ code }: z.infer<typeof formSchema>) {
         try {
-            await (authClient as AuthClient).twoFactor.verifyBackupCode({
+            await authClient.twoFactor.verifyBackupCode({
                 code,
                 fetchOptions: { throw: true }
             })

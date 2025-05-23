@@ -58,7 +58,7 @@ export type PasswordValidation = {
 }
 
 export type AuthUIContextType = {
-    authClient: AnyAuthClient
+    authClient: AuthClient
     /**
      * Additional fields for users
      */
@@ -337,7 +337,7 @@ export const AuthUIContext = createContext<AuthUIContextType>({} as unknown as A
 
 export const AuthUIProvider = ({
     children,
-    authClient,
+    authClient: authClientProp,
     avatarExtension = "png",
     avatarSize,
     basePath = "/auth",
@@ -363,30 +363,31 @@ export const AuthUIProvider = ({
     Link = DefaultLink,
     ...props
 }: AuthUIProviderProps) => {
+    const authClient = authClientProp as AuthClient
     const defaultMutators = useMemo(() => {
         return {
             deleteApiKey: (params) =>
-                (authClient as AuthClient).apiKey.delete({
+                authClient.apiKey.delete({
                     ...params,
                     fetchOptions: { throw: true }
                 }),
             deletePasskey: (params) =>
-                (authClient as AuthClient).passkey.deletePasskey({
+                authClient.passkey.deletePasskey({
                     ...params,
                     fetchOptions: { throw: true }
                 }),
             revokeDeviceSession: (params) =>
-                (authClient as AuthClient).multiSession.revoke({
+                authClient.multiSession.revoke({
                     ...params,
                     fetchOptions: { throw: true }
                 }),
             revokeSession: (params) =>
-                (authClient as AuthClient).revokeSession({
+                authClient.revokeSession({
                     ...params,
                     fetchOptions: { throw: true }
                 }),
             setActiveSession: (params) =>
-                (authClient as AuthClient).multiSession.setActive({
+                authClient.multiSession.setActive({
                     ...params,
                     fetchOptions: { throw: true }
                 }),
@@ -405,16 +406,16 @@ export const AuthUIProvider = ({
 
     const defaultHooks = useMemo(() => {
         return {
-            useSession: (authClient as AuthClient).useSession,
+            useSession: authClient.useSession,
             useListAccounts: () => useAuthData({ queryFn: authClient.listAccounts }),
             useListDeviceSessions: () =>
                 useAuthData({
-                    queryFn: (authClient as AuthClient).multiSession.listDeviceSessions
+                    queryFn: authClient.multiSession.listDeviceSessions
                 }),
             useListSessions: () => useAuthData({ queryFn: authClient.listSessions }),
-            useListPasskeys: (authClient as AuthClient).useListPasskeys,
-            useListApiKeys: () => useAuthData({ queryFn: (authClient as AuthClient).apiKey.list }),
-            useListOrganizations: (authClient as AuthClient).useListOrganizations
+            useListPasskeys: authClient.useListPasskeys,
+            useListApiKeys: () => useAuthData({ queryFn: authClient.apiKey.list }),
+            useListOrganizations: authClient.useListOrganizations
         } as AuthHooks
     }, [authClient])
 
