@@ -1,6 +1,6 @@
 import HCaptcha from "@hcaptcha/react-hcaptcha"
 import { Turnstile } from "@marsidev/react-turnstile"
-import { useContext } from "react"
+import { type RefObject, useContext } from "react"
 
 import { useTheme } from "../../hooks/use-theme"
 import type { AuthLocalization } from "../../lib/auth-localization"
@@ -13,7 +13,7 @@ const DEFAULT_CAPTCHA_ENDPOINTS = ["/sign-up/email", "/sign-in/email", "/forget-
 
 interface CaptchaProps {
     // biome-ignore lint/suspicious/noExplicitAny:
-    ref: React.RefObject<any>
+    ref: RefObject<any>
     localization: Partial<AuthLocalization>
     action?: string // Optional action to check if it's in the endpoints list
 }

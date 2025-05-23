@@ -1,5 +1,5 @@
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from "@wojtekmaj/react-recaptcha-v3"
-import { useContext, useEffect } from "react"
+import { type ReactNode, useContext, useEffect } from "react"
 
 import { useIsHydrated } from "../../hooks/use-hydrated"
 import { useLang } from "../../hooks/use-lang"
@@ -9,7 +9,7 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 export function RecaptchaV3({
     children
 }: {
-    children: React.ReactNode
+    children: ReactNode
 }) {
     const isHydrated = useIsHydrated()
     const { captcha } = useContext(AuthUIContext)
