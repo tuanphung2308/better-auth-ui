@@ -1,52 +1,30 @@
 "use client"
 
-import type { Organization } from "better-auth/plugins/organization"
 import { useContext, useMemo } from "react"
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { Skeleton } from "../ui/skeleton"
-import { OrganizationLogo, type OrganizationLogoClassNames } from "./organization-logo"
-
-export interface OrganizationViewClassNames {
-    base?: string
-    avatar?: OrganizationLogoClassNames
-    content?: string
-    title?: string
-    subtitle?: string
-    skeleton?: string
-}
-
-export interface OrganizationViewProps {
-    className?: string
-    classNames?: OrganizationViewClassNames
-    isPending?: boolean
-    size?: "sm" | "default" | "lg" | null
-    organization?: Organization | null
-    /**
-     * @default authLocalization
-     * @remarks `AuthLocalization`
-     */
-    localization?: AuthLocalization
-}
+import { UserAvatar } from "../user-avatar"
+import type { UserViewProps } from "../user-view"
 
 /**
- * Displays user information with avatar and details in a compact view
+ * Displays user information with avatar and details in a compact view for personal accounts
  *
  * Renders a user's profile information with appropriate fallbacks:
- * - Shows avatar alongside user name and email when available
+ * - Shows avatar alongside user name and "Personal Account" subtitle when available
  * - Shows loading skeletons when isPending is true
  * - Falls back to generic "User" text when neither name nor email is available
+ * - Always shows "Personal Account" as subtitle for default and lg sizes
  * - Supports customization through classNames prop
  */
-export function OrganizationView({
+export function PersonalAccountView({
     className,
     classNames,
     isPending,
     size,
-    organization,
+    user,
     localization: propLocalization
-}: OrganizationViewProps) {
+}: UserViewProps) {
     const { localization: contextLocalization } = useContext(AuthUIContext)
 
     const localization = useMemo(
@@ -56,12 +34,12 @@ export function OrganizationView({
 
     return (
         <div className={cn("flex items-center gap-2", className, classNames?.base)}>
-            <OrganizationLogo
+            <UserAvatar
                 className={cn(size !== "sm" && "my-0.5")}
                 classNames={classNames?.avatar}
                 isPending={isPending}
                 size={size}
-                organization={organization}
+                user={user}
             />
 
             <div className={cn("grid flex-1 text-left leading-tight", classNames?.content)}>
@@ -95,7 +73,14 @@ export function OrganizationView({
                                 classNames?.title
                             )}
                         >
-                            {organization?.name}
+                            {user?.displayUsername ||
+                                user?.username ||
+                                user?.displayName ||
+                                user?.firstName ||
+                                user?.name ||
+                                user?.fullName ||
+                                user?.email ||
+                                localization?.user}
                         </span>
 
                         {size !== "sm" && (
@@ -106,7 +91,7 @@ export function OrganizationView({
                                     classNames?.subtitle
                                 )}
                             >
-                                {organization?.slug}
+                                {localization?.personalAccount}
                             </span>
                         )}
                     </>

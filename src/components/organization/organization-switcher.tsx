@@ -1,10 +1,12 @@
 "use client"
-import { ChevronsUpDown, PlusCircleIcon } from "lucide-react"
+
+import { ChevronsUpDown, PlusCircleIcon, SettingsIcon } from "lucide-react"
 import {
     type ComponentProps,
     type ReactNode,
     useCallback,
     useContext,
+    useEffect,
     useMemo,
     useState
 } from "react"
@@ -22,9 +24,11 @@ import {
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
 import { UserAvatar, type UserAvatarClassNames } from "../user-avatar"
-import { UserView, type UserViewClassNames } from "../user-view"
+import type { UserViewClassNames } from "../user-view"
 import { CreateOrganizationDialog } from "./create-organization-dialog"
-import { OrganizationView } from "./organization-view"
+import { OrganizationLogo } from "./organization-logo"
+import { OrganizationView, type OrganizationViewClassNames } from "./organization-view"
+import { PersonalAccountView } from "./personal-account-view"
 
 export interface OrganizationSwitcherClassNames {
     base?: string
@@ -33,11 +37,13 @@ export interface OrganizationSwitcherClassNames {
         base?: string
         avatar?: UserAvatarClassNames
         user?: UserViewClassNames
+        organization?: OrganizationViewClassNames
         skeleton?: string
     }
     content?: {
         base?: string
         user?: UserViewClassNames
+        organization?: OrganizationViewClassNames
         avatar?: UserAvatarClassNames
         menuItem?: string
         separator?: string
@@ -89,11 +95,18 @@ export function OrganizationSwitcher({
     const [isCreateOrgDialogOpen, setIsCreateOrgDialogOpen] = useState(false)
 
     const { data: organizations, refetch: refetchOrganizations } = useListOrganizations()
-    const { data } = authClient.useActiveOrganization()
-    const isPending = sessionPending || activeOrganizationPending
+    const { data: activeOrganization, isPending: organizationPending } =
+        authClient.useActiveOrganization()
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies:
+    useEffect(() => {
+        setActiveOrganizationPending(false)
+    }, [activeOrganization])
+
+    const isPending = sessionPending || activeOrganizationPending || organizationPending
 
     const switchOrganization = useCallback(
-        async (organizationId: string) => {
+        async (organizationId: string | null) => {
             setActiveOrganizationPending(true)
 
             try {
@@ -108,6 +121,7 @@ export function OrganizationSwitcher({
                     variant: "error",
                     message: getLocalizedError({ error, localization })
                 })
+
                 setActiveOrganizationPending(false)
             }
         },
@@ -124,14 +138,25 @@ export function OrganizationSwitcher({
                     {customTrigger ||
                         (size === "icon" ? (
                             <Button size="icon" className="size-fit" variant="ghost">
-                                <UserAvatar
-                                    key={user?.image}
-                                    isPending={isPending}
-                                    className={cn(className, classNames?.base)}
-                                    classNames={classNames?.trigger?.avatar}
-                                    user={user}
-                                    aria-label={localization.account}
-                                />
+                                {activeOrganization ? (
+                                    <OrganizationLogo
+                                        key={activeOrganization?.logo}
+                                        className={cn(className, classNames?.base)}
+                                        classNames={classNames?.trigger?.avatar}
+                                        isPending={isPending}
+                                        organization={activeOrganization}
+                                        aria-label={localization.organization}
+                                    />
+                                ) : (
+                                    <UserAvatar
+                                        key={user?.image}
+                                        className={cn(className, classNames?.base)}
+                                        classNames={classNames?.trigger?.avatar}
+                                        isPending={isPending}
+                                        user={user}
+                                        aria-label={localization.account}
+                                    />
+                                )}
                             </Button>
                         ) : (
                             <Button
@@ -139,13 +164,23 @@ export function OrganizationSwitcher({
                                 size={size}
                                 {...props}
                             >
-                                <UserView
-                                    size={size}
-                                    user={!user?.isAnonymous ? user : null}
-                                    isPending={isPending}
-                                    classNames={classNames?.trigger?.user}
-                                    localization={localization}
-                                />
+                                {activeOrganization ? (
+                                    <OrganizationView
+                                        classNames={classNames?.trigger?.organization}
+                                        isPending={isPending}
+                                        localization={localization}
+                                        organization={activeOrganization}
+                                        size={size}
+                                    />
+                                ) : (
+                                    <PersonalAccountView
+                                        classNames={classNames?.trigger?.user}
+                                        isPending={isPending}
+                                        localization={localization}
+                                        size={size}
+                                        user={!user?.isAnonymous ? user : null}
+                                    />
+                                )}
 
                                 <ChevronsUpDown className="ml-auto" />
                             </Button>
@@ -160,39 +195,77 @@ export function OrganizationSwitcher({
                     align={align}
                     onCloseAutoFocus={(e) => e.preventDefault()}
                 >
-                    <div className={cn("p-2", classNames?.content?.menuItem)}>
+                    <div
+                        className={cn("flex items-center gap-2 p-2", classNames?.content?.menuItem)}
+                    >
                         {(user && !user.isAnonymous) || isPending ? (
-                            <UserView
-                                user={user}
-                                isPending={isPending}
-                                classNames={classNames?.content?.user}
-                                localization={localization}
-                            />
+                            <>
+                                {activeOrganization ? (
+                                    <OrganizationView
+                                        classNames={classNames?.content?.organization}
+                                        isPending={isPending}
+                                        organization={activeOrganization}
+                                        localization={localization}
+                                    />
+                                ) : (
+                                    <PersonalAccountView
+                                        classNames={classNames?.content?.user}
+                                        isPending={isPending}
+                                        localization={localization}
+                                        user={user}
+                                    />
+                                )}
+
+                                <Button size="icon" variant="outline" className="!size-8 ml-auto">
+                                    <SettingsIcon className="size-4" />
+                                </Button>
+                            </>
                         ) : (
                             <div className="-my-1 text-muted-foreground text-xs">
-                                {localization.account}
+                                {localization.organization}
                             </div>
                         )}
                     </div>
 
                     <DropdownMenuSeparator className={classNames?.content?.separator} />
 
-                    {organizations?.map((organization) => (
+                    {activeOrganization && (
                         <DropdownMenuItem
-                            key={organization.id}
                             onClick={() => {
-                                switchOrganization(organization.id)
+                                switchOrganization(null)
                             }}
                         >
-                            <OrganizationView
-                                organization={organization}
-                                size={size === "icon" ? "default" : size}
+                            <PersonalAccountView
+                                classNames={classNames?.content?.user}
+                                isPending={isPending}
                                 localization={localization}
+                                user={user}
                             />
                         </DropdownMenuItem>
-                    ))}
+                    )}
 
-                    <DropdownMenuSeparator className={classNames?.content?.separator} />
+                    {organizations?.map(
+                        (organization) =>
+                            organization.id !== activeOrganization?.id && (
+                                <DropdownMenuItem
+                                    key={organization.id}
+                                    onClick={() => {
+                                        switchOrganization(organization.id)
+                                    }}
+                                >
+                                    <OrganizationView
+                                        classNames={classNames?.content?.organization}
+                                        isPending={isPending}
+                                        organization={organization}
+                                        localization={localization}
+                                    />
+                                </DropdownMenuItem>
+                            )
+                    )}
+
+                    {organizations?.length && (
+                        <DropdownMenuSeparator className={classNames?.content?.separator} />
+                    )}
 
                     <DropdownMenuItem
                         className={cn(

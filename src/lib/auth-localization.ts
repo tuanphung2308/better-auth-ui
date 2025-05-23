@@ -266,6 +266,9 @@ export const authLocalization = {
     /** @default "Securely access your account without a password." */
     passkeysInstructions: "Securely access your account without a password.",
 
+    /** @default "Personal Account" */
+    personalAccount: "Personal Account",
+
     /** @default "API Keys" */
     apiKeys: "API Keys",
 
@@ -303,6 +306,9 @@ export const authLocalization = {
 
     /** @default "Create Organization" */
     createOrganization: "Create Organization",
+
+    /** @default "Organization" */
+    organization: "Organization",
 
     /** @default "Create a new organization to collaborate with your team" */
     organizationDescription: "Create a new organization to collaborate with your team",

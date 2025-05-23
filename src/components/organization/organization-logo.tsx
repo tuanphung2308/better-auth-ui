@@ -1,12 +1,12 @@
 import type { ComponentProps } from "react"
 
-import { UserRoundIcon } from "lucide-react"
-import { cn } from "../lib/utils"
-import type { Profile } from "../types/profile"
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
-import { Skeleton } from "./ui/skeleton"
+import type { Organization } from "better-auth/plugins/organization"
+import { Building2Icon } from "lucide-react"
+import { cn } from "../../lib/utils"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { Skeleton } from "../ui/skeleton"
 
-export interface UserAvatarClassNames {
+export interface OrganizationLogoClassNames {
     base?: string
     image?: string
     fallback?: string
@@ -14,38 +14,30 @@ export interface UserAvatarClassNames {
     skeleton?: string
 }
 
-export interface UserAvatarProps {
-    classNames?: UserAvatarClassNames
+export interface OrganizationLogoProps {
+    classNames?: OrganizationLogoClassNames
     isPending?: boolean
     size?: "sm" | "default" | "lg" | "xl" | null
-    user?: Profile | null
+    organization?: Organization | null
 }
 
 /**
- * Displays a user avatar with image and fallback support
+ * Displays an organization logo with image and fallback support
  *
- * Renders a user's avatar image when available, with appropriate fallbacks:
+ * Renders an organization's logo image when available, with appropriate fallbacks:
  * - Shows a skeleton when isPending is true
- * - Displays first two characters of user's name when no image is available
- * - Falls back to a generic user icon when neither image nor name is available
+ * - Falls back to a building icon when no logo is available
  */
-export function UserAvatar({
+export function OrganizationLogo({
     className,
     classNames,
     isPending,
     size,
-    user,
+    organization,
     ...props
-}: UserAvatarProps & ComponentProps<typeof Avatar>) {
-    const name =
-        user?.displayUsername ||
-        user?.username ||
-        user?.displayName ||
-        user?.firstName ||
-        user?.name ||
-        user?.fullName ||
-        user?.email
-    const src = user?.image || user?.avatar || user?.avatarUrl
+}: OrganizationLogoProps & ComponentProps<typeof Avatar>) {
+    const name = organization?.name
+    const src = organization?.logo
 
     if (isPending) {
         return (
@@ -84,21 +76,14 @@ export function UserAvatar({
             {...props}
         >
             <AvatarImage
-                alt={name || "User"}
+                alt={name || "Organization"}
                 className={classNames?.image}
                 src={src || undefined}
             />
 
-            <AvatarFallback
-                className={cn("uppercase", classNames?.fallback)}
-                delayMs={src ? 600 : undefined}
-            >
-                {firstTwoCharacters(name) || (
-                    <UserRoundIcon className={cn("size-[50%]", classNames?.fallbackIcon)} />
-                )}
+            <AvatarFallback className={classNames?.fallback} delayMs={src ? 600 : undefined}>
+                <Building2Icon className={cn("size-[50%]", classNames?.fallbackIcon)} />
             </AvatarFallback>
         </Avatar>
     )
 }
-
-const firstTwoCharacters = (name?: string | null) => name?.slice(0, 2)
