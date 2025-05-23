@@ -301,6 +301,27 @@ export const authLocalization = {
     /** @default "No Expiration" */
     noExpiration: "No Expiration",
 
+    /** @default "Create Organization" */
+    createOrganization: "Create Organization",
+
+    /** @default "Create a new organization to collaborate with your team" */
+    organizationDescription: "Create a new organization to collaborate with your team",
+
+    /** @default "Organization Name" */
+    organizationName: "Organization Name",
+
+    /** @default "Acme Inc." */
+    organizationNamePlaceholder: "Acme Inc.",
+
+    /** @default "Organization Slug" */
+    organizationSlug: "Organization Slug",
+
+    /** @default "acme-inc" */
+    organizationSlugPlaceholder: "acme-inc",
+
+    /** @default "Organization created successfully" */
+    organizationCreated: "Organization created successfully",
+
     /** @default "Create" */
     create: "Create",
 

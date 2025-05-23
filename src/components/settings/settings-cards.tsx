@@ -8,6 +8,7 @@ import { useAuthenticate } from "../../hooks/use-authenticate"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
+import { OrganizationSwitcher } from "../organization/organization-switcher"
 import { Button } from "../ui/button"
 import {
     DropdownMenu,
@@ -15,7 +16,6 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
-import { UserButton } from "../user-button"
 import { AccountsCard } from "./account/accounts-card"
 import { UpdateAvatarCard } from "./account/update-avatar-card"
 import { UpdateFieldCard } from "./account/update-field-card"
@@ -97,7 +97,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                 classNames?.base
             )}
         >
-            <UserButton variant="ghost" size="sm" className="md:hidden" />
+            <OrganizationSwitcher variant="ghost" size="sm" className="md:hidden" />
 
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -156,7 +156,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
 
             <div className="hidden md:block">
                 <div className={cn("grid w-64 gap-1 xl:w-72", classNames?.sidebar?.base)}>
-                    <UserButton variant="ghost" size="sm" className="mb-3" />
+                    <OrganizationSwitcher variant="ghost" className="mb-3" />
 
                     <Link href={`${basePath}/${viewPaths.settings}`}>
                         <Button
