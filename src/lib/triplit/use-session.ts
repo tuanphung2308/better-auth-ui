@@ -1,9 +1,9 @@
-import { useQueryOne } from "@triplit/react"
-
 import type { User } from "../../types/auth-client"
 import type { AuthHooks } from "../../types/auth-hooks"
 import { getModelName } from "./model-names"
+import { useConditionalQueryOne } from "./use-conditional-query"
 import type { UseTriplitOptionsProps } from "./use-triplit-hooks"
+import { useTriplitToken } from "./use-triplit-token"
 
 export function useSession({
     triplit,
@@ -19,7 +19,12 @@ export function useSession({
         usePlural
     })
 
-    const { result: user } = useQueryOne(triplit, triplit.query(modelName))
+    const { payload } = useTriplitToken({ triplit })
+
+    const { result: user } = useConditionalQueryOne(
+        triplit,
+        payload?.sub && triplit.query(modelName)
+    )
 
     return {
         data: sessionData

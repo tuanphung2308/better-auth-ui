@@ -10,7 +10,7 @@ export function useListAccounts({
     triplit,
     modelNames,
     usePlural,
-    isPending: isPendingProp
+    isPending
 }: UseTriplitOptionsProps): ReturnType<AuthHooks["useListAccounts"]> {
     const modelName = getModelName({
         namespace: "account",
@@ -34,7 +34,7 @@ export function useListAccounts({
 
     return {
         data: accounts,
-        isPending: fetching,
+        isPending: isPending || fetching,
         error
     }
 }

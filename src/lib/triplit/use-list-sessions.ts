@@ -1,9 +1,10 @@
-import { useQuery } from "@triplit/react"
 import type { Session } from "better-auth"
 import { useMemo } from "react"
 import type { AuthHooks } from "../../types/auth-hooks"
 import { getModelName } from "./model-names"
+import { useConditionalQuery } from "./use-conditional-query"
 import type { UseTriplitOptionsProps } from "./use-triplit-hooks"
+import { useTriplitToken } from "./use-triplit-token"
 
 export function useListSessions({
     triplit,
@@ -17,17 +18,21 @@ export function useListSessions({
         usePlural
     })
 
+    const { payload } = useTriplitToken({ triplit })
     const now = useMemo(() => Date.now(), [])
 
     const {
         results: sessions,
         error,
         fetching
-    } = useQuery(triplit, triplit.query(modelName).Where("expiresAt", ">=", now))
+    } = useConditionalQuery(
+        triplit,
+        payload?.sub && triplit.query(modelName).Where("expiresAt", ">=", now)
+    )
 
     return {
         data: sessions as Session[],
-        isPending: !sessions && (isPending || fetching),
+        isPending: isPending || fetching,
         error
     }
 }
