@@ -331,7 +331,12 @@ export type AuthUIProviderProps = {
      * ADVANCED: Custom mutators for updating auth data
      */
     mutators?: Partial<AuthMutators>
-} & Partial<Omit<AuthUIContextType, "viewPaths" | "localization" | "mutators" | "toast" | "hooks">>
+} & Partial<
+    Omit<
+        AuthUIContextType,
+        "authClient" | "viewPaths" | "localization" | "mutators" | "toast" | "hooks"
+    >
+>
 
 export const AuthUIContext = createContext<AuthUIContextType>({} as unknown as AuthUIContextType)
 
