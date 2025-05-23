@@ -1,6 +1,6 @@
-import { UserIcon } from "lucide-react"
 import type { ComponentProps } from "react"
 
+import { UserRoundIcon } from "lucide-react"
 import { cn } from "../lib/utils"
 import type { Profile } from "../types/profile"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
@@ -94,7 +94,7 @@ export function UserAvatar({
                 delayMs={src ? 600 : undefined}
             >
                 {firstTwoCharacters(name) || (
-                    <UserIcon className={cn("size-[50%]", classNames?.fallbackIcon)} />
+                    <UserRoundIcon className={cn("size-[50%]", classNames?.fallbackIcon)} />
                 )}
             </AvatarFallback>
         </Avatar>

@@ -1,4 +1,4 @@
-import { KeyIcon } from "lucide-react"
+import { FingerprintIcon } from "lucide-react"
 import { useContext } from "react"
 
 import { useOnSuccessTransition } from "../../hooks/use-success-transition"
@@ -68,7 +68,7 @@ export function PasskeyButton({
             variant="secondary"
             onClick={signInPassKey}
         >
-            <KeyIcon />
+            <FingerprintIcon />
             {localization.signInWith} {localization.passkey}
         </Button>
     )

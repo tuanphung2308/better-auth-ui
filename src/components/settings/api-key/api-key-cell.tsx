@@ -1,6 +1,6 @@
 "use client"
 
-import { KeyIcon } from "lucide-react"
+import { KeyRoundIcon } from "lucide-react"
 import { useContext, useState } from "react"
 
 import { useLang } from "../../../hooks/use-lang"
@@ -52,7 +52,7 @@ export function APIKeyCell({
             <Card
                 className={cn("flex-row items-center gap-3 px-4 py-3", className, classNames?.cell)}
             >
-                <KeyIcon className={cn("size-4", classNames?.icon)} />
+                <KeyRoundIcon className={cn("size-4", classNames?.icon)} />
 
                 <div className="flex flex-col">
                     <div className="flex items-center gap-2">

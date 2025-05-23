@@ -1,7 +1,7 @@
 "use client"
 
 import type { Session, User } from "better-auth"
-import { KeyIcon, MenuIcon, ShieldCheckIcon, UserIcon } from "lucide-react"
+import { KeyRoundIcon, MenuIcon, ShieldCheckIcon, UserRoundIcon } from "lucide-react"
 import { useContext } from "react"
 
 import { useAuthenticate } from "../../hooks/use-authenticate"
@@ -92,7 +92,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
     return (
         <div
             className={cn(
-                "flex w-full grow flex-col gap-4 md:flex-row md:gap-12",
+                "flex w-full grow flex-col gap-4 md:flex-row md:gap-8 xl:gap-12",
                 className,
                 classNames?.base
             )}
@@ -111,7 +111,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                     >
                         {view === "settings" && (
                             <>
-                                <UserIcon className={classNames?.icon} />
+                                <UserRoundIcon className={classNames?.icon} />
                                 {localization.account}
                             </>
                         )}
@@ -125,7 +125,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
 
                         {view === "apiKeys" && (
                             <>
-                                <KeyIcon className={classNames?.icon} />
+                                <KeyRoundIcon className={classNames?.icon} />
                                 {localization.apiKeys}
                             </>
                         )}
@@ -138,7 +138,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                     className={cn("w-[calc(100svw-1rem)]", classNames?.dropdown?.content)}
                 >
                     <DropdownMenuItem>
-                        <UserIcon />
+                        <UserRoundIcon />
                         {localization.account}
                     </DropdownMenuItem>
 
@@ -148,7 +148,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                     </DropdownMenuItem>
 
                     <DropdownMenuItem>
-                        <KeyIcon />
+                        <KeyRoundIcon />
                         {localization.apiKeys}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -168,7 +168,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                             )}
                             variant={view === "settings" ? "secondary" : "ghost"}
                         >
-                            <UserIcon className={classNames?.icon} />
+                            <UserRoundIcon className={classNames?.icon} />
                             {localization.account}
                         </Button>
                     </Link>
@@ -198,7 +198,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                             )}
                             variant={view === "apiKeys" ? "secondary" : "ghost"}
                         >
-                            <KeyIcon className={classNames?.icon} />
+                            <KeyRoundIcon className={classNames?.icon} />
                             {localization.apiKeys}
                         </Button>
                     </Link>
