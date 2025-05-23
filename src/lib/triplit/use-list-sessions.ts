@@ -1,5 +1,4 @@
 import type { Session } from "better-auth"
-import { useMemo } from "react"
 import type { AuthHooks } from "../../types/auth-hooks"
 import { getModelName } from "./model-names"
 import { useConditionalQuery } from "./use-conditional-query"
@@ -19,16 +18,12 @@ export function useListSessions({
     })
 
     const { payload } = useTriplitToken({ triplit })
-    const now = useMemo(() => Date.now(), [])
 
     const {
         results: sessions,
         error,
         fetching
-    } = useConditionalQuery(
-        triplit,
-        payload?.sub && triplit.query(modelName).Where("expiresAt", ">=", now)
-    )
+    } = useConditionalQuery(triplit, payload?.sub && triplit.query(modelName))
 
     return {
         data: sessions as Session[],
