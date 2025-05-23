@@ -413,7 +413,8 @@ export const AuthUIProvider = ({
                 }),
             useListSessions: () => useAuthData({ queryFn: authClient.listSessions }),
             useListPasskeys: (authClient as AuthClient).useListPasskeys,
-            useListApiKeys: () => useAuthData({ queryFn: (authClient as AuthClient).apiKey.list })
+            useListApiKeys: () => useAuthData({ queryFn: (authClient as AuthClient).apiKey.list }),
+            useListOrganizations: (authClient as AuthClient).useListOrganizations
         } as AuthHooks
     }, [authClient])
 

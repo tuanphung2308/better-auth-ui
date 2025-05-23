@@ -1,4 +1,5 @@
 import type { User as AnyUser } from "better-auth"
+import type { Organization } from "better-auth/plugins/organization"
 import type { ApiKey } from "./api-key"
 import type { Session, User } from "./auth-client"
 import type { FetchError } from "./fetch-error"
@@ -18,5 +19,6 @@ export type AuthHooks = {
     useListSessions: () => AuthHook<Session[]>
     useListPasskeys: () => AuthHook<{ id: string; createdAt: Date }[]>
     useListApiKeys: () => AuthHook<ApiKey[]>
+    useListOrganizations: () => AuthHook<Organization[]>
     useIsRestoring?: () => boolean
 }

@@ -28,7 +28,7 @@ export function useTanstackOptions({ authClient }: { authClient: AnyAuthClient }
 
     const hooks = useMemo(
         () => ({
-            ...(createAuthHooks(authClient as AuthClient) as AuthHooks),
+            ...(createAuthHooks(authClient as AuthClient) as Partial<AuthHooks>),
             useIsRestoring
         }),
         [authClient]
