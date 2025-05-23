@@ -57,7 +57,9 @@ export function ProvidersCard({
         >
             <CardContent className={cn("grid gap-4", classNames?.content)}>
                 {isPending ? (
-                    <SettingsCellSkeleton classNames={classNames} />
+                    providers?.map((provider) => (
+                        <SettingsCellSkeleton key={provider} classNames={classNames} />
+                    ))
                 ) : (
                     <>
                         {providers?.map((provider) => {

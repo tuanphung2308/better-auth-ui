@@ -12,7 +12,6 @@ import { Form } from "../../ui/form"
 import { SessionFreshnessDialog } from "../shared/session-freshness-dialog"
 import { SettingsCard } from "../shared/settings-card"
 import type { SettingsCardClassNames } from "../shared/settings-card"
-import { SettingsCellSkeleton } from "../skeletons/settings-cell-skeleton"
 import { PasskeyCell } from "./passkey-cell"
 
 export interface PasskeysCardProps {
@@ -97,21 +96,17 @@ export function PasskeysCard({
                         isPending={isPending}
                         title={localization.passkeys}
                     >
-                        {(isPending || (passkeys && passkeys.length > 0)) && (
+                        {passkeys && passkeys.length > 0 && (
                             <CardContent className={cn("grid gap-4", classNames?.content)}>
-                                {isPending ? (
-                                    <SettingsCellSkeleton classNames={classNames} />
-                                ) : (
-                                    passkeys?.map((passkey) => (
-                                        <PasskeyCell
-                                            key={passkey.id}
-                                            classNames={classNames}
-                                            localization={localization}
-                                            passkey={passkey}
-                                            refetch={refetch}
-                                        />
-                                    ))
-                                )}
+                                {passkeys?.map((passkey) => (
+                                    <PasskeyCell
+                                        key={passkey.id}
+                                        classNames={classNames}
+                                        localization={localization}
+                                        passkey={passkey}
+                                        refetch={refetch}
+                                    />
+                                ))}
                             </CardContent>
                         )}
                     </SettingsCard>
