@@ -96,7 +96,7 @@ export function OrganizationView({
                                 classNames?.title
                             )}
                         >
-                            {organization?.name}
+                            {organization?.name || localization?.organization}
                         </span>
 
                         {size !== "sm" && (

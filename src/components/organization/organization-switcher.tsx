@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronsUpDown, PlusCircleIcon, SettingsIcon } from "lucide-react"
+import { ChevronsUpDown, LogInIcon, PlusCircleIcon, SettingsIcon } from "lucide-react"
 import {
     type ComponentProps,
     type ReactNode,
@@ -81,7 +81,10 @@ export function OrganizationSwitcher({
         authClient,
         hooks: { useSession, useListOrganizations },
         localization: contextLocalization,
-        toast
+        toast,
+        Link,
+        basePath,
+        viewPaths
     } = useContext(AuthUIContext)
 
     const localization = useMemo(
@@ -138,7 +141,7 @@ export function OrganizationSwitcher({
                     {customTrigger ||
                         (size === "icon" ? (
                             <Button size="icon" className="size-fit" variant="ghost">
-                                {activeOrganization ? (
+                                {(!sessionData && !isPending) || activeOrganization ? (
                                     <OrganizationLogo
                                         key={activeOrganization?.logo}
                                         className={cn(className, classNames?.base)}
@@ -166,7 +169,7 @@ export function OrganizationSwitcher({
                                 size={size}
                                 {...props}
                             >
-                                {activeOrganization ? (
+                                {(!sessionData && !isPending) || activeOrganization ? (
                                     <OrganizationView
                                         classNames={classNames?.trigger?.organization}
                                         isPending={isPending}
@@ -269,16 +272,22 @@ export function OrganizationSwitcher({
                         <DropdownMenuSeparator className={classNames?.content?.separator} />
                     )}
 
-                    <DropdownMenuItem
-                        className={cn(
-                            "flex cursor-pointer items-center gap-2",
-                            classNames?.content?.menuItem
-                        )}
-                        onClick={() => setIsCreateOrgDialogOpen(true)}
-                    >
-                        <PlusCircleIcon className="h-4 w-4" />
-                        {localization.createOrganization}
-                    </DropdownMenuItem>
+                    {!isPending && sessionData ? (
+                        <DropdownMenuItem
+                            className={cn(classNames?.content?.menuItem)}
+                            onClick={() => setIsCreateOrgDialogOpen(true)}
+                        >
+                            <PlusCircleIcon />
+                            {localization.createOrganization}
+                        </DropdownMenuItem>
+                    ) : (
+                        <Link href={`${basePath}/${viewPaths.signIn}`}>
+                            <DropdownMenuItem className={cn(classNames?.content?.menuItem)}>
+                                <LogInIcon />
+                                {localization.signIn}
+                            </DropdownMenuItem>
+                        </Link>
+                    )}
                 </DropdownMenuContent>
             </DropdownMenu>
 
