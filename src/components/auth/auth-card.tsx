@@ -2,7 +2,6 @@
 
 import { ArrowLeftIcon, Loader2 } from "lucide-react"
 import { type ReactNode, useContext, useEffect, useState } from "react"
-
 import { useIsHydrated } from "../../hooks/use-hydrated"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
@@ -87,11 +86,11 @@ export function AuthCard({
         magicLink,
         emailOTP,
         oneTap,
-        otherProviders,
         passkey,
-        providers,
         settings,
         signUp,
+        social,
+        genericOAuth,
         viewPaths,
         replace,
         Link
@@ -102,7 +101,7 @@ export function AuthCard({
     if (socialLayout === "auto") {
         socialLayout = !credentials
             ? "vertical"
-            : providers && providers.length > 2
+            : social?.providers && social.providers.length > 2
               ? "horizontal"
               : "vertical"
     }
@@ -229,7 +228,7 @@ export function AuthCard({
                 )}
 
                 {view !== "resetPassword" &&
-                    (providers?.length || otherProviders?.length || passkey) && (
+                    (social?.providers?.length || genericOAuth?.providers?.length || passkey) && (
                         <>
                             {(credentials || magicLink || emailOTP) && (
                                 <div className="flex items-center gap-2">
@@ -248,7 +247,7 @@ export function AuthCard({
                             )}
 
                             <div className="grid gap-4">
-                                {(providers?.length || otherProviders?.length) && (
+                                {(social?.providers?.length || genericOAuth?.providers?.length) && (
                                     <div
                                         className={cn(
                                             "flex w-full items-center justify-between gap-4",
@@ -257,7 +256,7 @@ export function AuthCard({
                                             socialLayout === "grid" && "grid grid-cols-2"
                                         )}
                                     >
-                                        {providers?.map((provider) => {
+                                        {social?.providers?.map((provider) => {
                                             const socialProvider = socialProviders.find(
                                                 (socialProvider) =>
                                                     socialProvider.provider === provider
@@ -279,7 +278,7 @@ export function AuthCard({
                                             )
                                         })}
 
-                                        {otherProviders?.map((provider) => (
+                                        {genericOAuth?.providers?.map((provider) => (
                                             <ProviderButton
                                                 key={provider.provider}
                                                 classNames={classNames}

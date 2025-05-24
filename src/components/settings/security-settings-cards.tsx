@@ -1,5 +1,4 @@
 "use client"
-
 import { useContext } from "react"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
@@ -17,9 +16,9 @@ export function SecuritySettingsCards({ className, classNames, localization }: S
         deleteUser,
         hooks,
         localization: contextLocalization,
-        otherProviders,
         passkey,
-        providers,
+        social,
+        genericOAuth,
         twoFactor
     } = useContext(AuthUIContext)
 
@@ -67,7 +66,7 @@ export function SecuritySettingsCards({ className, classNames, localization }: S
                 />
             )}
 
-            {(providers?.length || otherProviders?.length) && (
+            {(social?.providers?.length || genericOAuth?.providers?.length) && (
                 <ProvidersCard
                     accounts={accounts}
                     classNames={classNames?.card}

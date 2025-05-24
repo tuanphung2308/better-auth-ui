@@ -14,11 +14,13 @@ import type { AuthMutators } from "../types/auth-mutators"
 import type { AvatarOptions } from "../types/avatar-options"
 import type { CaptchaOptions } from "../types/captcha-options"
 import type { DeleteUserOptions } from "../types/delete-user-options"
+import type { GenericOAuthOptions } from "../types/generic-oauth-options"
 import type { Link } from "../types/link"
 import type { OrganizationOptions } from "../types/organization-options"
 import type { PasswordValidation } from "../types/password-validation"
 import type { RenderToast } from "../types/render-toast"
 import type { SettingsOptions } from "../types/settings-options"
+import type { SocialOptions } from "../types/social-options"
 import { type AuthLocalization, authLocalization } from "./auth-localization"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
 import type { Provider } from "./social-providers"
@@ -129,6 +131,10 @@ export type AuthUIContextType = {
      * @default 60 * 60 * 24
      */
     freshAge: number
+    /**
+     * Generic OAuth provider configuration
+     */
+    genericOAuth?: GenericOAuthOptions
     hooks: AuthHooks
     localization: AuthLocalization
     /**
@@ -182,16 +188,6 @@ export type AuthUIContextType = {
      */
     persistClient?: boolean
     /**
-     * Array of Social Providers to enable
-     * @remarks `SocialProvider[]`
-     */
-    providers?: SocialProvider[]
-    /**
-     * Custom OAuth Providers
-     * @default false
-     */
-    otherProviders?: Provider[]
-    /**
      * Enable or disable Remember Me checkbox
      * @default false
      */
@@ -208,9 +204,9 @@ export type AuthUIContextType = {
      */
     signUpFields?: string[]
     /**
-     * Custom social sign in function
+     * Social provider configuration
      */
-    signInSocial?: (params: Parameters<AuthClient["signIn"]["social"]>[0]) => Promise<unknown>
+    social?: SocialOptions
     toast: RenderToast
     /**
      * Enable or disable two-factor authentication support
@@ -266,19 +262,6 @@ export type AuthUIProviderProps = {
      */
     avatar?: boolean | Partial<AvatarOptions>
     /**
-     * Settings configuration
-     * @default { fields: ["avatar", "name"] }
-     */
-    settings?: boolean | Partial<SettingsOptions>
-    /**
-     * @deprecated use settings.fields instead
-     */
-    settingsFields?: string[]
-    /**
-     * @deprecated use settings.url instead
-     */
-    settingsURL?: string
-    /**
      * @deprecated use avatar.extension instead
      */
     avatarExtension?: string
@@ -300,6 +283,19 @@ export type AuthUIProviderProps = {
      */
     hooks?: Partial<AuthHooks>
     /**
+     * Settings configuration
+     * @default { fields: ["avatar", "name"] }
+     */
+    settings?: boolean | Partial<SettingsOptions>
+    /**
+     * @deprecated use settings.fields instead
+     */
+    settingsFields?: string[]
+    /**
+     * @deprecated use settings.url instead
+     */
+    settingsURL?: string
+    /**
      * Customize the paths for the auth views
      * @default authViewPaths
      * @remarks `AuthViewPaths`
@@ -320,6 +316,18 @@ export type AuthUIProviderProps = {
      * ADVANCED: Custom mutators for updating auth data
      */
     mutators?: Partial<AuthMutators>
+    /**
+     * @deprecated use social.providers instead
+     */
+    providers?: SocialProvider[]
+    /**
+     * @deprecated use genericOAuth.providers instead
+     */
+    otherProviders?: Provider[]
+    /**
+     * @deprecated use social.signIn instead
+     */
+    signInSocial?: (params: Parameters<AuthClient["signIn"]["social"]>[0]) => Promise<unknown>
 } & Partial<
     Omit<
         AuthUIContextType,
@@ -348,6 +356,11 @@ export const AuthUIProvider = ({
     avatarSize,
     deleteUser: deleteUserProp,
     deleteAccountVerification,
+    social: socialProp,
+    genericOAuth: genericOAuthProp,
+    providers,
+    otherProviders,
+    signInSocial,
     basePath = "/auth",
     baseURL = "",
     captcha,
@@ -407,6 +420,20 @@ export const AuthUIProvider = ({
                 "[Better Auth UI] deleteAccountVerification is deprecated, use deleteUser.verification instead"
             )
         }
+
+        if (providers) {
+            console.warn("[Better Auth UI] providers is deprecated, use social.providers instead")
+        }
+
+        if (otherProviders) {
+            console.warn(
+                "[Better Auth UI] otherProviders is deprecated, use genericOAuth.providers instead"
+            )
+        }
+
+        if (signInSocial) {
+            console.warn("[Better Auth UI] signInSocial is deprecated, use social.signIn instead")
+        }
     }, [
         noColorIcons,
         uploadAvatar,
@@ -414,7 +441,10 @@ export const AuthUIProvider = ({
         avatarSize,
         settingsFields,
         settingsURL,
-        deleteAccountVerification
+        deleteAccountVerification,
+        providers,
+        otherProviders,
+        signInSocial
     ])
 
     if (noColorIcons) {
@@ -468,6 +498,31 @@ export const AuthUIProvider = ({
 
         return deleteUserProp
     }, [deleteUserProp, deleteAccountVerification])
+
+    const social = useMemo<SocialOptions | undefined>(() => {
+        if (!socialProp && !providers) return
+
+        if (providers) {
+            return {
+                providers: providers,
+                signIn: signInSocial
+            }
+        }
+
+        return socialProp
+    }, [socialProp, providers, signInSocial])
+
+    const genericOAuth = useMemo<GenericOAuthOptions | undefined>(() => {
+        if (!genericOAuthProp && !otherProviders) return
+
+        if (otherProviders) {
+            return {
+                providers: otherProviders
+            }
+        }
+
+        return genericOAuthProp
+    }, [genericOAuthProp, otherProviders])
 
     const defaultMutators = useMemo(() => {
         return {
@@ -561,6 +616,7 @@ export const AuthUIProvider = ({
                 deleteUser,
                 forgotPassword,
                 freshAge,
+                genericOAuth,
                 hooks,
                 mutators,
                 localization,
@@ -569,6 +625,7 @@ export const AuthUIProvider = ({
                 settings,
                 signUp,
                 signUpFields,
+                social,
                 toast,
                 navigate: navigate || defaultNavigate,
                 replace: replace || navigate || defaultReplace,

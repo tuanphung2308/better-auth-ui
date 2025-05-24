@@ -41,7 +41,8 @@ export function ProviderButton({
         persistClient,
         redirectTo: contextRedirectTo,
         viewPaths,
-        signInSocial,
+        social,
+        genericOAuth,
         toast
     } = useContext(AuthUIContext)
 
@@ -66,11 +67,21 @@ export function ProviderButton({
 
         try {
             if (other) {
-                await authClient.signIn.oauth2({
+                const oauth2Params = {
                     providerId: provider.provider,
                     callbackURL: getCallbackURL(),
                     fetchOptions: { throw: true }
-                })
+                }
+
+                if (genericOAuth?.signIn) {
+                    await genericOAuth.signIn(oauth2Params)
+
+                    setTimeout(() => {
+                        setIsSubmitting(false)
+                    }, 10000)
+                } else {
+                    await authClient.signIn.oauth2(oauth2Params)
+                }
             } else {
                 const socialParams = {
                     provider: provider.provider as SocialProvider,
@@ -78,8 +89,8 @@ export function ProviderButton({
                     fetchOptions: { throw: true }
                 }
 
-                if (signInSocial) {
-                    await signInSocial(socialParams)
+                if (social?.signIn) {
+                    await social.signIn(socialParams)
 
                     setTimeout(() => {
                         setIsSubmitting(false)

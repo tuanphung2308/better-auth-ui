@@ -34,8 +34,8 @@ export function ProvidersCard({
     const {
         hooks: { useListAccounts },
         localization: contextLocalization,
-        otherProviders,
-        providers
+        social,
+        genericOAuth
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
@@ -57,12 +57,12 @@ export function ProvidersCard({
         >
             <CardContent className={cn("grid gap-4", classNames?.content)}>
                 {isPending ? (
-                    providers?.map((provider) => (
+                    social?.providers?.map((provider) => (
                         <SettingsCellSkeleton key={provider} classNames={classNames} />
                     ))
                 ) : (
                     <>
-                        {providers?.map((provider) => {
+                        {social?.providers?.map((provider) => {
                             const socialProvider = socialProviders.find(
                                 (socialProvider) => socialProvider.provider === provider
                             )
@@ -80,7 +80,7 @@ export function ProvidersCard({
                             )
                         })}
 
-                        {otherProviders?.map((provider) => (
+                        {genericOAuth?.providers?.map((provider) => (
                             <ProviderCell
                                 key={provider.provider}
                                 classNames={classNames}
