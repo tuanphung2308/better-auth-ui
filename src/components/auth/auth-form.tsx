@@ -67,11 +67,13 @@ export function AuthForm({
         localization: contextLocalization,
         magicLink,
         emailOTP,
-        signUp: signUpEnabled,
+        signUp,
         twoFactor: twoFactorEnabled,
         viewPaths,
         replace
     } = useContext(AuthUIContext)
+
+    const signUpEnabled = !!signUp
 
     localization = { ...contextLocalization, ...localization }
 

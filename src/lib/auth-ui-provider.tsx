@@ -21,6 +21,7 @@ import type { OrganizationOptions } from "../types/organization-options"
 import type { PasswordValidation } from "../types/password-validation"
 import type { RenderToast } from "../types/render-toast"
 import type { SettingsOptions } from "../types/settings-options"
+import type { SignUpOptions } from "../types/sign-up-options"
 import type { SocialOptions } from "../types/social-options"
 import { type AuthLocalization, authLocalization } from "./auth-localization"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
@@ -171,15 +172,9 @@ export type AuthUIContextType = {
     persistClient?: boolean
     settings?: SettingsOptions
     /**
-     * Enable or disable Sign Up form
-     * @default true
+     * Sign Up configuration
      */
-    signUp?: boolean
-    /**
-     * Array of fields to show in Sign Up form
-     * @default ["name"]
-     */
-    signUpFields?: string[]
+    signUp?: SignUpOptions
     /**
      * Social provider configuration
      */
@@ -325,6 +320,15 @@ export type AuthUIProviderProps = {
      * @deprecated use credentials.username instead
      */
     username?: boolean
+    /**
+     * Enable or disable Sign Up form
+     * @default { fields: ["name"] }
+     */
+    signUp?: SignUpOptions | boolean
+    /**
+     * @deprecated use signUp.fields instead
+     */
+    signUpFields?: string[]
 } & Partial<
     Omit<
         AuthUIContextType,
@@ -338,6 +342,7 @@ export type AuthUIProviderProps = {
         | "settings"
         | "deleteUser"
         | "credentials"
+        | "signUp"
     >
 >
 
@@ -378,8 +383,8 @@ export const AuthUIProvider = ({
     nameRequired = true,
     noColorIcons,
     organization,
-    signUp = true,
-    signUpFields = ["name"],
+    signUp: signUpProp = true,
+    signUpFields,
     toast = defaultToast,
     viewPaths: viewPathsProp,
     navigate,
@@ -466,6 +471,10 @@ export const AuthUIProvider = ({
                 "[Better Auth UI] username is deprecated, use credentials.username instead"
             )
         }
+
+        if (signUpFields !== undefined) {
+            console.warn("[Better Auth UI] signUpFields is deprecated, use signUp.fields instead")
+        }
     }, [
         noColorIcons,
         uploadAvatar,
@@ -481,7 +490,8 @@ export const AuthUIProvider = ({
         forgotPassword,
         passwordValidation,
         rememberMe,
-        username
+        username,
+        signUpFields
     ])
 
     if (noColorIcons) {
@@ -575,13 +585,27 @@ export const AuthUIProvider = ({
         }
 
         return {
-            confirmPassword: credentialsProp?.confirmPassword,
-            forgotPassword: credentialsProp?.forgotPassword ?? true,
-            passwordValidation: credentialsProp?.passwordValidation,
-            rememberMe: credentialsProp?.rememberMe,
-            username: credentialsProp?.username
+            confirmPassword: credentialsProp?.confirmPassword || confirmPassword,
+            forgotPassword: (credentialsProp?.forgotPassword || forgotPassword) ?? true,
+            passwordValidation: credentialsProp?.passwordValidation || passwordValidation,
+            rememberMe: credentialsProp?.rememberMe || rememberMe,
+            username: credentialsProp?.username || username
         }
     }, [credentialsProp, confirmPassword, forgotPassword, passwordValidation, rememberMe, username])
+
+    const signUp = useMemo<SignUpOptions | undefined>(() => {
+        if (signUpProp === false) return
+
+        if (signUpProp === true || signUpProp === undefined) {
+            return {
+                fields: signUpFields || ["name"]
+            }
+        }
+
+        return {
+            fields: signUpProp.fields || signUpFields || ["name"]
+        }
+    }, [signUpProp, signUpFields])
 
     const defaultMutators = useMemo(() => {
         return {
@@ -682,7 +706,6 @@ export const AuthUIProvider = ({
                 organization,
                 settings,
                 signUp,
-                signUpFields,
                 social,
                 toast,
                 navigate: navigate || defaultNavigate,

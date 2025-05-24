@@ -57,7 +57,7 @@ export function SignUpForm({
         nameRequired,
         persistClient,
         redirectTo: contextRedirectTo,
-        signUpFields,
+        signUp: signUpOptions,
         viewPaths,
         navigate,
         toast
@@ -66,6 +66,7 @@ export function SignUpForm({
     const confirmPasswordEnabled = credentials?.confirmPassword
     const usernameEnabled = credentials?.username
     const contextPasswordValidation = credentials?.passwordValidation
+    const signUpFields = signUpOptions?.fields
 
     localization = { ...contextLocalization, ...localization }
     passwordValidation = { ...contextPasswordValidation, ...passwordValidation }
