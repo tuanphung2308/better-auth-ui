@@ -134,12 +134,7 @@ export function UpdateAvatarCard({
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            className="!size-fit me-6 rounded-full"
-                            size="icon"
-                        >
+                        <Button className="me-6 size-fit rounded-full" size="icon">
                             <UserAvatar
                                 isPending={isPending || loading}
                                 key={sessionData?.user.image}

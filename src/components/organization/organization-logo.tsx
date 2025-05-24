@@ -1,8 +1,10 @@
-import type { ComponentProps } from "react"
-import { useContext } from "react"
+"use client"
 
 import type { Organization } from "better-auth/plugins/organization"
 import { Building2Icon } from "lucide-react"
+import type { ComponentProps } from "react"
+import { useContext } from "react"
+
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"

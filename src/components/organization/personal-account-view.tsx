@@ -38,9 +38,9 @@ export function PersonalAccountView({
                 className={cn(size !== "sm" && "my-0.5")}
                 classNames={classNames?.avatar}
                 isPending={isPending}
+                localization={localization}
                 size={size}
                 user={user}
-                localization={localization}
             />
 
             <div className={cn("grid flex-1 text-left leading-tight", classNames?.content)}>
@@ -54,6 +54,7 @@ export function PersonalAccountView({
                                 classNames?.skeleton
                             )}
                         />
+
                         {size !== "sm" && (
                             <Skeleton
                                 className={cn(

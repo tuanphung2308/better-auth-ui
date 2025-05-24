@@ -178,7 +178,7 @@ export function UserButton({
             >
                 {customTrigger ||
                     (size === "icon" ? (
-                        <Button size="icon" className="size-fit" variant="ghost">
+                        <Button size="icon" className="size-fit rounded-full">
                             <UserAvatar
                                 key={user?.image}
                                 isPending={isPending}

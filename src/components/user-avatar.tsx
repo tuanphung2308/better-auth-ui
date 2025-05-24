@@ -1,7 +1,8 @@
+"use client"
+import { UserRoundIcon } from "lucide-react"
 import type { ComponentProps } from "react"
 import { useContext } from "react"
 
-import { UserRoundIcon } from "lucide-react"
 import type { AuthLocalization } from "../lib/auth-localization"
 import { AuthUIContext } from "../lib/auth-ui-provider"
 import { cn } from "../lib/utils"

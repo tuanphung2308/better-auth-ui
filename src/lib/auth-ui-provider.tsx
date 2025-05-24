@@ -382,7 +382,7 @@ export const AuthUIProvider = ({
     localization: localizationProp,
     nameRequired = true,
     noColorIcons,
-    organization,
+    organization: organizationProp,
     signUp: signUpProp = true,
     signUpFields,
     toast = defaultToast,
@@ -606,6 +606,17 @@ export const AuthUIProvider = ({
             fields: signUpProp.fields || signUpFields || ["name"]
         }
     }, [signUpProp, signUpFields])
+
+    const organization = useMemo<OrganizationOptions | undefined>(() => {
+        if (!organizationProp) return
+
+        if (organizationProp) {
+            return {
+                ...organizationProp
+                // TODO logo logic
+            }
+        }
+    }, [organizationProp])
 
     const defaultMutators = useMemo(() => {
         return {

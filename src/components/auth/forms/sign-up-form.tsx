@@ -379,9 +379,7 @@ export function SignUpForm({
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    className="!size-fit rounded-full"
+                                                    className="size-fit rounded-full"
                                                     size="icon"
                                                 >
                                                     <UserAvatar

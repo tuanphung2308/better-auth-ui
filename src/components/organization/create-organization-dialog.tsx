@@ -45,24 +45,21 @@ export interface CreateOrganizationDialogProps extends ComponentProps<typeof Dia
         outlineButton?: string
     }
     localization?: AuthLocalization
-    onSuccess?: () => void
-    refetch?: () => void
 }
 
 export function CreateOrganizationDialog({
     className,
     classNames,
     localization: localizationProp,
-    onSuccess,
-    refetch,
     onOpenChange,
     ...props
 }: CreateOrganizationDialogProps) {
     const {
         authClient,
+        hooks: { useListOrganizations },
         localization: contextLocalization,
-        toast,
-        organization
+        organization,
+        toast
     } = useContext(AuthUIContext)
 
     const localization = { ...contextLocalization, ...localizationProp }
@@ -70,6 +67,8 @@ export function CreateOrganizationDialog({
     const fileInputRef = useRef<HTMLInputElement>(null)
     const [logo, setLogo] = useState<string | null>(null)
     const [uploadingLogo, setUploadingLogo] = useState(false)
+
+    const { refetch: refetchOrganizations } = useListOrganizations()
 
     const formSchema = z.object({
         name: z.string().min(1, {
@@ -157,8 +156,7 @@ export function CreateOrganizationDialog({
                 message: localization.organizationCreated
             })
 
-            onSuccess?.()
-            refetch?.()
+            refetchOrganizations?.()
             onOpenChange?.(false)
             form.reset()
             setLogo(null)

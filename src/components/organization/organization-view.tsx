@@ -1,7 +1,7 @@
 "use client"
 
 import type { Organization } from "better-auth/plugins/organization"
-import { useContext, useMemo } from "react"
+import { useContext } from "react"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
@@ -31,12 +31,12 @@ export interface OrganizationViewProps {
 }
 
 /**
- * Displays user information with avatar and details in a compact view
+ * Displays organization information with logo and details in a compact view
  *
- * Renders a user's profile information with appropriate fallbacks:
- * - Shows avatar alongside user name and email when available
+ * Renders an organization's profile information with appropriate fallbacks:
+ * - Shows logo alongside organization name and slug when available
  * - Shows loading skeletons when isPending is true
- * - Falls back to generic "User" text when neither name nor email is available
+ * - Falls back to generic "Organization" text when neither name nor slug is available
  * - Supports customization through classNames prop
  */
 export function OrganizationView({
@@ -49,10 +49,7 @@ export function OrganizationView({
 }: OrganizationViewProps) {
     const { localization: contextLocalization } = useContext(AuthUIContext)
 
-    const localization = useMemo(
-        () => ({ ...contextLocalization, ...propLocalization }),
-        [contextLocalization, propLocalization]
-    )
+    const localization = { ...contextLocalization, ...propLocalization }
 
     return (
         <div className={cn("flex items-center gap-2", className, classNames?.base)}>
@@ -60,9 +57,9 @@ export function OrganizationView({
                 className={cn(size !== "sm" && "my-0.5")}
                 classNames={classNames?.avatar}
                 isPending={isPending}
-                size={size}
-                organization={organization}
                 localization={localization}
+                organization={organization}
+                size={size}
             />
 
             <div className={cn("grid flex-1 text-left leading-tight", classNames?.content)}>
@@ -76,6 +73,7 @@ export function OrganizationView({
                                 classNames?.skeleton
                             )}
                         />
+
                         {size !== "sm" && (
                             <Skeleton
                                 className={cn(
@@ -99,7 +97,7 @@ export function OrganizationView({
                             {organization?.name || localization?.organization}
                         </span>
 
-                        {size !== "sm" && (
+                        {size !== "sm" && organization?.slug && (
                             <span
                                 className={cn(
                                     "truncate opacity-70",
@@ -107,7 +105,7 @@ export function OrganizationView({
                                     classNames?.subtitle
                                 )}
                             >
-                                {organization?.slug}
+                                {organization.slug}
                             </span>
                         )}
                     </>
