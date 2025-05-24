@@ -13,6 +13,7 @@ import type { AuthHooks } from "../types/auth-hooks"
 import type { AuthMutators } from "../types/auth-mutators"
 import type { AvatarOptions } from "../types/avatar-options"
 import type { CaptchaOptions } from "../types/captcha-options"
+import type { CredentialsOptions } from "../types/credentials-options"
 import type { DeleteUserOptions } from "../types/delete-user-options"
 import type { GenericOAuthOptions } from "../types/generic-oauth-options"
 import type { Link } from "../types/link"
@@ -92,16 +93,7 @@ export type AuthUIContextType = {
      * @default undefined
      */
     colorIcons?: boolean | undefined
-    /**
-     * Enable or disable the Confirm Password input
-     * @default false
-     */
-    confirmPassword?: boolean
-    /**
-     * Enable or disable Credentials support
-     * @default true
-     */
-    credentials?: boolean
+    credentials?: CredentialsOptions
     /**
      * Default redirect URL after authenticating
      * @default "/"
@@ -121,11 +113,6 @@ export type AuthUIContextType = {
      * Show Verify Email card for unverified emails
      */
     emailVerification?: boolean
-    /**
-     * Enable or disable Forgot Password flow
-     * @default true
-     */
-    forgotPassword?: boolean
     /**
      * Freshness age for Session data
      * @default 60 * 60 * 24
@@ -152,17 +139,12 @@ export type AuthUIContextType = {
      * @default false
      */
     multiSession?: boolean
-    /** @internal */
     mutators: AuthMutators
     /**
      * Whether the name field should be required
      * @default true
      */
     nameRequired?: boolean
-    /**
-     * @deprecated use colorIcons instead
-     */
-    noColorIcons?: boolean
     /**
      * Enable or disable One Tap support
      * @default false
@@ -187,11 +169,6 @@ export type AuthUIContextType = {
      * @default false
      */
     persistClient?: boolean
-    /**
-     * Enable or disable Remember Me checkbox
-     * @default false
-     */
-    rememberMe?: boolean
     settings?: SettingsOptions
     /**
      * Enable or disable Sign Up form
@@ -213,11 +190,6 @@ export type AuthUIContextType = {
      * @default undefined
      */
     twoFactor?: ("otp" | "totp")[]
-    /**
-     * Enable or disable Username support
-     * @default false
-     */
-    username?: boolean
     viewPaths: AuthViewPaths
     /**
      * Navigate to a new URL
@@ -234,18 +206,10 @@ export type AuthUIContextType = {
      */
     replace: typeof defaultReplace
     /**
-     * @deprecated use avatar.upload instead
-     */
-    uploadAvatar?: (file: File) => Promise<string | undefined | null>
-    /**
      * Custom Link component for navigation
      * @default <a>
      */
     Link: Link
-    /**
-     * Customize the password validation
-     */
-    passwordValidation?: PasswordValidation
 }
 
 export type AuthUIProviderProps = {
@@ -328,6 +292,39 @@ export type AuthUIProviderProps = {
      * @deprecated use social.signIn instead
      */
     signInSocial?: (params: Parameters<AuthClient["signIn"]["social"]>[0]) => Promise<unknown>
+    /**
+     * Enable or disable Credentials support
+     * @default { forgotPassword: true }
+     */
+    credentials?: boolean | CredentialsOptions
+    /**
+     * @deprecated use credentials.confirmPassword instead
+     */
+    confirmPassword?: boolean
+    /**
+     * @deprecated use credentials.forgotPassword instead
+     */
+    forgotPassword?: boolean
+    /**
+     * @deprecated use colorIcons instead
+     */
+    noColorIcons?: boolean
+    /**
+     * @deprecated use credentials.passwordValidation instead
+     */
+    passwordValidation?: PasswordValidation
+    /**
+     * @deprecated use credentials.rememberMe instead
+     */
+    rememberMe?: boolean
+    /**
+     * @deprecated use avatar.upload instead
+     */
+    uploadAvatar?: (file: File) => Promise<string | undefined | null>
+    /**
+     * @deprecated use credentials.username instead
+     */
+    username?: boolean
 } & Partial<
     Omit<
         AuthUIContextType,
@@ -340,6 +337,7 @@ export type AuthUIProviderProps = {
         | "avatar"
         | "settings"
         | "deleteUser"
+        | "credentials"
     >
 >
 
@@ -366,9 +364,13 @@ export const AuthUIProvider = ({
     captcha,
     colorIcons,
     redirectTo = "/",
-    credentials = true,
+    credentials: credentialsProp,
+    confirmPassword,
+    forgotPassword,
+    passwordValidation,
+    rememberMe,
+    username,
     changeEmail = true,
-    forgotPassword = true,
     freshAge = 60 * 60 * 24,
     hooks: hooksProp,
     mutators: mutatorsProp,
@@ -387,52 +389,82 @@ export const AuthUIProvider = ({
     ...props
 }: AuthUIProviderProps) => {
     useEffect(() => {
-        if (noColorIcons) {
+        if (noColorIcons !== undefined) {
             console.warn("[Better Auth UI] noColorIcons is deprecated, use colorIcons instead")
         }
 
-        if (uploadAvatar) {
+        if (uploadAvatar !== undefined) {
             console.warn("[Better Auth UI] uploadAvatar is deprecated, use avatar.upload instead")
         }
 
-        if (avatarExtension) {
+        if (avatarExtension !== undefined) {
             console.warn(
                 "[Better Auth UI] avatarExtension is deprecated, use avatar.extension instead"
             )
         }
 
-        if (avatarSize) {
+        if (avatarSize !== undefined) {
             console.warn("[Better Auth UI] avatarSize is deprecated, use avatar.size instead")
         }
 
-        if (settingsFields) {
+        if (settingsFields !== undefined) {
             console.warn(
                 "[Better Auth UI] settingsFields is deprecated, use settings.fields instead"
             )
         }
 
-        if (settingsURL) {
+        if (settingsURL !== undefined) {
             console.warn("[Better Auth UI] settingsURL is deprecated, use settings.url instead")
         }
 
-        if (deleteAccountVerification) {
+        if (deleteAccountVerification !== undefined) {
             console.warn(
                 "[Better Auth UI] deleteAccountVerification is deprecated, use deleteUser.verification instead"
             )
         }
 
-        if (providers) {
+        if (providers !== undefined) {
             console.warn("[Better Auth UI] providers is deprecated, use social.providers instead")
         }
 
-        if (otherProviders) {
+        if (otherProviders !== undefined) {
             console.warn(
                 "[Better Auth UI] otherProviders is deprecated, use genericOAuth.providers instead"
             )
         }
 
-        if (signInSocial) {
+        if (signInSocial !== undefined) {
             console.warn("[Better Auth UI] signInSocial is deprecated, use social.signIn instead")
+        }
+
+        if (confirmPassword !== undefined) {
+            console.warn(
+                "[Better Auth UI] confirmPassword is deprecated, use credentials.confirmPassword instead"
+            )
+        }
+
+        if (forgotPassword !== undefined) {
+            console.warn(
+                "[Better Auth UI] forgotPassword is deprecated, use credentials.forgotPassword instead"
+            )
+        }
+
+        if (passwordValidation !== undefined) {
+            console.warn(
+                "[Better Auth UI] passwordValidation is deprecated, use credentials.passwordValidation instead"
+            )
+        }
+
+        if (rememberMe !== undefined) {
+            console.warn(
+                "[Better Auth UI] rememberMe is deprecated, use credentials.rememberMe instead"
+            )
+        }
+
+        if (username !== undefined) {
+            console.warn(
+                "[Better Auth UI] username is deprecated, use credentials.username instead"
+            )
         }
     }, [
         noColorIcons,
@@ -444,7 +476,12 @@ export const AuthUIProvider = ({
         deleteAccountVerification,
         providers,
         otherProviders,
-        signInSocial
+        signInSocial,
+        confirmPassword,
+        forgotPassword,
+        passwordValidation,
+        rememberMe,
+        username
     ])
 
     if (noColorIcons) {
@@ -523,6 +560,28 @@ export const AuthUIProvider = ({
 
         return genericOAuthProp
     }, [genericOAuthProp, otherProviders])
+
+    const credentials = useMemo<CredentialsOptions | undefined>(() => {
+        if (credentialsProp === false) return
+
+        if (credentialsProp === true) {
+            return {
+                confirmPassword,
+                forgotPassword: forgotPassword ?? true,
+                passwordValidation,
+                rememberMe,
+                username
+            }
+        }
+
+        return {
+            confirmPassword: credentialsProp?.confirmPassword,
+            forgotPassword: credentialsProp?.forgotPassword ?? true,
+            passwordValidation: credentialsProp?.passwordValidation,
+            rememberMe: credentialsProp?.rememberMe,
+            username: credentialsProp?.username
+        }
+    }, [credentialsProp, confirmPassword, forgotPassword, passwordValidation, rememberMe, username])
 
     const defaultMutators = useMemo(() => {
         return {
@@ -614,7 +673,6 @@ export const AuthUIProvider = ({
                 changeEmail,
                 credentials,
                 deleteUser,
-                forgotPassword,
                 freshAge,
                 genericOAuth,
                 hooks,

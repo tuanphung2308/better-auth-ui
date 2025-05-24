@@ -51,19 +51,21 @@ export function SignUpForm({
         authClient,
         basePath,
         baseURL,
-        confirmPassword: confirmPasswordEnabled,
+        credentials,
         emailVerification,
         localization: contextLocalization,
         nameRequired,
         persistClient,
         redirectTo: contextRedirectTo,
         signUpFields,
-        username: usernameEnabled,
         viewPaths,
         navigate,
-        toast,
-        passwordValidation: contextPasswordValidation
+        toast
     } = useContext(AuthUIContext)
+
+    const confirmPasswordEnabled = credentials?.confirmPassword
+    const usernameEnabled = credentials?.username
+    const contextPasswordValidation = credentials?.passwordValidation
 
     localization = { ...contextLocalization, ...localization }
     passwordValidation = { ...contextPasswordValidation, ...passwordValidation }

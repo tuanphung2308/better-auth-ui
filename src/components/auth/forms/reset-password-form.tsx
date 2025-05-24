@@ -33,13 +33,15 @@ export function ResetPasswordForm({
     const {
         authClient,
         basePath,
-        confirmPassword: confirmPasswordEnabled,
+        credentials,
         localization: contextLocalization,
         viewPaths,
         navigate,
-        toast,
-        passwordValidation: contextPasswordValidation
+        toast
     } = useContext(AuthUIContext)
+
+    const confirmPasswordEnabled = credentials?.confirmPassword
+    const contextPasswordValidation = credentials?.passwordValidation
 
     localization = { ...contextLocalization, ...localization }
     passwordValidation = { ...contextPasswordValidation, ...passwordValidation }

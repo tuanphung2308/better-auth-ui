@@ -38,13 +38,15 @@ export function ChangePasswordCard({
         authClient,
         basePath,
         baseURL,
-        confirmPassword: confirmPasswordEnabled,
+        credentials,
         hooks: { useSession, useListAccounts },
         localization: contextLocalization,
         viewPaths,
-        toast,
-        passwordValidation: contextPasswordValidation
+        toast
     } = useContext(AuthUIContext)
+
+    const confirmPasswordEnabled = credentials?.confirmPassword
+    const contextPasswordValidation = credentials?.passwordValidation
 
     localization = { ...contextLocalization, ...localization }
     passwordValidation = { ...contextPasswordValidation, ...passwordValidation }

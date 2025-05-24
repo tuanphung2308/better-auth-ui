@@ -47,16 +47,17 @@ export function SignInForm({
     const {
         authClient,
         basePath,
-        forgotPassword,
+        credentials,
         localization: contextLocalization,
-        rememberMe: rememberMeEnabled,
-        username: usernameEnabled,
         viewPaths,
         navigate,
         toast,
-        Link,
-        passwordValidation: contextPasswordValidation
+        Link
     } = useContext(AuthUIContext)
+
+    const rememberMeEnabled = credentials?.rememberMe
+    const usernameEnabled = credentials?.username
+    const contextPasswordValidation = credentials?.passwordValidation
 
     localization = { ...contextLocalization, ...localization }
     passwordValidation = { ...contextPasswordValidation, ...passwordValidation }
@@ -185,7 +186,7 @@ export function SignInForm({
                                     {localization.password}
                                 </FormLabel>
 
-                                {forgotPassword && (
+                                {credentials?.forgotPassword && (
                                     <Link
                                         className={cn(
                                             "text-sm hover:underline",

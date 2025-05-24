@@ -62,12 +62,12 @@ export function SettingsCards({ className, classNames, localization, view }: Set
         avatar,
         basePath,
         changeEmail,
+        credentials,
         hooks,
         localization: contextLocalization,
         multiSession,
         nameRequired,
         settings,
-        username,
         viewPaths,
         Link
     } = useContext(AuthUIContext)
@@ -211,7 +211,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                             />
                         )}
 
-                        {username && (
+                        {credentials?.username && (
                             <UpdateUsernameCard
                                 classNames={classNames?.card}
                                 isPending={sessionPending}
