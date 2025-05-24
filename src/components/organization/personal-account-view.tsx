@@ -40,6 +40,7 @@ export function PersonalAccountView({
                 isPending={isPending}
                 size={size}
                 user={user}
+                localization={localization}
             />
 
             <div className={cn("grid flex-1 text-left leading-tight", classNames?.content)}>

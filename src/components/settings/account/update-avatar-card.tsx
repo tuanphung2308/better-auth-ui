@@ -146,6 +146,7 @@ export function UpdateAvatarCard({
                                 className="size-20 text-2xl"
                                 classNames={classNames?.avatar}
                                 user={sessionData?.user}
+                                localization={localization}
                             />
                         </Button>
                     </DropdownMenuTrigger>

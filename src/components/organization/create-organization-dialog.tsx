@@ -233,6 +233,7 @@ export function CreateOrganizationDialog({
                                                                   }
                                                                 : null
                                                         }
+                                                        localization={localization}
                                                     />
                                                 </Button>
                                             </DropdownMenuTrigger>

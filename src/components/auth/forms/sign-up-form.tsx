@@ -397,6 +397,7 @@ export function SignUpForm({
                                                                   }
                                                                 : null
                                                         }
+                                                        localization={localization}
                                                     />
                                                 </Button>
                                             </DropdownMenuTrigger>

@@ -1,6 +1,9 @@
 import type { ComponentProps } from "react"
+import { useContext } from "react"
 
 import { UserRoundIcon } from "lucide-react"
+import type { AuthLocalization } from "../lib/auth-localization"
+import { AuthUIContext } from "../lib/auth-ui-provider"
 import { cn } from "../lib/utils"
 import type { Profile } from "../types/profile"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
@@ -19,6 +22,11 @@ export interface UserAvatarProps {
     isPending?: boolean
     size?: "sm" | "default" | "lg" | "xl" | null
     user?: Profile | null
+    /**
+     * @default authLocalization
+     * @remarks `AuthLocalization`
+     */
+    localization?: Partial<AuthLocalization>
 }
 
 /**
@@ -35,8 +43,13 @@ export function UserAvatar({
     isPending,
     size,
     user,
+    localization: propLocalization,
     ...props
 }: UserAvatarProps & ComponentProps<typeof Avatar>) {
+    const { localization: contextLocalization } = useContext(AuthUIContext)
+
+    const localization = { ...contextLocalization, ...propLocalization }
+
     const name =
         user?.displayUsername ||
         user?.username ||
@@ -84,7 +97,7 @@ export function UserAvatar({
             {...props}
         >
             <AvatarImage
-                alt={name || "User"}
+                alt={name || localization?.user}
                 className={classNames?.image}
                 src={src || undefined}
             />

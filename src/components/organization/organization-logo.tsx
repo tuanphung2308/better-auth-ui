@@ -1,7 +1,10 @@
 import type { ComponentProps } from "react"
+import { useContext } from "react"
 
 import type { Organization } from "better-auth/plugins/organization"
 import { Building2Icon } from "lucide-react"
+import type { AuthLocalization } from "../../lib/auth-localization"
+import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Skeleton } from "../ui/skeleton"
@@ -19,6 +22,11 @@ export interface OrganizationLogoProps {
     isPending?: boolean
     size?: "sm" | "default" | "lg" | "xl" | null
     organization?: Organization | null
+    /**
+     * @default authLocalization
+     * @remarks `AuthLocalization`
+     */
+    localization?: Partial<AuthLocalization>
 }
 
 /**
@@ -34,8 +42,13 @@ export function OrganizationLogo({
     isPending,
     size,
     organization,
+    localization: propLocalization,
     ...props
 }: OrganizationLogoProps & ComponentProps<typeof Avatar>) {
+    const { localization: contextLocalization } = useContext(AuthUIContext)
+
+    const localization = { ...contextLocalization, ...propLocalization }
+
     const name = organization?.name
     const src = organization?.logo
 
@@ -76,7 +89,7 @@ export function OrganizationLogo({
             {...props}
         >
             <AvatarImage
-                alt={name || "Organization"}
+                alt={name || localization?.organization}
                 className={classNames?.image}
                 src={src || undefined}
             />

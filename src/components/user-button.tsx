@@ -186,6 +186,7 @@ export function UserButton({
                                 classNames={classNames?.trigger?.avatar}
                                 user={user}
                                 aria-label={localization.account}
+                                localization={localization}
                             />
                         </Button>
                     ) : (

@@ -62,6 +62,7 @@ export function OrganizationView({
                 isPending={isPending}
                 size={size}
                 organization={organization}
+                localization={localization}
             />
 
             <div className={cn("grid flex-1 text-left leading-tight", classNames?.content)}>

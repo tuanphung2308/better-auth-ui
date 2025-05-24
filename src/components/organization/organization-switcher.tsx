@@ -146,6 +146,7 @@ export function OrganizationSwitcher({
                                         isPending={isPending}
                                         organization={activeOrganization}
                                         aria-label={localization.organization}
+                                        localization={localization}
                                     />
                                 ) : (
                                     <UserAvatar
@@ -155,6 +156,7 @@ export function OrganizationSwitcher({
                                         isPending={isPending}
                                         user={user}
                                         aria-label={localization.account}
+                                        localization={localization}
                                     />
                                 )}
                             </Button>
