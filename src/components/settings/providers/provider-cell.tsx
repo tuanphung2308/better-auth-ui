@@ -39,7 +39,6 @@ export function ProviderCell({
         colorIcons,
         localization: contextLocalization,
         mutators: { unlinkAccount },
-        noColorIcons,
         viewPaths,
         toast
     } = useContext(AuthUIContext)
@@ -99,9 +98,9 @@ export function ProviderCell({
     return (
         <Card className={cn("flex-row items-center gap-3 px-4 py-3", className, classNames?.cell)}>
             {provider.icon &&
-                (colorIcons ? (
+                (colorIcons === true ? (
                     <provider.icon className={cn("size-4", classNames?.icon)} variant="color" />
-                ) : noColorIcons ? (
+                ) : colorIcons === false ? (
                     <provider.icon className={cn("size-4", classNames?.icon)} />
                 ) : (
                     <>

@@ -313,14 +313,14 @@ export const authLocalization = {
     /** @default "Create a new organization to collaborate with your team" */
     organizationDescription: "Create a new organization to collaborate with your team",
 
-    /** @default "Organization Name" */
-    organizationName: "Organization Name",
+    /** @default "Name" */
+    organizationName: "Name",
 
     /** @default "Acme Inc." */
     organizationNamePlaceholder: "Acme Inc.",
 
-    /** @default "Organization Slug" */
-    organizationSlug: "Organization Slug",
+    /** @default "Slug URL" */
+    slugUrl: "Slug URL",
 
     /** @default "acme-inc" */
     organizationSlugPlaceholder: "acme-inc",
@@ -539,6 +539,24 @@ export const authLocalization = {
 
     /** @default "Upload Avatar" */
     uploadAvatar: "Upload Avatar",
+
+    /** @default "Logo" */
+    logo: "Logo",
+
+    /** @default "Click on the logo to upload a custom one from your files." */
+    logoDescription: "Click on the logo to upload a custom one from your files.",
+
+    /** @default "A logo is optional but recommended for organization branding." */
+    logoInstructions: "A logo is optional but recommended for organization branding.",
+
+    /** @default "Upload" */
+    upload: "Upload",
+
+    /** @default "Upload Logo" */
+    uploadLogo: "Upload Logo",
+
+    /** @default "Delete Logo" */
+    deleteLogo: "Delete Logo",
 
     /** @default "Privacy Policy" */
     privacyPolicy: "Privacy Policy",

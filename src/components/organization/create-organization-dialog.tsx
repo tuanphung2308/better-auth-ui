@@ -2,12 +2,14 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { type ComponentProps, useContext, useState } from "react"
+import { Trash2Icon, UploadCloudIcon } from "lucide-react"
+import { type ComponentProps, useContext, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
+import { fileToBase64, resizeAndCropImage } from "../../lib/image-utils"
 import { cn, getLocalizedError } from "../../lib/utils"
 import { Button } from "../ui/button"
 import {
@@ -18,8 +20,15 @@ import {
     DialogHeader,
     DialogTitle
 } from "../ui/dialog"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from "../ui/dropdown-menu"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import { Input } from "../ui/input"
+import { OrganizationLogo } from "./organization-logo"
 
 export interface CreateOrganizationDialogProps extends ComponentProps<typeof Dialog> {
     className?: string
@@ -49,12 +58,19 @@ export function CreateOrganizationDialog({
     onOpenChange,
     ...props
 }: CreateOrganizationDialogProps) {
-    const { authClient, localization: contextLocalization, toast } = useContext(AuthUIContext)
+    const {
+        authClient,
+        localization: contextLocalization,
+        toast,
+        organization
+    } = useContext(AuthUIContext)
 
     const localization = { ...contextLocalization, ...localizationProp }
-    const [isSubmitting, setIsSubmitting] = useState(false)
 
-    // Define form schema with localized error messages
+    const fileInputRef = useRef<HTMLInputElement>(null)
+    const [logo, setLogo] = useState<string | null>(null)
+    const [uploadingLogo, setUploadingLogo] = useState(false)
+
     const formSchema = z.object({
         name: z.string().min(1, {
             message: `${localization.organizationName} ${localization.isRequired}`
@@ -62,28 +78,67 @@ export function CreateOrganizationDialog({
         slug: z
             .string()
             .min(1, {
-                message: `${localization.organizationSlug} ${localization.isRequired}`
+                message: `${localization.slugUrl} ${localization.isRequired}`
             })
             .regex(/^[a-z0-9-]+$/, {
-                message: `${localization.organizationSlug} ${localization.isInvalid}`
-            })
+                message: `${localization.slugUrl} ${localization.isInvalid}`
+            }),
+        logo: z.string().optional()
     })
 
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: "",
-            slug: ""
+            slug: "",
+            logo: ""
         }
     })
 
+    const isSubmitting = form.formState.isSubmitting
+
+    const handleLogoChange = async (file: File) => {
+        setUploadingLogo(true)
+
+        const logoExtension = organization?.logoExtension || "png"
+        const logoSize = organization?.logoSize || 256
+
+        const resizedFile = await resizeAndCropImage(
+            file,
+            crypto.randomUUID(),
+            logoSize,
+            logoExtension
+        )
+
+        let image: string | undefined | null
+
+        if (organization?.uploadLogo) {
+            image = await organization.uploadLogo(resizedFile)
+        } else {
+            image = await fileToBase64(resizedFile)
+        }
+
+        if (image) {
+            setLogo(image)
+            form.setValue("logo", image)
+        }
+
+        setUploadingLogo(false)
+    }
+
+    const handleDeleteLogo = () => {
+        setLogo(null)
+        form.setValue("logo", "")
+    }
+
+    const openFileDialog = () => fileInputRef.current?.click()
+
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            setIsSubmitting(true)
-
             await authClient.organization.create({
                 name: values.name,
                 slug: values.slug,
+                logo: values.logo,
                 fetchOptions: { throw: true }
             })
 
@@ -96,21 +151,20 @@ export function CreateOrganizationDialog({
             refetch?.()
             onOpenChange?.(false)
             form.reset()
+            setLogo(null)
         } catch (error) {
             toast({
                 variant: "error",
                 message: getLocalizedError({ error, localization })
             })
-        } finally {
-            setIsSubmitting(false)
         }
     }
 
     return (
         <Dialog onOpenChange={onOpenChange} {...props}>
             <DialogContent
-                onOpenAutoFocus={(e) => e.preventDefault()}
                 className={classNames?.dialog?.content}
+                onOpenAutoFocus={(e) => e.preventDefault()}
             >
                 <DialogHeader className={classNames?.dialog?.header}>
                     <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
@@ -126,6 +180,94 @@ export function CreateOrganizationDialog({
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                        <input
+                            ref={fileInputRef}
+                            accept="image/*"
+                            disabled={uploadingLogo}
+                            hidden
+                            type="file"
+                            onChange={(e) => {
+                                const file = e.target.files?.item(0)
+                                if (file) handleLogoChange(file)
+                                e.target.value = ""
+                            }}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="logo"
+                            render={() => (
+                                <FormItem>
+                                    <FormLabel>{localization.logo}</FormLabel>
+                                    <div className="flex items-center gap-4">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    className="!size-fit rounded-full"
+                                                    size="icon"
+                                                >
+                                                    <OrganizationLogo
+                                                        isPending={uploadingLogo}
+                                                        className="size-20"
+                                                        organization={
+                                                            logo
+                                                                ? {
+                                                                      id: "",
+                                                                      name:
+                                                                          form.watch("name") || "",
+                                                                      slug: "",
+                                                                      createdAt: new Date(),
+                                                                      logo
+                                                                  }
+                                                                : null
+                                                        }
+                                                    />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+
+                                            <DropdownMenuContent align="start">
+                                                <DropdownMenuItem
+                                                    onClick={openFileDialog}
+                                                    disabled={uploadingLogo}
+                                                >
+                                                    <UploadCloudIcon />
+                                                    {localization.uploadLogo}
+                                                </DropdownMenuItem>
+                                                {logo && (
+                                                    <DropdownMenuItem
+                                                        onClick={handleDeleteLogo}
+                                                        disabled={uploadingLogo}
+                                                        variant="destructive"
+                                                    >
+                                                        <Trash2Icon />
+                                                        {localization.deleteLogo}
+                                                    </DropdownMenuItem>
+                                                )}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            onClick={openFileDialog}
+                                            disabled={uploadingLogo}
+                                        >
+                                            {uploadingLogo ? (
+                                                <Loader2 className="animate-spin" />
+                                            ) : (
+                                                <UploadCloudIcon />
+                                            )}
+
+                                            {localization.upload}
+                                        </Button>
+                                    </div>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
                         <FormField
                             control={form.control}
                             name="name"
@@ -149,7 +291,7 @@ export function CreateOrganizationDialog({
                             name="slug"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{localization.organizationSlug}</FormLabel>
+                                    <FormLabel>{localization.slugUrl}</FormLabel>
                                     <FormControl>
                                         <Input
                                             placeholder={localization.organizationSlugPlaceholder}
@@ -180,7 +322,7 @@ export function CreateOrganizationDialog({
                                 disabled={isSubmitting}
                             >
                                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                {localization.create}
+                                {localization.createOrganization}
                             </Button>
                         </DialogFooter>
                     </form>

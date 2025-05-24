@@ -1,7 +1,7 @@
 "use client"
 
 import type { SocialProvider } from "better-auth/social-providers"
-import { type ReactNode, createContext, useMemo } from "react"
+import { type ReactNode, createContext, useEffect, useMemo } from "react"
 import { toast } from "sonner"
 
 import { RecaptchaV3 } from "../components/captcha/recaptcha-v3"
@@ -11,8 +11,11 @@ import type { AnyAuthClient } from "../types/any-auth-client"
 import type { AuthClient } from "../types/auth-client"
 import type { AuthHooks } from "../types/auth-hooks"
 import type { AuthMutators } from "../types/auth-mutators"
-import type { CaptchaProvider } from "../types/captcha-provider"
+import type { AvatarOptions } from "../types/avatar-options"
+import type { CaptchaOptions } from "../types/captcha-options"
 import type { Link } from "../types/link"
+import type { OrganizationOptions } from "../types/organization-options"
+import type { PasswordValidation } from "../types/password-validation"
 import type { RenderToast } from "../types/render-toast"
 import { type AuthLocalization, authLocalization } from "./auth-localization"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
@@ -40,23 +43,6 @@ const defaultToast: RenderToast = ({ variant = "default", message }) => {
     }
 }
 
-export type PasswordValidation = {
-    /**
-     * Maximum password length
-     */
-    maxLength?: number
-
-    /**
-     * Minimum password length
-     */
-    minLength?: number
-
-    /**
-     * Password validation regex
-     */
-    regex?: RegExp
-}
-
 export type AuthUIContextType = {
     authClient: AuthClient
     /**
@@ -79,20 +65,10 @@ export type AuthUIContextType = {
           }
         | boolean
     /**
-     * Enable or disable Avatar support
-     * @default false
+     * Avatar configuration
+     * @default undefined
      */
-    avatar?: boolean
-    /**
-     * File extension for Avatar uploads
-     * @default "png"
-     */
-    avatarExtension: string
-    /**
-     * Avatars are resized to 128px unless uploadAvatar is provided, then 256px
-     * @default 128 | 256
-     */
-    avatarSize: number
+    avatar?: AvatarOptions
     /**
      * Base path for the auth views
      * @default "/auth"
@@ -105,23 +81,13 @@ export type AuthUIContextType = {
     /**
      * Captcha configuration
      */
-    captcha?: {
-        siteKey: string
-        provider: CaptchaProvider
-        hideBadge?: boolean
-        recaptchaNet?: boolean
-        enterprise?: boolean
-        /**
-         * Overrides the default array of paths where captcha validation is enforced
-         * @default ["/sign-up/email", "/sign-in/email", "/forget-password"]
-         */
-        endpoints?: string[]
-    }
+    captcha?: CaptchaOptions
     /**
-     * Force color icons for both light and dark themes
-     * @default false
+     * Enable or disable color icons for both light and dark themes
+     * The default is to use color icons for light mode and black & white icons for dark mode
+     * @default undefined
      */
-    colorIcons?: boolean
+    colorIcons?: boolean | undefined
     /**
      * Enable or disable the Confirm Password input
      * @default false
@@ -166,9 +132,6 @@ export type AuthUIContextType = {
      * @default 60 * 60 * 24
      */
     freshAge: number
-    /**
-     * @internal
-     */
     hooks: AuthHooks
     localization: AuthLocalization
     /**
@@ -189,13 +152,12 @@ export type AuthUIContextType = {
     /** @internal */
     mutators: AuthMutators
     /**
-     * Enable or disable name requirement for Sign Up
+     * Whether the name field should be required
      * @default true
      */
     nameRequired?: boolean
     /**
-     * Force black & white icons for both light and dark themes
-     * @default false
+     * @deprecated use colorIcons instead
      */
     noColorIcons?: boolean
     /**
@@ -208,6 +170,10 @@ export type AuthUIContextType = {
      * @default false
      */
     optimistic?: boolean
+    /**
+     * Organization plugin configuration
+     */
+    organization?: OrganizationOptions
     /**
      * Enable or disable Passkey support
      * @default false
@@ -283,8 +249,7 @@ export type AuthUIContextType = {
      */
     replace: typeof defaultReplace
     /**
-     * Upload an Avatar image and return the URL string
-     * @remarks `(file: File) => Promise<string>`
+     * @deprecated use avatar.upload instead
      */
     uploadAvatar?: (file: File) => Promise<string | undefined | null>
     /**
@@ -306,6 +271,21 @@ export type AuthUIProviderProps = {
      * @remarks `AuthClient`
      */
     authClient: AnyAuthClient
+    /**
+     * Avatar configuration
+     * @default undefined
+     */
+    avatar?: boolean | Partial<AvatarOptions>
+    /**
+     * File extension for Avatar uploads
+     * @default "png"
+     */
+    avatarExtension?: string
+    /**
+     * Avatars are resized to 128px unless uploadAvatar is provided, then 256px
+     * @default 128 | 256
+     */
+    avatarSize?: number
     /**
      * ADVANCED: Custom hooks for fetching auth data
      */
@@ -334,7 +314,7 @@ export type AuthUIProviderProps = {
 } & Partial<
     Omit<
         AuthUIContextType,
-        "authClient" | "viewPaths" | "localization" | "mutators" | "toast" | "hooks"
+        "authClient" | "viewPaths" | "localization" | "mutators" | "toast" | "hooks" | "avatar"
     >
 >
 
@@ -343,11 +323,13 @@ export const AuthUIContext = createContext<AuthUIContextType>({} as unknown as A
 export const AuthUIProvider = ({
     children,
     authClient: authClientProp,
-    avatarExtension = "png",
+    avatar: avatarProp,
+    avatarExtension,
     avatarSize,
     basePath = "/auth",
     baseURL = "",
     captcha,
+    colorIcons,
     redirectTo = "/",
     credentials = true,
     changeEmail = true,
@@ -357,6 +339,8 @@ export const AuthUIProvider = ({
     mutators: mutatorsProp,
     localization: localizationProp,
     nameRequired = true,
+    noColorIcons,
+    organization,
     settingsFields = ["name"],
     signUp = true,
     signUpFields = ["name"],
@@ -368,7 +352,51 @@ export const AuthUIProvider = ({
     Link = DefaultLink,
     ...props
 }: AuthUIProviderProps) => {
+    useEffect(() => {
+        if (noColorIcons) {
+            console.warn("[Better Auth UI] noColorIcons is deprecated, use colorIcons instead")
+        }
+
+        if (uploadAvatar) {
+            console.warn("[Better Auth UI] uploadAvatar is deprecated, use avatar.upload instead")
+        }
+
+        if (avatarExtension) {
+            console.warn(
+                "[Better Auth UI] avatarExtension is deprecated, use avatar.extension instead"
+            )
+        }
+
+        if (avatarSize) {
+            console.warn("[Better Auth UI] avatarSize is deprecated, use avatar.size instead")
+        }
+    }, [noColorIcons, uploadAvatar, avatarExtension, avatarSize])
+
+    if (noColorIcons) {
+        colorIcons = false
+    }
+
     const authClient = authClientProp as AuthClient
+
+    // Process avatar prop
+    const avatar = useMemo<AvatarOptions | undefined>(() => {
+        if (!avatarProp) return
+
+        if (typeof avatarProp === "boolean") {
+            return {
+                extension: avatarExtension || "png",
+                size: avatarSize || (uploadAvatar ? 256 : 128),
+                upload: uploadAvatar
+            }
+        }
+
+        return {
+            upload: avatarProp.upload || uploadAvatar,
+            extension: avatarProp.extension || "png",
+            size: avatarProp.size || (avatarProp.upload ? 256 : 128)
+        }
+    }, [avatarProp, avatarExtension, avatarSize, uploadAvatar])
+
     const defaultMutators = useMemo(() => {
         return {
             deleteApiKey: (params) =>
@@ -450,11 +478,11 @@ export const AuthUIProvider = ({
         <AuthUIContext.Provider
             value={{
                 authClient,
-                avatarExtension,
-                avatarSize: avatarSize || (uploadAvatar ? 256 : 128),
+                avatar,
                 basePath: basePath === "/" ? "" : basePath,
                 baseURL,
                 captcha,
+                colorIcons,
                 redirectTo,
                 changeEmail,
                 credentials,
@@ -464,6 +492,7 @@ export const AuthUIProvider = ({
                 mutators,
                 localization,
                 nameRequired,
+                organization,
                 settingsFields,
                 signUp,
                 signUpFields,
@@ -471,7 +500,6 @@ export const AuthUIProvider = ({
                 navigate: navigate || defaultNavigate,
                 replace: replace || navigate || defaultReplace,
                 viewPaths,
-                uploadAvatar,
                 Link,
                 ...props
             }}

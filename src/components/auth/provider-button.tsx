@@ -38,7 +38,6 @@ export function ProviderButton({
         basePath,
         baseURL,
         colorIcons,
-        noColorIcons,
         persistClient,
         redirectTo: contextRedirectTo,
         viewPaths,
@@ -113,9 +112,9 @@ export function ProviderButton({
             onClick={doSignInSocial}
         >
             {provider.icon &&
-                (colorIcons ? (
+                (colorIcons === true ? (
                     <provider.icon variant="color" className={classNames?.form?.icon} />
-                ) : noColorIcons ? (
+                ) : colorIcons === false ? (
                     <provider.icon className={classNames?.form?.icon} />
                 ) : (
                     <>

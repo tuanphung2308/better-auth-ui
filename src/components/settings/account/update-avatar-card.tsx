@@ -5,6 +5,7 @@ import { useContext, useRef, useState } from "react"
 
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { fileToBase64, resizeAndCropImage } from "../../../lib/image-utils"
 import { cn, getLocalizedError } from "../../../lib/utils"
 import { Card } from "../../ui/card"
 import {
@@ -18,53 +19,6 @@ import { UserAvatar } from "../../user-avatar"
 import type { SettingsCardClassNames } from "../shared/settings-card"
 import { SettingsCardFooter } from "../shared/settings-card-footer"
 import { SettingsCardHeader } from "../shared/settings-card-header"
-
-async function resizeAndCropImage(
-    file: File,
-    name: string,
-    size: number,
-    avatarExtension: string
-): Promise<File> {
-    const image = await loadImage(file)
-
-    const canvas = document.createElement("canvas")
-    canvas.width = canvas.height = size
-
-    const ctx = canvas.getContext("2d")
-
-    const minEdge = Math.min(image.width, image.height)
-
-    const sx = (image.width - minEdge) / 2
-    const sy = (image.height - minEdge) / 2
-    const sWidth = minEdge
-    const sHeight = minEdge
-
-    ctx?.drawImage(image, sx, sy, sWidth, sHeight, 0, 0, size, size)
-
-    const resizedImageBlob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob(resolve, `image/${avatarExtension}`)
-    )
-
-    return new File([resizedImageBlob as BlobPart], `${name}.${avatarExtension}`, {
-        type: `image/${avatarExtension}`
-    })
-}
-
-async function loadImage(file: File): Promise<HTMLImageElement> {
-    return new Promise((resolve, reject) => {
-        const image = new Image()
-        const reader = new FileReader()
-
-        reader.onload = (e) => {
-            image.src = e.target?.result as string
-        }
-
-        image.onload = () => resolve(image)
-        image.onerror = (err) => reject(err)
-
-        reader.readAsDataURL(file)
-    })
-}
 
 export interface UpdateAvatarCardProps {
     className?: string
@@ -84,9 +38,7 @@ export function UpdateAvatarCard({
         mutators: { updateUser },
         localization: authLocalization,
         optimistic,
-        uploadAvatar,
-        avatarSize,
-        avatarExtension,
+        avatar,
         toast
     } = useContext(AuthUIContext)
 
@@ -97,20 +49,20 @@ export function UpdateAvatarCard({
     const [loading, setLoading] = useState(false)
 
     const handleAvatarChange = async (file: File) => {
-        if (!sessionData) return
+        if (!sessionData || !avatar) return
 
         setLoading(true)
         const resizedFile = await resizeAndCropImage(
             file,
-            sessionData.user.id,
-            avatarSize,
-            avatarExtension
+            crypto.randomUUID(),
+            avatar.size,
+            avatar.extension
         )
 
         let image: string | undefined | null
 
-        if (uploadAvatar) {
-            image = await uploadAvatar(resizedFile)
+        if (avatar.upload) {
+            image = await avatar.upload(resizedFile)
         } else {
             image = await fileToBase64(resizedFile)
         }
@@ -120,7 +72,7 @@ export function UpdateAvatarCard({
             return
         }
 
-        if (optimistic && !uploadAvatar) setLoading(false)
+        if (optimistic && !avatar.upload) setLoading(false)
 
         try {
             await updateUser({ image })
@@ -223,13 +175,4 @@ export function UpdateAvatarCard({
             />
         </Card>
     )
-}
-
-async function fileToBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onloadend = () => resolve(reader.result as string)
-        reader.onerror = reject
-        reader.readAsDataURL(file)
-    })
 }
