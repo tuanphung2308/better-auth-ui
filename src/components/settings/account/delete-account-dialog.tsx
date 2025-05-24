@@ -59,7 +59,7 @@ export function DeleteAccountDialog({
             : z.string().optional()
     })
 
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
             password: ""

@@ -97,23 +97,22 @@ export function CreateOrganizationDialog({
     const isSubmitting = form.formState.isSubmitting
 
     const handleLogoChange = async (file: File) => {
-        setUploadingLogo(true)
+        if (!organization?.logo) return
 
-        const logoExtension = organization?.logoExtension || "png"
-        const logoSize = organization?.logoSize || 256
+        setUploadingLogo(true)
 
         try {
             const resizedFile = await resizeAndCropImage(
                 file,
                 crypto.randomUUID(),
-                logoSize,
-                logoExtension
+                organization.logo.size,
+                organization.logo.extension
             )
 
             let image: string | undefined | null
 
-            if (organization?.uploadLogo) {
-                image = await organization.uploadLogo(resizedFile)
+            if (organization?.logo.upload) {
+                image = await organization.logo.upload(resizedFile)
             } else {
                 image = await fileToBase64(resizedFile)
             }
@@ -142,12 +141,12 @@ export function CreateOrganizationDialog({
 
     const openFileDialog = () => fileInputRef.current?.click()
 
-    async function onSubmit(values: z.infer<typeof formSchema>) {
+    async function onSubmit({ name, slug, logo }: z.infer<typeof formSchema>) {
         try {
             await authClient.organization.create({
-                name: values.name,
-                slug: values.slug,
-                logo: values.logo,
+                name,
+                slug,
+                logo,
                 fetchOptions: { throw: true }
             })
 
@@ -156,7 +155,7 @@ export function CreateOrganizationDialog({
                 message: localization.organizationCreated
             })
 
-            refetchOrganizations?.()
+            await refetchOrganizations?.()
             onOpenChange?.(false)
             form.reset()
             setLogo(null)
@@ -168,12 +167,16 @@ export function CreateOrganizationDialog({
         }
     }
 
+    if (!organization) {
+        console.warn(
+            "[Better Auth UI] The `organization` prop is not configured on AuthUIProvider. Please check the documentation for more information."
+        )
+        return null
+    }
+
     return (
         <Dialog onOpenChange={onOpenChange} {...props}>
-            <DialogContent
-                className={classNames?.dialog?.content}
-                onOpenAutoFocus={(e) => e.preventDefault()}
-            >
+            <DialogContent className={classNames?.dialog?.content}>
                 <DialogHeader className={classNames?.dialog?.header}>
                     <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
                         {localization.createOrganization}
@@ -188,93 +191,96 @@ export function CreateOrganizationDialog({
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <input
-                            ref={fileInputRef}
-                            accept="image/*"
-                            disabled={uploadingLogo}
-                            hidden
-                            type="file"
-                            onChange={(e) => {
-                                const file = e.target.files?.item(0)
-                                if (file) handleLogoChange(file)
-                                e.target.value = ""
-                            }}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="logo"
-                            render={() => (
-                                <FormItem>
-                                    <FormLabel>{localization.logo}</FormLabel>
-                                    <div className="flex items-center gap-4">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    className="!size-fit rounded-full"
-                                                    size="icon"
-                                                >
-                                                    <OrganizationLogo
-                                                        isPending={uploadingLogo}
-                                                        className="size-16"
-                                                        organization={
-                                                            logo
-                                                                ? {
-                                                                      id: "",
-                                                                      name:
-                                                                          form.watch("name") || "",
-                                                                      slug: "",
-                                                                      createdAt: new Date(),
-                                                                      logo
-                                                                  }
-                                                                : null
-                                                        }
-                                                        localization={localization}
-                                                    />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-
-                                            <DropdownMenuContent
-                                                align="start"
-                                                onCloseAutoFocus={(e) => e.preventDefault()}
-                                            >
-                                                <DropdownMenuItem
-                                                    onClick={openFileDialog}
-                                                    disabled={uploadingLogo}
-                                                >
-                                                    <UploadCloudIcon />
-                                                    {localization.uploadLogo}
-                                                </DropdownMenuItem>
-                                                {logo && (
-                                                    <DropdownMenuItem
-                                                        onClick={handleDeleteLogo}
-                                                        disabled={uploadingLogo}
-                                                        variant="destructive"
-                                                    >
-                                                        <Trash2Icon />
-                                                        {localization.deleteLogo}
-                                                    </DropdownMenuItem>
-                                                )}
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            onClick={openFileDialog}
+                        {organization.logo && (
+                            <FormField
+                                control={form.control}
+                                name="logo"
+                                render={() => (
+                                    <FormItem>
+                                        <input
+                                            ref={fileInputRef}
+                                            accept="image/*"
                                             disabled={uploadingLogo}
-                                        >
-                                            {uploadingLogo && <Loader2 className="animate-spin" />}
+                                            hidden
+                                            type="file"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.item(0)
+                                                if (file) handleLogoChange(file)
+                                                e.target.value = ""
+                                            }}
+                                        />
 
-                                            {localization.upload}
-                                        </Button>
-                                    </div>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                                        <FormLabel>{localization.logo}</FormLabel>
+
+                                        <div className="flex items-center gap-4">
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        className="size-fit rounded-full"
+                                                        size="icon"
+                                                        autoFocus={false}
+                                                        type="button"
+                                                    >
+                                                        <OrganizationLogo
+                                                            className="size-16"
+                                                            isPending={uploadingLogo}
+                                                            localization={localization}
+                                                            organization={
+                                                                logo
+                                                                    ? {
+                                                                          name: form.watch("name"),
+                                                                          logo
+                                                                      }
+                                                                    : null
+                                                            }
+                                                        />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+
+                                                <DropdownMenuContent
+                                                    align="start"
+                                                    onCloseAutoFocus={(e) => e.preventDefault()}
+                                                >
+                                                    <DropdownMenuItem
+                                                        onClick={openFileDialog}
+                                                        disabled={uploadingLogo}
+                                                    >
+                                                        <UploadCloudIcon />
+                                                        {localization.uploadLogo}
+                                                    </DropdownMenuItem>
+
+                                                    {logo && (
+                                                        <DropdownMenuItem
+                                                            onClick={handleDeleteLogo}
+                                                            disabled={uploadingLogo}
+                                                            variant="destructive"
+                                                        >
+                                                            <Trash2Icon />
+                                                            {localization.deleteLogo}
+                                                        </DropdownMenuItem>
+                                                    )}
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+
+                                            <Button
+                                                disabled={uploadingLogo}
+                                                variant="outline"
+                                                onClick={openFileDialog}
+                                                type="button"
+                                            >
+                                                {uploadingLogo && (
+                                                    <Loader2 className="animate-spin" />
+                                                )}
+
+                                                {localization.upload}
+                                            </Button>
+                                        </div>
+
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        )}
 
                         <FormField
                             control={form.control}
@@ -282,13 +288,14 @@ export function CreateOrganizationDialog({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>{localization.organizationName}</FormLabel>
+
                                     <FormControl>
                                         <Input
                                             placeholder={localization.organizationNamePlaceholder}
-                                            autoComplete="off"
                                             {...field}
                                         />
                                     </FormControl>
+
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -300,13 +307,14 @@ export function CreateOrganizationDialog({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>{localization.slugUrl}</FormLabel>
+
                                     <FormControl>
                                         <Input
                                             placeholder={localization.organizationSlugPlaceholder}
-                                            autoComplete="off"
                                             {...field}
                                         />
                                     </FormControl>
+
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -318,7 +326,6 @@ export function CreateOrganizationDialog({
                                 variant="outline"
                                 onClick={() => onOpenChange?.(false)}
                                 className={cn(classNames?.button, classNames?.outlineButton)}
-                                disabled={isSubmitting}
                             >
                                 {localization.cancel}
                             </Button>
@@ -329,7 +336,8 @@ export function CreateOrganizationDialog({
                                 className={cn(classNames?.button, classNames?.primaryButton)}
                                 disabled={isSubmitting}
                             >
-                                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                {isSubmitting && <Loader2 className="animate-spin" />}
+
                                 {localization.createOrganization}
                             </Button>
                         </DialogFooter>

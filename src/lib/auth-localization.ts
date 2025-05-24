@@ -313,8 +313,8 @@ export const authLocalization = {
     /** @default "Create a new organization to collaborate with your team" */
     organizationDescription: "Create a new organization to collaborate with your team",
 
-    /** @default "Organization Name" */
-    organizationName: "Organization Name",
+    /** @default "Name" */
+    organizationName: "Name",
 
     /** @default "Acme Inc." */
     organizationNamePlaceholder: "Acme Inc.",

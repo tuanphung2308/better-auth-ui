@@ -17,7 +17,7 @@ import type { CredentialsOptions } from "../types/credentials-options"
 import type { DeleteUserOptions } from "../types/delete-user-options"
 import type { GenericOAuthOptions } from "../types/generic-oauth-options"
 import type { Link } from "../types/link"
-import type { OrganizationOptions } from "../types/organization-options"
+import type { OrganizationOptions, OrganizationOptionsContext } from "../types/organization-options"
 import type { PasswordValidation } from "../types/password-validation"
 import type { RenderToast } from "../types/render-toast"
 import type { SettingsOptions } from "../types/settings-options"
@@ -156,10 +156,7 @@ export type AuthUIContextType = {
      * @default false
      */
     optimistic?: boolean
-    /**
-     * Organization plugin configuration
-     */
-    organization?: OrganizationOptions
+    organization?: OrganizationOptionsContext
     /**
      * Enable or disable Passkey support
      * @default false
@@ -280,6 +277,10 @@ export type AuthUIProviderProps = {
      */
     providers?: SocialProvider[]
     /**
+     * Organization plugin configuration
+     */
+    organization?: OrganizationOptions | boolean
+    /**
      * @deprecated use genericOAuth.providers instead
      */
     otherProviders?: Provider[]
@@ -343,6 +344,7 @@ export type AuthUIProviderProps = {
         | "deleteUser"
         | "credentials"
         | "signUp"
+        | "organization"
     >
 >
 
@@ -607,14 +609,28 @@ export const AuthUIProvider = ({
         }
     }, [signUpProp, signUpFields])
 
-    const organization = useMemo<OrganizationOptions | undefined>(() => {
+    const organization = useMemo<OrganizationOptionsContext | undefined>(() => {
         if (!organizationProp) return
+        if (organizationProp === true) return {}
 
-        if (organizationProp) {
-            return {
-                ...organizationProp
-                // TODO logo logic
+        let logo: OrganizationOptionsContext["logo"] | undefined
+
+        if (organizationProp.logo === true) {
+            logo = {
+                extension: "png",
+                size: 128
             }
+        } else if (organizationProp.logo) {
+            logo = {
+                upload: organizationProp.logo.upload,
+                extension: organizationProp.logo.extension || "png",
+                size: organizationProp.logo.size || organizationProp.logo.upload ? 256 : 128
+            }
+        }
+
+        return {
+            ...organizationProp,
+            logo
         }
     }, [organizationProp])
 

@@ -23,7 +23,7 @@ export interface OrganizationLogoProps {
     classNames?: OrganizationLogoClassNames
     isPending?: boolean
     size?: "sm" | "default" | "lg" | "xl" | null
-    organization?: Organization | null
+    organization?: Partial<Organization> | null
     /**
      * @default authLocalization
      * @remarks `AuthLocalization`

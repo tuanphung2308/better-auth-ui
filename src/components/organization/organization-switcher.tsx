@@ -1,5 +1,4 @@
 "use client"
-
 import { ChevronsUpDown, LogInIcon, PlusCircleIcon, SettingsIcon } from "lucide-react"
 import {
     type ComponentProps,
@@ -81,6 +80,7 @@ export function OrganizationSwitcher({
         basePath,
         hooks: { useSession, useListOrganizations },
         localization: contextLocalization,
+        organization,
         toast,
         viewPaths,
         Link
@@ -130,6 +130,13 @@ export function OrganizationSwitcher({
         },
         [authClient, toast, localization]
     )
+
+    if (!organization) {
+        console.warn(
+            "[Better Auth UI] The `organization` prop is not configured on AuthUIProvider. Please check the documentation for more information."
+        )
+        return null
+    }
 
     return (
         <>
