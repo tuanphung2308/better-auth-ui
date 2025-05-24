@@ -103,24 +103,34 @@ export function CreateOrganizationDialog({
         const logoExtension = organization?.logoExtension || "png"
         const logoSize = organization?.logoSize || 256
 
-        const resizedFile = await resizeAndCropImage(
-            file,
-            crypto.randomUUID(),
-            logoSize,
-            logoExtension
-        )
+        try {
+            const resizedFile = await resizeAndCropImage(
+                file,
+                crypto.randomUUID(),
+                logoSize,
+                logoExtension
+            )
 
-        let image: string | undefined | null
+            let image: string | undefined | null
 
-        if (organization?.uploadLogo) {
-            image = await organization.uploadLogo(resizedFile)
-        } else {
-            image = await fileToBase64(resizedFile)
-        }
+            if (organization?.uploadLogo) {
+                image = await organization.uploadLogo(resizedFile)
+            } else {
+                image = await fileToBase64(resizedFile)
+            }
 
-        if (image) {
-            setLogo(image)
-            form.setValue("logo", image)
+            if (image) {
+                setLogo(image)
+                form.setValue("logo", image)
+            } else {
+                setLogo(null)
+                form.setValue("logo", "")
+            }
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: getLocalizedError({ error, localization })
+            })
         }
 
         setUploadingLogo(false)
@@ -210,7 +220,7 @@ export function CreateOrganizationDialog({
                                                 >
                                                     <OrganizationLogo
                                                         isPending={uploadingLogo}
-                                                        className="size-20"
+                                                        className="size-16"
                                                         organization={
                                                             logo
                                                                 ? {
@@ -227,7 +237,10 @@ export function CreateOrganizationDialog({
                                                 </Button>
                                             </DropdownMenuTrigger>
 
-                                            <DropdownMenuContent align="start">
+                                            <DropdownMenuContent
+                                                align="start"
+                                                onCloseAutoFocus={(e) => e.preventDefault()}
+                                            >
                                                 <DropdownMenuItem
                                                     onClick={openFileDialog}
                                                     disabled={uploadingLogo}
@@ -254,11 +267,7 @@ export function CreateOrganizationDialog({
                                             onClick={openFileDialog}
                                             disabled={uploadingLogo}
                                         >
-                                            {uploadingLogo ? (
-                                                <Loader2 className="animate-spin" />
-                                            ) : (
-                                                <UploadCloudIcon />
-                                            )}
+                                            {uploadingLogo && <Loader2 className="animate-spin" />}
 
                                             {localization.upload}
                                         </Button>

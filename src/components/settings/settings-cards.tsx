@@ -91,7 +91,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
     return (
         <div
             className={cn(
-                "flex w-full grow flex-col gap-4 md:flex-row md:gap-8 xl:gap-12",
+                "flex w-full grow flex-col gap-4 md:flex-row md:gap-12",
                 className,
                 classNames?.base
             )}
@@ -152,7 +152,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
             </DropdownMenu>
 
             <div className="hidden md:block">
-                <div className={cn("grid w-64 gap-1 xl:w-72", classNames?.sidebar?.base)}>
+                <div className={cn("grid w-60 gap-1", classNames?.sidebar?.base)}>
                     <Link href={`${basePath}/${viewPaths.settings}`}>
                         <Button
                             size="lg"
