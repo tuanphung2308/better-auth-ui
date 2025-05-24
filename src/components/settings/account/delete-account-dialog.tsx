@@ -36,7 +36,7 @@ export function DeleteAccountDialog({
         authClient,
         basePath,
         baseURL,
-        deleteAccountVerification,
+        deleteUser,
         freshAge,
         hooks: { useSession },
         localization: contextLocalization,
@@ -78,7 +78,7 @@ export function DeleteAccountDialog({
             return
         }
 
-        if (deleteAccountVerification) {
+        if (deleteUser?.verification) {
             params.callbackURL = `${baseURL}${basePath}/${viewPaths.signOut}`
         }
 
@@ -90,7 +90,7 @@ export function DeleteAccountDialog({
                 }
             })
 
-            if (deleteAccountVerification) {
+            if (deleteUser?.verification) {
                 toast({ variant: "success", message: localization.deleteAccountVerify! })
             } else {
                 toast({ variant: "success", message: localization.deleteAccountSuccess! })

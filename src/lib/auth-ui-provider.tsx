@@ -13,6 +13,7 @@ import type { AuthHooks } from "../types/auth-hooks"
 import type { AuthMutators } from "../types/auth-mutators"
 import type { AvatarOptions } from "../types/avatar-options"
 import type { CaptchaOptions } from "../types/captcha-options"
+import type { DeleteUserOptions } from "../types/delete-user-options"
 import type { Link } from "../types/link"
 import type { OrganizationOptions } from "../types/organization-options"
 import type { PasswordValidation } from "../types/password-validation"
@@ -105,20 +106,15 @@ export type AuthUIContextType = {
      */
     redirectTo: string
     /**
-     * Enable or disable email verification for account deletion
-     * @default false
-     */
-    deleteAccountVerification?: boolean
-    /**
      * Enable or disable user change email support
      * @default true
      */
     changeEmail?: boolean
     /**
-     * Enable or disable User Account deletion
-     * @default false
+     * User Account deletion configuration
+     * @default undefined
      */
-    deleteUser?: boolean
+    deleteUser?: DeleteUserOptions
     /**
      * Show Verify Email card for unverified emails
      */
@@ -291,6 +287,15 @@ export type AuthUIProviderProps = {
      */
     avatarSize?: number
     /**
+     * @deprecated use deleteUser.verification instead
+     */
+    deleteAccountVerification?: boolean
+    /**
+     * User Account deletion configuration
+     * @default undefined
+     */
+    deleteUser?: DeleteUserOptions | boolean
+    /**
      * ADVANCED: Custom hooks for fetching auth data
      */
     hooks?: Partial<AuthHooks>
@@ -326,6 +331,7 @@ export type AuthUIProviderProps = {
         | "hooks"
         | "avatar"
         | "settings"
+        | "deleteUser"
     >
 >
 
@@ -340,6 +346,8 @@ export const AuthUIProvider = ({
     settingsURL,
     avatarExtension,
     avatarSize,
+    deleteUser: deleteUserProp,
+    deleteAccountVerification,
     basePath = "/auth",
     baseURL = "",
     captcha,
@@ -393,7 +401,21 @@ export const AuthUIProvider = ({
         if (settingsURL) {
             console.warn("[Better Auth UI] settingsURL is deprecated, use settings.url instead")
         }
-    }, [noColorIcons, uploadAvatar, avatarExtension, avatarSize, settingsFields, settingsURL])
+
+        if (deleteAccountVerification) {
+            console.warn(
+                "[Better Auth UI] deleteAccountVerification is deprecated, use deleteUser.verification instead"
+            )
+        }
+    }, [
+        noColorIcons,
+        uploadAvatar,
+        avatarExtension,
+        avatarSize,
+        settingsFields,
+        settingsURL,
+        deleteAccountVerification
+    ])
 
     if (noColorIcons) {
         colorIcons = false
@@ -434,6 +456,18 @@ export const AuthUIProvider = ({
             fields: settingsProp.fields || ["avatar", "name"]
         }
     }, [settingsProp, settingsFields, settingsURL])
+
+    const deleteUser = useMemo<DeleteUserOptions | undefined>(() => {
+        if (!deleteUserProp) return
+
+        if (deleteUserProp === true) {
+            return {
+                verification: deleteAccountVerification
+            }
+        }
+
+        return deleteUserProp
+    }, [deleteUserProp, deleteAccountVerification])
 
     const defaultMutators = useMemo(() => {
         return {
@@ -524,6 +558,7 @@ export const AuthUIProvider = ({
                 redirectTo,
                 changeEmail,
                 credentials,
+                deleteUser,
                 forgotPassword,
                 freshAge,
                 hooks,
