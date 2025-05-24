@@ -7,6 +7,7 @@ import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { fileToBase64, resizeAndCropImage } from "../../../lib/image-utils"
 import { cn, getLocalizedError } from "../../../lib/utils"
+import { Button } from "../../ui/button"
 import { Card } from "../../ui/card"
 import {
     DropdownMenu,
@@ -14,7 +15,6 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "../../ui/dropdown-menu"
-import { Skeleton } from "../../ui/skeleton"
 import { UserAvatar } from "../../user-avatar"
 import type { SettingsCardClassNames } from "../shared/settings-card"
 import { SettingsCardFooter } from "../shared/settings-card-footer"
@@ -133,21 +133,24 @@ export function UpdateAvatarCard({
                 />
 
                 <DropdownMenu>
-                    <DropdownMenuTrigger className="me-6 rounded-full">
-                        {isPending || loading ? (
-                            <Skeleton
-                                className={cn("size-20 rounded-full", classNames?.avatar?.base)}
-                            />
-                        ) : (
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            className="!size-fit me-6 rounded-full"
+                            size="icon"
+                        >
                             <UserAvatar
+                                isPending={isPending || loading}
                                 key={sessionData?.user.image}
                                 className="size-20 text-2xl"
                                 classNames={classNames?.avatar}
                                 user={sessionData?.user}
                             />
-                        )}
+                        </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
+
+                    <DropdownMenuContent align="end" onCloseAutoFocus={(e) => e.preventDefault()}>
                         <DropdownMenuItem onClick={openFileDialog} disabled={loading}>
                             <UploadCloudIcon />
                             {localization.uploadAvatar}

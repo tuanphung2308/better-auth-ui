@@ -203,7 +203,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
             <div className={cn("flex w-full flex-col gap-4 md:gap-6", classNames?.cards)}>
                 {view === "settings" && (
                     <>
-                        {settings?.fields?.includes("avatar") && avatar && (
+                        {settings?.fields?.includes("image") && avatar && (
                             <UpdateAvatarCard
                                 classNames={classNames?.card}
                                 isPending={sessionPending}
@@ -236,6 +236,8 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                         )}
 
                         {settings?.fields?.map((field) => {
+                            if (field === "image") return null
+                            if (field === "name") return null
                             const additionalField = additionalFields?.[field]
                             if (!additionalField) return null
 

@@ -5,7 +5,7 @@ export type SettingsOptions = {
     url?: string
     /**
      * Array of fields to show in `<SettingsCards />`
-     * @default ["avatar", "name"]
+     * @default ["image", "name"]
      */
     fields: string[]
 }

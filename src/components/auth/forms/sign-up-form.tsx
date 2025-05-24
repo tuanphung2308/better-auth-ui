@@ -3,23 +3,32 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { BetterFetchOption } from "better-auth/react"
 import { Loader2 } from "lucide-react"
-import { useCallback, useContext, useEffect } from "react"
+import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { Trash2Icon, UploadCloudIcon } from "lucide-react"
 import { useCaptcha } from "../../../hooks/use-captcha"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import { fileToBase64, resizeAndCropImage } from "../../../lib/image-utils"
 import { cn, getLocalizedError, getPasswordSchema, getSearchParam } from "../../../lib/utils"
 import type { PasswordValidation } from "../../../types/password-validation"
 import { Captcha } from "../../captcha/captcha"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
 import { Checkbox } from "../../ui/checkbox"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from "../../ui/dropdown-menu"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
+import { UserAvatar } from "../../user-avatar"
 import type { AuthFormClassNames } from "../auth-form"
 
 export interface SignUpFormProps {
@@ -60,7 +69,8 @@ export function SignUpForm({
         signUp: signUpOptions,
         viewPaths,
         navigate,
-        toast
+        toast,
+        avatar
     } = useContext(AuthUIContext)
 
     const confirmPasswordEnabled = credentials?.confirmPassword
@@ -70,6 +80,11 @@ export function SignUpForm({
 
     localization = { ...contextLocalization, ...localization }
     passwordValidation = { ...contextPasswordValidation, ...passwordValidation }
+
+    // Avatar upload state
+    const fileInputRef = useRef<HTMLInputElement>(null)
+    const [avatarImage, setAvatarImage] = useState<string | null>(null)
+    const [uploadingAvatar, setUploadingAvatar] = useState(false)
 
     const getRedirectTo = useCallback(
         () => redirectTo || getSearchParam("redirectTo") || contextRedirectTo,
@@ -128,10 +143,16 @@ export function SignUpForm({
         })
     }
 
+    // Add image field if included in signUpFields
+    if (signUpFields?.includes("image") && avatar) {
+        schemaFields.image = z.string().optional()
+    }
+
     // Add additional fields from signUpFields
     if (signUpFields) {
         for (const field of signUpFields) {
             if (field === "name") continue // Already handled above
+            if (field === "image") continue // Already handled above
 
             const additionalField = additionalFields?.[field]
             if (!additionalField) continue
@@ -196,13 +217,15 @@ export function SignUpForm({
         password: "",
         ...(confirmPasswordEnabled && { confirmPassword: "" }),
         ...(nameRequired || signUpFields?.includes("name") ? { name: "" } : {}),
-        ...(usernameEnabled ? { username: "" } : {})
+        ...(usernameEnabled ? { username: "" } : {}),
+        ...(signUpFields?.includes("image") && avatar ? { image: "" } : {})
     }
 
     // Add default values for additional fields
     if (signUpFields) {
         for (const field of signUpFields) {
             if (field === "name") continue
+            if (field === "image") continue
             const additionalField = additionalFields?.[field]
             if (!additionalField) continue
 
@@ -221,12 +244,59 @@ export function SignUpForm({
         setIsSubmitting?.(form.formState.isSubmitting || transitionPending)
     }, [form.formState.isSubmitting, transitionPending, setIsSubmitting])
 
+    const handleAvatarChange = async (file: File) => {
+        if (!avatar) return
+
+        setUploadingAvatar(true)
+
+        try {
+            const resizedFile = await resizeAndCropImage(
+                file,
+                crypto.randomUUID(),
+                avatar.size,
+                avatar.extension
+            )
+
+            let image: string | undefined | null
+
+            if (avatar.upload) {
+                image = await avatar.upload(resizedFile)
+            } else {
+                image = await fileToBase64(resizedFile)
+            }
+
+            if (image) {
+                setAvatarImage(image)
+                form.setValue("image", image)
+            } else {
+                setAvatarImage(null)
+                form.setValue("image", "")
+            }
+        } catch (error) {
+            console.error(error)
+            toast({
+                variant: "error",
+                message: getLocalizedError({ error, localization })
+            })
+        }
+
+        setUploadingAvatar(false)
+    }
+
+    const handleDeleteAvatar = () => {
+        setAvatarImage(null)
+        form.setValue("image", "")
+    }
+
+    const openFileDialog = () => fileInputRef.current?.click()
+
     async function signUp({
         email,
         password,
         name,
         username,
         confirmPassword,
+        image,
         ...additionalFieldValues
     }: z.infer<typeof formSchema>) {
         try {
@@ -253,6 +323,7 @@ export function SignUpForm({
                 password,
                 name: name || "",
                 ...(username !== undefined && { username }),
+                ...(image !== undefined && { image }),
                 ...additionalFieldValues,
                 ...(emailVerification && persistClient && { callbackURL: getCallbackURL() }),
                 fetchOptions
@@ -282,6 +353,100 @@ export function SignUpForm({
                 noValidate={isHydrated}
                 className={cn("grid w-full gap-6", className, classNames?.base)}
             >
+                {signUpFields?.includes("image") && avatar && (
+                    <>
+                        <input
+                            ref={fileInputRef}
+                            accept="image/*"
+                            disabled={uploadingAvatar}
+                            hidden
+                            type="file"
+                            onChange={(e) => {
+                                const file = e.target.files?.item(0)
+                                if (file) handleAvatarChange(file)
+                                e.target.value = ""
+                            }}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="image"
+                            render={() => (
+                                <FormItem>
+                                    <FormLabel>{localization.avatar}</FormLabel>
+
+                                    <div className="flex items-center gap-4">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    className="!size-fit rounded-full"
+                                                    size="icon"
+                                                >
+                                                    <UserAvatar
+                                                        isPending={uploadingAvatar}
+                                                        className="size-16"
+                                                        user={
+                                                            avatarImage
+                                                                ? {
+                                                                      name:
+                                                                          form.watch("name") || "",
+                                                                      email: form.watch("email"),
+                                                                      image: avatarImage
+                                                                  }
+                                                                : null
+                                                        }
+                                                    />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+
+                                            <DropdownMenuContent
+                                                align="start"
+                                                onCloseAutoFocus={(e) => e.preventDefault()}
+                                            >
+                                                <DropdownMenuItem
+                                                    onClick={openFileDialog}
+                                                    disabled={uploadingAvatar}
+                                                >
+                                                    <UploadCloudIcon />
+                                                    {localization.uploadAvatar}
+                                                </DropdownMenuItem>
+
+                                                {avatarImage && (
+                                                    <DropdownMenuItem
+                                                        onClick={handleDeleteAvatar}
+                                                        disabled={uploadingAvatar}
+                                                        variant="destructive"
+                                                    >
+                                                        <Trash2Icon />
+                                                        {localization.deleteAvatar}
+                                                    </DropdownMenuItem>
+                                                )}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            onClick={openFileDialog}
+                                            disabled={uploadingAvatar}
+                                        >
+                                            {uploadingAvatar && (
+                                                <Loader2 className="animate-spin" />
+                                            )}
+
+                                            {localization.upload}
+                                        </Button>
+                                    </div>
+
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </>
+                )}
+
                 {(nameRequired || signUpFields?.includes("name")) && (
                     <FormField
                         control={form.control}
@@ -409,7 +574,7 @@ export function SignUpForm({
                 )}
 
                 {signUpFields
-                    ?.filter((field) => field !== "name")
+                    ?.filter((field) => field !== "name" && field !== "image")
                     .map((field) => {
                         const additionalField = additionalFields?.[field]
                         if (!additionalField) {

@@ -243,7 +243,7 @@ export type AuthUIProviderProps = {
     hooks?: Partial<AuthHooks>
     /**
      * Settings configuration
-     * @default { fields: ["avatar", "name"] }
+     * @default { fields: ["image", "name"] }
      */
     settings?: boolean | Partial<SettingsOptions>
     /**
@@ -524,13 +524,13 @@ export const AuthUIProvider = ({
         if (settingsProp === true || settingsProp === undefined) {
             return {
                 url: settingsURL,
-                fields: settingsFields || ["avatar", "name"]
+                fields: settingsFields || ["image", "name"]
             }
         }
 
         return {
             url: settingsProp.url,
-            fields: settingsProp.fields || ["avatar", "name"]
+            fields: settingsProp.fields || ["image", "name"]
         }
     }, [settingsProp, settingsFields, settingsURL])
 
