@@ -17,6 +17,7 @@ import type { Link } from "../types/link"
 import type { OrganizationOptions } from "../types/organization-options"
 import type { PasswordValidation } from "../types/password-validation"
 import type { RenderToast } from "../types/render-toast"
+import type { SettingsOptions } from "../types/settings-options"
 import { type AuthLocalization, authLocalization } from "./auth-localization"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
 import type { Provider } from "./social-providers"
@@ -199,15 +200,7 @@ export type AuthUIContextType = {
      * @default false
      */
     rememberMe?: boolean
-    /**
-     * Array of fields to show in `<SettingsCards />`
-     * @default ["name"]
-     */
-    settingsFields?: string[]
-    /**
-     * Custom Settings URL
-     */
-    settingsURL?: string
+    settings?: SettingsOptions
     /**
      * Enable or disable Sign Up form
      * @default true
@@ -277,13 +270,24 @@ export type AuthUIProviderProps = {
      */
     avatar?: boolean | Partial<AvatarOptions>
     /**
-     * File extension for Avatar uploads
-     * @default "png"
+     * Settings configuration
+     * @default { fields: ["avatar", "name"] }
+     */
+    settings?: boolean | Partial<SettingsOptions>
+    /**
+     * @deprecated use settings.fields instead
+     */
+    settingsFields?: string[]
+    /**
+     * @deprecated use settings.url instead
+     */
+    settingsURL?: string
+    /**
+     * @deprecated use avatar.extension instead
      */
     avatarExtension?: string
     /**
-     * Avatars are resized to 128px unless uploadAvatar is provided, then 256px
-     * @default 128 | 256
+     * @deprecated use avatar.size instead
      */
     avatarSize?: number
     /**
@@ -314,7 +318,14 @@ export type AuthUIProviderProps = {
 } & Partial<
     Omit<
         AuthUIContextType,
-        "authClient" | "viewPaths" | "localization" | "mutators" | "toast" | "hooks" | "avatar"
+        | "authClient"
+        | "viewPaths"
+        | "localization"
+        | "mutators"
+        | "toast"
+        | "hooks"
+        | "avatar"
+        | "settings"
     >
 >
 
@@ -324,6 +335,9 @@ export const AuthUIProvider = ({
     children,
     authClient: authClientProp,
     avatar: avatarProp,
+    settings: settingsProp,
+    settingsFields,
+    settingsURL,
     avatarExtension,
     avatarSize,
     basePath = "/auth",
@@ -341,7 +355,6 @@ export const AuthUIProvider = ({
     nameRequired = true,
     noColorIcons,
     organization,
-    settingsFields = ["name"],
     signUp = true,
     signUpFields = ["name"],
     toast = defaultToast,
@@ -370,7 +383,17 @@ export const AuthUIProvider = ({
         if (avatarSize) {
             console.warn("[Better Auth UI] avatarSize is deprecated, use avatar.size instead")
         }
-    }, [noColorIcons, uploadAvatar, avatarExtension, avatarSize])
+
+        if (settingsFields) {
+            console.warn(
+                "[Better Auth UI] settingsFields is deprecated, use settings.fields instead"
+            )
+        }
+
+        if (settingsURL) {
+            console.warn("[Better Auth UI] settingsURL is deprecated, use settings.url instead")
+        }
+    }, [noColorIcons, uploadAvatar, avatarExtension, avatarSize, settingsFields, settingsURL])
 
     if (noColorIcons) {
         colorIcons = false
@@ -378,11 +401,10 @@ export const AuthUIProvider = ({
 
     const authClient = authClientProp as AuthClient
 
-    // Process avatar prop
     const avatar = useMemo<AvatarOptions | undefined>(() => {
         if (!avatarProp) return
 
-        if (typeof avatarProp === "boolean") {
+        if (avatarProp === true) {
             return {
                 extension: avatarExtension || "png",
                 size: avatarSize || (uploadAvatar ? 256 : 128),
@@ -392,10 +414,26 @@ export const AuthUIProvider = ({
 
         return {
             upload: avatarProp.upload || uploadAvatar,
-            extension: avatarProp.extension || "png",
+            extension: avatarProp.extension || avatarExtension || "png",
             size: avatarProp.size || (avatarProp.upload ? 256 : 128)
         }
     }, [avatarProp, avatarExtension, avatarSize, uploadAvatar])
+
+    const settings = useMemo<SettingsOptions | undefined>(() => {
+        if (settingsProp === false) return
+
+        if (settingsProp === true || settingsProp === undefined) {
+            return {
+                url: settingsURL,
+                fields: settingsFields || ["avatar", "name"]
+            }
+        }
+
+        return {
+            url: settingsProp.url,
+            fields: settingsProp.fields || ["avatar", "name"]
+        }
+    }, [settingsProp, settingsFields, settingsURL])
 
     const defaultMutators = useMemo(() => {
         return {
@@ -493,7 +531,7 @@ export const AuthUIProvider = ({
                 localization,
                 nameRequired,
                 organization,
-                settingsFields,
+                settings,
                 signUp,
                 signUpFields,
                 toast,

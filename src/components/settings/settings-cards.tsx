@@ -66,7 +66,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
         localization: contextLocalization,
         multiSession,
         nameRequired,
-        settingsFields,
+        settings,
         username,
         viewPaths,
         Link
@@ -203,7 +203,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
             <div className={cn("flex w-full flex-col gap-4 md:gap-6", classNames?.cards)}>
                 {view === "settings" && (
                     <>
-                        {avatar && (
+                        {settings?.fields?.includes("avatar") && avatar && (
                             <UpdateAvatarCard
                                 classNames={classNames?.card}
                                 isPending={sessionPending}
@@ -219,7 +219,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                             />
                         )}
 
-                        {(settingsFields?.includes("name") || nameRequired) && (
+                        {(settings?.fields?.includes("name") || nameRequired) && (
                             <UpdateNameCard
                                 classNames={classNames?.card}
                                 isPending={sessionPending}
@@ -235,7 +235,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                             />
                         )}
 
-                        {settingsFields?.map((field) => {
+                        {settings?.fields?.map((field) => {
                             const additionalField = additionalFields?.[field]
                             if (!additionalField) return null
 

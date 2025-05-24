@@ -90,7 +90,7 @@ export function AuthCard({
         otherProviders,
         passkey,
         providers,
-        settingsURL,
+        settings,
         signUp,
         viewPaths,
         replace,
@@ -126,14 +126,15 @@ export function AuthCard({
     }, [])
 
     useEffect(() => {
-        if (view === "settings" && settingsURL) replace(settingsURL)
-    }, [replace, settingsURL, view])
+        if (view === "settings" && settings?.url) replace(settings.url)
+        if (view === "settings" && !settings) replace(redirectTo || "/")
+    }, [replace, settings, view, redirectTo])
 
     if (view === "callback") return <AuthCallback redirectTo={redirectTo} />
     if (view === "signOut") return <SignOut />
 
     if (settingsViews.includes(view as SettingsView))
-        return settingsURL ? (
+        return !settings || settings.url ? (
             <Loader2 className="animate-spin" />
         ) : (
             <SettingsCards
