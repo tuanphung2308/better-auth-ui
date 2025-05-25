@@ -195,26 +195,21 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                 </div>
             </div>
 
-            <div className={cn("flex w-full flex-col gap-4 md:gap-6", classNames?.cards)}>
-                {view === "settings" && (
-                    <AccountSettingsCards
-                        classNames={classNames?.card}
-                        localization={localization}
-                    />
-                )}
+            {view === "settings" && (
+                <AccountSettingsCards classNames={classNames} localization={localization} />
+            )}
 
-                {view === "security" && (
-                    <SecuritySettingsCards classNames={classNames} localization={localization} />
-                )}
+            {view === "security" && (
+                <SecuritySettingsCards classNames={classNames} localization={localization} />
+            )}
 
-                {view === "apiKeys" && apiKey && (
-                    <APIKeysCard classNames={classNames?.card} localization={localization} />
-                )}
+            {view === "apiKeys" && apiKey && (
+                <APIKeysCard classNames={classNames?.card} localization={localization} />
+            )}
 
-                {view === "organizations" && organization && (
-                    <OrganizationsCard classNames={classNames?.card} localization={localization} />
-                )}
-            </div>
+            {view === "organizations" && organization && (
+                <OrganizationsCard classNames={classNames?.card} localization={localization} />
+            )}
         </div>
     )
 }

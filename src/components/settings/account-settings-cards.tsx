@@ -1,23 +1,20 @@
 "use client"
-
 import { useContext } from "react"
-
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
+import { cn } from "../../lib/utils"
 import { AccountsCard } from "./account/accounts-card"
 import { UpdateAvatarCard } from "./account/update-avatar-card"
 import { UpdateFieldCard } from "./account/update-field-card"
 import { UpdateNameCard } from "./account/update-name-card"
 import { UpdateUsernameCard } from "./account/update-username-card"
 import { ChangeEmailCard } from "./security/change-email-card"
-import type { SettingsCardClassNames } from "./shared/settings-card"
+import type { SettingsCardsProps } from "./settings-cards"
 
-export interface AccountSettingsCardsProps {
-    classNames?: SettingsCardClassNames
-    localization?: AuthLocalization
-}
-
-export function AccountSettingsCards({ classNames, localization }: AccountSettingsCardsProps) {
+export function AccountSettingsCards({
+    className,
+    classNames,
+    localization
+}: Omit<SettingsCardsProps, "view">) {
     const {
         additionalFields,
         avatar,
@@ -32,7 +29,7 @@ export function AccountSettingsCards({ classNames, localization }: AccountSettin
     const { data: sessionData } = useSession()
 
     return (
-        <>
+        <div className={cn("flex w-full flex-col gap-4 md:gap-6", className, classNames?.cards)}>
             {settings?.fields?.includes("image") && avatar && (
                 <UpdateAvatarCard classNames={classNames} localization={localization} />
             )}
@@ -78,6 +75,6 @@ export function AccountSettingsCards({ classNames, localization }: AccountSettin
             })}
 
             {multiSession && <AccountsCard classNames={classNames} localization={localization} />}
-        </>
+        </div>
     )
 }

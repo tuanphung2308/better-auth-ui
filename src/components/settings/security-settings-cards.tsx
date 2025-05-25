@@ -11,7 +11,11 @@ import { SessionsCard } from "./security/sessions-card"
 import type { SettingsCardsProps } from "./settings-cards"
 import { TwoFactorCard } from "./two-factor/two-factor-card"
 
-export function SecuritySettingsCards({ className, classNames, localization }: SettingsCardsProps) {
+export function SecuritySettingsCards({
+    className,
+    classNames,
+    localization
+}: Omit<SettingsCardsProps, "view">) {
     const {
         credentials,
         deleteUser,
