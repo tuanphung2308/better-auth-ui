@@ -152,14 +152,6 @@ export function CreateOrganizationDialog({
         }
     }
 
-    if (!organization) {
-        console.warn(
-            "[Better Auth UI] The `organization` prop is not configured on AuthUIProvider. Please check the documentation for more information."
-        )
-
-        return null
-    }
-
     return (
         <Dialog onOpenChange={onOpenChange} {...props}>
             <DialogContent className={classNames?.dialog?.content}>
@@ -177,7 +169,7 @@ export function CreateOrganizationDialog({
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        {organization.logo && (
+                        {organization?.logo && (
                             <FormField
                                 control={form.control}
                                 name="logo"

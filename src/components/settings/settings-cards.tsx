@@ -14,6 +14,7 @@ import { useAuthenticate } from "../../hooks/use-authenticate"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
+import { OrganizationSettingsCards } from "../organization/organization-settings-cards"
 import { OrganizationsCard } from "../organization/organizations-card"
 import { Button } from "../ui/button"
 import {
@@ -45,7 +46,13 @@ export type SettingsCardsClassNames = {
     }
 }
 
-export const settingsViews = ["settings", "security", "apiKeys", "organizations"] as const
+export const settingsViews = [
+    "settings",
+    "security",
+    "apiKeys",
+    "organization",
+    "organizations"
+] as const
 export type SettingsView = (typeof settingsViews)[number]
 
 interface NavigationItem {
@@ -97,6 +104,11 @@ export function SettingsCards({ className, classNames, localization, view }: Set
     }
 
     if (organization) {
+        navigationItems.push({
+            view: "organization",
+            icon: Building2Icon,
+            label: localization.organization
+        })
         navigationItems.push({
             view: "organizations",
             icon: Building2Icon,
@@ -184,8 +196,12 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                 </div>
             )}
 
+            {view === "organization" && organization && (
+                <OrganizationSettingsCards classNames={classNames} localization={localization} />
+            )}
+
             {view === "organizations" && organization && (
-                <div className={cn("flex w-full flex-col ", classNames?.cards)}>
+                <div className={cn("flex w-full flex-col", classNames?.cards)}>
                     <OrganizationsCard classNames={classNames?.card} localization={localization} />
                 </div>
             )}

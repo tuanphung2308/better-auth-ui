@@ -3,12 +3,16 @@ export const authViewPaths = {
     apiKeys: "api-keys",
     /** @default "callback" */
     callback: "callback",
+    /** @default "email-otp" */
+    emailOTP: "email-otp",
     /** @default "forgot-password" */
     forgotPassword: "forgot-password",
     /** @default "magic-link" */
     magicLink: "magic-link",
-    /** @default "email-otp" */
-    emailOTP: "email-otp",
+    /** @default "members" */
+    members: "members",
+    /** @default "organization" */
+    organization: "organization",
     /** @default "organizations" */
     organizations: "organizations",
     /** @default "recover-account" */

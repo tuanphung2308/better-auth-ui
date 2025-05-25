@@ -319,6 +319,12 @@ export const authLocalization = {
     /** @default "Acme Inc." */
     organizationNamePlaceholder: "Acme Inc.",
 
+    /** @default "This is your organization's visible name." */
+    organizationNameDescription: "This is your organization's visible name.",
+
+    /** @default "Please use 32 characters at maximum." */
+    organizationNameInstructions: "Please use 32 characters at maximum.",
+
     /** @default "Slug URL" */
     slugUrl: "Slug URL",
 
