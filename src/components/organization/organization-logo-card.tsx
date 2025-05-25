@@ -3,65 +3,71 @@
 import { Trash2Icon, UploadCloudIcon } from "lucide-react"
 import { type ComponentProps, useContext, useRef, useState } from "react"
 
-import type { AuthLocalization } from "../../../lib/auth-localization"
-import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import { fileToBase64, resizeAndCropImage } from "../../../lib/image-utils"
-import { cn, getLocalizedError } from "../../../lib/utils"
-import { Button } from "../../ui/button"
-import { Card } from "../../ui/card"
+import type { AuthLocalization } from "../../lib/auth-localization"
+import { AuthUIContext } from "../../lib/auth-ui-provider"
+import { fileToBase64, resizeAndCropImage } from "../../lib/image-utils"
+import { cn, getLocalizedError } from "../../lib/utils"
+import type { SettingsCardClassNames } from "../settings/shared/settings-card"
+import { SettingsCardFooter } from "../settings/shared/settings-card-footer"
+import { SettingsCardHeader } from "../settings/shared/settings-card-header"
+import { Button } from "../ui/button"
+import { Card } from "../ui/card"
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger
-} from "../../ui/dropdown-menu"
-import { UserAvatar } from "../../user-avatar"
-import type { SettingsCardClassNames } from "../shared/settings-card"
-import { SettingsCardFooter } from "../shared/settings-card-footer"
-import { SettingsCardHeader } from "../shared/settings-card-header"
+} from "../ui/dropdown-menu"
+import { OrganizationLogo } from "./organization-logo"
 
-export interface UpdateAvatarCardProps extends ComponentProps<typeof Card> {
+export interface OrganizationLogoCardProps extends ComponentProps<typeof Card> {
     className?: string
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
 }
 
-export function UpdateAvatarCard({
+export function OrganizationLogoCard({
     className,
     classNames,
     localization,
     ...props
-}: UpdateAvatarCardProps) {
+}: OrganizationLogoCardProps) {
     const {
-        hooks: { useSession },
-        mutators: { updateUser },
+        authClient,
+        hooks: { useListOrganizations },
         localization: authLocalization,
         optimistic,
-        avatar,
+        organization,
         toast
     } = useContext(AuthUIContext)
 
     localization = { ...authLocalization, ...localization }
 
-    const { data: sessionData, isPending, refetch } = useSession()
+    const {
+        data: activeOrganization,
+        isPending,
+        refetch: refetchActiveOrganization
+    } = authClient.useActiveOrganization()
+    const { refetch: refetchOrganizations } = useListOrganizations()
+
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [loading, setLoading] = useState(false)
 
-    const handleAvatarChange = async (file: File) => {
-        if (!sessionData || !avatar) return
+    const handleLogoChange = async (file: File) => {
+        if (!activeOrganization || !organization?.logo) return
 
         setLoading(true)
         const resizedFile = await resizeAndCropImage(
             file,
             crypto.randomUUID(),
-            avatar.size,
-            avatar.extension
+            organization.logo.size,
+            organization.logo.extension
         )
 
         let image: string | undefined | null
 
-        if (avatar.upload) {
-            image = await avatar.upload(resizedFile)
+        if (organization.logo.upload) {
+            image = await organization.logo.upload(resizedFile)
         } else {
             image = await fileToBase64(resizedFile)
         }
@@ -71,11 +77,16 @@ export function UpdateAvatarCard({
             return
         }
 
-        if (optimistic && !avatar.upload) setLoading(false)
+        if (optimistic && !organization.logo.upload) setLoading(false)
 
         try {
-            await updateUser({ image })
-            await refetch?.()
+            await authClient.organization.update({
+                data: { logo: image },
+                fetchOptions: { throw: true }
+            })
+
+            await refetchActiveOrganization?.()
+            await refetchOrganizations?.()
         } catch (error) {
             toast({
                 variant: "error",
@@ -86,14 +97,19 @@ export function UpdateAvatarCard({
         setLoading(false)
     }
 
-    const handleDeleteAvatar = async () => {
-        if (!sessionData) return
+    const handleDeleteLogo = async () => {
+        if (!activeOrganization) return
 
         setLoading(true)
 
         try {
-            await updateUser({ image: null })
-            await refetch?.()
+            await authClient.organization.update({
+                data: { logo: "" },
+                fetchOptions: { throw: true }
+            })
+
+            await refetchActiveOrganization?.()
+            await refetchOrganizations?.()
         } catch (error) {
             toast({
                 variant: "error",
@@ -116,7 +132,7 @@ export function UpdateAvatarCard({
                 type="file"
                 onChange={(e) => {
                     const file = e.target.files?.item(0)
-                    if (file) handleAvatarChange(file)
+                    if (file) handleLogoChange(file)
 
                     e.target.value = ""
                 }}
@@ -125,8 +141,8 @@ export function UpdateAvatarCard({
             <div className="flex justify-between">
                 <SettingsCardHeader
                     className="grow self-start"
-                    title={localization.avatar}
-                    description={localization.avatarDescription}
+                    title={localization.logo}
+                    description={localization.logoDescription}
                     isPending={isPending}
                     classNames={classNames}
                 />
@@ -134,12 +150,12 @@ export function UpdateAvatarCard({
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button className="me-6 size-fit rounded-full" size="icon">
-                            <UserAvatar
+                            <OrganizationLogo
                                 isPending={isPending || loading}
-                                key={sessionData?.user.image}
+                                key={activeOrganization?.logo}
                                 className="size-20 text-2xl"
                                 classNames={classNames?.avatar}
-                                user={sessionData?.user}
+                                organization={activeOrganization}
                                 localization={localization}
                             />
                         </Button>
@@ -148,16 +164,16 @@ export function UpdateAvatarCard({
                     <DropdownMenuContent align="end" onCloseAutoFocus={(e) => e.preventDefault()}>
                         <DropdownMenuItem onClick={openFileDialog} disabled={loading}>
                             <UploadCloudIcon />
-                            {localization.uploadAvatar}
+                            {localization.uploadLogo}
                         </DropdownMenuItem>
-                        {sessionData?.user.image && (
+                        {activeOrganization?.logo && (
                             <DropdownMenuItem
-                                onClick={handleDeleteAvatar}
+                                onClick={handleDeleteLogo}
                                 disabled={loading}
                                 variant="destructive"
                             >
                                 <Trash2Icon />
-                                {localization.deleteAvatar}
+                                {localization.deleteLogo}
                             </DropdownMenuItem>
                         )}
                     </DropdownMenuContent>
@@ -166,7 +182,7 @@ export function UpdateAvatarCard({
 
             <SettingsCardFooter
                 className="!py-5"
-                instructions={localization.avatarInstructions}
+                instructions={localization.logoInstructions}
                 classNames={classNames}
                 isPending={isPending}
                 isSubmitting={loading}
