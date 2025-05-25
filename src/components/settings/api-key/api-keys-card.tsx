@@ -1,37 +1,16 @@
 "use client"
 
 import { useContext, useState } from "react"
-
-import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn } from "../../../lib/utils"
-import type { ApiKey } from "../../../types/api-key"
 import { CardContent } from "../../ui/card"
 import { SettingsCard } from "../shared/settings-card"
-import type { SettingsCardClassNames } from "../shared/settings-card"
+import type { SettingsCardProps } from "../shared/settings-card"
 import { APIKeyCell } from "./api-key-cell"
 import { APIKeyDisplayDialog } from "./api-key-display-dialog"
 import { CreateAPIKeyDialog } from "./create-api-key-dialog"
 
-export interface APIKeysCardProps {
-    className?: string
-    classNames?: SettingsCardClassNames
-    apiKeys?: ApiKey[] | null
-    isPending?: boolean
-    localization?: AuthLocalization
-    skipHook?: boolean
-    refetch?: () => Promise<void>
-}
-
-export function APIKeysCard({
-    className,
-    classNames,
-    apiKeys,
-    isPending,
-    localization,
-    skipHook,
-    refetch
-}: APIKeysCardProps) {
+export function APIKeysCard({ className, classNames, localization, ...props }: SettingsCardProps) {
     const {
         hooks: { useListApiKeys },
         localization: contextLocalization
@@ -39,12 +18,7 @@ export function APIKeysCard({
 
     localization = { ...contextLocalization, ...localization }
 
-    if (!skipHook) {
-        const result = useListApiKeys()
-        apiKeys = result.data
-        isPending = result.isPending
-        refetch = result.refetch
-    }
+    const { data: apiKeys, isPending, refetch } = useListApiKeys()
 
     const [createDialogOpen, setCreateDialogOpen] = useState(false)
     const [displayDialogOpen, setDisplayDialogOpen] = useState(false)
@@ -66,6 +40,7 @@ export function APIKeysCard({
                 isPending={isPending}
                 title={localization.apiKeys}
                 action={() => setCreateDialogOpen(true)}
+                {...props}
             >
                 {apiKeys && apiKeys.length > 0 && (
                     <CardContent className={cn("grid gap-4", classNames?.content)}>

@@ -4,29 +4,21 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useContext, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-
-import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
 import { CardContent } from "../../ui/card"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
 import { Skeleton } from "../../ui/skeleton"
-import { SettingsCard, type SettingsCardClassNames } from "../shared/settings-card"
-
-export interface ChangeEmailCardProps {
-    className?: string
-    classNames?: SettingsCardClassNames
-    isPending?: boolean
-    localization?: AuthLocalization
-}
+import { SettingsCard } from "../shared/settings-card"
+import type { SettingsCardProps } from "../shared/settings-card"
 
 export function ChangeEmailCard({
     className,
     classNames,
-    isPending,
-    localization
-}: ChangeEmailCardProps) {
+    localization,
+    ...props
+}: SettingsCardProps) {
     const {
         authClient,
         emailVerification,
@@ -37,7 +29,7 @@ export function ChangeEmailCard({
 
     localization = { ...contextLocalization, ...localization }
 
-    const { data: sessionData, isPending: sessionPending, refetch } = useSession()
+    const { data: sessionData, isPending, refetch } = useSession()
     const [resendDisabled, setResendDisabled] = useState(false)
 
     const formSchema = z.object({
@@ -118,12 +110,13 @@ export function ChangeEmailCard({
                         classNames={classNames}
                         description={localization.emailDescription}
                         instructions={localization.emailInstructions}
-                        isPending={isPending || sessionPending}
+                        isPending={isPending}
                         title={localization.email}
                         actionLabel={localization.save}
+                        {...props}
                     >
                         <CardContent className={classNames?.content}>
-                            {isPending || sessionPending ? (
+                            {isPending ? (
                                 <Skeleton className={cn("h-9 w-full", classNames?.skeleton)} />
                             ) : (
                                 <FormField
@@ -161,6 +154,7 @@ export function ChangeEmailCard({
                             description={localization.verifyYourEmailDescription}
                             actionLabel={localization.resendVerificationEmail}
                             disabled={resendDisabled}
+                            {...props}
                         />
                     </form>
                 </Form>

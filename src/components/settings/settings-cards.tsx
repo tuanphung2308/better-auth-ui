@@ -1,6 +1,4 @@
 "use client"
-
-import type { Session, User } from "better-auth"
 import {
     Building2Icon,
     KeyRoundIcon,
@@ -23,14 +21,9 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
-import { AccountsCard } from "./account/accounts-card"
-import { UpdateAvatarCard } from "./account/update-avatar-card"
-import { UpdateFieldCard } from "./account/update-field-card"
-import { UpdateNameCard } from "./account/update-name-card"
-import { UpdateUsernameCard } from "./account/update-username-card"
+import { AccountSettingsCards } from "./account-settings-cards"
 import { APIKeysCard } from "./api-key/api-keys-card"
 import { SecuritySettingsCards } from "./security-settings-cards"
-import { ChangeEmailCard } from "./security/change-email-card"
 import type { SettingsCardClassNames } from "./shared/settings-card"
 
 export type SettingsCardsClassNames = {
@@ -65,37 +58,15 @@ export function SettingsCards({ className, classNames, localization, view }: Set
     useAuthenticate()
 
     const {
-        additionalFields,
         apiKey,
-        avatar,
         basePath,
-        changeEmail,
-        credentials,
-        hooks,
         localization: contextLocalization,
-        multiSession,
-        nameRequired,
         organization,
-        settings,
         viewPaths,
         Link
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
-
-    const { useListDeviceSessions, useSession } = hooks
-    const { data: sessionData, isPending: sessionPending } = useSession()
-
-    let deviceSessions: { user: User; session: Session }[] | undefined | null = undefined
-    let deviceSessionsPending: boolean | undefined = undefined
-    let refetchDeviceSessions: (() => Promise<void>) | undefined = undefined
-
-    if (multiSession) {
-        const result = useListDeviceSessions()
-        deviceSessions = result.data
-        deviceSessionsPending = result.isPending
-        refetchDeviceSessions = result.refetch
-    }
 
     return (
         <div
@@ -226,88 +197,10 @@ export function SettingsCards({ className, classNames, localization, view }: Set
 
             <div className={cn("flex w-full flex-col gap-4 md:gap-6", classNames?.cards)}>
                 {view === "settings" && (
-                    <>
-                        {settings?.fields?.includes("image") && avatar && (
-                            <UpdateAvatarCard
-                                classNames={classNames?.card}
-                                isPending={sessionPending}
-                                localization={localization}
-                            />
-                        )}
-
-                        {credentials?.username && (
-                            <UpdateUsernameCard
-                                classNames={classNames?.card}
-                                isPending={sessionPending}
-                                localization={localization}
-                            />
-                        )}
-
-                        {(settings?.fields?.includes("name") || nameRequired) && (
-                            <UpdateNameCard
-                                classNames={classNames?.card}
-                                isPending={sessionPending}
-                                localization={localization}
-                            />
-                        )}
-
-                        {changeEmail && (
-                            <ChangeEmailCard
-                                classNames={classNames?.card}
-                                isPending={sessionPending}
-                                localization={localization}
-                            />
-                        )}
-
-                        {settings?.fields?.map((field) => {
-                            if (field === "image") return null
-                            if (field === "name") return null
-                            const additionalField = additionalFields?.[field]
-                            if (!additionalField) return null
-
-                            const {
-                                label,
-                                description,
-                                instructions,
-                                placeholder,
-                                required,
-                                type,
-                                validate
-                            } = additionalField
-
-                            // @ts-ignore Custom fields are not typed
-                            const defaultValue = sessionData?.user[field] as unknown
-
-                            return (
-                                <UpdateFieldCard
-                                    key={field}
-                                    classNames={classNames?.card}
-                                    value={defaultValue}
-                                    description={description}
-                                    name={field}
-                                    instructions={instructions}
-                                    isPending={sessionPending}
-                                    label={label}
-                                    localization={localization}
-                                    placeholder={placeholder}
-                                    required={required}
-                                    type={type}
-                                    validate={validate}
-                                />
-                            )
-                        })}
-
-                        {multiSession && (
-                            <AccountsCard
-                                classNames={classNames?.card}
-                                deviceSessions={deviceSessions}
-                                isPending={deviceSessionsPending}
-                                localization={localization}
-                                refetch={refetchDeviceSessions}
-                                skipHook
-                            />
-                        )}
-                    </>
+                    <AccountSettingsCards
+                        classNames={classNames?.card}
+                        localization={localization}
+                    />
                 )}
 
                 {view === "security" && (

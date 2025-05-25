@@ -1,4 +1,5 @@
 "use client"
+
 import { useContext } from "react"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
@@ -24,8 +25,7 @@ export function SecuritySettingsCards({ className, classNames, localization }: S
 
     localization = { ...contextLocalization, ...localization }
 
-    const { useListAccounts, useListPasskeys, useListSessions, useSession } = hooks
-    const { isPending: sessionPending } = useSession()
+    const { useListAccounts } = hooks
 
     const {
         data: accounts,
@@ -35,32 +35,13 @@ export function SecuritySettingsCards({ className, classNames, localization }: S
 
     const credentialsLinked = accounts?.some((acc) => acc.provider === "credential")
 
-    const {
-        data: sessions,
-        isPending: sessionsPending,
-        refetch: refetchSessions
-    } = useListSessions()
-
-    let passkeys: { id: string; createdAt: Date }[] | undefined | null = undefined
-    let passkeysPending: boolean | undefined = undefined
-    let refetchPasskeys: (() => Promise<void>) | undefined = undefined
-
-    if (passkey) {
-        const result = useListPasskeys()
-        passkeys = result.data
-        passkeysPending = result.isPending
-        refetchPasskeys = result.refetch
-    }
-
-    const isPending = accountsPending || sessionsPending || passkeysPending || sessionPending
-
     return (
         <div className={cn("flex w-full flex-col gap-4 md:gap-6", className, classNames?.cards)}>
             {credentials && (
                 <ChangePasswordCard
                     accounts={accounts}
                     classNames={classNames?.card}
-                    isPending={isPending}
+                    isPending={accountsPending}
                     localization={localization}
                     skipHook
                 />
@@ -70,7 +51,7 @@ export function SecuritySettingsCards({ className, classNames, localization }: S
                 <ProvidersCard
                     accounts={accounts}
                     classNames={classNames?.card}
-                    isPending={isPending}
+                    isPending={accountsPending}
                     localization={localization}
                     refetch={refetchAccounts}
                     skipHook
@@ -81,31 +62,15 @@ export function SecuritySettingsCards({ className, classNames, localization }: S
                 <TwoFactorCard classNames={classNames?.card} localization={localization} />
             )}
 
-            {passkey && (
-                <PasskeysCard
-                    classNames={classNames?.card}
-                    isPending={isPending}
-                    localization={localization}
-                    passkeys={passkeys}
-                    refetch={refetchPasskeys}
-                    skipHook
-                />
-            )}
+            {passkey && <PasskeysCard classNames={classNames?.card} localization={localization} />}
 
-            <SessionsCard
-                classNames={classNames?.card}
-                isPending={isPending}
-                localization={localization}
-                sessions={sessions}
-                refetch={refetchSessions}
-                skipHook
-            />
+            <SessionsCard classNames={classNames?.card} localization={localization} />
 
             {deleteUser && (
                 <DeleteAccountCard
                     accounts={accounts}
                     classNames={classNames?.card}
-                    isPending={isPending}
+                    isPending={accountsPending}
                     localization={localization}
                     skipHook
                 />

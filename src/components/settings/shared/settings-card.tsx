@@ -1,7 +1,8 @@
 "use client"
 
-import type { ReactNode } from "react"
+import type { ComponentProps, ReactNode } from "react"
 
+import type { AuthLocalization } from "../../../lib/auth-localization"
 import { cn } from "../../../lib/utils"
 import { Card } from "../../ui/card"
 import type { UserAvatarClassNames } from "../../user-avatar"
@@ -36,11 +37,11 @@ export type SettingsCardClassNames = {
     title?: string
 }
 
-export interface SettingsCardProps {
+export interface SettingsCardProps extends Omit<ComponentProps<typeof Card>, "title"> {
     children?: ReactNode
     className?: string
     classNames?: SettingsCardClassNames
-    title: ReactNode
+    title?: ReactNode
     description?: ReactNode
     instructions?: ReactNode
     actionLabel?: ReactNode
@@ -49,6 +50,7 @@ export interface SettingsCardProps {
     isPending?: boolean
     optimistic?: boolean
     variant?: "default" | "destructive"
+    localization?: AuthLocalization
     action?: () => Promise<unknown> | unknown
 }
 
@@ -65,7 +67,8 @@ export function SettingsCard({
     isSubmitting,
     optimistic,
     variant,
-    action
+    action,
+    ...props
 }: SettingsCardProps) {
     return (
         <Card
@@ -75,6 +78,7 @@ export function SettingsCard({
                 className,
                 classNames?.base
             )}
+            {...props}
         >
             <SettingsCardHeader
                 classNames={classNames}

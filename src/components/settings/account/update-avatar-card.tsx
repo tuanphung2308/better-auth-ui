@@ -1,7 +1,7 @@
 "use client"
 
 import { Trash2Icon, UploadCloudIcon } from "lucide-react"
-import { useContext, useRef, useState } from "react"
+import { type ComponentProps, useContext, useRef, useState } from "react"
 
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
@@ -20,18 +20,17 @@ import type { SettingsCardClassNames } from "../shared/settings-card"
 import { SettingsCardFooter } from "../shared/settings-card-footer"
 import { SettingsCardHeader } from "../shared/settings-card-header"
 
-export interface UpdateAvatarCardProps {
+export interface UpdateAvatarCardProps extends ComponentProps<typeof Card> {
     className?: string
     classNames?: SettingsCardClassNames
-    isPending?: boolean
     localization?: AuthLocalization
 }
 
 export function UpdateAvatarCard({
     className,
     classNames,
-    isPending: externalIsPending,
-    localization
+    localization,
+    ...props
 }: UpdateAvatarCardProps) {
     const {
         hooks: { useSession },
@@ -44,7 +43,7 @@ export function UpdateAvatarCard({
 
     localization = { ...authLocalization, ...localization }
 
-    const { data: sessionData, isPending: sessionPending } = useSession()
+    const { data: sessionData, isPending } = useSession()
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [loading, setLoading] = useState(false)
 
@@ -105,10 +104,8 @@ export function UpdateAvatarCard({
 
     const openFileDialog = () => fileInputRef.current?.click()
 
-    const isPending = externalIsPending || sessionPending
-
     return (
-        <Card className={cn("w-full pb-0 text-start", className, classNames?.base)}>
+        <Card className={cn("w-full pb-0 text-start", className, classNames?.base)} {...props}>
             <input
                 ref={fileInputRef}
                 accept="image/*"

@@ -1,6 +1,4 @@
 "use client"
-
-import type { Session } from "better-auth"
 import { useContext } from "react"
 
 import type { AuthLocalization } from "../../../lib/auth-localization"
@@ -15,22 +13,10 @@ import { SessionCell } from "./session-cell"
 export interface SessionsCardProps {
     className?: string
     classNames?: SettingsCardClassNames
-    isPending?: boolean
     localization?: Partial<AuthLocalization>
-    sessions?: Session[] | null
-    skipHook?: boolean
-    refetch?: () => Promise<void>
 }
 
-export function SessionsCard({
-    className,
-    classNames,
-    isPending,
-    localization,
-    sessions,
-    skipHook,
-    refetch
-}: SessionsCardProps) {
+export function SessionsCard({ className, classNames, localization }: SessionsCardProps) {
     const {
         hooks: { useListSessions },
         localization: contextLocalization
@@ -38,12 +24,7 @@ export function SessionsCard({
 
     localization = { ...contextLocalization, ...localization }
 
-    if (!skipHook) {
-        const result = useListSessions()
-        sessions = result.data
-        isPending = result.isPending
-        refetch = result.refetch
-    }
+    const { data: sessions, isPending, refetch } = useListSessions()
 
     return (
         <SettingsCard

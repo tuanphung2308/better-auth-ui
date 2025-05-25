@@ -1,29 +1,21 @@
 "use client"
-
-import type { Organization } from "better-auth/plugins/organization"
 import { useContext, useState } from "react"
 
 import { useIsHydrated } from "../../hooks/use-hydrated"
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import { SettingsCard } from "../settings/shared/settings-card"
-import type { SettingsCardClassNames } from "../settings/shared/settings-card"
+import type { SettingsCardProps } from "../settings/shared/settings-card"
 import { CardContent } from "../ui/card"
 import { CreateOrganizationDialog } from "./create-organization-dialog"
 import { OrganizationCell } from "./organization-cell"
 
-export interface OrganizationsCardProps {
-    className?: string
-    classNames?: SettingsCardClassNames
-    organizations?: Organization[] | null
-    isPending?: boolean
-    localization?: Partial<AuthLocalization>
-    skipHook?: boolean
-    refetch?: () => Promise<void>
-}
-
-export function OrganizationsCard({ className, classNames, localization }: OrganizationsCardProps) {
+export function OrganizationsCard({
+    className,
+    classNames,
+    localization,
+    ...props
+}: SettingsCardProps) {
     const {
         hooks: { useListOrganizations },
         localization: contextLocalization
@@ -49,6 +41,7 @@ export function OrganizationsCard({ className, classNames, localization }: Organ
                 actionLabel={localization.createOrganization}
                 action={() => setCreateDialogOpen(true)}
                 isPending={isPending}
+                {...props}
             >
                 {organizations?.length && (
                     <CardContent className={cn("grid gap-4", classNames?.content)}>

@@ -16,22 +16,10 @@ import { PasskeyCell } from "./passkey-cell"
 export interface PasskeysCardProps {
     className?: string
     classNames?: SettingsCardClassNames
-    isPending?: boolean
     localization?: AuthLocalization
-    passkeys?: { id: string; createdAt: Date }[] | null
-    skipHook?: boolean
-    refetch?: () => Promise<void>
 }
 
-export function PasskeysCard({
-    className,
-    classNames,
-    isPending,
-    localization,
-    passkeys,
-    skipHook,
-    refetch
-}: PasskeysCardProps) {
+export function PasskeysCard({ className, classNames, localization }: PasskeysCardProps) {
     const {
         authClient,
         freshAge,
@@ -42,12 +30,7 @@ export function PasskeysCard({
 
     localization = { ...authLocalization, ...localization }
 
-    if (!skipHook) {
-        const result = useListPasskeys()
-        passkeys = result.data
-        isPending = result.isPending
-        refetch = result.refetch
-    }
+    const { data: passkeys, isPending, refetch } = useListPasskeys()
 
     const { data: sessionData } = useSession()
     const session = sessionData?.session

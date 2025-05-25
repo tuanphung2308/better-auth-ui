@@ -21,7 +21,6 @@ export interface UpdateFieldCardProps {
     classNames?: SettingsCardClassNames
     description?: ReactNode
     instructions?: ReactNode
-    isPending?: boolean
     localization?: Partial<AuthLocalization>
     name: string
     placeholder?: string
@@ -37,7 +36,6 @@ export function UpdateFieldCard({
     classNames,
     description,
     instructions,
-    isPending,
     localization,
     name,
     placeholder,
@@ -57,7 +55,7 @@ export function UpdateFieldCard({
 
     localization = { ...contextLocalization, ...localization }
 
-    const { isPending: sessionPending, refetch } = useSession()
+    const { isPending, refetch } = useSession()
 
     let fieldSchema = z.unknown() as z.ZodType<unknown>
 
@@ -146,7 +144,7 @@ export function UpdateFieldCard({
                     classNames={classNames}
                     description={description}
                     instructions={instructions}
-                    isPending={isPending || sessionPending}
+                    isPending={isPending}
                     title={label}
                     actionLabel={localization.save}
                     optimistic={optimistic}

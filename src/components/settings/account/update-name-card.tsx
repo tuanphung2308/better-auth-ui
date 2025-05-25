@@ -1,25 +1,16 @@
 "use client"
 
 import { useContext } from "react"
-
-import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import type { SettingsCardClassNames } from "../shared/settings-card"
+import type { SettingsCardProps } from "../shared/settings-card"
 import { UpdateFieldCard } from "./update-field-card"
-
-export interface UpdateNameCardProps {
-    className?: string
-    classNames?: SettingsCardClassNames
-    isPending?: boolean
-    localization?: AuthLocalization
-}
 
 export function UpdateNameCard({
     className,
     classNames,
-    isPending,
-    localization
-}: UpdateNameCardProps) {
+    localization,
+    ...props
+}: SettingsCardProps) {
     const {
         hooks: { useSession },
         localization: contextLocalization,
@@ -38,11 +29,11 @@ export function UpdateNameCard({
             description={localization.nameDescription}
             name="name"
             instructions={localization.nameInstructions}
-            isPending={isPending}
             label={localization.name}
             localization={localization}
             placeholder={localization.namePlaceholder}
             required={nameRequired}
+            {...props}
         />
     )
 }
