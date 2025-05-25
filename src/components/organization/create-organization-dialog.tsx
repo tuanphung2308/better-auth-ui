@@ -135,15 +135,15 @@ export function CreateOrganizationDialog({
                 fetchOptions: { throw: true }
             })
 
-            toast({
-                variant: "success",
-                message: localization.organizationCreated
-            })
-
             await refetchOrganizations?.()
             onOpenChange?.(false)
             form.reset()
             setLogo(null)
+
+            toast({
+                variant: "success",
+                message: localization.organizationCreated
+            })
         } catch (error) {
             toast({
                 variant: "error",

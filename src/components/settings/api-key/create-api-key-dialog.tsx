@@ -113,7 +113,7 @@ export function CreateAPIKeyDialog({
                 </DialogHeader>
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                         <div className="flex gap-4">
                             <FormField
                                 control={form.control}

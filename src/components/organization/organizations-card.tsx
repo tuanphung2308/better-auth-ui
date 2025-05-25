@@ -1,7 +1,7 @@
 "use client"
 
 import type { Organization } from "better-auth/plugins/organization"
-import { useContext } from "react"
+import { useContext, useState } from "react"
 
 import { useIsHydrated } from "../../hooks/use-hydrated"
 import type { AuthLocalization } from "../../lib/auth-localization"
@@ -10,6 +10,7 @@ import { cn } from "../../lib/utils"
 import { SettingsCard } from "../settings/shared/settings-card"
 import type { SettingsCardClassNames } from "../settings/shared/settings-card"
 import { CardContent } from "../ui/card"
+import { CreateOrganizationDialog } from "./create-organization-dialog"
 import { OrganizationCell } from "./organization-cell"
 
 export interface OrganizationsCardProps {
@@ -35,26 +36,40 @@ export function OrganizationsCard({ className, classNames, localization }: Organ
 
     const isPending = !isHydrated || organizationsPending
 
+    const [createDialogOpen, setCreateDialogOpen] = useState(false)
+
     return (
-        <SettingsCard
-            className={className}
-            classNames={classNames}
-            title={localization.organizations}
-            description={localization.organizationsDescription}
-            isPending={isPending}
-        >
-            {organizations?.length && (
-                <CardContent className={cn("grid gap-4", classNames?.content)}>
-                    {organizations?.map((organization) => (
-                        <OrganizationCell
-                            key={organization.id}
-                            classNames={classNames}
-                            organization={organization}
-                            localization={localization}
-                        />
-                    ))}
-                </CardContent>
-            )}
-        </SettingsCard>
+        <>
+            <SettingsCard
+                className={className}
+                classNames={classNames}
+                title={localization.organizations}
+                description={localization.organizationsDescription}
+                instructions={localization.organizationsInstructions}
+                actionLabel={localization.createOrganization}
+                action={() => setCreateDialogOpen(true)}
+                isPending={isPending}
+            >
+                {organizations?.length && (
+                    <CardContent className={cn("grid gap-4", classNames?.content)}>
+                        {organizations?.map((organization) => (
+                            <OrganizationCell
+                                key={organization.id}
+                                classNames={classNames}
+                                organization={organization}
+                                localization={localization}
+                            />
+                        ))}
+                    </CardContent>
+                )}
+            </SettingsCard>
+
+            <CreateOrganizationDialog
+                classNames={classNames}
+                localization={localization}
+                open={createDialogOpen}
+                onOpenChange={setCreateDialogOpen}
+            />
+        </>
     )
 }

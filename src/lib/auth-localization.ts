@@ -579,6 +579,9 @@ export const authLocalization = {
     /** @default "Manage your organizations and memberships." */
     organizationsDescription: "Manage your organizations and memberships.",
 
+    /** @default "Create organizations to collaborate with your team." */
+    organizationsInstructions: "Create organizations to collaborate with your team.",
+
     /** @default "Leave Organization" */
     leaveOrganization: "Leave Organization",
 
