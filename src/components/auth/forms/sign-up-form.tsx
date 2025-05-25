@@ -3,11 +3,11 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { BetterFetchOption } from "better-auth/react"
 import { Loader2 } from "lucide-react"
+import { Trash2Icon, UploadCloudIcon } from "lucide-react"
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
-import { Trash2Icon, UploadCloudIcon } from "lucide-react"
 import { useCaptcha } from "../../../hooks/use-captcha"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"

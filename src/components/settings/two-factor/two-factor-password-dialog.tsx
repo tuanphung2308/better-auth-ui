@@ -161,8 +161,8 @@ export function TwoFactorPasswordDialog({
                                 >
                                     {isSubmitting && <Loader2 className="animate-spin" />}
                                     {isTwoFactorEnabled
-                                        ? localization.disable
-                                        : localization.enable}
+                                        ? localization.disableTwoFactor
+                                        : localization.enableTwoFactor}
                                 </Button>
                             </DialogFooter>
                         </form>

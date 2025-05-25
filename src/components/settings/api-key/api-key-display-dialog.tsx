@@ -17,19 +17,19 @@ import {
 } from "../../ui/dialog"
 import type { SettingsCardClassNames } from "../shared/settings-card"
 
-interface ApiKeyDisplayDialogProps extends ComponentProps<typeof Dialog> {
+interface APIKeyDisplayDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
     apiKey: string
 }
 
-export function ApiKeyDisplayDialog({
+export function APIKeyDisplayDialog({
     classNames,
     apiKey,
     localization,
     onOpenChange,
     ...props
-}: ApiKeyDisplayDialogProps) {
+}: APIKeyDisplayDialogProps) {
     const { localization: contextLocalization } = useContext(AuthUIContext)
     localization = { ...contextLocalization, ...localization }
 

@@ -19,7 +19,7 @@ export function useSession({
         usePlural
     })
 
-    const { payload } = useTriplitToken({ triplit })
+    const { payload } = useTriplitToken(triplit)
 
     const { result: user } = useConditionalQueryOne(
         triplit,

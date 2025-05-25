@@ -24,21 +24,21 @@ import { Input } from "../../ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
 import type { SettingsCardClassNames } from "../shared/settings-card"
 
-interface ApiKeyNameDialogProps extends ComponentProps<typeof Dialog> {
+interface CreateAPIKeyDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
     onSuccess: (key: string) => void
     refetch?: () => Promise<void>
 }
 
-export function ApiKeyNameDialog({
+export function CreateAPIKeyDialog({
     classNames,
     localization,
     onSuccess,
     refetch,
     onOpenChange,
     ...props
-}: ApiKeyNameDialogProps) {
+}: CreateAPIKeyDialogProps) {
     const {
         authClient,
         apiKey,
@@ -55,7 +55,7 @@ export function ApiKeyNameDialog({
         expiresInDays: z.string().optional()
     })
 
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: "",
@@ -201,7 +201,7 @@ export function ApiKeyNameDialog({
                             >
                                 {isSubmitting && <Loader2 className="animate-spin" />}
 
-                                {localization.create}
+                                {localization.createApiKey}
                             </Button>
                         </DialogFooter>
                     </form>

@@ -1,0 +1,135 @@
+"use client"
+
+import type { Organization } from "better-auth/plugins/organization"
+import { Loader2 } from "lucide-react"
+import { type ComponentProps, useContext, useState } from "react"
+
+import type { AuthLocalization } from "../../lib/auth-localization"
+import { AuthUIContext } from "../../lib/auth-ui-provider"
+import { getLocalizedError } from "../../lib/utils"
+import { cn } from "../../lib/utils"
+import type { SettingsCardClassNames } from "../settings/shared/settings-card"
+import { Button } from "../ui/button"
+import { Card } from "../ui/card"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
+} from "../ui/dialog"
+import { OrganizationView } from "./organization-view"
+
+export interface LeaveOrganizationDialogProps extends ComponentProps<typeof Dialog> {
+    className?: string
+    classNames?: SettingsCardClassNames
+    localization?: AuthLocalization
+    organization: Organization
+}
+
+export function LeaveOrganizationDialog({
+    organization,
+    className,
+    classNames,
+    localization: localizationProp,
+    onOpenChange,
+    ...props
+}: LeaveOrganizationDialogProps) {
+    const {
+        authClient,
+        hooks: { useListOrganizations },
+        localization: contextLocalization,
+        toast
+    } = useContext(AuthUIContext)
+
+    const localization = { ...contextLocalization, ...localizationProp }
+
+    const { data: activeOrganization, refetch: refetchActiveOrganization } =
+        authClient.useActiveOrganization()
+    const { refetch: refetchOrganizations } = useListOrganizations()
+
+    const [isLeaving, setIsLeaving] = useState(false)
+
+    const handleLeaveOrganization = async () => {
+        setIsLeaving(true)
+
+        try {
+            await authClient.organization.leave({
+                organizationId: organization.id,
+                fetchOptions: {
+                    throw: true
+                }
+            })
+
+            toast({
+                variant: "success",
+                message: localization.leaveOrganizationSuccess
+            })
+
+            if (activeOrganization?.id === organization.id) {
+                refetchActiveOrganization?.()
+            }
+
+            await refetchOrganizations?.()
+
+            onOpenChange?.(false)
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: getLocalizedError({ error, localization })
+            })
+        }
+
+        setIsLeaving(false)
+    }
+
+    return (
+        <Dialog onOpenChange={onOpenChange} {...props}>
+            <DialogContent
+                className={classNames?.dialog?.content}
+                onOpenAutoFocus={(e) => e.preventDefault()}
+            >
+                <DialogHeader className={classNames?.dialog?.header}>
+                    <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                        {localization.leaveOrganization}
+                    </DialogTitle>
+
+                    <DialogDescription
+                        className={cn("text-xs md:text-sm", classNames?.description)}
+                    >
+                        {localization.leaveOrganizationConfirmation}
+                    </DialogDescription>
+                </DialogHeader>
+
+                <Card className={cn("my-4 flex-row p-4", className, classNames?.cell)}>
+                    <OrganizationView organization={organization} localization={localization} />
+                </Card>
+
+                <DialogFooter className={classNames?.dialog?.footer}>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => onOpenChange?.(false)}
+                        className={cn(classNames?.button, classNames?.outlineButton)}
+                        disabled={isLeaving}
+                    >
+                        {localization.cancel}
+                    </Button>
+
+                    <Button
+                        type="button"
+                        variant="destructive"
+                        onClick={handleLeaveOrganization}
+                        className={cn(classNames?.button, classNames?.destructiveButton)}
+                        disabled={isLeaving}
+                    >
+                        {isLeaving && <Loader2 className="animate-spin" />}
+
+                        {localization.leaveOrganization}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}

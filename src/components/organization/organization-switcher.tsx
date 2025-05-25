@@ -1,4 +1,5 @@
 "use client"
+
 import { ChevronsUpDown, LogInIcon, PlusCircleIcon, SettingsIcon } from "lucide-react"
 import {
     type ComponentProps,
@@ -9,6 +10,7 @@ import {
     useMemo,
     useState
 } from "react"
+
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { getLocalizedError } from "../../lib/utils"
@@ -48,8 +50,7 @@ export interface OrganizationSwitcherClassNames {
     }
 }
 
-export interface OrganizationSwitcherProps {
-    className?: string
+export interface OrganizationSwitcherProps extends ComponentProps<typeof Button> {
     classNames?: OrganizationSwitcherClassNames
     align?: "center" | "start" | "end"
     trigger?: ReactNode
@@ -74,7 +75,7 @@ export function OrganizationSwitcher({
     localization: localizationProp,
     size,
     ...props
-}: OrganizationSwitcherProps & ComponentProps<typeof Button>) {
+}: OrganizationSwitcherProps) {
     const {
         authClient,
         basePath,
@@ -97,7 +98,7 @@ export function OrganizationSwitcher({
     const { data: sessionData, isPending: sessionPending } = useSession()
     const user = sessionData?.user
 
-    const { data: organizations, refetch: refetchOrganizations } = useListOrganizations()
+    const { data: organizations } = useListOrganizations()
     const { data: activeOrganization, isPending: organizationPending } =
         authClient.useActiveOrganization()
 

@@ -1,13 +1,21 @@
 "use client"
 
 import type { Session, User } from "better-auth"
-import { KeyRoundIcon, MenuIcon, ShieldCheckIcon, UserRoundIcon } from "lucide-react"
+import {
+    Building2Icon,
+    KeyRoundIcon,
+    MenuIcon,
+    ShieldCheckIcon,
+    UserCircle2Icon,
+    UserRoundIcon
+} from "lucide-react"
 import { useContext } from "react"
 
 import { useAuthenticate } from "../../hooks/use-authenticate"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
+import { OrganizationsCard } from "../organization/organizations-card"
 import { Button } from "../ui/button"
 import {
     DropdownMenu,
@@ -43,7 +51,7 @@ export type SettingsCardsClassNames = {
     }
 }
 
-export const settingsViews = ["settings", "security", "apiKeys"] as const
+export const settingsViews = ["settings", "security", "apiKeys", "organizations"] as const
 export type SettingsView = (typeof settingsViews)[number]
 
 export interface SettingsCardsProps {
@@ -67,6 +75,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
         localization: contextLocalization,
         multiSession,
         nameRequired,
+        organization,
         settings,
         viewPaths,
         Link
@@ -108,7 +117,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                     >
                         {view === "settings" && (
                             <>
-                                <UserRoundIcon className={classNames?.icon} />
+                                <UserCircle2Icon className={classNames?.icon} />
                                 {localization.account}
                             </>
                         )}
@@ -163,7 +172,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                             )}
                             variant={view === "settings" ? "secondary" : "ghost"}
                         >
-                            <UserRoundIcon className={classNames?.icon} />
+                            <UserCircle2Icon className={classNames?.icon} />
                             {localization.account}
                         </Button>
                     </Link>
@@ -195,6 +204,21 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                         >
                             <KeyRoundIcon className={classNames?.icon} />
                             {localization.apiKeys}
+                        </Button>
+                    </Link>
+
+                    <Link href={`${basePath}/${viewPaths.organizations}`}>
+                        <Button
+                            size="lg"
+                            className={cn(
+                                "w-full justify-start",
+                                classNames?.sidebar?.button,
+                                view === "organizations" && classNames?.sidebar?.buttonActive
+                            )}
+                            variant={view === "organizations" ? "secondary" : "ghost"}
+                        >
+                            <Building2Icon className={classNames?.icon} />
+                            {localization.organizations}
                         </Button>
                     </Link>
                 </div>
@@ -292,6 +316,10 @@ export function SettingsCards({ className, classNames, localization, view }: Set
 
                 {view === "apiKeys" && apiKey && (
                     <APIKeysCard classNames={classNames?.card} localization={localization} />
+                )}
+
+                {view === "organizations" && organization && (
+                    <OrganizationsCard classNames={classNames?.card} localization={localization} />
                 )}
             </div>
         </div>

@@ -2,11 +2,7 @@ import type { TriplitClient } from "@triplit/client"
 import { useConnectionStatus } from "@triplit/react"
 import { useMemo } from "react"
 
-export function useTriplitToken({
-    triplit
-}: {
-    triplit: TriplitClient
-}) {
+export function useTriplitToken(triplit: TriplitClient) {
     const connectionStatus = useConnectionStatus(triplit)
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: update when connection status changes
@@ -17,6 +13,8 @@ export function useTriplitToken({
                       exp: number
                       iat: number
                       sub?: string
+                      email?: string
+                      name?: string
                   })
                 : undefined,
         [connectionStatus]

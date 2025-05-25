@@ -1,7 +1,7 @@
 "use client"
 
 import type { Organization } from "better-auth/plugins/organization"
-import { Building2Icon } from "lucide-react"
+import { BuildingIcon } from "lucide-react"
 import type { ComponentProps } from "react"
 import { useContext } from "react"
 
@@ -28,7 +28,7 @@ export interface OrganizationLogoProps {
      * @default authLocalization
      * @remarks `AuthLocalization`
      */
-    localization?: Partial<AuthLocalization>
+    localization?: AuthLocalization
 }
 
 /**
@@ -100,7 +100,7 @@ export function OrganizationLogo({
                 className={cn("text-foreground", classNames?.fallback)}
                 delayMs={src ? 600 : undefined}
             >
-                <Building2Icon className={cn("size-[50%]", classNames?.fallbackIcon)} />
+                <BuildingIcon className={cn("size-[50%]", classNames?.fallbackIcon)} />
             </AvatarFallback>
         </Avatar>
     )

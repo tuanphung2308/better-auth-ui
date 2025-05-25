@@ -17,7 +17,7 @@ export function useListSessions({
         usePlural
     })
 
-    const { payload } = useTriplitToken({ triplit })
+    const { payload } = useTriplitToken(triplit)
 
     const {
         results: sessions,
@@ -26,7 +26,7 @@ export function useListSessions({
     } = useConditionalQuery(triplit, payload?.sub && triplit.query(modelName))
 
     return {
-        data: sessions as Session[],
+        data: sessions as Session[] | undefined,
         isPending: isPending || fetching,
         error
     }

@@ -11,6 +11,7 @@ import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { fileToBase64, resizeAndCropImage } from "../../lib/image-utils"
 import { cn, getLocalizedError } from "../../lib/utils"
+import type { SettingsCardClassNames } from "../settings/shared/settings-card"
 import { Button } from "../ui/button"
 import {
     Dialog,
@@ -32,18 +33,7 @@ import { OrganizationLogo } from "./organization-logo"
 
 export interface CreateOrganizationDialogProps extends ComponentProps<typeof Dialog> {
     className?: string
-    classNames?: {
-        title?: string
-        description?: string
-        dialog?: {
-            content?: string
-            header?: string
-            footer?: string
-        }
-        button?: string
-        primaryButton?: string
-        outlineButton?: string
-    }
+    classNames?: SettingsCardClassNames
     localization?: AuthLocalization
 }
 
@@ -64,13 +54,16 @@ export function CreateOrganizationDialog({
 
     const localization = { ...contextLocalization, ...localizationProp }
 
-    const fileInputRef = useRef<HTMLInputElement>(null)
     const [logo, setLogo] = useState<string | null>(null)
     const [uploadingLogo, setUploadingLogo] = useState(false)
+
+    const fileInputRef = useRef<HTMLInputElement>(null)
+    const openFileDialog = () => fileInputRef.current?.click()
 
     const { refetch: refetchOrganizations } = useListOrganizations()
 
     const formSchema = z.object({
+        logo: z.string().optional(),
         name: z.string().min(1, {
             message: `${localization.organizationName} ${localization.isRequired}`
         }),
@@ -81,16 +74,15 @@ export function CreateOrganizationDialog({
             })
             .regex(/^[a-z0-9-]+$/, {
                 message: `${localization.slugUrl} ${localization.isInvalid}`
-            }),
-        logo: z.string().optional()
+            })
     })
 
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            logo: "",
             name: "",
-            slug: "",
-            logo: ""
+            slug: ""
         }
     })
 
@@ -117,13 +109,8 @@ export function CreateOrganizationDialog({
                 image = await fileToBase64(resizedFile)
             }
 
-            if (image) {
-                setLogo(image)
-                form.setValue("logo", image)
-            } else {
-                setLogo(null)
-                form.setValue("logo", "")
-            }
+            setLogo(image || null)
+            form.setValue("logo", image || "")
         } catch (error) {
             toast({
                 variant: "error",
@@ -134,12 +121,10 @@ export function CreateOrganizationDialog({
         setUploadingLogo(false)
     }
 
-    const handleDeleteLogo = () => {
+    const deleteLogo = () => {
         setLogo(null)
         form.setValue("logo", "")
     }
-
-    const openFileDialog = () => fileInputRef.current?.click()
 
     async function onSubmit({ name, slug, logo }: z.infer<typeof formSchema>) {
         try {
@@ -171,6 +156,7 @@ export function CreateOrganizationDialog({
         console.warn(
             "[Better Auth UI] The `organization` prop is not configured on AuthUIProvider. Please check the documentation for more information."
         )
+
         return null
     }
 
@@ -190,7 +176,7 @@ export function CreateOrganizationDialog({
                 </DialogHeader>
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                         {organization.logo && (
                             <FormField
                                 control={form.control}
@@ -218,7 +204,6 @@ export function CreateOrganizationDialog({
                                                     <Button
                                                         className="size-fit rounded-full"
                                                         size="icon"
-                                                        autoFocus={false}
                                                         type="button"
                                                     >
                                                         <OrganizationLogo
@@ -251,7 +236,7 @@ export function CreateOrganizationDialog({
 
                                                     {logo && (
                                                         <DropdownMenuItem
-                                                            onClick={handleDeleteLogo}
+                                                            onClick={deleteLogo}
                                                             disabled={uploadingLogo}
                                                             variant="destructive"
                                                         >
@@ -332,7 +317,6 @@ export function CreateOrganizationDialog({
 
                             <Button
                                 type="submit"
-                                variant="default"
                                 className={cn(classNames?.button, classNames?.primaryButton)}
                                 disabled={isSubmitting}
                             >

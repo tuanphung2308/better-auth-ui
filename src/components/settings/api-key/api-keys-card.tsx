@@ -10,8 +10,8 @@ import { CardContent } from "../../ui/card"
 import { SettingsCard } from "../shared/settings-card"
 import type { SettingsCardClassNames } from "../shared/settings-card"
 import { APIKeyCell } from "./api-key-cell"
-import { ApiKeyDisplayDialog } from "./api-key-display-dialog"
-import { ApiKeyNameDialog } from "./api-key-name-dialog"
+import { APIKeyDisplayDialog } from "./api-key-display-dialog"
+import { CreateAPIKeyDialog } from "./create-api-key-dialog"
 
 export interface APIKeysCardProps {
     className?: string
@@ -34,10 +34,10 @@ export function APIKeysCard({
 }: APIKeysCardProps) {
     const {
         hooks: { useListApiKeys },
-        localization: authLocalization
+        localization: contextLocalization
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    localization = { ...contextLocalization, ...localization }
 
     if (!skipHook) {
         const result = useListApiKeys()
@@ -46,7 +46,7 @@ export function APIKeysCard({
         refetch = result.refetch
     }
 
-    const [nameDialogOpen, setNameDialogOpen] = useState(false)
+    const [createDialogOpen, setCreateDialogOpen] = useState(false)
     const [displayDialogOpen, setDisplayDialogOpen] = useState(false)
     const [createdApiKey, setCreatedApiKey] = useState("")
 
@@ -60,12 +60,12 @@ export function APIKeysCard({
             <SettingsCard
                 className={className}
                 classNames={classNames}
-                actionLabel={localization.create}
+                actionLabel={localization.createApiKey}
                 description={localization.apiKeysDescription}
                 instructions={localization.apiKeysInstructions}
                 isPending={isPending}
                 title={localization.apiKeys}
-                action={() => setNameDialogOpen(true)}
+                action={() => setCreateDialogOpen(true)}
             >
                 {apiKeys && apiKeys.length > 0 && (
                     <CardContent className={cn("grid gap-4", classNames?.content)}>
@@ -82,16 +82,16 @@ export function APIKeysCard({
                 )}
             </SettingsCard>
 
-            <ApiKeyNameDialog
+            <CreateAPIKeyDialog
                 classNames={classNames}
                 localization={localization}
-                open={nameDialogOpen}
-                onOpenChange={setNameDialogOpen}
+                open={createDialogOpen}
+                onOpenChange={setCreateDialogOpen}
                 onSuccess={handleCreateApiKey}
                 refetch={refetch}
             />
 
-            <ApiKeyDisplayDialog
+            <APIKeyDisplayDialog
                 classNames={classNames}
                 apiKey={createdApiKey}
                 localization={localization}

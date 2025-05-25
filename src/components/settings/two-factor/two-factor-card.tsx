@@ -31,7 +31,11 @@ export function TwoFactorCard({ className, classNames, localization }: TwoFactor
             <SettingsCard
                 className={className}
                 classNames={classNames}
-                actionLabel={isTwoFactorEnabled ? localization.disable : localization.enable}
+                actionLabel={
+                    isTwoFactorEnabled
+                        ? localization.disableTwoFactor
+                        : localization.enableTwoFactor
+                }
                 description={localization.twoFactorCardDescription}
                 instructions={
                     isTwoFactorEnabled

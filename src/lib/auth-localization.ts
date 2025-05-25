@@ -122,8 +122,8 @@ export const authLocalization = {
     /** @default "You must be recently logged in to delete your account." */
     deleteAccountNotFresh: "You must be recently logged in to delete your account.",
 
-    /** @default "Disable" */
-    disable: "Disable",
+    /** @default "Disable Two-Factor" */
+    disableTwoFactor: "Disable Two-Factor",
 
     /** @default "Choose a provider to login to your account" */
     disabledCredentialsDescription: "Choose a provider to login to your account",
@@ -161,8 +161,8 @@ export const authLocalization = {
     /** @default "Please check your email for the verification link." */
     emailVerification: "Please check your email for the verification link.",
 
-    /** @default "Enable" */
-    enable: "Enable",
+    /** @default "Enable Two-Factor" */
+    enableTwoFactor: "Enable Two-Factor",
 
     /** @default "Error" */
     error: "Error",
@@ -327,9 +327,6 @@ export const authLocalization = {
 
     /** @default "Organization created successfully" */
     organizationCreated: "Organization created successfully",
-
-    /** @default "Create" */
-    create: "Create",
 
     /** @default "Password" */
     password: "Password",
@@ -574,7 +571,22 @@ export const authLocalization = {
     missingCaptchaResponse: "Missing CAPTCHA response",
 
     /** @default "User" */
-    user: "User"
+    user: "User",
+
+    /** @default "Organizations" */
+    organizations: "Organizations",
+
+    /** @default "Manage your organizations and memberships." */
+    organizationsDescription: "Manage your organizations and memberships.",
+
+    /** @default "Leave Organization" */
+    leaveOrganization: "Leave Organization",
+
+    /** @default "Are you sure you want to leave this organization?" */
+    leaveOrganizationConfirmation: "Are you sure you want to leave this organization?",
+
+    /** @default "You have successfully left the organization." */
+    leaveOrganizationSuccess: "You have successfully left the organization."
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>

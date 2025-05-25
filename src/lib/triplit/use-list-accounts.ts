@@ -18,7 +18,7 @@ export function useListAccounts({
         usePlural
     })
 
-    const { payload } = useTriplitToken({ triplit })
+    const { payload } = useTriplitToken(triplit)
 
     const { results, error, fetching } = useConditionalQuery(
         triplit,
