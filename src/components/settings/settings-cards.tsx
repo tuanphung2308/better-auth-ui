@@ -1,11 +1,12 @@
 "use client"
+
 import {
     Building2Icon,
     KeyRoundIcon,
+    type LucideIcon,
     MenuIcon,
     ShieldCheckIcon,
-    UserCircle2Icon,
-    UserRoundIcon
+    UserCircle2Icon
 } from "lucide-react"
 import { useContext } from "react"
 
@@ -47,6 +48,12 @@ export type SettingsCardsClassNames = {
 export const settingsViews = ["settings", "security", "apiKeys", "organizations"] as const
 export type SettingsView = (typeof settingsViews)[number]
 
+interface NavigationItem {
+    view: SettingsView
+    icon: LucideIcon
+    label?: string
+}
+
 export interface SettingsCardsProps {
     className?: string
     classNames?: SettingsCardsClassNames
@@ -68,6 +75,37 @@ export function SettingsCards({ className, classNames, localization, view }: Set
 
     localization = { ...contextLocalization, ...localization }
 
+    const navigationItems: NavigationItem[] = [
+        {
+            view: "settings",
+            icon: UserCircle2Icon,
+            label: localization.account
+        },
+        {
+            view: "security",
+            icon: ShieldCheckIcon,
+            label: localization.security
+        }
+    ]
+
+    if (apiKey) {
+        navigationItems.push({
+            view: "apiKeys",
+            icon: KeyRoundIcon,
+            label: localization.apiKeys
+        })
+    }
+
+    if (organization) {
+        navigationItems.push({
+            view: "organizations",
+            icon: Building2Icon,
+            label: localization.organizations
+        })
+    }
+
+    const currentItem = navigationItems.find((item) => item.view === view)
+
     return (
         <div
             className={cn(
@@ -86,24 +124,10 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                         )}
                         variant="secondary"
                     >
-                        {view === "settings" && (
+                        {currentItem && (
                             <>
-                                <UserCircle2Icon className={classNames?.icon} />
-                                {localization.account}
-                            </>
-                        )}
-
-                        {view === "security" && (
-                            <>
-                                <ShieldCheckIcon className={classNames?.icon} />
-                                {localization.security}
-                            </>
-                        )}
-
-                        {view === "apiKeys" && (
-                            <>
-                                <KeyRoundIcon className={classNames?.icon} />
-                                {localization.apiKeys}
+                                <currentItem.icon className={classNames?.icon} />
+                                {currentItem.label}
                             </>
                         )}
 
@@ -112,86 +136,37 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent
-                    className={cn("w-[calc(100svw-1rem)]", classNames?.dropdown?.content)}
+                    className={cn("w-[calc(100svw-2rem)]", classNames?.dropdown?.content)}
                 >
-                    <DropdownMenuItem>
-                        <UserRoundIcon />
-                        {localization.account}
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem>
-                        <ShieldCheckIcon />
-                        {localization.security}
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem>
-                        <KeyRoundIcon />
-                        {localization.apiKeys}
-                    </DropdownMenuItem>
+                    {navigationItems.map((item) => (
+                        <DropdownMenuItem key={item.view} asChild>
+                            <Link href={`${basePath}/${viewPaths[item.view]}`}>
+                                <item.icon />
+                                {item.label}
+                            </Link>
+                        </DropdownMenuItem>
+                    ))}
                 </DropdownMenuContent>
             </DropdownMenu>
 
             <div className="hidden md:block">
-                <div className={cn("grid w-60 gap-1", classNames?.sidebar?.base)}>
-                    <Link href={`${basePath}/${viewPaths.settings}`}>
-                        <Button
-                            size="lg"
-                            className={cn(
-                                "w-full justify-start",
-                                classNames?.sidebar?.button,
-                                view === "settings" && classNames?.sidebar?.buttonActive
-                            )}
-                            variant={view === "settings" ? "secondary" : "ghost"}
-                        >
-                            <UserCircle2Icon className={classNames?.icon} />
-                            {localization.account}
-                        </Button>
-                    </Link>
-
-                    <Link href={`${basePath}/${viewPaths.security}`}>
-                        <Button
-                            size="lg"
-                            className={cn(
-                                "w-full justify-start",
-                                classNames?.sidebar?.button,
-                                view === "security" && classNames?.sidebar?.buttonActive
-                            )}
-                            variant={view === "security" ? "secondary" : "ghost"}
-                        >
-                            <ShieldCheckIcon className={classNames?.icon} />
-                            {localization.security}
-                        </Button>
-                    </Link>
-
-                    <Link href={`${basePath}/${viewPaths.apiKeys}`}>
-                        <Button
-                            size="lg"
-                            className={cn(
-                                "w-full justify-start",
-                                classNames?.sidebar?.button,
-                                view === "apiKeys" && classNames?.sidebar?.buttonActive
-                            )}
-                            variant={view === "apiKeys" ? "secondary" : "ghost"}
-                        >
-                            <KeyRoundIcon className={classNames?.icon} />
-                            {localization.apiKeys}
-                        </Button>
-                    </Link>
-
-                    <Link href={`${basePath}/${viewPaths.organizations}`}>
-                        <Button
-                            size="lg"
-                            className={cn(
-                                "w-full justify-start",
-                                classNames?.sidebar?.button,
-                                view === "organizations" && classNames?.sidebar?.buttonActive
-                            )}
-                            variant={view === "organizations" ? "secondary" : "ghost"}
-                        >
-                            <Building2Icon className={classNames?.icon} />
-                            {localization.organizations}
-                        </Button>
-                    </Link>
+                <div className={cn("flex w-60 flex-col gap-1", classNames?.sidebar?.base)}>
+                    {navigationItems.map((item) => (
+                        <Link key={item.view} href={`${basePath}/${viewPaths[item.view]}`}>
+                            <Button
+                                size="lg"
+                                className={cn(
+                                    "w-full justify-start",
+                                    classNames?.sidebar?.button,
+                                    view === item.view && classNames?.sidebar?.buttonActive
+                                )}
+                                variant={view === item.view ? "secondary" : "ghost"}
+                            >
+                                <item.icon className={classNames?.icon} />
+                                {item.label}
+                            </Button>
+                        </Link>
+                    ))}
                 </div>
             </div>
 
@@ -204,11 +179,15 @@ export function SettingsCards({ className, classNames, localization, view }: Set
             )}
 
             {view === "apiKeys" && apiKey && (
-                <APIKeysCard classNames={classNames?.card} localization={localization} />
+                <div className={cn("flex w-full flex-col", classNames?.cards)}>
+                    <APIKeysCard classNames={classNames?.card} localization={localization} />
+                </div>
             )}
 
             {view === "organizations" && organization && (
-                <OrganizationsCard classNames={classNames?.card} localization={localization} />
+                <div className={cn("flex w-full flex-col ", classNames?.cards)}>
+                    <OrganizationsCard classNames={classNames?.card} localization={localization} />
+                </div>
             )}
         </div>
     )
