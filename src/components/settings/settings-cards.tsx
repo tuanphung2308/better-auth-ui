@@ -2,6 +2,7 @@
 
 import {
     Building2Icon,
+    BuildingIcon,
     KeyRoundIcon,
     type LucideIcon,
     MenuIcon,
@@ -106,7 +107,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
     if (organization) {
         navigationItems.push({
             view: "organization",
-            icon: Building2Icon,
+            icon: BuildingIcon,
             label: localization.organization
         })
         navigationItems.push({

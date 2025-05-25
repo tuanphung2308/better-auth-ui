@@ -5,6 +5,7 @@ import { cn } from "../../lib/utils"
 import type { SettingsCardsProps } from "../settings/settings-cards"
 import { OrganizationLogoCard } from "./organization-logo-card"
 import { OrganizationNameCard } from "./organization-name-card"
+import { OrganizationSlugCard } from "./organization-slug-card"
 
 export function OrganizationSettingsCards({
     className,
@@ -20,6 +21,8 @@ export function OrganizationSettingsCards({
             )}
 
             <OrganizationNameCard classNames={classNames?.card} localization={localization} />
+
+            <OrganizationSlugCard classNames={classNames?.card} localization={localization} />
         </div>
     )
 }

@@ -328,6 +328,12 @@ export const authLocalization = {
     /** @default "Slug URL" */
     slugUrl: "Slug URL",
 
+    /** @default "This is your organization's URL namespace." */
+    slugUrlDescription: "This is your organization's URL namespace.",
+
+    /** @default "Please use 48 characters at maximum." */
+    slugUrlInstructions: "Please use 48 characters at maximum.",
+
     /** @default "acme-inc" */
     organizationSlugPlaceholder: "acme-inc",
 
@@ -549,8 +555,8 @@ export const authLocalization = {
     /** @default "Click on the logo to upload a custom one from your files." */
     logoDescription: "Click on the logo to upload a custom one from your files.",
 
-    /** @default "A logo is optional but recommended for organization branding." */
-    logoInstructions: "A logo is optional but recommended for organization branding.",
+    /** @default "A logo is optional but strongly recommended." */
+    logoInstructions: "A logo is optional but strongly recommended.",
 
     /** @default "Upload" */
     upload: "Upload",
