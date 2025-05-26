@@ -197,6 +197,7 @@ export function CreateOrganizationDialog({
                                                         className="size-fit rounded-full"
                                                         size="icon"
                                                         type="button"
+                                                        variant="ghost"
                                                     >
                                                         <OrganizationLogo
                                                             className="size-16"

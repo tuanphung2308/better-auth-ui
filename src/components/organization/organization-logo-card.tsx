@@ -149,7 +149,12 @@ export function OrganizationLogoCard({
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button className="me-6 size-fit rounded-full" size="icon">
+                        <Button
+                            type="button"
+                            className="me-6 size-fit rounded-full"
+                            size="icon"
+                            variant="ghost"
+                        >
                             <OrganizationLogo
                                 isPending={isPending || loading}
                                 key={activeOrganization?.logo}

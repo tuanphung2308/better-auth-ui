@@ -381,6 +381,8 @@ export function SignUpForm({
                                                 <Button
                                                     className="size-fit rounded-full"
                                                     size="icon"
+                                                    variant="ghost"
+                                                    type="button"
                                                 >
                                                     <UserAvatar
                                                         isPending={uploadingAvatar}

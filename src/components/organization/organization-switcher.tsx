@@ -144,6 +144,8 @@ export function OrganizationSwitcher({
                                     className,
                                     classNames?.trigger?.base
                                 )}
+                                variant="ghost"
+                                type="button"
                                 {...props}
                             >
                                 {(!sessionData && !isPending) ||
