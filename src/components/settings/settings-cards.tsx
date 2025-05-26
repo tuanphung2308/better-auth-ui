@@ -83,7 +83,8 @@ export function SettingsCards({ className, classNames, localization, view }: Set
 
     localization = { ...contextLocalization, ...localization }
 
-    const navigationItems: NavigationItem[] = [
+    // Personal settings group
+    const personalGroup: NavigationItem[] = [
         {
             view: "settings",
             icon: UserCircle2Icon,
@@ -97,7 +98,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
     ]
 
     if (apiKey) {
-        navigationItems.push({
+        personalGroup.push({
             view: "apiKeys",
             icon: KeyRoundIcon,
             label: localization.apiKeys
@@ -105,19 +106,33 @@ export function SettingsCards({ className, classNames, localization, view }: Set
     }
 
     if (organization) {
-        navigationItems.push({
-            view: "organization",
-            icon: BuildingIcon,
-            label: localization.organization
-        })
-        navigationItems.push({
+        personalGroup.push({
             view: "organizations",
             icon: Building2Icon,
             label: localization.organizations
         })
     }
 
-    const currentItem = navigationItems.find((item) => item.view === view)
+    // Organization settings group
+    const organizationGroup: NavigationItem[] = []
+
+    if (organization) {
+        organizationGroup.push({
+            view: "organization",
+            icon: BuildingIcon,
+            label: localization.organization
+        })
+    }
+
+    // Determine which group the current view belongs to
+    const isPersonalView = personalGroup.some((item) => item.view === view)
+    const isOrganizationView = organizationGroup.some((item) => item.view === view)
+
+    // Show navigation for the current group
+    const currentNavigationGroup = isOrganizationView ? organizationGroup : personalGroup
+
+    // Flatten all items for finding current item
+    const currentItem = currentNavigationGroup.find((item) => item.view === view)
 
     return (
         <div
@@ -151,7 +166,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                 <DropdownMenuContent
                     className={cn("w-[calc(100svw-2rem)]", classNames?.dropdown?.content)}
                 >
-                    {navigationItems.map((item) => (
+                    {currentNavigationGroup.map((item) => (
                         <DropdownMenuItem key={item.view} asChild>
                             <Link href={`${basePath}/${viewPaths[item.view]}`}>
                                 <item.icon />
@@ -164,7 +179,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
 
             <div className="hidden md:block">
                 <div className={cn("flex w-60 flex-col gap-1", classNames?.sidebar?.base)}>
-                    {navigationItems.map((item) => (
+                    {currentNavigationGroup.map((item) => (
                         <Link key={item.view} href={`${basePath}/${viewPaths[item.view]}`}>
                             <Button
                                 size="lg"

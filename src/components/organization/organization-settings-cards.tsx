@@ -1,5 +1,5 @@
 "use client"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import type { SettingsCardsProps } from "../settings/settings-cards"
@@ -12,7 +12,15 @@ export function OrganizationSettingsCards({
     classNames,
     localization
 }: Omit<SettingsCardsProps, "view">) {
-    const { organization } = useContext(AuthUIContext)
+    const { authClient, basePath, organization, replace, viewPaths } = useContext(AuthUIContext)
+
+    const { data: activeOrganization, isPending: organizationPending } =
+        authClient.useActiveOrganization()
+
+    useEffect(() => {
+        if (organizationPending) return
+        if (!activeOrganization) replace(`${basePath}/${viewPaths.settings}`)
+    }, [activeOrganization, organizationPending, basePath, replace, viewPaths.settings])
 
     return (
         <div className={cn("flex w-full flex-col gap-4 md:gap-6", className, classNames?.cards)}>

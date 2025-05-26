@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useContext } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import { SettingsCard, type SettingsCardProps } from "../settings/shared/settings-card"
@@ -29,12 +28,11 @@ export function OrganizationNameCard({
 
     const localization = { ...contextLocalization, ...localizationProp }
 
-    const {
-        data: activeOrganization,
-        isPending: organizationPending,
-        refetch: refetchActiveOrganization
-    } = authClient.useActiveOrganization()
+    const { data: activeOrganization, refetch: refetchActiveOrganization } =
+        authClient.useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
+
+    const isPending = !activeOrganization
 
     const formSchema = z.object({
         name: z.string().min(1, {
@@ -98,14 +96,14 @@ export function OrganizationNameCard({
                     classNames={classNames}
                     description={localization.organizationNameDescription}
                     instructions={localization.organizationNameInstructions}
-                    isPending={organizationPending}
+                    isPending={isPending}
                     title={localization.organizationName}
                     actionLabel={localization.save}
                     optimistic={optimistic}
                     {...props}
                 >
                     <CardContent className={classNames?.content}>
-                        {organizationPending ? (
+                        {isPending ? (
                             <Skeleton className={cn("h-9 w-full", classNames?.skeleton)} />
                         ) : (
                             <FormField

@@ -43,12 +43,11 @@ export function OrganizationLogoCard({
 
     localization = { ...authLocalization, ...localization }
 
-    const {
-        data: activeOrganization,
-        isPending,
-        refetch: refetchActiveOrganization
-    } = authClient.useActiveOrganization()
+    const { data: activeOrganization, refetch: refetchActiveOrganization } =
+        authClient.useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
+
+    const isPending = !activeOrganization
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [loading, setLoading] = useState(false)
