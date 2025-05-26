@@ -1,12 +1,12 @@
 "use client"
 
 import type { Organization } from "better-auth/plugins/organization"
-import { EllipsisIcon, LogOutIcon } from "lucide-react"
-import { useContext, useState } from "react"
+import { EllipsisIcon, Loader2, LogOutIcon, SettingsIcon } from "lucide-react"
+import { useCallback, useContext, useMemo, useState } from "react"
 
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { cn } from "../../lib/utils"
+import { cn, getLocalizedError } from "../../lib/utils"
 import type { SettingsCardClassNames } from "../settings/shared/settings-card"
 import { Button } from "../ui/button"
 import { Card } from "../ui/card"
@@ -30,13 +30,46 @@ export function OrganizationCell({
     className,
     classNames,
     organization,
-    localization
+    localization: localizationProp
 }: OrganizationCellProps) {
-    const { localization: contextLocalization } = useContext(AuthUIContext)
+    const {
+        authClient,
+        basePath,
+        localization: contextLocalization,
+        viewPaths,
+        navigate,
+        toast
+    } = useContext(AuthUIContext)
 
-    localization = { ...contextLocalization, ...localization }
+    const localization = useMemo(() => ({ ...contextLocalization, ...localizationProp }), [contextLocalization, localizationProp])
 
+    const { refetch: refetchActiveOrganization } = authClient.useActiveOrganization()
     const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false)
+    const [isManagingOrganization, setIsManagingOrganization] = useState(false)
+
+    const handleManageOrganization = useCallback(async () => {
+        setIsManagingOrganization(true)
+
+        try {
+            await authClient.organization.setActive({
+                organizationId: organization.id,
+                fetchOptions: {
+                    throw: true
+                }
+            })
+
+            await refetchActiveOrganization()
+
+            navigate(`${basePath}/${viewPaths.organization}`)
+        } catch (error) {
+            toast({
+                variant: "error",
+                message: getLocalizedError({ error, localization })
+            })
+        } finally {
+            setIsManagingOrganization(false)
+        }
+    }, [authClient, organization.id, basePath, viewPaths, navigate, toast, localization, refetchActiveOrganization])
 
     return (
         <>
@@ -51,16 +84,30 @@ export function OrganizationCell({
                                 classNames?.button,
                                 classNames?.outlineButton
                             )}
+                            disabled={isManagingOrganization}
                             size="icon"
                             type="button"
                             variant="outline"
                         >
-                            <EllipsisIcon className={classNames?.icon} />
+                            {isManagingOrganization ? (
+                                <Loader2 className="animate-spin" />
+                            ) : (
+                                <EllipsisIcon className={classNames?.icon} />
+                            )}
                         </Button>
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent>
-                        <DropdownMenuItem onClick={() => setIsLeaveDialogOpen(true)}>
+                        <DropdownMenuItem
+                            onClick={handleManageOrganization}
+                            disabled={isManagingOrganization}
+                        >
+                            <SettingsIcon className={classNames?.icon} />
+
+                            {localization.manageOrganization}
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem onClick={() => setIsLeaveDialogOpen(true)} variant="destructive">
                             <LogOutIcon className={classNames?.icon} />
 
                             {localization.leaveOrganization}

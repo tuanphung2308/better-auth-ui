@@ -601,7 +601,10 @@ export const authLocalization = {
     leaveOrganizationConfirmation: "Are you sure you want to leave this organization?",
 
     /** @default "You have successfully left the organization." */
-    leaveOrganizationSuccess: "You have successfully left the organization."
+    leaveOrganizationSuccess: "You have successfully left the organization.",
+
+    /** @default "Manage Organization" */
+    manageOrganization: "Manage Organization"
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>
