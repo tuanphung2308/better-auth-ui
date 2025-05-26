@@ -17,7 +17,11 @@ import type { CredentialsOptions } from "../types/credentials-options"
 import type { DeleteUserOptions } from "../types/delete-user-options"
 import type { GenericOAuthOptions } from "../types/generic-oauth-options"
 import type { Link } from "../types/link"
-import type { OrganizationOptions, OrganizationOptionsContext } from "../types/organization-options"
+import type {
+    OrganizationOptions,
+    OrganizationOptionsContext,
+    OrganizationPermissions
+} from "../types/organization-options"
 import type { PasswordValidation } from "../types/password-validation"
 import type { RenderToast } from "../types/render-toast"
 import type { SettingsOptions } from "../types/settings-options"
@@ -611,7 +615,28 @@ export const AuthUIProvider = ({
 
     const organization = useMemo<OrganizationOptionsContext | undefined>(() => {
         if (!organizationProp) return
-        if (organizationProp === true) return {}
+
+        const defaultPermissions = {
+            owner: {
+                organization: ["update", "delete"],
+                member: ["create", "update", "delete"],
+                invitation: ["create", "cancel"]
+            },
+            admin: {
+                organization: ["update"],
+                member: ["create", "update", "delete"],
+                invitation: ["create", "cancel"]
+            },
+            member: {
+                invitation: ["create", "cancel"]
+            }
+        } as OrganizationPermissions
+
+        if (organizationProp === true) {
+            return {
+                permissions: defaultPermissions
+            }
+        }
 
         let logo: OrganizationOptionsContext["logo"] | undefined
 
@@ -628,9 +653,13 @@ export const AuthUIProvider = ({
             }
         }
 
+        // Set default permissions if not provided
+        const permissions = organizationProp.permissions || defaultPermissions
+
         return {
             ...organizationProp,
-            logo
+            logo,
+            permissions
         }
     }, [organizationProp])
 

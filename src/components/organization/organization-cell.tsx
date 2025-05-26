@@ -41,7 +41,10 @@ export function OrganizationCell({
         toast
     } = useContext(AuthUIContext)
 
-    const localization = useMemo(() => ({ ...contextLocalization, ...localizationProp }), [contextLocalization, localizationProp])
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
     const { refetch: refetchActiveOrganization } = authClient.useActiveOrganization()
     const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false)
@@ -69,7 +72,16 @@ export function OrganizationCell({
         } finally {
             setIsManagingOrganization(false)
         }
-    }, [authClient, organization.id, basePath, viewPaths, navigate, toast, localization, refetchActiveOrganization])
+    }, [
+        authClient,
+        organization.id,
+        basePath,
+        viewPaths,
+        navigate,
+        toast,
+        localization,
+        refetchActiveOrganization
+    ])
 
     return (
         <>
@@ -107,7 +119,10 @@ export function OrganizationCell({
                             {localization.manageOrganization}
                         </DropdownMenuItem>
 
-                        <DropdownMenuItem onClick={() => setIsLeaveDialogOpen(true)} variant="destructive">
+                        <DropdownMenuItem
+                            onClick={() => setIsLeaveDialogOpen(true)}
+                            variant="destructive"
+                        >
                             <LogOutIcon className={classNames?.icon} />
 
                             {localization.leaveOrganization}
