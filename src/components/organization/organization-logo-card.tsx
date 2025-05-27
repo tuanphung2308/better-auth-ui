@@ -34,7 +34,7 @@ export function OrganizationLogoCard({
 }: OrganizationLogoCardProps) {
     const {
         authClient,
-        hooks: { useListOrganizations },
+        hooks: { useActiveOrganization, useListOrganizations },
         localization: authLocalization,
         optimistic,
         organization,
@@ -43,8 +43,7 @@ export function OrganizationLogoCard({
 
     localization = { ...authLocalization, ...localization }
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } =
-        authClient.useActiveOrganization()
+    const { data: activeOrganization, refetch: refetchActiveOrganization } = useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
 
     const isPending = !activeOrganization

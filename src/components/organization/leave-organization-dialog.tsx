@@ -38,15 +38,14 @@ export function LeaveOrganizationDialog({
 }: LeaveOrganizationDialogProps) {
     const {
         authClient,
-        hooks: { useListOrganizations },
+        hooks: { useActiveOrganization, useListOrganizations },
         localization: contextLocalization,
         toast
     } = useContext(AuthUIContext)
 
     const localization = { ...contextLocalization, ...localizationProp }
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } =
-        authClient.useActiveOrganization()
+    const { data: activeOrganization, refetch: refetchActiveOrganization } = useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
 
     const [isLeaving, setIsLeaving] = useState(false)

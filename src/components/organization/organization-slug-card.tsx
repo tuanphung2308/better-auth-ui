@@ -20,7 +20,7 @@ export function OrganizationSlugCard({
 }: SettingsCardProps) {
     const {
         authClient,
-        hooks: { useListOrganizations },
+        hooks: { useActiveOrganization, useListOrganizations },
         localization: contextLocalization,
         optimistic,
         toast
@@ -28,8 +28,7 @@ export function OrganizationSlugCard({
 
     const localization = { ...contextLocalization, ...localizationProp }
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } =
-        authClient.useActiveOrganization()
+    const { data: activeOrganization, refetch: refetchActiveOrganization } = useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
 
     const isPending = !activeOrganization

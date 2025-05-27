@@ -16,11 +16,15 @@ export function OrganizationMembersCard({
     localization: localizationProp,
     ...props
 }: SettingsCardProps) {
-    const { authClient, localization: contextLocalization } = useContext(AuthUIContext)
+    const {
+        authClient,
+        hooks: { useActiveOrganization },
+        localization: contextLocalization
+    } = useContext(AuthUIContext)
 
     const localization = { ...contextLocalization, ...localizationProp }
 
-    const { data: activeOrganization } = authClient.useActiveOrganization()
+    const { data: activeOrganization } = useActiveOrganization()
     const members = activeOrganization?.members
 
     const isPending = !activeOrganization

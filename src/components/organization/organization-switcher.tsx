@@ -79,7 +79,7 @@ export function OrganizationSwitcher({
     const {
         authClient,
         basePath,
-        hooks: { useSession, useListOrganizations },
+        hooks: { useActiveOrganization, useSession, useListOrganizations },
         localization: contextLocalization,
         toast,
         viewPaths,
@@ -102,7 +102,7 @@ export function OrganizationSwitcher({
         data: activeOrganization,
         isPending: organizationPending,
         isRefetching
-    } = authClient.useActiveOrganization()
+    } = useActiveOrganization()
 
     const isPending = sessionPending || activeOrganizationPending || organizationPending
 

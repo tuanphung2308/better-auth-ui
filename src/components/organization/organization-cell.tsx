@@ -35,6 +35,7 @@ export function OrganizationCell({
     const {
         authClient,
         basePath,
+        hooks: { useActiveOrganization },
         localization: contextLocalization,
         viewPaths,
         navigate,
@@ -46,7 +47,7 @@ export function OrganizationCell({
         [contextLocalization, localizationProp]
     )
 
-    const { refetch: refetchActiveOrganization } = authClient.useActiveOrganization()
+    const { refetch: refetchActiveOrganization } = useActiveOrganization()
     const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false)
     const [isManagingOrganization, setIsManagingOrganization] = useState(false)
 

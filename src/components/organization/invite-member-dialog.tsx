@@ -36,7 +36,7 @@ export function InviteMemberDialog({
 }: InviteMemberDialogProps) {
     const {
         authClient,
-        hooks: { useSession },
+        hooks: { useActiveOrganization, useSession },
         localization: contextLocalization,
         toast,
         organization
@@ -44,7 +44,7 @@ export function InviteMemberDialog({
 
     const localization = { ...contextLocalization, ...localizationProp }
 
-    const { data: activeOrganization } = authClient.useActiveOrganization()
+    const { data: activeOrganization } = useActiveOrganization()
     const { data: sessionData } = useSession()
     const membership = activeOrganization?.members.find((m) => m.userId === sessionData?.user.id)
 

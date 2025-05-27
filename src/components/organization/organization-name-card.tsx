@@ -20,7 +20,7 @@ export function OrganizationNameCard({
 }: SettingsCardProps) {
     const {
         authClient,
-        hooks: { useListOrganizations, useHasPermission },
+        hooks: { useActiveOrganization, useListOrganizations, useHasPermission },
         localization: contextLocalization,
         optimistic,
         toast
@@ -34,9 +34,7 @@ export function OrganizationNameCard({
 
     const localization = { ...contextLocalization, ...localizationProp }
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } =
-        authClient.useActiveOrganization()
-    const { refetch: refetchOrganizations } = useListOrganizations()
+    const { data: activeOrganization, refetch: refetchActiveOrganization } = useActiveOrganization()
 
     const isPending = !activeOrganization || permissionPending
 
@@ -59,6 +57,7 @@ export function OrganizationNameCard({
                 variant: "error",
                 message: localization.error
             })
+
             return
         }
 
@@ -80,7 +79,6 @@ export function OrganizationNameCard({
             })
 
             await refetchActiveOrganization?.()
-            await refetchOrganizations?.()
 
             toast({
                 variant: "success",

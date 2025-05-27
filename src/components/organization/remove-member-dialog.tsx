@@ -36,6 +36,7 @@ export function RemoveMemberDialog({
 }: RemoveMemberDialogProps) {
     const {
         authClient,
+        hooks: { useActiveOrganization },
         localization: contextLocalization,
         toast,
         organization
@@ -43,7 +44,7 @@ export function RemoveMemberDialog({
 
     const localization = { ...contextLocalization, ...localizationProp }
 
-    const { refetch } = authClient.useActiveOrganization()
+    const { refetch } = useActiveOrganization()
 
     const builtInRoles = [
         { role: "owner", label: localization.owner },

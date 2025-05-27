@@ -37,6 +37,7 @@ export function UpdateMemberRoleDialog({
 }: UpdateMemberRoleDialogProps) {
     const {
         authClient,
+        hooks: { useActiveOrganization },
         localization: contextLocalization,
         organization,
         toast
@@ -44,7 +45,7 @@ export function UpdateMemberRoleDialog({
 
     const localization = { ...contextLocalization, ...localizationProp }
 
-    const { refetch } = authClient.useActiveOrganization()
+    const { refetch } = useActiveOrganization()
 
     const [isUpdating, setIsUpdating] = useState(false)
     const [selectedRole, setSelectedRole] = useState(member.role)

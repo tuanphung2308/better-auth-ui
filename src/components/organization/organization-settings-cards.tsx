@@ -12,10 +12,16 @@ export function OrganizationSettingsCards({
     classNames,
     localization
 }: Omit<SettingsCardsProps, "view">) {
-    const { authClient, basePath, organization, replace, viewPaths } = useContext(AuthUIContext)
+    const {
+        authClient,
+        basePath,
+        hooks: { useActiveOrganization },
+        organization,
+        replace,
+        viewPaths
+    } = useContext(AuthUIContext)
 
-    const { data: activeOrganization, isPending: organizationPending } =
-        authClient.useActiveOrganization()
+    const { data: activeOrganization, isPending: organizationPending } = useActiveOrganization()
 
     useEffect(() => {
         if (organizationPending) return
