@@ -10,7 +10,7 @@ import { CardContent } from "../ui/card"
 import { InviteMemberDialog } from "./invite-member-dialog"
 import { MemberCell } from "./member-cell"
 
-export function OrganizationMembersCard({
+export function InviteMemberCard({
     className,
     classNames,
     localization: localizationProp,

@@ -281,7 +281,7 @@ export function OrganizationSwitcher({
                             )
                     )}
 
-                    {organizations?.length && (
+                    {organizations && organizations.length > 0 && (
                         <DropdownMenuSeparator className={classNames?.content?.separator} />
                     )}
 

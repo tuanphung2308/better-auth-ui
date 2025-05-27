@@ -612,11 +612,9 @@ export const AuthUIProvider = ({
     const organization = useMemo<OrganizationOptionsContext | undefined>(() => {
         if (!organizationProp) return
 
-        const defaultRoles = ["owner", "admin", "member", "guest"]
-
         if (organizationProp === true) {
             return {
-                roles: defaultRoles
+                customRoles: []
             }
         }
 
@@ -635,13 +633,10 @@ export const AuthUIProvider = ({
             }
         }
 
-        // Set default roles if not provided
-        const roles = organizationProp.roles || defaultRoles
-
         return {
             ...organizationProp,
             logo,
-            roles
+            customRoles: organizationProp.customRoles || []
         }
     }, [organizationProp])
 

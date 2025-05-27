@@ -20,11 +20,17 @@ export function OrganizationNameCard({
 }: SettingsCardProps) {
     const {
         authClient,
-        hooks: { useListOrganizations },
+        hooks: { useListOrganizations, useHasPermission },
         localization: contextLocalization,
         optimistic,
         toast
     } = useContext(AuthUIContext)
+
+    const { data: hasPermission, isPending: permissionPending } = useHasPermission({
+        permissions: {
+            organization: ["update"]
+        }
+    })
 
     const localization = { ...contextLocalization, ...localizationProp }
 
@@ -32,7 +38,7 @@ export function OrganizationNameCard({
         authClient.useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
 
-    const isPending = !activeOrganization
+    const isPending = !activeOrganization || permissionPending
 
     const formSchema = z.object({
         name: z.string().min(1, {
@@ -117,7 +123,7 @@ export function OrganizationNameCard({
                                                 placeholder={
                                                     localization.organizationNamePlaceholder
                                                 }
-                                                disabled={isSubmitting}
+                                                disabled={isSubmitting || !hasPermission?.success}
                                                 {...field}
                                             />
                                         </FormControl>

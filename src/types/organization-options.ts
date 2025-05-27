@@ -16,22 +16,6 @@ export type OrganizationLogoOptions = {
     extension: string
 }
 
-export type OrganizationPermissionResource = "organization" | "member" | "invitation"
-
-export type OrganizationPermissionAction = "create" | "update" | "delete" | "cancel"
-
-export type OrganizationRolePermissions = {
-    organization?: OrganizationPermissionAction[]
-    member?: OrganizationPermissionAction[]
-    invitation?: OrganizationPermissionAction[]
-}
-
-export type OrganizationPermissions = {
-    owner?: OrganizationRolePermissions
-    admin?: OrganizationRolePermissions
-    member?: OrganizationRolePermissions
-}
-
 export type OrganizationOptions = {
     /**
      * Logo configuration
@@ -39,10 +23,10 @@ export type OrganizationOptions = {
      */
     logo?: boolean | Partial<OrganizationLogoOptions>
     /**
-     * Permissions configuration for organization roles
-     * @default Better Auth defaults (owner: full access, admin: organization update/delete + member/invitation CRUD except org delete, member: limited access)
+     * Custom roles to add to the built-in roles (owner, admin, member)
+     * @default []
      */
-    permissions?: OrganizationPermissions
+    customRoles?: Array<{ role: string; label: string }>
 }
 
 export type OrganizationOptionsContext = {
@@ -52,8 +36,8 @@ export type OrganizationOptionsContext = {
      */
     logo?: OrganizationLogoOptions
     /**
-     * Permissions configuration for organization roles
-     * @default Better Auth defaults
+     * Custom roles to add to the built-in roles (owner, admin, member)
+     * @default []
      */
-    permissions?: OrganizationPermissions
+    customRoles: Array<{ role: string; label: string }>
 }

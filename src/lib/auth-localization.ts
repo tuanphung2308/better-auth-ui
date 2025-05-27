@@ -625,7 +625,46 @@ export const authLocalization = {
     membersDescription: "Add or remove members and manage their roles.",
 
     /** @default "Invite new members to your organization." */
-    membersInstructions: "Invite new members to your organization."
+    membersInstructions: "Invite new members to your organization.",
+
+    /** @default "Send an invitation to add a new member to your organization." */
+    inviteMemberDescription: "Send an invitation to add a new member to your organization.",
+
+    /** @default "Role" */
+    role: "Role",
+
+    /** @default "Select a role" */
+    selectRole: "Select a role",
+
+    /** @default "Admin" */
+    admin: "Admin",
+
+    /** @default "Member" */
+    member: "Member",
+
+    /** @default "Guest" */
+    guest: "Guest",
+
+    /** @default "Owner" */
+    owner: "Owner",
+
+    /** @default "Change Role" */
+    changeRole: "Change Role",
+
+    /** @default "Update the role for this member" */
+    changeRoleDescription: "Update the role for this member",
+
+    /** @default "Update Role" */
+    updateRole: "Update Role",
+
+    /** @default "Member role updated successfully" */
+    memberRoleUpdated: "Member role updated successfully",
+
+    /** @default "Send Invitation" */
+    sendInvitation: "Send Invitation",
+
+    /** @default "Invitation sent successfully" */
+    invitationSent: "Invitation sent successfully"
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>

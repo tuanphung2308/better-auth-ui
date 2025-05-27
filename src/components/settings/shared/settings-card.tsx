@@ -74,7 +74,7 @@ export function SettingsCard({
         <Card
             className={cn(
                 "w-full pb-0 text-start",
-                variant === "destructive" && "border-destructive/40",
+                variant === "destructive" && "border-destructive/20",
                 className,
                 classNames?.base
             )}
