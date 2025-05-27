@@ -5,6 +5,7 @@ import { useMemo } from "react"
 import type { Session } from "../../types/auth-client"
 import type { AuthHooks } from "../../types/auth-hooks"
 import type { AuthMutators } from "../../types/auth-mutators"
+import type { Refetch } from "../../types/refetch"
 import { getModelName } from "./model-names"
 import { useListAccounts } from "./use-list-accounts"
 import { useListSessions } from "./use-list-sessions"
@@ -23,7 +24,7 @@ export interface UseInstantOptionsProps {
     modelNames?: Partial<ModelNames>
     usePlural?: boolean
     sessionData?: { user: User; session: Session }
-    refetch?: () => Promise<unknown> | unknown
+    refetch?: Refetch
     user?: { id: string } | null
     isPending: boolean
 }

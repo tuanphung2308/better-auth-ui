@@ -1,3 +1,4 @@
+import type { User } from "../../types/auth-client"
 import type { AuthHooks } from "../../types/auth-hooks"
 import { getModelName } from "./model-names"
 import { useConditionalQueryOne } from "./use-conditional-query"
@@ -29,7 +30,7 @@ export function useSession({
         data: sessionData
             ? {
                   session: sessionData.session,
-                  user: sessionData?.user.id === user?.id ? user : sessionData.user
+                  user: (sessionData?.user.id === user?.id ? user : sessionData.user) as User
               }
             : null,
         error,

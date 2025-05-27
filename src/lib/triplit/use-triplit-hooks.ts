@@ -4,6 +4,7 @@ import { useMemo } from "react"
 
 import type { Session } from "../../types/auth-client"
 import type { AuthHooks } from "../../types/auth-hooks"
+import type { Refetch } from "../../types/refetch"
 import { useListAccounts } from "./use-list-accounts"
 import { useListSessions } from "./use-list-sessions"
 import { useSession } from "./use-session"
@@ -16,12 +17,11 @@ type ModelNames = {
 }
 
 export interface UseTriplitOptionsProps {
-    // biome-ignore lint/suspicious/noExplicitAny:
-    triplit: TriplitClient<any>
+    triplit: TriplitClient
     modelNames?: Partial<ModelNames>
     usePlural?: boolean
     sessionData?: { user: User; session: Session }
-    refetch?: () => Promise<unknown> | unknown
+    refetch?: Refetch
     isPending: boolean
 }
 

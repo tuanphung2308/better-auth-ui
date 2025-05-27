@@ -1,8 +1,6 @@
 import type { BetterFetchError } from "@better-fetch/fetch"
-import type { User } from "better-auth"
-
 import type { ApiKey } from "./api-key"
-import type { AuthClient, Session } from "./auth-client"
+import type { AuthClient, Session, User } from "./auth-client"
 import type { Refetch } from "./refetch"
 
 type AuthHook<T> = {
@@ -13,7 +11,7 @@ type AuthHook<T> = {
 }
 
 export type AuthHooks = {
-    useSession: () => ReturnType<AuthClient["useSession"]>
+    useSession: () => AuthHook<{ session: Session; user: User }>
     useListAccounts: () => AuthHook<{ accountId: string; provider: string }[]>
     useListDeviceSessions: () => AuthHook<{ session: Session; user: User }[]>
     useListSessions: () => AuthHook<Session[]>
