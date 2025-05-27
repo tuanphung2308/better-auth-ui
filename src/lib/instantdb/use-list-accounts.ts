@@ -1,3 +1,4 @@
+import type { BetterFetchError } from "@better-fetch/fetch"
 import { useMemo } from "react"
 import type { AuthHooks } from "../../types/auth-hooks"
 import { getModelName } from "./model-names"
@@ -33,6 +34,6 @@ export function useListAccounts({
     return {
         data: accounts,
         isPending: !accounts && (isPending || authLoading || isLoading),
-        error
+        error: (error as BetterFetchError) || null
     }
 }

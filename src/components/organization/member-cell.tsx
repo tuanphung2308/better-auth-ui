@@ -1,9 +1,10 @@
 "use client"
 
 import type { User } from "better-auth"
-import { EllipsisIcon, ShieldIcon, UserXIcon } from "lucide-react"
+import { EllipsisIcon, UserCogIcon, UserXIcon } from "lucide-react"
 import { useContext, useState } from "react"
 
+import type { Member } from "better-auth/plugins/organization"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
@@ -23,13 +24,7 @@ import { UpdateMemberRoleDialog } from "./update-member-role-dialog"
 export interface MemberCellProps {
     className?: string
     classNames?: SettingsCardClassNames
-    member: {
-        id: string
-        userId: string
-        user: Partial<User>
-        role: string
-        organizationId: string
-    }
+    member: Member & { user: Partial<User> }
     localization?: AuthLocalization
 }
 
@@ -40,21 +35,14 @@ export function MemberCell({ className, classNames, member, localization }: Memb
 
     const fullLocalization = { ...contextLocalization, ...localization }
 
-    // Create role labels mapping
-    const roleLabels: Record<string, string> = {
-        owner: fullLocalization.owner || "Owner",
-        admin: fullLocalization.admin || "Admin",
-        member: fullLocalization.member || "Member"
-    }
-    if (organization?.customRoles) {
-        for (const { role, label } of organization.customRoles) {
-            roleLabels[role] = label
-        }
-    }
+    const builtInRoles = [
+        { role: "owner", label: fullLocalization.owner },
+        { role: "admin", label: fullLocalization.admin },
+        { role: "member", label: fullLocalization.member }
+    ]
 
-    const getRoleLabel = (role: string) => {
-        return roleLabels[role] || role.charAt(0).toUpperCase() + role.slice(1)
-    }
+    const roles = [...builtInRoles, ...(organization?.customRoles || [])]
+    const role = roles.find((r) => r.role === member.role)
 
     return (
         <>
@@ -68,7 +56,7 @@ export function MemberCell({ className, classNames, member, localization }: Memb
                         </span>
 
                         <span className="truncate text-xs capitalize opacity-70">
-                            {getRoleLabel(member.role)}
+                            {role?.label}
                         </span>
                     </div>
                 </div>
@@ -92,8 +80,8 @@ export function MemberCell({ className, classNames, member, localization }: Memb
 
                         <DropdownMenuContent onCloseAutoFocus={(e) => e.preventDefault()}>
                             <DropdownMenuItem onClick={() => setUpdateRoleDialogOpen(true)}>
-                                <ShieldIcon className={classNames?.icon} />
-                                {localization?.changeRole || "Change Role"}
+                                <UserCogIcon className={classNames?.icon} />
+                                {localization?.updateRole}
                             </DropdownMenuItem>
 
                             <DropdownMenuItem

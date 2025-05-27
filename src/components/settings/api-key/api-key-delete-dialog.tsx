@@ -7,6 +7,7 @@ import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
 import type { ApiKey } from "../../../types/api-key"
+import type { Refetch } from "../../../types/refetch"
 import { Button } from "../../ui/button"
 import {
     Dialog,
@@ -22,7 +23,7 @@ interface ApiKeyDeleteDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     apiKey: ApiKey
     localization?: AuthLocalization
-    refetch?: () => Promise<void>
+    refetch?: Refetch
 }
 
 export function ApiKeyDeleteDialog({

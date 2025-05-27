@@ -10,6 +10,7 @@ import { useLang } from "../../../hooks/use-lang"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
+import type { Refetch } from "../../../types/refetch"
 import { Button } from "../../ui/button"
 import {
     Dialog,
@@ -28,7 +29,7 @@ interface CreateAPIKeyDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
     onSuccess: (key: string) => void
-    refetch?: () => Promise<void>
+    refetch?: Refetch
 }
 
 export function CreateAPIKeyDialog({

@@ -16,25 +16,20 @@ export interface PasskeyCellProps {
     classNames?: SettingsCardClassNames
     localization?: Partial<AuthLocalization>
     passkey: { id: string; createdAt: Date }
-    refetch?: () => Promise<void>
 }
 
-export function PasskeyCell({
-    className,
-    classNames,
-    localization,
-    passkey,
-    refetch
-}: PasskeyCellProps) {
+export function PasskeyCell({ className, classNames, localization, passkey }: PasskeyCellProps) {
     const {
         freshAge,
-        hooks: { useSession },
+        hooks: { useSession, useListPasskeys },
         localization: contextLocalization,
         mutators: { deletePasskey },
         toast
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
+
+    const { refetch } = useListPasskeys()
 
     const { data: sessionData } = useSession()
     const session = sessionData?.session

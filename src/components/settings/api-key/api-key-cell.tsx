@@ -8,6 +8,7 @@ import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn } from "../../../lib/utils"
 import type { ApiKey } from "../../../types/api-key"
+import type { Refetch } from "../../../types/refetch"
 import { Button } from "../../ui/button"
 import { Card } from "../../ui/card"
 import type { SettingsCardClassNames } from "../shared/settings-card"
@@ -18,7 +19,7 @@ export interface APIKeyCellProps {
     classNames?: SettingsCardClassNames
     apiKey: ApiKey
     localization?: Partial<AuthLocalization>
-    refetch?: () => Promise<void>
+    refetch?: Refetch
 }
 
 export function APIKeyCell({

@@ -43,7 +43,7 @@ export function OrganizationsCard({
                 isPending={isPending}
                 {...props}
             >
-                {organizations?.length && (
+                {organizations && organizations?.length > 0 && (
                     <CardContent className={cn("grid gap-4", classNames?.content)}>
                         {organizations?.map((organization) => (
                             <OrganizationCell

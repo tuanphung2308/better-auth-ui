@@ -1,25 +1,26 @@
-import type { User as AnyUser } from "better-auth"
-import type { Organization } from "better-auth/plugins/organization"
+import type { BetterFetchError } from "@better-fetch/fetch"
+import type { User } from "better-auth"
+
 import type { ApiKey } from "./api-key"
-import type { AuthClient, Session, User } from "./auth-client"
-import type { FetchError } from "./fetch-error"
+import type { AuthClient, Session } from "./auth-client"
+import type { Refetch } from "./refetch"
 
 type AuthHook<T> = {
     isPending: boolean
     data?: T | null
-    error?: FetchError | null
-    // biome-ignore lint/suspicious/noExplicitAny:
-    refetch?: () => Promise<any> | any
+    error?: BetterFetchError | null
+    refetch?: Refetch
 }
 
 export type AuthHooks = {
-    useSession: () => AuthHook<{ session: Session; user: User }>
+    useSession: () => ReturnType<AuthClient["useSession"]>
     useListAccounts: () => AuthHook<{ accountId: string; provider: string }[]>
-    useListDeviceSessions: () => AuthHook<{ session: Session; user: AnyUser }[]>
+    useListDeviceSessions: () => AuthHook<{ session: Session; user: User }[]>
     useListSessions: () => AuthHook<Session[]>
-    useListPasskeys: () => AuthHook<{ id: string; createdAt: Date }[]>
+    useListPasskeys: () => ReturnType<AuthClient["useListPasskeys"]>
     useListApiKeys: () => AuthHook<ApiKey[]>
-    useListOrganizations: () => AuthHook<Organization[]>
+    useActiveOrganization: () => ReturnType<AuthClient["useActiveOrganization"]>
+    useListOrganizations: () => ReturnType<AuthClient["useListOrganizations"]>
     useHasPermission: (
         params: Parameters<AuthClient["organization"]["hasPermission"]>[0]
     ) => AuthHook<{

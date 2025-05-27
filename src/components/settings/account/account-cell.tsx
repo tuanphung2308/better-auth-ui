@@ -8,6 +8,7 @@ import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { getLocalizedError } from "../../../lib/utils"
 import { cn } from "../../../lib/utils"
+import type { Refetch } from "../../../types/refetch"
 import { Button } from "../../ui/button"
 import { Card } from "../../ui/card"
 import {
@@ -24,7 +25,7 @@ export interface AccountCellProps {
     classNames?: SettingsCardClassNames
     deviceSession: { user: User; session: Session }
     localization?: Partial<AuthLocalization>
-    refetch?: () => Promise<void>
+    refetch?: Refetch
 }
 
 export function AccountCell({

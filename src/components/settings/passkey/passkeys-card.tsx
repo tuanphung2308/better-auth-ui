@@ -86,7 +86,6 @@ export function PasskeysCard({ className, classNames, localization }: PasskeysCa
                                         classNames={classNames}
                                         localization={localization}
                                         passkey={passkey}
-                                        refetch={refetch}
                                     />
                                 ))}
                             </CardContent>

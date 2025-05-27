@@ -1,4 +1,3 @@
-import type { User } from "../../types/auth-client"
 import type { AuthHooks } from "../../types/auth-hooks"
 import { getModelName } from "./model-names"
 import { useConditionalQueryOne } from "./use-conditional-query"
@@ -21,7 +20,7 @@ export function useSession({
 
     const { payload } = useTriplitToken(triplit)
 
-    const { result: user } = useConditionalQueryOne(
+    const { result: user, error } = useConditionalQueryOne(
         triplit,
         payload?.sub && triplit.query(modelName)
     )
@@ -30,10 +29,11 @@ export function useSession({
         data: sessionData
             ? {
                   session: sessionData.session,
-                  user: (sessionData?.user.id === user?.id ? user : sessionData.user) as User
+                  user: sessionData?.user.id === user?.id ? user : sessionData.user
               }
-            : undefined,
+            : null,
+        error,
         isPending: isPending,
-        refetch
+        refetch: refetch || (() => {})
     }
 }

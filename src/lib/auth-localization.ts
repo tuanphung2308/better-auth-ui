@@ -648,11 +648,8 @@ export const authLocalization = {
     /** @default "Owner" */
     owner: "Owner",
 
-    /** @default "Change Role" */
-    changeRole: "Change Role",
-
     /** @default "Update the role for this member" */
-    changeRoleDescription: "Update the role for this member",
+    updateRoleDescription: "Update the role for this member",
 
     /** @default "Update Role" */
     updateRole: "Update Role",

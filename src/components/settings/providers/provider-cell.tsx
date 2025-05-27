@@ -8,6 +8,7 @@ import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import type { Provider } from "../../../lib/social-providers"
 import { cn, getLocalizedError } from "../../../lib/utils"
+import type { Refetch } from "../../../types/refetch"
 import { Button } from "../../ui/button"
 import { Card } from "../../ui/card"
 import type { SettingsCardClassNames } from "../shared/settings-card"
@@ -20,7 +21,7 @@ export interface ProviderCellProps {
     localization?: Partial<AuthLocalization>
     other?: boolean
     provider: Provider
-    refetch?: () => Promise<void>
+    refetch?: Refetch
 }
 
 export function ProviderCell({

@@ -6,6 +6,7 @@ import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { socialProviders } from "../../../lib/social-providers"
 import { cn } from "../../../lib/utils"
+import type { Refetch } from "../../../types/refetch"
 import { CardContent } from "../../ui/card"
 import { SettingsCard } from "../shared/settings-card"
 import type { SettingsCardClassNames } from "../shared/settings-card"
@@ -19,7 +20,7 @@ export interface ProvidersCardProps {
     isPending?: boolean
     localization?: Partial<AuthLocalization>
     skipHook?: boolean
-    refetch?: () => Promise<void>
+    refetch?: Refetch
 }
 
 export function ProvidersCard({

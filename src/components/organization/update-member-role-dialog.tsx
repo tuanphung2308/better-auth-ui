@@ -4,6 +4,7 @@ import type { User } from "better-auth"
 import { Loader2 } from "lucide-react"
 import { type ComponentProps, useContext, useState } from "react"
 
+import type { Member } from "better-auth/plugins/organization"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
@@ -24,13 +25,7 @@ import { UserAvatar } from "../user-avatar"
 export interface UpdateMemberRoleDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
-    member: {
-        id: string
-        userId: string
-        user: Partial<User>
-        role: string
-        organizationId: string
-    }
+    member: Member & { user: Partial<User> }
 }
 
 export function UpdateMemberRoleDialog({
@@ -43,41 +38,37 @@ export function UpdateMemberRoleDialog({
     const {
         authClient,
         localization: contextLocalization,
-        toast,
-        organization
+        organization,
+        toast
     } = useContext(AuthUIContext)
-    const { refetch } = authClient.useActiveOrganization()
+
     const localization = { ...contextLocalization, ...localizationProp }
+
+    const { refetch } = authClient.useActiveOrganization()
 
     const [isUpdating, setIsUpdating] = useState(false)
     const [selectedRole, setSelectedRole] = useState(member.role)
 
-    // Built-in roles
-    const builtInRoles = ["owner", "admin", "member"]
+    const builtInRoles = [
+        { role: "owner", label: localization.owner },
+        { role: "admin", label: localization.admin },
+        { role: "member", label: localization.member }
+    ]
 
-    // Get all roles (built-in + custom), excluding "owner"
-    const allRoles = [...builtInRoles, ...(organization?.customRoles?.map((r) => r.role) || [])]
-    const availableRoles = allRoles.filter((role) => role !== "owner")
+    const roles = [...builtInRoles, ...(organization?.customRoles || [])]
+    const availableRoles = roles.filter(
+        (role) => member.role === "owner" || role.role !== "owner" || true
+    )
 
-    // Create role labels mapping
-    const roleLabels: Record<string, string> = {
-        owner: localization.owner || "Owner",
-        admin: localization.admin || "Admin",
-        member: localization.member || "Member"
-    }
-    if (organization?.customRoles) {
-        for (const { role, label } of organization.customRoles) {
-            roleLabels[role] = label
-        }
-    }
-
-    const getRoleLabel = (role: string) => {
-        return roleLabels[role] || role.charAt(0).toUpperCase() + role.slice(1)
-    }
+    const role = roles.find((r) => r.role === member.role)
 
     const updateMemberRole = async () => {
         if (selectedRole === member.role) {
-            onOpenChange?.(false)
+            toast({
+                variant: "error",
+                message: `${localization.role} ${localization.isTheSame}`
+            })
+
             return
         }
 
@@ -96,7 +87,7 @@ export function UpdateMemberRoleDialog({
 
             toast({
                 variant: "success",
-                message: localization.memberRoleUpdated || "Member role updated successfully"
+                message: localization.memberRoleUpdated
             })
 
             await refetch?.()
@@ -119,48 +110,50 @@ export function UpdateMemberRoleDialog({
             >
                 <DialogHeader className={classNames?.dialog?.header}>
                     <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {localization.changeRole}
+                        {localization.updateRole}
                     </DialogTitle>
 
                     <DialogDescription
                         className={cn("text-xs md:text-sm", classNames?.description)}
                     >
-                        {localization.changeRoleDescription || "Update the role for this member"}
+                        {localization.updateRoleDescription}
                     </DialogDescription>
                 </DialogHeader>
 
-                <Card className={cn("my-4 flex-row items-center p-4", classNames?.cell)}>
-                    <div className="flex items-center gap-2">
-                        <UserAvatar
-                            className="my-0.5"
-                            user={member.user}
-                            localization={localization}
-                        />
+                <div className="grid gap-6 py-4">
+                    <Card className={cn("flex-row items-center p-4", classNames?.cell)}>
+                        <div className="flex items-center gap-2">
+                            <UserAvatar
+                                className="my-0.5"
+                                user={member.user}
+                                localization={localization}
+                            />
 
-                        <div className="grid flex-1 text-left leading-tight">
-                            <span className="truncate font-semibold text-sm">
-                                {member.user?.email || localization?.user}
-                            </span>
+                            <div className="grid flex-1 text-left leading-tight">
+                                <span className="truncate font-semibold text-sm">
+                                    {member.user.email}
+                                </span>
 
-                            <span className="truncate text-xs capitalize opacity-70">
-                                {getRoleLabel(member.role)}
-                            </span>
+                                <span className="truncate text-xs capitalize opacity-70">
+                                    {role?.label}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                </Card>
+                    </Card>
 
-                <Select value={selectedRole} onValueChange={setSelectedRole}>
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder={localization.selectRole} />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {availableRoles.map((role) => (
-                            <SelectItem key={role} value={role}>
-                                {getRoleLabel(role)}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                    <Select value={selectedRole} onValueChange={setSelectedRole}>
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder={localization.selectRole} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {availableRoles.map((role) => (
+                                <SelectItem key={role.role} value={role.role}>
+                                    {role.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
 
                 <DialogFooter className={classNames?.dialog?.footer}>
                     <Button
@@ -177,10 +170,11 @@ export function UpdateMemberRoleDialog({
                         type="button"
                         onClick={updateMemberRole}
                         className={cn(classNames?.button, classNames?.primaryButton)}
-                        disabled={isUpdating || selectedRole === member.role}
+                        disabled={isUpdating}
                     >
                         {isUpdating && <Loader2 className="animate-spin" />}
-                        {localization.updateRole || "Update Role"}
+
+                        {localization.updateRole}
                     </Button>
                 </DialogFooter>
             </DialogContent>

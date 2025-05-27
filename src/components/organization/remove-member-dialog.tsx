@@ -4,6 +4,7 @@ import type { User } from "better-auth"
 import { Loader2 } from "lucide-react"
 import { type ComponentProps, useContext, useState } from "react"
 
+import type { Member } from "better-auth/plugins/organization"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
@@ -23,13 +24,7 @@ import { UserAvatar } from "../user-avatar"
 export interface RemoveMemberDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
-    member: {
-        id: string
-        userId: string
-        user: Partial<User>
-        role: string
-        organizationId: string
-    }
+    member: Member & { user: Partial<User> }
 }
 
 export function RemoveMemberDialog({
@@ -39,9 +34,25 @@ export function RemoveMemberDialog({
     onOpenChange,
     ...props
 }: RemoveMemberDialogProps) {
-    const { authClient, localization: contextLocalization, toast } = useContext(AuthUIContext)
-    const { refetch } = authClient.useActiveOrganization()
+    const {
+        authClient,
+        localization: contextLocalization,
+        toast,
+        organization
+    } = useContext(AuthUIContext)
+
     const localization = { ...contextLocalization, ...localizationProp }
+
+    const { refetch } = authClient.useActiveOrganization()
+
+    const builtInRoles = [
+        { role: "owner", label: localization.owner },
+        { role: "admin", label: localization.admin },
+        { role: "member", label: localization.member }
+    ]
+
+    const roles = [...builtInRoles, ...(organization?.customRoles || [])]
+    const role = roles.find((r) => r.role === member.role)
 
     const [isRemoving, setIsRemoving] = useState(false)
 
@@ -95,18 +106,18 @@ export function RemoveMemberDialog({
                 <Card className={cn("my-4 flex-row items-center p-4", classNames?.cell)}>
                     <div className="flex items-center gap-2">
                         <UserAvatar
-                            className="my-0.5"
+                            className={cn("my-0.5", classNames?.avatar)}
                             user={member.user}
                             localization={localization}
                         />
 
                         <div className="grid flex-1 text-left leading-tight">
                             <span className="truncate font-semibold text-sm">
-                                {member.user?.email || localization?.user}
+                                {member.user?.email}
                             </span>
 
                             <span className="truncate text-xs capitalize opacity-70">
-                                {member.role}
+                                {role?.label}
                             </span>
                         </div>
                     </div>

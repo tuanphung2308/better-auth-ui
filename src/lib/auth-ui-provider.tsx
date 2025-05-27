@@ -704,6 +704,7 @@ export const AuthUIProvider = ({
                     queryFn: authClient.apiKey.list,
                     cacheKey: "listApiKeys"
                 }),
+            useActiveOrganization: authClient.useActiveOrganization,
             useListOrganizations: authClient.useListOrganizations,
             useHasPermission: (params) =>
                 useAuthData({

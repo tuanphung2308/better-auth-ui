@@ -98,15 +98,20 @@ export function OrganizationSwitcher({
     const user = sessionData?.user
 
     const { data: organizations } = useListOrganizations()
-    const { data: activeOrganization, isPending: organizationPending } =
-        authClient.useActiveOrganization()
+    const {
+        data: activeOrganization,
+        isPending: organizationPending,
+        isRefetching
+    } = authClient.useActiveOrganization()
 
     const isPending = sessionPending || activeOrganizationPending || organizationPending
 
     // biome-ignore lint/correctness/useExhaustiveDependencies:
     useEffect(() => {
+        if (isRefetching) return
+
         setActiveOrganizationPending(false)
-    }, [activeOrganization])
+    }, [activeOrganization, isRefetching])
 
     const switchOrganization = useCallback(
         async (organizationId: string | null) => {
