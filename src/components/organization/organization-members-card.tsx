@@ -1,0 +1,57 @@
+"use client"
+
+import { useContext } from "react"
+import { AuthUIContext } from "../../lib/auth-ui-provider"
+import { cn } from "../../lib/utils"
+import { SettingsCard } from "../settings/shared/settings-card"
+import type { SettingsCardProps } from "../settings/shared/settings-card"
+import { CardContent } from "../ui/card"
+import { MemberCell } from "./member-cell"
+
+export function OrganizationMembersCard({
+    className,
+    classNames,
+    localization: localizationProp,
+    ...props
+}: SettingsCardProps) {
+    const { authClient, localization: contextLocalization } = useContext(AuthUIContext)
+
+    const localization = { ...contextLocalization, ...localizationProp }
+
+    const { data: activeOrganization } = authClient.useActiveOrganization()
+    const members = activeOrganization?.members
+
+    const isPending = !activeOrganization
+
+    const handleInviteMember = () => {
+        // TODO: Implement invite member functionality
+        console.log("Invite member clicked")
+    }
+
+    return (
+        <SettingsCard
+            className={className}
+            classNames={classNames}
+            title={localization.members}
+            description={localization.membersDescription}
+            instructions={localization.membersInstructions}
+            actionLabel={localization.inviteMember}
+            action={handleInviteMember}
+            isPending={isPending}
+            {...props}
+        >
+            {members && members.length > 0 && (
+                <CardContent className={cn("grid gap-4", classNames?.content)}>
+                    {members.map((member) => (
+                        <MemberCell
+                            key={member.id}
+                            classNames={classNames}
+                            member={member}
+                            localization={localization}
+                        />
+                    ))}
+                </CardContent>
+            )}
+        </SettingsCard>
+    )
+}

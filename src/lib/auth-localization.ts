@@ -310,8 +310,8 @@ export const authLocalization = {
     /** @default "Organization" */
     organization: "Organization",
 
-    /** @default "Create a new organization to collaborate with your team" */
-    organizationDescription: "Create a new organization to collaborate with your team",
+    /** @default "Create a new organization for collaboration" */
+    organizationDescription: "Create a new organization for collaboration",
 
     /** @default "Name" */
     organizationName: "Name",
@@ -591,8 +591,8 @@ export const authLocalization = {
     /** @default "Manage your organizations and memberships." */
     organizationsDescription: "Manage your organizations and memberships.",
 
-    /** @default "Create organizations to collaborate with your team." */
-    organizationsInstructions: "Create organizations to collaborate with your team.",
+    /** @default "Create an organization to collaborate with other users." */
+    organizationsInstructions: "Create an organization to collaborate with other users.",
 
     /** @default "Leave Organization" */
     leaveOrganization: "Leave Organization",
@@ -604,7 +604,28 @@ export const authLocalization = {
     leaveOrganizationSuccess: "You have successfully left the organization.",
 
     /** @default "Manage Organization" */
-    manageOrganization: "Manage Organization"
+    manageOrganization: "Manage Organization",
+
+    /** @default "Remove Member" */
+    removeMember: "Remove Member",
+
+    /** @default "Are you sure you want to remove this member from the organization?" */
+    removeMemberConfirmation: "Are you sure you want to remove this member from the organization?",
+
+    /** @default "Member removed successfully" */
+    memberRemoved: "Member removed successfully",
+
+    /** @default "Invite Member" */
+    inviteMember: "Invite Member",
+
+    /** @default "Members" */
+    members: "Members",
+
+    /** @default "Add or remove members and manage their roles." */
+    membersDescription: "Add or remove members and manage their roles.",
+
+    /** @default "Invite new members to your organization." */
+    membersInstructions: "Invite new members to your organization."
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>

@@ -7,7 +7,8 @@ import {
     type LucideIcon,
     MenuIcon,
     ShieldCheckIcon,
-    UserCircle2Icon
+    UserCircle2Icon,
+    UsersRoundIcon
 } from "lucide-react"
 import { useContext } from "react"
 
@@ -15,6 +16,7 @@ import { useAuthenticate } from "../../hooks/use-authenticate"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
+import { OrganizationMembersCard } from "../organization/organization-members-card"
 import { OrganizationSettingsCards } from "../organization/organization-settings-cards"
 import { OrganizationsCard } from "../organization/organizations-card"
 import { Button } from "../ui/button"
@@ -52,7 +54,8 @@ export const settingsViews = [
     "security",
     "apiKeys",
     "organization",
-    "organizations"
+    "organizations",
+    "members"
 ] as const
 export type SettingsView = (typeof settingsViews)[number]
 
@@ -122,11 +125,18 @@ export function SettingsCards({ className, classNames, localization, view }: Set
             icon: BuildingIcon,
             label: localization.organization
         })
+
+        organizationGroup.push({
+            view: "members",
+            icon: UsersRoundIcon,
+            label: localization.members
+        })
     }
 
     // Determine which group the current view belongs to
     const isPersonalView = personalGroup.some((item) => item.view === view)
-    const isOrganizationView = organizationGroup.some((item) => item.view === view)
+    const isOrganizationView =
+        organizationGroup.some((item) => item.view === view) || view === "members"
 
     // Show navigation for the current group
     const currentNavigationGroup = isOrganizationView ? organizationGroup : personalGroup
@@ -219,6 +229,15 @@ export function SettingsCards({ className, classNames, localization, view }: Set
             {view === "organizations" && organization && (
                 <div className={cn("flex w-full flex-col", classNames?.cards)}>
                     <OrganizationsCard classNames={classNames?.card} localization={localization} />
+                </div>
+            )}
+
+            {view === "members" && organization && (
+                <div className={cn("flex w-full flex-col", classNames?.cards)}>
+                    <OrganizationMembersCard
+                        classNames={classNames?.card}
+                        localization={localization}
+                    />
                 </div>
             )}
         </div>
