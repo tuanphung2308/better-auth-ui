@@ -17,7 +17,8 @@ type ModelNames = {
 }
 
 export interface UseTriplitOptionsProps {
-    triplit: TriplitClient
+    // biome-ignore lint/suspicious/noExplicitAny:
+    triplit: TriplitClient<any>
     modelNames?: Partial<ModelNames>
     usePlural?: boolean
     sessionData?: { user: User; session: Session }
