@@ -17,11 +17,7 @@ import type { CredentialsOptions } from "../types/credentials-options"
 import type { DeleteUserOptions } from "../types/delete-user-options"
 import type { GenericOAuthOptions } from "../types/generic-oauth-options"
 import type { Link } from "../types/link"
-import type {
-    OrganizationOptions,
-    OrganizationOptionsContext,
-    OrganizationPermissions
-} from "../types/organization-options"
+import type { OrganizationOptions, OrganizationOptionsContext } from "../types/organization-options"
 import type { PasswordValidation } from "../types/password-validation"
 import type { RenderToast } from "../types/render-toast"
 import type { SettingsOptions } from "../types/settings-options"
@@ -616,25 +612,11 @@ export const AuthUIProvider = ({
     const organization = useMemo<OrganizationOptionsContext | undefined>(() => {
         if (!organizationProp) return
 
-        const defaultPermissions = {
-            owner: {
-                organization: ["update", "delete"],
-                member: ["create", "update", "delete"],
-                invitation: ["create", "cancel"]
-            },
-            admin: {
-                organization: ["update"],
-                member: ["create", "update", "delete"],
-                invitation: ["create", "cancel"]
-            },
-            member: {
-                invitation: ["create", "cancel"]
-            }
-        } as OrganizationPermissions
+        const defaultRoles = ["owner", "admin", "member", "guest"]
 
         if (organizationProp === true) {
             return {
-                permissions: defaultPermissions
+                roles: defaultRoles
             }
         }
 
@@ -653,13 +635,13 @@ export const AuthUIProvider = ({
             }
         }
 
-        // Set default permissions if not provided
-        const permissions = organizationProp.permissions || defaultPermissions
+        // Set default roles if not provided
+        const roles = organizationProp.roles || defaultRoles
 
         return {
             ...organizationProp,
             logo,
-            permissions
+            roles
         }
     }, [organizationProp])
 
@@ -706,15 +688,33 @@ export const AuthUIProvider = ({
     const defaultHooks = useMemo(() => {
         return {
             useSession: authClient.useSession,
-            useListAccounts: () => useAuthData({ queryFn: authClient.listAccounts }),
+            useListAccounts: () =>
+                useAuthData({
+                    queryFn: authClient.listAccounts,
+                    cacheKey: "listAccounts"
+                }),
             useListDeviceSessions: () =>
                 useAuthData({
-                    queryFn: authClient.multiSession.listDeviceSessions
+                    queryFn: authClient.multiSession.listDeviceSessions,
+                    cacheKey: "listDeviceSessions"
                 }),
-            useListSessions: () => useAuthData({ queryFn: authClient.listSessions }),
+            useListSessions: () =>
+                useAuthData({
+                    queryFn: authClient.listSessions,
+                    cacheKey: "listSessions"
+                }),
             useListPasskeys: authClient.useListPasskeys,
-            useListApiKeys: () => useAuthData({ queryFn: authClient.apiKey.list }),
-            useListOrganizations: authClient.useListOrganizations
+            useListApiKeys: () =>
+                useAuthData({
+                    queryFn: authClient.apiKey.list,
+                    cacheKey: "listApiKeys"
+                }),
+            useListOrganizations: authClient.useListOrganizations,
+            useHasPermission: (params) =>
+                useAuthData({
+                    queryFn: () => authClient.organization.hasPermission(params),
+                    cacheKey: `hasPermission:${JSON.stringify(params)}`
+                })
         } as AuthHooks
     }, [authClient])
 

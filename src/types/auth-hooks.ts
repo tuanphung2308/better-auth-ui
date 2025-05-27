@@ -1,7 +1,7 @@
 import type { User as AnyUser } from "better-auth"
 import type { Organization } from "better-auth/plugins/organization"
 import type { ApiKey } from "./api-key"
-import type { Session, User } from "./auth-client"
+import type { AuthClient, Session, User } from "./auth-client"
 import type { FetchError } from "./fetch-error"
 
 type AuthHook<T> = {
@@ -20,5 +20,11 @@ export type AuthHooks = {
     useListPasskeys: () => AuthHook<{ id: string; createdAt: Date }[]>
     useListApiKeys: () => AuthHook<ApiKey[]>
     useListOrganizations: () => AuthHook<Organization[]>
+    useHasPermission: (
+        params: Parameters<AuthClient["organization"]["hasPermission"]>[0]
+    ) => AuthHook<{
+        error: null
+        success: boolean
+    }>
     useIsRestoring?: () => boolean
 }
