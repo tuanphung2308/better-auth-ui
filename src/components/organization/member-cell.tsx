@@ -17,7 +17,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
-import { UserAvatar } from "../user-avatar"
+import { UserView } from "../user-view"
 import { RemoveMemberDialog } from "./remove-member-dialog"
 import { UpdateMemberRoleDialog } from "./update-member-role-dialog"
 
@@ -26,9 +26,16 @@ export interface MemberCellProps {
     classNames?: SettingsCardClassNames
     member: Member & { user: Partial<User> }
     localization?: AuthLocalization
+    hideActions?: boolean
 }
 
-export function MemberCell({ className, classNames, member, localization }: MemberCellProps) {
+export function MemberCell({
+    className,
+    classNames,
+    member,
+    localization,
+    hideActions
+}: MemberCellProps) {
     const { organization, localization: contextLocalization } = useContext(AuthUIContext)
     const [removeDialogOpen, setRemoveDialogOpen] = useState(false)
     const [updateRoleDialogOpen, setUpdateRoleDialogOpen] = useState(false)
@@ -47,21 +54,10 @@ export function MemberCell({ className, classNames, member, localization }: Memb
     return (
         <>
             <Card className={cn("flex-row items-center p-4", className, classNames?.cell)}>
-                <div className="flex items-center gap-2">
-                    <UserAvatar className="my-0.5" user={member.user} localization={localization} />
+                <UserView user={member.user} localization={localization} className="flex-1" />
+                <span className="text-sm opacity-70">{role?.label}</span>
 
-                    <div className="grid flex-1 text-left leading-tight">
-                        <span className="truncate font-semibold text-sm">
-                            {member.user?.email || localization?.user}
-                        </span>
-
-                        <span className="truncate text-xs capitalize opacity-70">
-                            {role?.label}
-                        </span>
-                    </div>
-                </div>
-
-                {
+                {!hideActions && (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button
@@ -93,7 +89,7 @@ export function MemberCell({ className, classNames, member, localization }: Memb
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                }
+                )}
             </Card>
 
             <RemoveMemberDialog

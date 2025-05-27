@@ -10,7 +10,6 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import type { SettingsCardClassNames } from "../settings/shared/settings-card"
 import { Button } from "../ui/button"
-import { Card } from "../ui/card"
 import {
     Dialog,
     DialogContent,
@@ -20,7 +19,7 @@ import {
     DialogTitle
 } from "../ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import { UserAvatar } from "../user-avatar"
+import { MemberCell } from "./member-cell"
 
 export interface UpdateMemberRoleDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
@@ -122,30 +121,18 @@ export function UpdateMemberRoleDialog({
                 </DialogHeader>
 
                 <div className="grid gap-6 py-4">
-                    <Card className={cn("flex-row items-center p-4", classNames?.cell)}>
-                        <div className="flex items-center gap-2">
-                            <UserAvatar
-                                className="my-0.5"
-                                user={member.user}
-                                localization={localization}
-                            />
-
-                            <div className="grid flex-1 text-left leading-tight">
-                                <span className="truncate font-semibold text-sm">
-                                    {member.user.email}
-                                </span>
-
-                                <span className="truncate text-xs capitalize opacity-70">
-                                    {role?.label}
-                                </span>
-                            </div>
-                        </div>
-                    </Card>
+                    <MemberCell
+                        className={classNames?.cell}
+                        member={member}
+                        localization={localization}
+                        hideActions
+                    />
 
                     <Select value={selectedRole} onValueChange={setSelectedRole}>
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder={localization.selectRole} />
                         </SelectTrigger>
+
                         <SelectContent>
                             {availableRoles.map((role) => (
                                 <SelectItem key={role.role} value={role.role}>

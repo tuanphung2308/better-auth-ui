@@ -44,7 +44,7 @@ export function InviteMemberDialog({
 
     const localization = { ...contextLocalization, ...localizationProp }
 
-    const { data: activeOrganization } = useActiveOrganization()
+    const { data: activeOrganization, refetch: refetchActiveOrganization } = useActiveOrganization()
     const { data: sessionData } = useSession()
     const membership = activeOrganization?.members.find((m) => m.userId === sessionData?.user.id)
 
@@ -86,6 +86,8 @@ export function InviteMemberDialog({
                 organizationId: activeOrganization?.id,
                 fetchOptions: { throw: true }
             })
+
+            await refetchActiveOrganization()
 
             onOpenChange?.(false)
             form.reset()

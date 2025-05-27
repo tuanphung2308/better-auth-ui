@@ -661,7 +661,19 @@ export const authLocalization = {
     sendInvitation: "Send Invitation",
 
     /** @default "Invitation sent successfully" */
-    invitationSent: "Invitation sent successfully"
+    invitationSent: "Invitation sent successfully",
+
+    /** @default "Pending Invitations" */
+    pendingInvitations: "Pending Invitations",
+
+    /** @default "Manage pending invitations to your organization." */
+    pendingInvitationsDescription: "Manage pending invitations to your organization.",
+
+    /** @default "Cancel Invitation" */
+    cancelInvitation: "Cancel Invitation",
+
+    /** @default "Invitation cancelled successfully" */
+    invitationCancelled: "Invitation cancelled successfully"
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>

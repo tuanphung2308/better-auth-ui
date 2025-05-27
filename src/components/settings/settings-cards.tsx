@@ -16,6 +16,7 @@ import { useAuthenticate } from "../../hooks/use-authenticate"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
+import { OrganizationInvitationsCard } from "../organization/organization-invitations-card"
 import { OrganizationMembersCard } from "../organization/organization-members-card"
 import { OrganizationSettingsCards } from "../organization/organization-settings-cards"
 import { OrganizationsCard } from "../organization/organizations-card"
@@ -233,8 +234,13 @@ export function SettingsCards({ className, classNames, localization, view }: Set
             )}
 
             {view === "members" && organization && (
-                <div className={cn("flex w-full flex-col", classNames?.cards)}>
+                <div className={cn("flex w-full flex-col gap-4 md:gap-6", classNames?.cards)}>
                     <OrganizationMembersCard
+                        classNames={classNames?.card}
+                        localization={localization}
+                    />
+
+                    <OrganizationInvitationsCard
                         classNames={classNames?.card}
                         localization={localization}
                     />
