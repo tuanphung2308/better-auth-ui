@@ -11,7 +11,7 @@ type AuthHook<T> = {
 }
 
 export type AuthHooks = {
-    useSession: () => AuthHook<{ session: Session; user: User }>
+    useSession: () => ReturnType<AuthClient["useSession"]>
     useListAccounts: () => AuthHook<{ accountId: string; provider: string }[]>
     useListDeviceSessions: () => AuthHook<{ session: Session; user: User }[]>
     useListSessions: () => AuthHook<Session[]>
