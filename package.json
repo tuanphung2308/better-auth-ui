@@ -79,9 +79,9 @@
         "@radix-ui/react-tabs": "^1.1.12",
         "@radix-ui/react-use-callback-ref": "^1.1.1",
         "@radix-ui/react-use-layout-effect": "^1.1.1",
-        "@tanstack/react-query": "^5.77.0",
-        "@types/node": "^22.15.21",
-        "@types/react": "^19.1.5",
+        "@tanstack/react-query": "^5.77.2",
+        "@types/node": "^22.15.23",
+        "@types/react": "^19.1.6",
         "@types/react-dom": "^19.1.5",
         "@types/react-google-recaptcha": "^2.1.9",
         "better-auth": "^1.2.8",
@@ -89,10 +89,10 @@
         "clsx": "^2.1.1",
         "esbuild-plugin-preserve-directives": "^0.0.11",
         "lucide-react": "^0.511.0",
-        "react-router": "^7.6.0",
+        "react-router": "^7.6.1",
         "tailwind-merge": "^3.3.0",
         "tailwindcss-animate": "^1.0.7",
-        "tsc-watch": "^6.3.1",
+        "tsc-watch": "^7.0.0",
         "tsup": "^8.5.0",
         "tsx": "^4.19.4",
         "turbo": "^2.5.3",
@@ -133,13 +133,13 @@
         "zod": ">=3.24.0"
     },
     "dependencies": {
-        "@better-fetch/fetch": ">=1.1.0",
-        "@hcaptcha/react-hcaptcha": ">=1.12.0",
-        "@react-email/components": ">=0.0.33",
-        "@wojtekmaj/react-recaptcha-v3": ">=0.1.4",
-        "react-google-recaptcha": ">=3.1.0",
-        "react-qr-code": ">=2.0.0",
-        "ua-parser-js": ">=2.0.0"
+        "@better-fetch/fetch": "^1.1.18",
+        "@hcaptcha/react-hcaptcha": "^1.12.0",
+        "@react-email/components": "^0.0.41",
+        "@wojtekmaj/react-recaptcha-v3": "^0.1.4",
+        "react-google-recaptcha": "^3.1.0",
+        "react-qr-code": "^2.0.15",
+        "ua-parser-js": "^2.0.3"
     },
     "pnpm": {
         "overrides": {}
