@@ -310,9 +310,6 @@ export const authLocalization = {
     /** @default "Organization" */
     organization: "Organization",
 
-    /** @default "Create a new organization for collaboration" */
-    organizationDescription: "Create a new organization for collaboration",
-
     /** @default "Name" */
     organizationName: "Name",
 
@@ -673,7 +670,26 @@ export const authLocalization = {
     cancelInvitation: "Cancel Invitation",
 
     /** @default "Invitation cancelled successfully" */
-    invitationCancelled: "Invitation cancelled successfully"
+    invitationCancelled: "Invitation cancelled successfully",
+
+    /** @default "Delete Organization" */
+    deleteOrganization: "Delete Organization",
+
+    /** @default "Permanently remove your organization and all of its contents. This action is not reversible — please continue with caution." */
+    deleteOrganizationDescription:
+        "Permanently remove your organization and all of its contents. This action is not reversible — please continue with caution.",
+
+    /** @default "Organization deleted successfully" */
+    deleteOrganizationSuccess: "Organization deleted successfully",
+
+    /** @default "Enter the organization slug to continue:" */
+    deleteOrganizationInstructions: "Enter the organization slug to continue:",
+
+    /** @default "Organization slug is required" */
+    slugRequired: "Organization slug is required",
+
+    /** @default "The slug does not match" */
+    slugDoesNotMatch: "The slug does not match"
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>

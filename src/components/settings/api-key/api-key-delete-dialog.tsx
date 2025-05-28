@@ -1,14 +1,16 @@
 "use client"
 
-import { Loader2 } from "lucide-react"
+import { KeyRoundIcon, Loader2 } from "lucide-react"
 import { type ComponentProps, useContext, useState } from "react"
 
+import { useLang } from "../../../hooks/use-lang"
 import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
 import type { ApiKey } from "../../../types/api-key"
 import type { Refetch } from "../../../types/refetch"
 import { Button } from "../../ui/button"
+import { Card } from "../../ui/card"
 import {
     Dialog,
     DialogContent,
@@ -42,6 +44,7 @@ export function ApiKeyDeleteDialog({
 
     localization = { ...contextLocalization, ...localization }
 
+    const { lang } = useLang()
     const [isLoading, setIsLoading] = useState(false)
 
     const handleDelete = async () => {
@@ -59,6 +62,18 @@ export function ApiKeyDeleteDialog({
         }
 
         setIsLoading(false)
+    }
+
+    // Format expiration date or show "Never expires"
+    const formatExpiration = () => {
+        if (!apiKey.expiresAt) return localization.neverExpires
+
+        const expiresDate = new Date(apiKey.expiresAt)
+        return `${localization.expires} ${expiresDate.toLocaleDateString(lang ?? "en", {
+            month: "short",
+            day: "numeric",
+            year: "numeric"
+        })}`
     }
 
     return (
@@ -79,13 +94,32 @@ export function ApiKeyDeleteDialog({
                     </DialogDescription>
                 </DialogHeader>
 
+                <Card
+                    className={cn("my-2 flex-row items-center gap-3 px-4 py-3", classNames?.cell)}
+                >
+                    <KeyRoundIcon className={cn("size-4", classNames?.icon)} />
+
+                    <div className="flex flex-col">
+                        <div className="flex items-center gap-2">
+                            <span className="font-semibold text-sm">{apiKey.name}</span>
+
+                            <span className="text-muted-foreground text-sm">
+                                {apiKey.start}
+                                {"******"}
+                            </span>
+                        </div>
+
+                        <div className="text-muted-foreground text-xs">{formatExpiration()}</div>
+                    </div>
+                </Card>
+
                 <DialogFooter className={classNames?.dialog?.footer}>
                     <Button
                         type="button"
-                        variant="outline"
+                        variant="secondary"
                         onClick={() => onOpenChange?.(false)}
                         disabled={isLoading}
-                        className={cn(classNames?.button, classNames?.outlineButton)}
+                        className={cn(classNames?.button, classNames?.secondaryButton)}
                     >
                         {localization.cancel}
                     </Button>

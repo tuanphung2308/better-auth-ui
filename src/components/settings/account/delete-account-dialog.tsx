@@ -7,6 +7,7 @@ import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
 import { Button } from "../../ui/button"
+import { Card } from "../../ui/card"
 import {
     Dialog,
     DialogContent,
@@ -17,6 +18,7 @@ import {
 } from "../../ui/dialog"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
 import { Input } from "../../ui/input"
+import { UserView } from "../../user-view"
 import type { SettingsCardClassNames } from "../shared/settings-card"
 
 export interface DeleteAccountDialogProps extends ComponentProps<typeof Dialog> {
@@ -49,6 +51,7 @@ export function DeleteAccountDialog({
 
     const { data: sessionData } = useSession()
     const session = sessionData?.session
+    const user = sessionData?.user
 
     const isFresh = session ? Date.now() - session?.createdAt.getTime() < freshAge * 1000 : false
     const credentialsLinked = accounts?.some((acc) => acc.provider === "credential")
@@ -123,8 +126,12 @@ export function DeleteAccountDialog({
                     </DialogDescription>
                 </DialogHeader>
 
+                <Card className={cn("my-2 flex-row p-4", classNames?.cell)}>
+                    <UserView user={user} localization={localization} />
+                </Card>
+
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(deleteAccount)} className="grid gap-4">
+                    <form onSubmit={form.handleSubmit(deleteAccount)} className="grid gap-6">
                         {credentialsLinked && (
                             <FormField
                                 control={form.control}

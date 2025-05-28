@@ -101,7 +101,7 @@ export function LeaveOrganizationDialog({
                     </DialogDescription>
                 </DialogHeader>
 
-                <Card className={cn("my-4 flex-row p-4", className, classNames?.cell)}>
+                <Card className={cn("my-2 flex-row p-4", className, classNames?.cell)}>
                     <OrganizationView organization={organization} localization={localization} />
                 </Card>
 

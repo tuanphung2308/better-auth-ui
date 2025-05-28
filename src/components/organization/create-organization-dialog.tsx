@@ -163,7 +163,7 @@ export function CreateOrganizationDialog({
                     <DialogDescription
                         className={cn("text-xs md:text-sm", classNames?.description)}
                     >
-                        {localization.organizationDescription}
+                        {localization.organizationsInstructions}
                     </DialogDescription>
                 </DialogHeader>
 

@@ -75,7 +75,7 @@ export function getKeyByValue<T extends Record<string, unknown>>(
 
 export function getPasswordSchema(
     passwordValidation?: PasswordValidation,
-    localization?: Partial<AuthLocalization>
+    localization?: AuthLocalization
 ) {
     let schema = z.string().min(1, {
         message: localization?.passwordRequired
