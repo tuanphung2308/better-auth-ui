@@ -27,6 +27,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
+import { Label } from "../ui/label"
 import { AccountSettingsCards } from "./account-settings-cards"
 import { APIKeysCard } from "./api-key/api-keys-card"
 import { SecuritySettingsCards } from "./security-settings-cards"
@@ -153,40 +154,37 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                 classNames?.base
             )}
         >
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        size="lg"
-                        className={cn(
-                            "w-full justify-start md:hidden",
-                            classNames?.dropdown?.trigger
-                        )}
-                        variant="secondary"
+            <div className="flex justify-between gap-2 md:hidden">
+                <Label className="font-semibold">
+                    {currentItem && (
+                        <>
+                            <currentItem.icon className={cn("size-4", classNames?.icon)} />
+                            {currentItem.label}
+                        </>
+                    )}
+                </Label>
+
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button className={cn(classNames?.dropdown?.trigger)} variant="outline">
+                            <MenuIcon className={cn(classNames?.dropdown?.menuIcon)} />
+                        </Button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent
+                        className={cn("w-[calc(100svw-2rem)]", classNames?.dropdown?.content)}
                     >
-                        {currentItem && (
-                            <>
-                                <currentItem.icon className={classNames?.icon} />
-                                {currentItem.label}
-                            </>
-                        )}
-
-                        <MenuIcon className={cn("ml-auto", classNames?.dropdown?.menuIcon)} />
-                    </Button>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent
-                    className={cn("w-[calc(100svw-2rem)]", classNames?.dropdown?.content)}
-                >
-                    {currentNavigationGroup.map((item) => (
-                        <DropdownMenuItem key={item.view} asChild>
-                            <Link href={`${basePath}/${viewPaths[item.view]}`}>
-                                <item.icon />
-                                {item.label}
-                            </Link>
-                        </DropdownMenuItem>
-                    ))}
-                </DropdownMenuContent>
-            </DropdownMenu>
+                        {currentNavigationGroup.map((item) => (
+                            <DropdownMenuItem key={item.view} asChild>
+                                <Link href={`${basePath}/${viewPaths[item.view]}`}>
+                                    <item.icon />
+                                    {item.label}
+                                </Link>
+                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
 
             <div className="hidden md:block">
                 <div className={cn("flex w-60 flex-col gap-1", classNames?.sidebar?.base)}>
@@ -195,11 +193,12 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                             <Button
                                 size="lg"
                                 className={cn(
-                                    "w-full justify-start",
+                                    "w-full justify-start px-4",
                                     classNames?.sidebar?.button,
+                                    view === item.view ? "font-semibold" : "text-foreground/70",
                                     view === item.view && classNames?.sidebar?.buttonActive
                                 )}
-                                variant={view === item.view ? "secondary" : "ghost"}
+                                variant="ghost"
                             >
                                 <item.icon className={classNames?.icon} />
                                 {item.label}
