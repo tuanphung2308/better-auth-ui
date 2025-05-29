@@ -220,15 +220,17 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                         {localization.security}
                     </Button>
 
-                    <Button
-                        size="lg"
-                        className={cn("w-full justify-start", classNames?.sidebar?.button)}
-                        variant={tab === "api-keys" ? "default" : "ghost"}
-                        onClick={() => setTab("api-keys")}
-                    >
-                        <KeyIcon className={classNames?.icon} />
-                        {localization.apiKeys}
-                    </Button>
+                    {contextApiKeys && (
+                        <Button
+                            size="lg"
+                            className={cn("w-full justify-start", classNames?.sidebar?.button)}
+                            variant={tab === "api-keys" ? "default" : "ghost"}
+                            onClick={() => setTab("api-keys")}
+                        >
+                            <KeyIcon className={classNames?.icon} />
+                            {localization.apiKeys}
+                        </Button>
+                    )}
                 </div>
             </div>
 
