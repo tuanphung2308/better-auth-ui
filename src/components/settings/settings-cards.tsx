@@ -1,15 +1,6 @@
 "use client"
 
-import {
-    Building2Icon,
-    BuildingIcon,
-    KeyRoundIcon,
-    type LucideIcon,
-    MenuIcon,
-    ShieldCheckIcon,
-    UserCircle2Icon,
-    UsersRoundIcon
-} from "lucide-react"
+import { MenuIcon } from "lucide-react"
 import { useContext } from "react"
 
 import { useAuthenticate } from "../../hooks/use-authenticate"
@@ -21,12 +12,7 @@ import { OrganizationMembersCard } from "../organization/organization-members-ca
 import { OrganizationSettingsCards } from "../organization/organization-settings-cards"
 import { OrganizationsCard } from "../organization/organizations-card"
 import { Button } from "../ui/button"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger
-} from "../ui/dropdown-menu"
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer"
 import { Label } from "../ui/label"
 import { AccountSettingsCards } from "./account-settings-cards"
 import { APIKeysCard } from "./api-key/api-keys-card"
@@ -38,11 +24,12 @@ export type SettingsCardsClassNames = {
     card?: SettingsCardClassNames
     cards?: string
     icon?: string
-    dropdown?: {
+    drawer?: {
         base?: string
         trigger?: string
         content?: string
         menuIcon?: string
+        menuItem?: string
     }
     sidebar?: {
         base?: string
@@ -63,7 +50,6 @@ export type SettingsView = (typeof settingsViews)[number]
 
 interface NavigationItem {
     view: SettingsView
-    icon: LucideIcon
     label?: string
 }
 
@@ -92,12 +78,10 @@ export function SettingsCards({ className, classNames, localization, view }: Set
     const personalGroup: NavigationItem[] = [
         {
             view: "settings",
-            icon: UserCircle2Icon,
             label: localization.account
         },
         {
             view: "security",
-            icon: ShieldCheckIcon,
             label: localization.security
         }
     ]
@@ -105,7 +89,6 @@ export function SettingsCards({ className, classNames, localization, view }: Set
     if (apiKey) {
         personalGroup.push({
             view: "apiKeys",
-            icon: KeyRoundIcon,
             label: localization.apiKeys
         })
     }
@@ -113,7 +96,6 @@ export function SettingsCards({ className, classNames, localization, view }: Set
     if (organization) {
         personalGroup.push({
             view: "organizations",
-            icon: Building2Icon,
             label: localization.organizations
         })
     }
@@ -124,13 +106,11 @@ export function SettingsCards({ className, classNames, localization, view }: Set
     if (organization) {
         organizationGroup.push({
             view: "organization",
-            icon: BuildingIcon,
             label: localization.organization
         })
 
         organizationGroup.push({
             view: "members",
-            icon: UsersRoundIcon,
             label: localization.members
         })
     }
@@ -155,35 +135,40 @@ export function SettingsCards({ className, classNames, localization, view }: Set
             )}
         >
             <div className="flex justify-between gap-2 md:hidden">
-                <Label className="font-semibold">
-                    {currentItem && (
-                        <>
-                            <currentItem.icon className={cn("size-4", classNames?.icon)} />
-                            {currentItem.label}
-                        </>
-                    )}
-                </Label>
+                <Label className="font-semibold text-base">{currentItem?.label}</Label>
 
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button className={cn(classNames?.dropdown?.trigger)} variant="outline">
-                            <MenuIcon className={cn(classNames?.dropdown?.menuIcon)} />
+                <Drawer>
+                    <DrawerTrigger asChild>
+                        <Button className={cn(classNames?.drawer?.trigger)} variant="outline">
+                            <MenuIcon className={cn(classNames?.drawer?.menuIcon)} />
                         </Button>
-                    </DropdownMenuTrigger>
+                    </DrawerTrigger>
 
-                    <DropdownMenuContent
-                        className={cn("w-[calc(100svw-2rem)]", classNames?.dropdown?.content)}
-                    >
-                        {currentNavigationGroup.map((item) => (
-                            <DropdownMenuItem key={item.view} asChild>
-                                <Link href={`${basePath}/${viewPaths[item.view]}`}>
-                                    <item.icon />
-                                    {item.label}
+                    <DrawerContent className={cn(classNames?.drawer?.content)}>
+                        <DrawerHeader>
+                            <DrawerTitle className="hidden">{localization.settings}</DrawerTitle>
+                        </DrawerHeader>
+                        <div className="flex flex-col px-4 pb-4">
+                            {currentNavigationGroup.map((item) => (
+                                <Link key={item.view} href={`${basePath}/${viewPaths[item.view]}`}>
+                                    <Button
+                                        size="lg"
+                                        className={cn(
+                                            "w-full justify-start px-4 transition-none",
+                                            classNames?.drawer?.menuItem,
+                                            view === item.view
+                                                ? "font-semibold"
+                                                : "text-foreground/70"
+                                        )}
+                                        variant="ghost"
+                                    >
+                                        {item.label}
+                                    </Button>
                                 </Link>
-                            </DropdownMenuItem>
-                        ))}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                            ))}
+                        </div>
+                    </DrawerContent>
+                </Drawer>
             </div>
 
             <div className="hidden md:block">
@@ -193,14 +178,13 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                             <Button
                                 size="lg"
                                 className={cn(
-                                    "w-full justify-start px-4",
+                                    "w-full justify-start px-4 transition-none",
                                     classNames?.sidebar?.button,
                                     view === item.view ? "font-semibold" : "text-foreground/70",
                                     view === item.view && classNames?.sidebar?.buttonActive
                                 )}
                                 variant="ghost"
                             >
-                                <item.icon className={classNames?.icon} />
                                 {item.label}
                             </Button>
                         </Link>
