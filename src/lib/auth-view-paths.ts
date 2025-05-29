@@ -1,4 +1,6 @@
 export const authViewPaths = {
+    /** @default "accept-invitation" */
+    acceptInvitation: "accept-invitation",
     /** @default "api-keys" */
     apiKeys: "api-keys",
     /** @default "callback" */

@@ -672,6 +672,30 @@ export const authLocalization = {
     /** @default "Invitation cancelled successfully" */
     invitationCancelled: "Invitation cancelled successfully",
 
+    /** @default "Accept Invitation" */
+    acceptInvitation: "Accept Invitation",
+
+    /** @default "You have been invited to join an organization." */
+    acceptInvitationDescription: "You have been invited to join an organization.",
+
+    /** @default "Invitation accepted successfully" */
+    invitationAccepted: "Invitation accepted successfully",
+
+    /** @default "Invitation rejected successfully" */
+    invitationRejected: "Invitation rejected successfully",
+
+    /** @default "Accept" */
+    accept: "Accept",
+
+    /** @default "Reject" */
+    reject: "Reject",
+
+    /** @default "Invalid invitation" */
+    invalidInvitation: "Invalid invitation",
+
+    /** @default "This invitation has expired" */
+    invitationExpired: "This invitation has expired",
+
     /** @default "Delete Organization" */
     deleteOrganization: "Delete Organization",
 

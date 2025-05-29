@@ -52,7 +52,7 @@ export function OrganizationView({
     const localization = { ...contextLocalization, ...propLocalization }
 
     return (
-        <div className={cn("flex items-center gap-2", className, classNames?.base)}>
+        <div className={cn("flex items-center gap-2 truncate", className, classNames?.base)}>
             <OrganizationLogo
                 className={cn(size !== "sm" && "my-0.5")}
                 classNames={classNames?.avatar}
@@ -62,13 +62,18 @@ export function OrganizationView({
                 size={size}
             />
 
-            <div className={cn("grid flex-1 text-left leading-tight", classNames?.content)}>
+            <div
+                className={cn(
+                    "flex flex-col truncate text-left leading-tight",
+                    classNames?.content
+                )}
+            >
                 {isPending ? (
                     <>
                         <Skeleton
                             className={cn(
                                 "max-w-full",
-                                size === "lg" ? "h-4.5 w-32" : "h-3.5 w-24",
+                                size === "lg" ? "h-4.5 w-40" : "h-3.5 w-32",
                                 classNames?.title,
                                 classNames?.skeleton
                             )}
@@ -78,7 +83,7 @@ export function OrganizationView({
                             <Skeleton
                                 className={cn(
                                     "mt-1.5 max-w-full",
-                                    size === "lg" ? "h-3.5 w-40" : "h-3 w-32",
+                                    size === "lg" ? "h-3.5 w-32" : "h-3 w-24",
                                     classNames?.subtitle,
                                     classNames?.skeleton
                                 )}

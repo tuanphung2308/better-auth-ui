@@ -2,12 +2,14 @@
 
 import { ArrowLeftIcon, Loader2 } from "lucide-react"
 import { type ReactNode, useContext, useEffect, useState } from "react"
+
 import { useIsHydrated } from "../../hooks/use-hydrated"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { socialProviders } from "../../lib/social-providers"
 import { cn, getAuthViewByPath } from "../../lib/utils"
+import { AcceptInvitationCard } from "../organization/accept-invitation-card"
 import {
     SettingsCards,
     type SettingsCardsClassNames,
@@ -131,6 +133,15 @@ export function AuthCard({
 
     if (view === "callback") return <AuthCallback redirectTo={redirectTo} />
     if (view === "signOut") return <SignOut />
+
+    if (view === "acceptInvitation")
+        return (
+            <AcceptInvitationCard
+                className={className}
+                classNames={classNames}
+                localization={localization}
+            />
+        )
 
     if (settingsViews.includes(view as SettingsView))
         return !settings || settings.url ? (
