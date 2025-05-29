@@ -55,6 +55,7 @@ export interface OrganizationSwitcherProps extends ComponentProps<typeof Button>
     align?: "center" | "start" | "end"
     trigger?: ReactNode
     localization?: AuthLocalization
+    onSetActive?: (organizationId: string | null) => void
 }
 
 /**
@@ -74,6 +75,7 @@ export function OrganizationSwitcher({
     trigger,
     localization: localizationProp,
     size,
+    onSetActive,
     ...props
 }: OrganizationSwitcherProps) {
     const {
@@ -119,6 +121,7 @@ export function OrganizationSwitcher({
             setActiveOrganizationPending(true)
 
             try {
+                onSetActive?.(organizationId)
                 await authClient.organization.setActive({
                     organizationId: organizationId,
                     fetchOptions: {
@@ -134,7 +137,7 @@ export function OrganizationSwitcher({
                 setActiveOrganizationPending(false)
             }
         },
-        [authClient, toast, localization]
+        [authClient, toast, localization, onSetActive]
     )
 
     return (
