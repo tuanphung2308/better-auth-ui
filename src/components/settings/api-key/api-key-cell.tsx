@@ -51,21 +51,27 @@ export function APIKeyCell({
     return (
         <>
             <Card
-                className={cn("flex-row items-center gap-3 px-4 py-3", className, classNames?.cell)}
+                className={cn(
+                    "flex-row items-center gap-3 truncate px-4 py-3",
+                    className,
+                    classNames?.cell
+                )}
             >
-                <KeyRoundIcon className={cn("size-4", classNames?.icon)} />
+                <KeyRoundIcon className={cn("size-4 flex-shrink-0", classNames?.icon)} />
 
-                <div className="flex flex-col">
+                <div className="flex flex-col truncate">
                     <div className="flex items-center gap-2">
-                        <span className="font-semibold text-sm">{apiKey.name}</span>
+                        <span className="truncate font-semibold text-sm">{apiKey.name}</span>
 
-                        <span className="text-muted-foreground text-sm">
+                        <span className="flex-1 truncate text-muted-foreground text-sm">
                             {apiKey.start}
                             {"******"}
                         </span>
                     </div>
 
-                    <div className="text-muted-foreground text-xs">{formatExpiration()}</div>
+                    <div className="truncate text-muted-foreground text-xs">
+                        {formatExpiration()}
+                    </div>
                 </div>
 
                 <Button
