@@ -93,6 +93,7 @@ export function OrganizationSwitcher({
 
     const [activeOrganizationPending, setActiveOrganizationPending] = useState(false)
     const [isCreateOrgDialogOpen, setIsCreateOrgDialogOpen] = useState(false)
+    const [dropdownOpen, setDropdownOpen] = useState(false)
 
     const { data: sessionData, isPending: sessionPending } = useSession()
     const user = sessionData?.user
@@ -138,7 +139,7 @@ export function OrganizationSwitcher({
 
     return (
         <>
-            <DropdownMenu>
+            <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <DropdownMenuTrigger asChild>
                     {trigger ||
                         (size === "icon" ? (
@@ -219,7 +220,10 @@ export function OrganizationSwitcher({
                     onCloseAutoFocus={(e) => e.preventDefault()}
                 >
                     <div
-                        className={cn("flex items-center gap-2 p-2", classNames?.content?.menuItem)}
+                        className={cn(
+                            "flex items-center justify-between gap-2 p-2",
+                            classNames?.content?.menuItem
+                        )}
                     >
                         {(user && !user.isAnonymous) || isPending ? (
                             <>
@@ -240,13 +244,22 @@ export function OrganizationSwitcher({
                                 )}
 
                                 {!isPending && (
-                                    <Button
-                                        size="icon"
-                                        variant="outline"
-                                        className="!size-8 ml-auto"
+                                    <Link
+                                        href={`${basePath}/${
+                                            activeOrganization
+                                                ? viewPaths.organization
+                                                : viewPaths.settings
+                                        }`}
                                     >
-                                        <SettingsIcon className="size-4" />
-                                    </Button>
+                                        <Button
+                                            size="icon"
+                                            variant="outline"
+                                            className="!size-8 ml-auto"
+                                            onClick={() => setDropdownOpen(false)}
+                                        >
+                                            <SettingsIcon className="size-4" />
+                                        </Button>
+                                    </Link>
                                 )}
                             </>
                         ) : (

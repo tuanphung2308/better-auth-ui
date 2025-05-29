@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
@@ -18,13 +18,22 @@ export function OrganizationMembersCard({
 }: SettingsCardProps) {
     const {
         authClient,
+        basePath,
         hooks: { useActiveOrganization },
-        localization: contextLocalization
+        localization: contextLocalization,
+        replace,
+        viewPaths
     } = useContext(AuthUIContext)
 
     const localization = { ...contextLocalization, ...localizationProp }
 
-    const { data: activeOrganization } = useActiveOrganization()
+    const { data: activeOrganization, isPending: organizationPending } = useActiveOrganization()
+
+    useEffect(() => {
+        if (organizationPending) return
+        if (!activeOrganization) replace(`${basePath}/${viewPaths.settings}`)
+    }, [activeOrganization, organizationPending, basePath, replace, viewPaths.settings])
+
     const members = activeOrganization?.members
 
     const isPending = !activeOrganization

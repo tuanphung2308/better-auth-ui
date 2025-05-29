@@ -47,11 +47,16 @@ export function OrganizationCell({
         [contextLocalization, localizationProp]
     )
 
-    const { refetch: refetchActiveOrganization } = useActiveOrganization()
+    const { data: activeOrganization, refetch: refetchActiveOrganization } = useActiveOrganization()
     const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false)
     const [isManagingOrganization, setIsManagingOrganization] = useState(false)
 
     const handleManageOrganization = useCallback(async () => {
+        if (activeOrganization?.id === organization.id) {
+            navigate(`${basePath}/${viewPaths.organization}`)
+            return
+        }
+
         setIsManagingOrganization(true)
 
         try {
@@ -74,6 +79,7 @@ export function OrganizationCell({
             setIsManagingOrganization(false)
         }
     }, [
+        activeOrganization,
         authClient,
         organization.id,
         basePath,
