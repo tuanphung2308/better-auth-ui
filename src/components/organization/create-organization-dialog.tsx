@@ -46,7 +46,7 @@ export function CreateOrganizationDialog({
 }: CreateOrganizationDialogProps) {
     const {
         authClient,
-        hooks: { useListOrganizations },
+        hooks: { useActiveOrganization, useListOrganizations },
         localization: contextLocalization,
         organization,
         toast
@@ -60,6 +60,7 @@ export function CreateOrganizationDialog({
     const fileInputRef = useRef<HTMLInputElement>(null)
     const openFileDialog = () => fileInputRef.current?.click()
 
+    const { refetch: refetchActiveOrganization } = useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
 
     const formSchema = z.object({
@@ -128,13 +129,18 @@ export function CreateOrganizationDialog({
 
     async function onSubmit({ name, slug, logo }: z.infer<typeof formSchema>) {
         try {
-            await authClient.organization.create({
+            const organization = await authClient.organization.create({
                 name,
                 slug,
                 logo,
                 fetchOptions: { throw: true }
             })
 
+            await authClient.organization.setActive({
+                organizationId: organization.id
+            })
+
+            await refetchActiveOrganization?.()
             await refetchOrganizations?.()
             onOpenChange?.(false)
             form.reset()
