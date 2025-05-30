@@ -7,6 +7,7 @@ type CacheEntry<T> = {
 class AuthDataCache {
     private cache = new Map<string, CacheEntry<unknown>>()
     private listeners = new Map<string, Set<() => void>>()
+    private inFlightRequests = new Map<string, Promise<unknown>>()
 
     get<T>(key: string): CacheEntry<T> | undefined {
         return this.cache.get(key) as CacheEntry<T> | undefined
@@ -33,14 +34,28 @@ class AuthDataCache {
     clear(key?: string) {
         if (key) {
             this.cache.delete(key)
+            this.inFlightRequests.delete(key)
             this.notify(key)
         } else {
             this.cache.clear()
+            this.inFlightRequests.clear()
             const keys = Array.from(this.listeners.keys())
             for (const key of keys) {
                 this.notify(key)
             }
         }
+    }
+
+    getInFlightRequest<T>(key: string): Promise<T> | undefined {
+        return this.inFlightRequests.get(key) as Promise<T> | undefined
+    }
+
+    setInFlightRequest<T>(key: string, promise: Promise<T>) {
+        this.inFlightRequests.set(key, promise)
+    }
+
+    removeInFlightRequest(key: string) {
+        this.inFlightRequests.delete(key)
     }
 
     subscribe(key: string, callback: () => void) {

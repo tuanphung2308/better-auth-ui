@@ -7,10 +7,12 @@ import type { FetchError } from "../types/fetch-error"
 
 export function useAuthData<T>({
     queryFn,
-    cacheKey
+    cacheKey,
+    staleTime = 10000 // Default 10 seconds
 }: {
     queryFn: () => Promise<{ data: T | null; error?: FetchError | null }>
     cacheKey?: string
+    staleTime?: number
 }) {
     const { authClient, toast, localization } = useContext(AuthUIContext)
     const { data: sessionData, isPending: sessionPending } = authClient.useSession()
@@ -32,16 +34,43 @@ export function useAuthData<T>({
     )
 
     const initialized = useRef(false)
+    const previousUserId = useRef<string | undefined>(undefined)
     const [error, setError] = useState<FetchError | null>(null)
 
     const refetch = useCallback(async () => {
+        // Check if there's already an in-flight request for this key
+        const existingRequest = authDataCache.getInFlightRequest<{
+            data: T | null
+            error?: FetchError | null
+        }>(stableCacheKey)
+        if (existingRequest) {
+            // Wait for the existing request to complete
+            try {
+                const result = await existingRequest
+                if (result.error) {
+                    setError(result.error)
+                } else {
+                    setError(null)
+                }
+            } catch (err) {
+                setError(err as FetchError)
+            }
+            return
+        }
+
         // Mark as refetching if we have cached data
         if (cacheEntry?.data !== undefined) {
             authDataCache.setRefetching(stableCacheKey, true)
         }
 
+        // Create the fetch promise
+        const fetchPromise = queryFnRef.current()
+
+        // Store the promise as in-flight
+        authDataCache.setInFlightRequest(stableCacheKey, fetchPromise)
+
         try {
-            const { data, error } = await queryFnRef.current()
+            const { data, error } = await fetchPromise
 
             if (error) {
                 setError(error)
@@ -64,25 +93,48 @@ export function useAuthData<T>({
             })
         } finally {
             authDataCache.setRefetching(stableCacheKey, false)
+            authDataCache.removeInFlightRequest(stableCacheKey)
         }
     }, [stableCacheKey, toast, localization, cacheEntry])
 
     useEffect(() => {
+        const currentUserId = sessionData?.user?.id
+
         if (!sessionData) {
             // Clear cache when session is lost
+            authDataCache.setRefetching(stableCacheKey, false)
             authDataCache.clear(stableCacheKey)
             initialized.current = false
+            previousUserId.current = undefined
             return
+        }
+
+        // Check if user ID has changed
+        const userIdChanged =
+            previousUserId.current !== undefined && previousUserId.current !== currentUserId
+
+        // If user changed, clear cache to ensure isPending becomes true
+        if (userIdChanged) {
+            authDataCache.clear(stableCacheKey)
         }
 
         // If we have cached data, we're not pending anymore
         const hasCachedData = cacheEntry?.data !== undefined
 
-        if (!initialized.current || !hasCachedData) {
-            initialized.current = true
-            refetch()
+        // Check if data is stale
+        const isStale = !cacheEntry || Date.now() - cacheEntry.timestamp > staleTime
+
+        if (!initialized.current || !hasCachedData || userIdChanged || (hasCachedData && isStale)) {
+            // Only fetch if we don't have data or if the data is stale
+            if (!hasCachedData || isStale) {
+                initialized.current = true
+                refetch()
+            }
         }
-    }, [sessionData, stableCacheKey, refetch, cacheEntry])
+
+        // Update the previous user ID
+        previousUserId.current = currentUserId
+    }, [sessionData, sessionData?.user?.id, stableCacheKey, refetch, cacheEntry, staleTime])
 
     // Determine if we're in a pending state
     // We're only pending if:
