@@ -769,7 +769,11 @@ export const AuthUIProvider = ({
                 ...props
             }}
         >
-            {sessionData && <OrganizationRefetcher />}
+            {sessionData &&
+                (hooks.useActiveOrganization === authClient.useActiveOrganization ||
+                    hooks.useListOrganizations === authClient.useListOrganizations) && (
+                    <OrganizationRefetcher />
+                )}
             {captcha?.provider === "google-recaptcha-v3" ? (
                 <RecaptchaV3>{children}</RecaptchaV3>
             ) : (
@@ -789,13 +793,8 @@ const OrganizationRefetcher = () => {
     // biome-ignore lint/correctness/useExhaustiveDependencies: Refetch fix
     useEffect(() => {
         if (!sessionData?.user.id) return
-        if (activeOrganization) {
-            refetchActiveOrganization()
-        }
-
-        if (organizations) {
-            refetchListOrganizations()
-        }
+        if (activeOrganization) refetchActiveOrganization()
+        if (organizations) refetchListOrganizations()
     }, [sessionData?.user.id, refetchActiveOrganization, refetchListOrganizations])
 
     return null

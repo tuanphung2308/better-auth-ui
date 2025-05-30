@@ -17,7 +17,6 @@ export function OrganizationMembersCard({
     ...props
 }: SettingsCardProps) {
     const {
-        authClient,
         basePath,
         hooks: { useActiveOrganization },
         localization: contextLocalization,
@@ -27,16 +26,78 @@ export function OrganizationMembersCard({
 
     const localization = { ...contextLocalization, ...localizationProp }
 
-    const { data: activeOrganization, isPending: organizationPending } = useActiveOrganization()
+    const {
+        data: activeOrganization,
+        isPending: organizationPending,
+        isRefetching: organizationFetching
+    } = useActiveOrganization()
 
     useEffect(() => {
-        if (organizationPending) return
+        if (organizationPending || organizationFetching) return
         if (!activeOrganization) replace(`${basePath}/${viewPaths.settings}`)
-    }, [activeOrganization, organizationPending, basePath, replace, viewPaths.settings])
+    }, [
+        activeOrganization,
+        organizationPending,
+        organizationFetching,
+        basePath,
+        replace,
+        viewPaths
+    ])
+
+    if (!activeOrganization) {
+        return (
+            <SettingsCard
+                className={className}
+                classNames={classNames}
+                title={localization.members}
+                description={localization.membersDescription}
+                instructions={localization.membersInstructions}
+                actionLabel={localization.inviteMember}
+                isPending
+                {...props}
+            />
+        )
+    }
+
+    return (
+        <OrganizationMembersContent
+            className={className}
+            classNames={classNames}
+            localization={localization}
+            {...props}
+        />
+    )
+}
+
+function OrganizationMembersContent({
+    className,
+    classNames,
+    localization: localizationProp,
+    ...props
+}: SettingsCardProps) {
+    const {
+        hooks: { useActiveOrganization, useHasPermission },
+        localization: contextLocalization
+    } = useContext(AuthUIContext)
+
+    const localization = { ...contextLocalization, ...localizationProp }
+
+    const { data: activeOrganization } = useActiveOrganization()
+    const { data: hasPermissionInvite, isPending: isPendingInvite } = useHasPermission({
+        permissions: {
+            invitation: ["create"]
+        }
+    })
+
+    const { data: hasPermissionUpdateMember, isPending: isPendingUpdateMember } = useHasPermission({
+        permission: {
+            member: ["update"]
+        }
+    })
+
+    const isPending = isPendingInvite || isPendingUpdateMember
 
     const members = activeOrganization?.members
-
-    const isPending = !activeOrganization
 
     const [inviteDialogOpen, setInviteDialogOpen] = useState(false)
 
@@ -51,18 +112,22 @@ export function OrganizationMembersCard({
                 actionLabel={localization.inviteMember}
                 action={() => setInviteDialogOpen(true)}
                 isPending={isPending}
+                disabled={!hasPermissionInvite?.success}
                 {...props}
             >
-                {members && members.length > 0 && (
+                {!isPending && members && members.length > 0 && (
                     <CardContent className={cn("grid gap-4", classNames?.content)}>
-                        {members.map((member) => (
-                            <MemberCell
-                                key={member.id}
-                                classNames={classNames}
-                                member={member}
-                                localization={localization}
-                            />
-                        ))}
+                        {members
+                            .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+                            .map((member) => (
+                                <MemberCell
+                                    key={member.id}
+                                    classNames={classNames}
+                                    member={member}
+                                    localization={localization}
+                                    hideActions={!hasPermissionUpdateMember?.success}
+                                />
+                            ))}
                     </CardContent>
                 )}
             </SettingsCard>

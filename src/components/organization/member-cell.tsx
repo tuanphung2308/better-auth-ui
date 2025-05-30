@@ -1,10 +1,10 @@
 "use client"
 
 import type { User } from "better-auth"
+import type { Member } from "better-auth/plugins/organization"
 import { EllipsisIcon, UserCogIcon, UserXIcon } from "lucide-react"
 import { useContext, useState } from "react"
 
-import type { Member } from "better-auth/plugins/organization"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
@@ -33,21 +33,28 @@ export function MemberCell({
     className,
     classNames,
     member,
-    localization,
+    localization: localizationProp,
     hideActions
 }: MemberCellProps) {
-    const { organization, localization: contextLocalization } = useContext(AuthUIContext)
+    const {
+        organization,
+        hooks: { useActiveOrganization, useSession },
+        localization: contextLocalization
+    } = useContext(AuthUIContext)
+    const localization = { ...contextLocalization, ...localizationProp }
+
+    const { data: sessionData } = useSession()
+    const { data: activeOrganization } = useActiveOrganization()
     const [removeDialogOpen, setRemoveDialogOpen] = useState(false)
     const [updateRoleDialogOpen, setUpdateRoleDialogOpen] = useState(false)
 
-    const fullLocalization = { ...contextLocalization, ...localization }
-
     const builtInRoles = [
-        { role: "owner", label: fullLocalization.owner },
-        { role: "admin", label: fullLocalization.admin },
-        { role: "member", label: fullLocalization.member }
+        { role: "owner", label: localization.owner },
+        { role: "admin", label: localization.admin },
+        { role: "member", label: localization.member }
     ]
 
+    const myRole = activeOrganization?.members.find((m) => m.user.id === sessionData?.user.id)?.role
     const roles = [...builtInRoles, ...(organization?.customRoles || [])]
     const role = roles.find((r) => r.role === member.role)
 
@@ -57,7 +64,7 @@ export function MemberCell({
                 <UserView user={member.user} localization={localization} className="flex-1" />
                 <span className="text-sm opacity-70">{role?.label}</span>
 
-                {!hideActions && (
+                {(member.role !== "owner" || myRole === "owner") && !hideActions && (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button

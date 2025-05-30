@@ -1,10 +1,10 @@
 "use client"
 
 import type { User } from "better-auth"
+import type { Member } from "better-auth/plugins/organization"
 import { Loader2 } from "lucide-react"
 import { type ComponentProps, useContext, useState } from "react"
 
-import type { Member } from "better-auth/plugins/organization"
 import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
@@ -36,7 +36,7 @@ export function UpdateMemberRoleDialog({
 }: UpdateMemberRoleDialogProps) {
     const {
         authClient,
-        hooks: { useActiveOrganization },
+        hooks: { useActiveOrganization, useSession },
         localization: contextLocalization,
         organization,
         toast
@@ -45,6 +45,8 @@ export function UpdateMemberRoleDialog({
     const localization = { ...contextLocalization, ...localizationProp }
 
     const { refetch } = useActiveOrganization()
+    const { data: sessionData } = useSession()
+    const { data: activeOrganization } = useActiveOrganization()
 
     const [isUpdating, setIsUpdating] = useState(false)
     const [selectedRole, setSelectedRole] = useState(member.role)
@@ -56,11 +58,22 @@ export function UpdateMemberRoleDialog({
     ]
 
     const roles = [...builtInRoles, ...(organization?.customRoles || [])]
-    const availableRoles = roles.filter(
-        (role) => member.role === "owner" || role.role !== "owner" || true
-    )
 
-    const role = roles.find((r) => r.role === member.role)
+    const currentUserRole = activeOrganization?.members.find(
+        (m) => m.user.id === sessionData?.user.id
+    )?.role
+
+    const availableRoles = roles.filter((role) => {
+        if (role.role === "owner") {
+            return currentUserRole === "owner"
+        }
+
+        if (role.role === "admin") {
+            return currentUserRole === "owner" || currentUserRole === "admin"
+        }
+
+        return true
+    })
 
     const updateMemberRole = async () => {
         if (selectedRole === member.role) {
