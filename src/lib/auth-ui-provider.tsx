@@ -1,7 +1,7 @@
 "use client"
 
 import type { SocialProvider } from "better-auth/social-providers"
-import { type ReactNode, createContext, useEffect, useMemo } from "react"
+import { type ReactNode, createContext, useContext, useEffect, useMemo } from "react"
 import { toast } from "sonner"
 
 import { RecaptchaV3 } from "../components/captcha/recaptcha-v3"
@@ -736,6 +736,8 @@ export const AuthUIProvider = ({
     // Remove trailing slash from basePath
     basePath = basePath.endsWith("/") ? basePath.slice(0, -1) : basePath
 
+    const { data: sessionData } = hooks.useSession()
+
     return (
         <AuthUIContext.Provider
             value={{
@@ -767,6 +769,7 @@ export const AuthUIProvider = ({
                 ...props
             }}
         >
+            {sessionData && <OrganizationRefetcher />}
             {captcha?.provider === "google-recaptcha-v3" ? (
                 <RecaptchaV3>{children}</RecaptchaV3>
             ) : (
@@ -774,4 +777,26 @@ export const AuthUIProvider = ({
             )}
         </AuthUIContext.Provider>
     )
+}
+
+const OrganizationRefetcher = () => {
+    const { hooks } = useContext(AuthUIContext)
+    const { data: sessionData } = hooks.useSession()
+    const { data: activeOrganization, refetch: refetchActiveOrganization } =
+        hooks.useActiveOrganization()
+    const { data: organizations, refetch: refetchListOrganizations } = hooks.useListOrganizations()
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: Refetch fix
+    useEffect(() => {
+        if (!sessionData?.user.id) return
+        if (activeOrganization) {
+            refetchActiveOrganization()
+        }
+
+        if (organizations) {
+            refetchListOrganizations()
+        }
+    }, [sessionData?.user.id, refetchActiveOrganization, refetchListOrganizations])
+
+    return null
 }

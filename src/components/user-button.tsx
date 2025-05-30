@@ -21,12 +21,10 @@ import {
     useState
 } from "react"
 
-import type { Organization } from "better-auth/plugins/organization"
 import type { AuthLocalization } from "../lib/auth-localization"
 import { AuthUIContext } from "../lib/auth-ui-provider"
 import { getLocalizedError } from "../lib/utils"
 import { cn } from "../lib/utils"
-import type { Refetch } from "../types/refetch"
 import { Button } from "./ui/button"
 import {
     DropdownMenu,
@@ -103,11 +101,10 @@ export function UserButton({
 }: UserButtonProps & ComponentProps<typeof Button>) {
     const {
         basePath,
-        hooks: { useSession, useListDeviceSessions, useActiveOrganization, useListOrganizations },
+        hooks: { useSession, useListDeviceSessions },
         mutators: { setActiveSession },
         localization: contextLocalization,
         multiSession,
-        organization,
         settings,
         signUp,
         toast,
@@ -130,20 +127,6 @@ export function UserButton({
         deviceSessionsPending = isPending
     }
 
-    let refetchActiveOrganization: Refetch | undefined = undefined
-    let activeOrganization: Organization | null | undefined = undefined
-    let organizations: Organization[] | null | undefined = undefined
-    let refetchOrganizations: Refetch | undefined = undefined
-
-    if (organization) {
-        const { data, refetch } = useActiveOrganization()
-        const { data: organizationsData, refetch: refetchOrgs } = useListOrganizations()
-        activeOrganization = data
-        refetchActiveOrganization = refetch
-        organizations = organizationsData
-        refetchOrganizations = refetchOrgs
-    }
-
     const { data: sessionData, isPending: sessionPending } = useSession()
     const user = sessionData?.user
     const [activeSessionPending, setActiveSessionPending] = useState(false)
@@ -157,14 +140,6 @@ export function UserButton({
             try {
                 await setActiveSession({ sessionToken })
 
-                if (activeOrganization) {
-                    await refetchActiveOrganization?.()
-                }
-
-                if (organizations) {
-                    await refetchOrganizations?.()
-                }
-
                 onSessionChange?.()
             } catch (error) {
                 toast({
@@ -174,16 +149,7 @@ export function UserButton({
                 setActiveSessionPending(false)
             }
         },
-        [
-            setActiveSession,
-            refetchActiveOrganization,
-            activeOrganization,
-            organizations,
-            refetchOrganizations,
-            onSessionChange,
-            toast,
-            localization
-        ]
+        [setActiveSession, onSessionChange, toast, localization]
     )
 
     // biome-ignore lint/correctness/useExhaustiveDependencies:
