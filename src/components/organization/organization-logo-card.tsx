@@ -33,8 +33,72 @@ export function OrganizationLogoCard({
     ...props
 }: OrganizationLogoCardProps) {
     const {
+        hooks: { useActiveOrganization },
+        localization: authLocalization
+    } = useContext(AuthUIContext)
+
+    localization = { ...authLocalization, ...localization }
+
+    const { data: activeOrganization } = useActiveOrganization()
+
+    if (!activeOrganization) {
+        return (
+            <Card className={cn("w-full pb-0 text-start", className, classNames?.base)} {...props}>
+                <div className="flex justify-between">
+                    <SettingsCardHeader
+                        className="grow self-start"
+                        title={localization.logo}
+                        description={localization.logoDescription}
+                        isPending={true}
+                        classNames={classNames}
+                    />
+
+                    <Button
+                        type="button"
+                        className="me-6 size-fit rounded-full"
+                        size="icon"
+                        variant="ghost"
+                        disabled
+                    >
+                        <OrganizationLogo
+                            isPending={true}
+                            className="size-20 text-2xl"
+                            classNames={classNames?.avatar}
+                            localization={localization}
+                        />
+                    </Button>
+                </div>
+
+                <SettingsCardFooter
+                    className="!py-5"
+                    instructions={localization.logoInstructions}
+                    classNames={classNames}
+                    isPending={true}
+                    isSubmitting={false}
+                />
+            </Card>
+        )
+    }
+
+    return (
+        <OrganizationLogoForm
+            className={className}
+            classNames={classNames}
+            localization={localization}
+            {...props}
+        />
+    )
+}
+
+function OrganizationLogoForm({
+    className,
+    classNames,
+    localization,
+    ...props
+}: OrganizationLogoCardProps) {
+    const {
         authClient,
-        hooks: { useActiveOrganization, useListOrganizations },
+        hooks: { useActiveOrganization, useListOrganizations, useHasPermission },
         localization: authLocalization,
         optimistic,
         organization,
@@ -45,14 +109,19 @@ export function OrganizationLogoCard({
 
     const { data: activeOrganization, refetch: refetchActiveOrganization } = useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
+    const { data: hasPermission, isPending: permissionPending } = useHasPermission({
+        permissions: {
+            organization: ["update"]
+        }
+    })
 
-    const isPending = !activeOrganization
+    const isPending = !activeOrganization || permissionPending
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [loading, setLoading] = useState(false)
 
     const handleLogoChange = async (file: File) => {
-        if (!activeOrganization || !organization?.logo) return
+        if (!activeOrganization || !organization?.logo || !hasPermission?.success) return
 
         setLoading(true)
         const resizedFile = await resizeAndCropImage(
@@ -96,7 +165,7 @@ export function OrganizationLogoCard({
     }
 
     const handleDeleteLogo = async () => {
-        if (!activeOrganization) return
+        if (!activeOrganization || !hasPermission?.success) return
 
         setLoading(true)
 
@@ -118,14 +187,18 @@ export function OrganizationLogoCard({
         setLoading(false)
     }
 
-    const openFileDialog = () => fileInputRef.current?.click()
+    const openFileDialog = () => {
+        if (hasPermission?.success) {
+            fileInputRef.current?.click()
+        }
+    }
 
     return (
         <Card className={cn("w-full pb-0 text-start", className, classNames?.base)} {...props}>
             <input
                 ref={fileInputRef}
                 accept="image/*"
-                disabled={loading}
+                disabled={loading || !hasPermission?.success}
                 hidden
                 type="file"
                 onChange={(e) => {
@@ -152,6 +225,7 @@ export function OrganizationLogoCard({
                             className="me-6 size-fit rounded-full"
                             size="icon"
                             variant="ghost"
+                            disabled={!hasPermission?.success}
                         >
                             <OrganizationLogo
                                 isPending={isPending || loading}
@@ -165,14 +239,17 @@ export function OrganizationLogoCard({
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent align="end" onCloseAutoFocus={(e) => e.preventDefault()}>
-                        <DropdownMenuItem onClick={openFileDialog} disabled={loading}>
+                        <DropdownMenuItem
+                            onClick={openFileDialog}
+                            disabled={loading || !hasPermission?.success}
+                        >
                             <UploadCloudIcon />
                             {localization.uploadLogo}
                         </DropdownMenuItem>
                         {activeOrganization?.logo && (
                             <DropdownMenuItem
                                 onClick={handleDeleteLogo}
-                                disabled={loading}
+                                disabled={loading || !hasPermission?.success}
                                 variant="destructive"
                             >
                                 <Trash2Icon />

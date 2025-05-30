@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useContext } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
+
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import { SettingsCard, type SettingsCardProps } from "../settings/shared/settings-card"
@@ -19,9 +20,53 @@ export function OrganizationSlugCard({
     ...props
 }: SettingsCardProps) {
     const {
+        hooks: { useActiveOrganization },
+        localization: contextLocalization
+    } = useContext(AuthUIContext)
+
+    const localization = { ...contextLocalization, ...localizationProp }
+    const { data: activeOrganization } = useActiveOrganization()
+
+    if (!activeOrganization) {
+        return (
+            <SettingsCard
+                className={className}
+                classNames={classNames}
+                description={localization.slugUrlDescription}
+                instructions={localization.slugUrlInstructions}
+                isPending
+                title={localization.slugUrl}
+                actionLabel={localization.save}
+                optimistic={props.optimistic}
+                {...props}
+            >
+                <CardContent className={classNames?.content}>
+                    <Skeleton className={cn("h-9 w-full", classNames?.skeleton)} />
+                </CardContent>
+            </SettingsCard>
+        )
+    }
+
+    return (
+        <OrganizationSlugForm
+            className={className}
+            classNames={classNames}
+            localization={localization}
+            {...props}
+        />
+    )
+}
+
+function OrganizationSlugForm({
+    className,
+    classNames,
+    localization: localizationProp,
+    ...props
+}: SettingsCardProps) {
+    const {
         authClient,
-        hooks: { useActiveOrganization, useListOrganizations },
         localization: contextLocalization,
+        hooks: { useActiveOrganization, useListOrganizations, useHasPermission },
         optimistic,
         toast
     } = useContext(AuthUIContext)
@@ -30,8 +75,11 @@ export function OrganizationSlugCard({
 
     const { data: activeOrganization, refetch: refetchActiveOrganization } = useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
-
-    const isPending = !activeOrganization
+    const { data: hasPermission, isPending } = useHasPermission({
+        permissions: {
+            organization: ["update"]
+        }
+    })
 
     const formSchema = z.object({
         slug: z
@@ -52,13 +100,7 @@ export function OrganizationSlugCard({
     const { isSubmitting } = form.formState
 
     const updateOrganizationSlug = async ({ slug }: z.infer<typeof formSchema>) => {
-        if (!activeOrganization) {
-            toast({
-                variant: "error",
-                message: localization.error
-            })
-            return
-        }
+        if (!activeOrganization) return
 
         if (activeOrganization.slug === slug) {
             toast({
@@ -104,6 +146,7 @@ export function OrganizationSlugCard({
                     title={localization.slugUrl}
                     actionLabel={localization.save}
                     optimistic={optimistic}
+                    disabled={!hasPermission?.success}
                     {...props}
                 >
                     <CardContent className={classNames?.content}>
@@ -121,7 +164,7 @@ export function OrganizationSlugCard({
                                                 placeholder={
                                                     localization.organizationSlugPlaceholder
                                                 }
-                                                disabled={isSubmitting}
+                                                disabled={isSubmitting || !hasPermission?.success}
                                                 {...field}
                                             />
                                         </FormControl>

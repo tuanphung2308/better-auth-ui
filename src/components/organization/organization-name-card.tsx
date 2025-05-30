@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useContext } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
+
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import { SettingsCard, type SettingsCardProps } from "../settings/shared/settings-card"
@@ -19,24 +20,66 @@ export function OrganizationNameCard({
     ...props
 }: SettingsCardProps) {
     const {
+        hooks: { useActiveOrganization },
+        localization: contextLocalization
+    } = useContext(AuthUIContext)
+
+    const localization = { ...contextLocalization, ...localizationProp }
+    const { data: activeOrganization } = useActiveOrganization()
+
+    if (!activeOrganization) {
+        return (
+            <SettingsCard
+                className={className}
+                classNames={classNames}
+                description={localization.organizationNameDescription}
+                instructions={localization.organizationNameInstructions}
+                isPending
+                title={localization.organizationName}
+                actionLabel={localization.save}
+                optimistic={props.optimistic}
+                {...props}
+            >
+                <CardContent className={classNames?.content}>
+                    <Skeleton className={cn("h-9 w-full", classNames?.skeleton)} />
+                </CardContent>
+            </SettingsCard>
+        )
+    }
+
+    return (
+        <OrganizationNameForm
+            className={className}
+            classNames={classNames}
+            localization={localization}
+            {...props}
+        />
+    )
+}
+
+function OrganizationNameForm({
+    className,
+    classNames,
+    localization: localizationProp,
+    ...props
+}: SettingsCardProps) {
+    const {
         authClient,
-        hooks: { useActiveOrganization, useListOrganizations, useHasPermission },
         localization: contextLocalization,
+        hooks: { useActiveOrganization, useListOrganizations, useHasPermission },
         optimistic,
         toast
     } = useContext(AuthUIContext)
 
-    const { data: hasPermission, isPending: permissionPending } = useHasPermission({
+    const localization = { ...contextLocalization, ...localizationProp }
+
+    const { data: activeOrganization, refetch: refetchActiveOrganization } = useActiveOrganization()
+    const { refetch: refetchOrganizations } = useListOrganizations()
+    const { data: hasPermission, isPending } = useHasPermission({
         permissions: {
             organization: ["update"]
         }
     })
-
-    const localization = { ...contextLocalization, ...localizationProp }
-
-    const { data: activeOrganization, refetch: refetchActiveOrganization } = useActiveOrganization()
-
-    const isPending = !activeOrganization || permissionPending
 
     const formSchema = z.object({
         name: z.string().min(1, {
@@ -52,14 +95,7 @@ export function OrganizationNameCard({
     const { isSubmitting } = form.formState
 
     const updateOrganizationName = async ({ name }: z.infer<typeof formSchema>) => {
-        if (!activeOrganization) {
-            toast({
-                variant: "error",
-                message: localization.error
-            })
-
-            return
-        }
+        if (!activeOrganization) return
 
         if (activeOrganization.name === name) {
             toast({
@@ -79,6 +115,7 @@ export function OrganizationNameCard({
             })
 
             await refetchActiveOrganization?.()
+            await refetchOrganizations?.()
 
             toast({
                 variant: "success",
@@ -104,6 +141,7 @@ export function OrganizationNameCard({
                     title={localization.organizationName}
                     actionLabel={localization.save}
                     optimistic={optimistic}
+                    disabled={!hasPermission?.success}
                     {...props}
                 >
                     <CardContent className={classNames?.content}>
