@@ -2,7 +2,7 @@
 
 import type { ComponentProps, ReactNode } from "react"
 
-import type { AuthLocalization } from "../../../lib/auth-localization"
+import type { AuthLocalization } from "../../../lib/localization/auth-localization"
 import { cn } from "../../../lib/utils"
 import { Card } from "../../ui/card"
 import type { UserAvatarClassNames } from "../../user-avatar"

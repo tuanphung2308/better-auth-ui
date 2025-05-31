@@ -2,8 +2,8 @@
 
 import { useContext } from "react"
 
-import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import type { AuthLocalization } from "../../../lib/localization/auth-localization"
 import { socialProviders } from "../../../lib/social-providers"
 import { cn } from "../../../lib/utils"
 import type { Refetch } from "../../../types/refetch"

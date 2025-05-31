@@ -3,8 +3,8 @@
 import { useContext, useState } from "react"
 import { useForm } from "react-hook-form"
 
-import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import type { AuthLocalization } from "../../../lib/localization/auth-localization"
 import { cn, getLocalizedError } from "../../../lib/utils"
 import { CardContent } from "../../ui/card"
 import { Form } from "../../ui/form"

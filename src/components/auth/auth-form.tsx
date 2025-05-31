@@ -2,9 +2,9 @@
 
 import { useContext, useEffect } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
+import type { AuthLocalization } from "../../lib/localization/auth-localization"
 import { getAuthViewByPath } from "../../lib/utils"
 import { AuthCallback } from "./auth-callback"
 import { EmailOTPForm } from "./forms/email-otp-form"

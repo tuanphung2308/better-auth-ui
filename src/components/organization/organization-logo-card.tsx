@@ -3,9 +3,9 @@
 import { Trash2Icon, UploadCloudIcon } from "lucide-react"
 import { type ComponentProps, useContext, useRef, useState } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { fileToBase64, resizeAndCropImage } from "../../lib/image-utils"
+import type { AuthLocalization } from "../../lib/localization/auth-localization"
 import { cn, getLocalizedError } from "../../lib/utils"
 import type { SettingsCardClassNames } from "../settings/shared/settings-card"
 import { SettingsCardFooter } from "../settings/shared/settings-card-footer"

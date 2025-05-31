@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import { useIsHydrated } from "../../hooks/use-hydrated"
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
+import type { AuthLocalization } from "../../lib/localization/auth-localization"
 import { cn } from "../../lib/utils"
 
 export interface RecaptchaV3BadgeProps {

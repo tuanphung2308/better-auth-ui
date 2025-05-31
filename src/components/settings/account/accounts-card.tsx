@@ -1,8 +1,8 @@
 "use client"
 import { useContext } from "react"
 
-import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import type { AuthLocalization } from "../../../lib/localization/auth-localization"
 import { cn } from "../../../lib/utils"
 import { CardContent } from "../../ui/card"
 import { SettingsCard } from "../shared/settings-card"

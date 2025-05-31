@@ -23,8 +23,8 @@ import type { RenderToast } from "../types/render-toast"
 import type { SettingsOptions } from "../types/settings-options"
 import type { SignUpOptions } from "../types/sign-up-options"
 import type { SocialOptions } from "../types/social-options"
-import { type AuthLocalization, authLocalization } from "./auth-localization"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
+import { type AuthLocalization, authLocalization } from "./localization/auth-localization"
 import type { Provider } from "./social-providers"
 
 const DefaultLink: Link = ({ href, className, children }) => (

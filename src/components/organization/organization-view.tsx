@@ -2,8 +2,8 @@
 
 import type { Organization } from "better-auth/plugins/organization"
 import { useContext } from "react"
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
+import type { AuthLocalization } from "../../lib/localization/auth-localization"
 import { cn } from "../../lib/utils"
 import { Skeleton } from "../ui/skeleton"
 import { OrganizationLogo, type OrganizationLogoClassNames } from "./organization-logo"

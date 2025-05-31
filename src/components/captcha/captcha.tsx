@@ -3,8 +3,8 @@ import { Turnstile } from "@marsidev/react-turnstile"
 import { type RefObject, useContext } from "react"
 
 import { useTheme } from "../../hooks/use-theme"
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
+import type { AuthLocalization } from "../../lib/localization/auth-localization"
 import { RecaptchaBadge } from "./recaptcha-badge"
 import { RecaptchaV2 } from "./recaptcha-v2"
 

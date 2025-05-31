@@ -1,3 +1,5 @@
+import { BASE_ERROR_CODES } from "./base-error-codes"
+
 export const authLocalization = {
     /** @default "Account" */
     account: "Account",
@@ -713,7 +715,8 @@ export const authLocalization = {
     slugRequired: "Organization slug is required",
 
     /** @default "The slug does not match" */
-    slugDoesNotMatch: "The slug does not match"
+    slugDoesNotMatch: "The slug does not match",
+    ...BASE_ERROR_CODES
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>

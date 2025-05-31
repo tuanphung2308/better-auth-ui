@@ -3,8 +3,8 @@
 import { FingerprintIcon, Loader2 } from "lucide-react"
 import { useContext, useState } from "react"
 
-import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import type { AuthLocalization } from "../../../lib/localization/auth-localization"
 import { cn, getLocalizedError } from "../../../lib/utils"
 import { Button } from "../../ui/button"
 import { Card } from "../../ui/card"
