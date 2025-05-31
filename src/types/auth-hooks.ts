@@ -17,7 +17,7 @@ export type AuthHooks = {
     useListSessions: () => AuthHook<Session[]>
     useListPasskeys: () => ReturnType<AuthClient["useListPasskeys"]>
     useListApiKeys: () => AuthHook<ApiKey[]>
-    useActiveOrganization: () => ReturnType<AuthClient["useActiveOrganization"]>
+    useActiveOrganization: () => Partial<ReturnType<AuthClient["useActiveOrganization"]>>
     useListOrganizations: () => ReturnType<AuthClient["useListOrganizations"]>
     useHasPermission: (
         params: Parameters<AuthClient["organization"]["hasPermission"]>[0]

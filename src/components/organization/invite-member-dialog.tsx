@@ -87,7 +87,7 @@ export function InviteMemberDialog({
                 fetchOptions: { throw: true }
             })
 
-            await refetchActiveOrganization()
+            await refetchActiveOrganization?.()
 
             onOpenChange?.(false)
             form.reset()

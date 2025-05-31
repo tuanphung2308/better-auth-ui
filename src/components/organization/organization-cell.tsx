@@ -67,7 +67,7 @@ export function OrganizationCell({
                 }
             })
 
-            await refetchActiveOrganization()
+            await refetchActiveOrganization?.()
 
             navigate(`${basePath}/${viewPaths.organization}`)
         } catch (error) {

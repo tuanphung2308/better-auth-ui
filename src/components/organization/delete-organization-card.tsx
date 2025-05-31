@@ -22,7 +22,7 @@ export function DeleteOrganizationCard({ className, classNames, localization }: 
 
     const isPending = organizationPending || sessionPending
 
-    const membership = activeOrganization?.members.find(
+    const membership = activeOrganization?.members?.find(
         (member) => member.userId === sessionData?.user.id
     )
     const isOwner = membership?.role === "owner"

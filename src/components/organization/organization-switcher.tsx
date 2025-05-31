@@ -104,6 +104,7 @@ export function OrganizationSwitcher({
     const {
         data: activeOrganization,
         isPending: organizationPending,
+        refetch: refetchActiveOrganization,
         isRefetching
     } = useActiveOrganization()
 
@@ -128,6 +129,7 @@ export function OrganizationSwitcher({
                         throw: true
                     }
                 })
+                await refetchActiveOrganization?.()
             } catch (error) {
                 toast({
                     variant: "error",
@@ -137,7 +139,7 @@ export function OrganizationSwitcher({
                 setActiveOrganizationPending(false)
             }
         },
-        [authClient, toast, localization, onSetActive]
+        [authClient, toast, localization, onSetActive, refetchActiveOrganization]
     )
 
     return (

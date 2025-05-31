@@ -62,7 +62,7 @@ export function InvitationCell({
                 fetchOptions: { throw: true }
             })
 
-            await refetch()
+            await refetch?.()
 
             toast({
                 variant: "success",

@@ -793,7 +793,7 @@ const OrganizationRefetcher = () => {
     // biome-ignore lint/correctness/useExhaustiveDependencies: Refetch fix
     useEffect(() => {
         if (!sessionData?.user.id) return
-        if (activeOrganization) refetchActiveOrganization()
+        if (activeOrganization) refetchActiveOrganization?.()
         if (organizations) refetchListOrganizations()
     }, [sessionData?.user.id, refetchActiveOrganization, refetchListOrganizations])
 
