@@ -53,7 +53,7 @@ export function OrganizationCell({
 
     const handleManageOrganization = useCallback(async () => {
         if (activeOrganization?.id === organization.id) {
-            navigate(`${basePath}/${viewPaths.organization}`)
+            navigate(`${basePath}/${viewPaths.ORGANIZATION}`)
             return
         }
 
@@ -69,7 +69,7 @@ export function OrganizationCell({
 
             await refetchActiveOrganization?.()
 
-            navigate(`${basePath}/${viewPaths.organization}`)
+            navigate(`${basePath}/${viewPaths.ORGANIZATION}`)
         } catch (error) {
             toast({
                 variant: "error",

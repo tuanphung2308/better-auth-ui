@@ -21,7 +21,7 @@ export interface UseTriplitOptionsProps {
     triplit: TriplitClient<any>
     modelNames?: Partial<ModelNames>
     usePlural?: boolean
-    sessionData?: { user: User; session: Session }
+    sessionData?: { user: User; session: Session } | null
     refetch?: Refetch
     isPending: boolean
 }

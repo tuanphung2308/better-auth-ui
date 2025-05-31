@@ -31,17 +31,17 @@ export function EmailOTPButton({
             variant="secondary"
             onClick={() =>
                 navigate(
-                    `${basePath}/${view === "emailOTP" ? viewPaths.signIn : viewPaths.emailOTP}${window.location.search}`
+                    `${basePath}/${view === "EMAIL_OTP" ? viewPaths.SIGN_IN : viewPaths.EMAIL_OTP}${window.location.search}`
                 )
             }
         >
-            {view === "emailOTP" ? (
+            {view === "EMAIL_OTP" ? (
                 <LockIcon className={classNames?.form?.icon} />
             ) : (
                 <MailIcon className={classNames?.form?.icon} />
             )}
             {localization.SIGN_IN_WITH}{" "}
-            {view === "emailOTP" ? localization.PASSWORD : localization.EMAIL_OTP}
+            {view === "EMAIL_OTP" ? localization.PASSWORD : localization.EMAIL_OTP}
         </Button>
     )
 }

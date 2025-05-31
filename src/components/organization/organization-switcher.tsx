@@ -252,8 +252,8 @@ export function OrganizationSwitcher({
                                     <Link
                                         href={`${basePath}/${
                                             activeOrganization
-                                                ? viewPaths.organization
-                                                : viewPaths.settings
+                                                ? viewPaths.ORGANIZATION
+                                                : viewPaths.SETTINGS
                                         }`}
                                     >
                                         <Button
@@ -317,7 +317,7 @@ export function OrganizationSwitcher({
                             {localization.CREATE_ORGANIZATION}
                         </DropdownMenuItem>
                     ) : (
-                        <Link href={`${basePath}/${viewPaths.signIn}`}>
+                        <Link href={`${basePath}/${viewPaths.SIGN_IN}`}>
                             <DropdownMenuItem className={cn(classNames?.content?.menuItem)}>
                                 <LogInIcon />
                                 {localization.SIGN_IN}

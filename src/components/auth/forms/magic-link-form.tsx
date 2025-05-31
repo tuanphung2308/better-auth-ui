@@ -63,7 +63,7 @@ export function MagicLinkForm({
             `${baseURL}${
                 callbackURLProp ||
                 (persistClient
-                    ? `${basePath}/${viewPaths.callback}?redirectTo=${getRedirectTo()}`
+                    ? `${basePath}/${viewPaths.CALLBACK}?redirectTo=${getRedirectTo()}`
                     : getRedirectTo())
             }`,
         [callbackURLProp, persistClient, basePath, viewPaths, baseURL, getRedirectTo]

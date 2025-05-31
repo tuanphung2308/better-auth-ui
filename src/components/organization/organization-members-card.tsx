@@ -34,7 +34,7 @@ export function OrganizationMembersCard({
 
     useEffect(() => {
         if (organizationPending || organizationFetching) return
-        if (!activeOrganization) replace(`${basePath}/${viewPaths.settings}`)
+        if (!activeOrganization) replace(`${basePath}/${viewPaths.SETTINGS}`)
     }, [
         activeOrganization,
         organizationPending,

@@ -121,7 +121,7 @@ export function AccountCell({
                     <DropdownMenuItem
                         onClick={() => {
                             if (isCurrentSession) {
-                                navigate(`${basePath}/${viewPaths.signOut}`)
+                                navigate(`${basePath}/${viewPaths.SIGN_OUT}`)
                                 return
                             }
 

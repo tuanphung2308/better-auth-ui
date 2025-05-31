@@ -127,7 +127,7 @@ export function SignInForm({
             }
 
             if (response.twoFactorRedirect) {
-                navigate(`${basePath}/${viewPaths.twoFactor}${window.location.search}`)
+                navigate(`${basePath}/${viewPaths.TWO_FACTOR}${window.location.search}`)
             } else {
                 await onSuccess()
             }
@@ -192,7 +192,7 @@ export function SignInForm({
                                             "text-sm hover:underline",
                                             classNames?.forgotPasswordLink
                                         )}
-                                        href={`${basePath}/${viewPaths.forgotPassword}${isHydrated ? window.location.search : ""}`}
+                                        href={`${basePath}/${viewPaths.FORGOT_PASSWORD}${isHydrated ? window.location.search : ""}`}
                                     >
                                         {localization.FORGOT_PASSWORD_LINK}
                                     </Link>

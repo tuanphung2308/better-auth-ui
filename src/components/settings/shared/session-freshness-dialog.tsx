@@ -38,7 +38,7 @@ export function SessionFreshnessDialog({
     localization = { ...contextLocalization, ...localization }
 
     const handleSignOut = () => {
-        navigate(`${basePath}/${viewPaths.signOut}`)
+        navigate(`${basePath}/${viewPaths.SIGN_OUT}`)
         onOpenChange?.(false)
     }
 

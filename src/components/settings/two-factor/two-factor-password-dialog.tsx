@@ -177,7 +177,7 @@ export function TwoFactorPasswordDialog({
                     setShowBackupCodesDialog(open)
 
                     if (!open) {
-                        const url = `${basePath}/${viewPaths.twoFactor}`
+                        const url = `${basePath}/${viewPaths.TWO_FACTOR}`
                         navigate(
                             twoFactor?.includes("totp") && totpURI
                                 ? `${url}?totpURI=${totpURI}`

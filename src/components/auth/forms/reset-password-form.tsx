@@ -86,7 +86,7 @@ export function ResetPasswordForm({
         const token = searchParams.get("token")
 
         if (!token || token === "INVALID_TOKEN") {
-            navigate(`${basePath}/${viewPaths.signIn}${window.location.search}`)
+            navigate(`${basePath}/${viewPaths.SIGN_IN}${window.location.search}`)
             toast({ variant: "error", message: localization.INVALID_TOKEN })
         }
     }, [basePath, navigate, toast, viewPaths, localization])
@@ -107,7 +107,7 @@ export function ResetPasswordForm({
                 message: localization.RESET_PASSWORD_SUCCESS
             })
 
-            navigate(`${basePath}/${viewPaths.signIn}${window.location.search}`)
+            navigate(`${basePath}/${viewPaths.SIGN_IN}${window.location.search}`)
         } catch (error) {
             toast({
                 variant: "error",

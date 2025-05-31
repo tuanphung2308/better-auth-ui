@@ -77,12 +77,12 @@ export function DeleteAccountDialog({
         if (credentialsLinked) {
             params.password = password!
         } else if (!isFresh) {
-            navigate(`${basePath}/${viewPaths.signOut}`)
+            navigate(`${basePath}/${viewPaths.SIGN_OUT}`)
             return
         }
 
         if (deleteUser?.verification) {
-            params.callbackURL = `${baseURL}${basePath}/${viewPaths.signOut}`
+            params.callbackURL = `${baseURL}${basePath}/${viewPaths.SIGN_OUT}`
         }
 
         try {
@@ -97,7 +97,7 @@ export function DeleteAccountDialog({
                 toast({ variant: "success", message: localization.DELETE_ACCOUNT_VERIFY! })
             } else {
                 toast({ variant: "success", message: localization.DELETE_ACCOUNT_SUCCESS! })
-                navigate(`${basePath}/${viewPaths.signOut}`)
+                navigate(`${basePath}/${viewPaths.SIGN_OUT}`)
             }
         } catch (error) {
             toast({

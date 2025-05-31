@@ -198,7 +198,7 @@ export function TwoFactorForm({
                                                 "text-sm hover:underline",
                                                 classNames?.forgotPasswordLink
                                             )}
-                                            href={`${basePath}/${viewPaths.recoverAccount}${isHydrated ? window.location.search : ""}`}
+                                            href={`${basePath}/${viewPaths.RECOVER_ACCOUNT}${isHydrated ? window.location.search : ""}`}
                                         >
                                             {localization.FORGOT_AUTHENTICATOR}
                                         </Link>

@@ -15,7 +15,7 @@ export function useAuthenticate<TAuthClient extends AnyAuthClient>(
     type Session = TAuthClient["$Infer"]["Session"]["session"]
     type User = TAuthClient["$Infer"]["Session"]["user"]
 
-    const { authView = "signIn", enabled = true } = options ?? {}
+    const { authView = "SIGN_IN", enabled = true } = options ?? {}
 
     const {
         hooks: { useSession },

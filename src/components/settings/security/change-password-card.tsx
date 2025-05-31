@@ -102,7 +102,7 @@ export function ChangePasswordCard({
         try {
             await authClient.forgetPassword({
                 email,
-                redirectTo: `${baseURL}${basePath}/${viewPaths.resetPassword}`,
+                redirectTo: `${baseURL}${basePath}/${viewPaths.RESET_PASSWORD}`,
                 fetchOptions: { throw: true }
             })
 

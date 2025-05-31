@@ -80,7 +80,7 @@ export function ForgotPasswordForm({
 
             await authClient.forgetPassword({
                 email,
-                redirectTo: `${baseURL}${basePath}/${viewPaths.resetPassword}`,
+                redirectTo: `${baseURL}${basePath}/${viewPaths.RESET_PASSWORD}`,
                 fetchOptions
             })
 
@@ -89,7 +89,7 @@ export function ForgotPasswordForm({
                 message: localization.FORGOT_PASSWORD_EMAIL
             })
 
-            navigate(`${basePath}/${viewPaths.signIn}${window.location.search}`)
+            navigate(`${basePath}/${viewPaths.SIGN_IN}${window.location.search}`)
         } catch (error) {
             toast({
                 variant: "error",

@@ -31,17 +31,17 @@ export function MagicLinkButton({
             variant="secondary"
             onClick={() =>
                 navigate(
-                    `${basePath}/${view === "magicLink" || !credentials ? viewPaths.signIn : viewPaths.magicLink}${window.location.search}`
+                    `${basePath}/${view === "MAGIC_LINK" || !credentials ? viewPaths.SIGN_IN : viewPaths.MAGIC_LINK}${window.location.search}`
                 )
             }
         >
-            {view === "magicLink" ? (
+            {view === "MAGIC_LINK" ? (
                 <LockIcon className={classNames?.form?.icon} />
             ) : (
                 <MailIcon className={classNames?.form?.icon} />
             )}
             {localization.SIGN_IN_WITH}{" "}
-            {view === "magicLink" ? localization.PASSWORD : localization.MAGIC_LINK}
+            {view === "MAGIC_LINK" ? localization.PASSWORD : localization.MAGIC_LINK}
         </Button>
     )
 }

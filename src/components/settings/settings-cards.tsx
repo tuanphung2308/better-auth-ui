@@ -39,12 +39,12 @@ export type SettingsCardsClassNames = {
 }
 
 export const settingsViews = [
-    "settings",
-    "security",
-    "apiKeys",
-    "organization",
-    "organizations",
-    "members"
+    "SETTINGS",
+    "SECURITY",
+    "API_KEYS",
+    "ORGANIZATION",
+    "ORGANIZATIONS",
+    "MEMBERS"
 ] as const
 export type SettingsView = (typeof settingsViews)[number]
 
@@ -77,25 +77,25 @@ export function SettingsCards({ className, classNames, localization, view }: Set
     // Personal settings group
     const personalGroup: NavigationItem[] = [
         {
-            view: "settings",
+            view: "SETTINGS",
             label: localization.ACCOUNT
         },
         {
-            view: "security",
+            view: "SECURITY",
             label: localization.SECURITY
         }
     ]
 
     if (apiKey) {
         personalGroup.push({
-            view: "apiKeys",
+            view: "API_KEYS",
             label: localization.API_KEYS
         })
     }
 
     if (organization) {
         personalGroup.push({
-            view: "organizations",
+            view: "ORGANIZATIONS",
             label: localization.ORGANIZATIONS
         })
     }
@@ -105,12 +105,12 @@ export function SettingsCards({ className, classNames, localization, view }: Set
 
     if (organization) {
         organizationGroup.push({
-            view: "organization",
+            view: "ORGANIZATION",
             label: localization.ORGANIZATION
         })
 
         organizationGroup.push({
-            view: "members",
+            view: "MEMBERS",
             label: localization.MEMBERS
         })
     }
@@ -118,7 +118,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
     // Determine which group the current view belongs to
     const isPersonalView = personalGroup.some((item) => item.view === view)
     const isOrganizationView =
-        organizationGroup.some((item) => item.view === view) || view === "members"
+        organizationGroup.some((item) => item.view === view) || view === "MEMBERS"
 
     // Show navigation for the current group
     const currentNavigationGroup = isOrganizationView ? organizationGroup : personalGroup
@@ -192,31 +192,31 @@ export function SettingsCards({ className, classNames, localization, view }: Set
                 </div>
             </div>
 
-            {view === "settings" && (
+            {view === "SETTINGS" && (
                 <AccountSettingsCards classNames={classNames} localization={localization} />
             )}
 
-            {view === "security" && (
+            {view === "SECURITY" && (
                 <SecuritySettingsCards classNames={classNames} localization={localization} />
             )}
 
-            {view === "apiKeys" && apiKey && (
+            {view === "API_KEYS" && apiKey && (
                 <div className={cn("flex w-full flex-col", classNames?.cards)}>
                     <APIKeysCard classNames={classNames?.card} localization={localization} />
                 </div>
             )}
 
-            {view === "organization" && organization && (
+            {view === "ORGANIZATION" && organization && (
                 <OrganizationSettingsCards classNames={classNames} localization={localization} />
             )}
 
-            {view === "organizations" && organization && (
+            {view === "ORGANIZATIONS" && organization && (
                 <div className={cn("flex w-full flex-col", classNames?.cards)}>
                     <OrganizationsCard classNames={classNames?.card} localization={localization} />
                 </div>
             )}
 
-            {view === "members" && organization && (
+            {view === "MEMBERS" && organization && (
                 <div className={cn("flex w-full flex-col gap-4 md:gap-6", classNames?.cards)}>
                     <OrganizationMembersCard
                         classNames={classNames?.card}

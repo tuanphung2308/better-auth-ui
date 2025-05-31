@@ -96,7 +96,7 @@ export function SignUpForm({
             `${baseURL}${
                 callbackURL ||
                 (persistClient
-                    ? `${basePath}/${viewPaths.callback}?redirectTo=${getRedirectTo()}`
+                    ? `${basePath}/${viewPaths.CALLBACK}?redirectTo=${getRedirectTo()}`
                     : getRedirectTo())
             }`,
         [callbackURL, persistClient, basePath, viewPaths, baseURL, getRedirectTo]
@@ -332,7 +332,7 @@ export function SignUpForm({
             if ("token" in data && data.token) {
                 await onSuccess()
             } else {
-                navigate(`${basePath}/${viewPaths.signIn}${window.location.search}`)
+                navigate(`${basePath}/${viewPaths.SIGN_IN}${window.location.search}`)
                 toast({ variant: "success", message: localization.SIGN_UP_EMAIL! })
             }
         } catch (error) {

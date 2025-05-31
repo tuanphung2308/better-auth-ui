@@ -251,7 +251,7 @@ export function UserButton({
 
                 {!user || user.isAnonymous ? (
                     <>
-                        <Link href={`${basePath}/${viewPaths.signIn}`}>
+                        <Link href={`${basePath}/${viewPaths.SIGN_IN}`}>
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <LogInIcon />
 
@@ -260,7 +260,7 @@ export function UserButton({
                         </Link>
 
                         {signUp && (
-                            <Link href={`${basePath}/${viewPaths.signUp}`}>
+                            <Link href={`${basePath}/${viewPaths.SIGN_UP}`}>
                                 <DropdownMenuItem className={classNames?.content?.menuItem}>
                                     <UserRoundPlus />
 
@@ -272,7 +272,7 @@ export function UserButton({
                 ) : (
                     <>
                         {!disableDefaultLinks && settings && (
-                            <Link href={settings.url || `${basePath}/${viewPaths.settings}`}>
+                            <Link href={settings.url || `${basePath}/${viewPaths.SETTINGS}`}>
                                 <DropdownMenuItem className={classNames?.content?.menuItem}>
                                     <SettingsIcon />
 
@@ -281,7 +281,7 @@ export function UserButton({
                             </Link>
                         )}
 
-                        <Link href={`${basePath}/${viewPaths.signOut}`}>
+                        <Link href={`${basePath}/${viewPaths.SIGN_OUT}`}>
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <LogOutIcon />
 
@@ -331,7 +331,7 @@ export function UserButton({
                                 </Fragment>
                             ))}
 
-                        <Link href={`${basePath}/${viewPaths.signIn}`}>
+                        <Link href={`${basePath}/${viewPaths.SIGN_IN}`}>
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <PlusCircleIcon />
 
