@@ -38,7 +38,7 @@ export function RecoverAccountForm({
     const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({ redirectTo })
 
     const formSchema = z.object({
-        code: z.string().min(1, { message: localization.backupCodeRequired })
+        code: z.string().min(1, { message: localization.BACKUP_CODE_REQUIRED })
     })
 
     const form = useForm({
@@ -81,12 +81,12 @@ export function RecoverAccountForm({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className={classNames?.label}>
-                                {localization.backupCode}
+                                {localization.BACKUP_CODE}
                             </FormLabel>
 
                             <FormControl>
                                 <Input
-                                    placeholder={localization.backupCodePlaceholder}
+                                    placeholder={localization.BACKUP_CODE_PLACEHOLDER}
                                     autoComplete="off"
                                     className={classNames?.input}
                                     disabled={isSubmitting}
@@ -107,7 +107,7 @@ export function RecoverAccountForm({
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />
                     ) : (
-                        localization.recoverAccountAction
+                        localization.RECOVER_ACCOUNT_ACTION
                     )}
                 </Button>
             </form>

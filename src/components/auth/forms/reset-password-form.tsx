@@ -49,22 +49,22 @@ export function ResetPasswordForm({
     const formSchema = z
         .object({
             newPassword: getPasswordSchema(passwordValidation, {
-                passwordRequired: localization.newPasswordRequired,
-                passwordTooShort: localization.passwordTooShort,
-                passwordTooLong: localization.passwordTooLong,
-                passwordInvalid: localization.passwordInvalid
+                PASSWORD_REQUIRED: localization.NEW_PASSWORD_REQUIRED,
+                PASSWORD_TOO_SHORT: localization.PASSWORD_TOO_SHORT,
+                PASSWORD_TOO_LONG: localization.PASSWORD_TOO_LONG,
+                INVALID_PASSWORD: localization.INVALID_PASSWORD
             }),
             confirmPassword: confirmPasswordEnabled
                 ? getPasswordSchema(passwordValidation, {
-                      passwordRequired: localization.confirmPasswordRequired,
-                      passwordTooShort: localization.passwordTooShort,
-                      passwordTooLong: localization.passwordTooLong,
-                      passwordInvalid: localization.passwordInvalid
+                      PASSWORD_REQUIRED: localization.CONFIRM_PASSWORD_REQUIRED,
+                      PASSWORD_TOO_SHORT: localization.PASSWORD_TOO_SHORT,
+                      PASSWORD_TOO_LONG: localization.PASSWORD_TOO_LONG,
+                      INVALID_PASSWORD: localization.INVALID_PASSWORD
                   })
                 : z.string().optional()
         })
         .refine((data) => !confirmPasswordEnabled || data.newPassword === data.confirmPassword, {
-            message: localization.passwordsDoNotMatch,
+            message: localization.PASSWORDS_DO_NOT_MATCH,
             path: ["confirmPassword"]
         })
 
@@ -87,7 +87,7 @@ export function ResetPasswordForm({
 
         if (!token || token === "INVALID_TOKEN") {
             navigate(`${basePath}/${viewPaths.signIn}${window.location.search}`)
-            toast({ variant: "error", message: localization.resetPasswordInvalidToken })
+            toast({ variant: "error", message: localization.RESET_PASSWORD_INVALID_TOKEN })
         }
     }, [basePath, navigate, toast, viewPaths, localization])
 
@@ -104,7 +104,7 @@ export function ResetPasswordForm({
 
             toast({
                 variant: "success",
-                message: localization.resetPasswordSuccess
+                message: localization.RESET_PASSWORD_SUCCESS
             })
 
             navigate(`${basePath}/${viewPaths.signIn}${window.location.search}`)
@@ -130,14 +130,14 @@ export function ResetPasswordForm({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className={classNames?.label}>
-                                {localization.newPassword}
+                                {localization.NEW_PASSWORD}
                             </FormLabel>
 
                             <FormControl>
                                 <PasswordInput
                                     autoComplete="new-password"
                                     className={classNames?.input}
-                                    placeholder={localization.newPasswordPlaceholder}
+                                    placeholder={localization.NEW_PASSWORD_PLACEHOLDER}
                                     disabled={isSubmitting}
                                     {...field}
                                 />
@@ -155,14 +155,14 @@ export function ResetPasswordForm({
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel className={classNames?.label}>
-                                    {localization.confirmPassword}
+                                    {localization.CONFIRM_PASSWORD}
                                 </FormLabel>
 
                                 <FormControl>
                                     <PasswordInput
                                         autoComplete="new-password"
                                         className={classNames?.input}
-                                        placeholder={localization.confirmPasswordPlaceholder}
+                                        placeholder={localization.CONFIRM_PASSWORD_PLACEHOLDER}
                                         disabled={isSubmitting}
                                         {...field}
                                     />
@@ -182,7 +182,7 @@ export function ResetPasswordForm({
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />
                     ) : (
-                        localization.resetPasswordAction
+                        localization.RESET_PASSWORD_ACTION
                     )}
                 </Button>
             </form>

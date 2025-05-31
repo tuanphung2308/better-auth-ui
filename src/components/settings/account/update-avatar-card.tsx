@@ -125,8 +125,8 @@ export function UpdateAvatarCard({
             <div className="flex justify-between">
                 <SettingsCardHeader
                     className="grow self-start"
-                    title={localization.avatar}
-                    description={localization.avatarDescription}
+                    title={localization.AVATAR}
+                    description={localization.AVATAR_DESCRIPTION}
                     isPending={isPending}
                     classNames={classNames}
                 />
@@ -148,7 +148,7 @@ export function UpdateAvatarCard({
                     <DropdownMenuContent align="end" onCloseAutoFocus={(e) => e.preventDefault()}>
                         <DropdownMenuItem onClick={openFileDialog} disabled={loading}>
                             <UploadCloudIcon />
-                            {localization.uploadAvatar}
+                            {localization.UPLOAD_AVATAR}
                         </DropdownMenuItem>
                         {sessionData?.user.image && (
                             <DropdownMenuItem
@@ -157,7 +157,7 @@ export function UpdateAvatarCard({
                                 variant="destructive"
                             >
                                 <Trash2Icon />
-                                {localization.deleteAvatar}
+                                {localization.DELETE_AVATAR}
                             </DropdownMenuItem>
                         )}
                     </DropdownMenuContent>
@@ -166,7 +166,7 @@ export function UpdateAvatarCard({
 
             <SettingsCardFooter
                 className="!py-5"
-                instructions={localization.avatarInstructions}
+                instructions={localization.AVATAR_INSTRUCTIONS}
                 classNames={classNames}
                 isPending={isPending}
                 isSubmitting={loading}

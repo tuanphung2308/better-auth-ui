@@ -49,9 +49,9 @@ export function InviteMemberDialog({
     const membership = activeOrganization?.members.find((m) => m.userId === sessionData?.user.id)
 
     const builtInRoles = [
-        { role: "owner", label: localization.owner },
-        { role: "admin", label: localization.admin },
-        { role: "member", label: localization.member }
+        { role: "owner", label: localization.OWNER },
+        { role: "admin", label: localization.ADMIN },
+        { role: "member", label: localization.MEMBER }
     ] as const
 
     const roles = [...builtInRoles, ...(organization?.customRoles || [])]
@@ -60,11 +60,11 @@ export function InviteMemberDialog({
     )
 
     const formSchema = z.object({
-        email: z.string().min(1, { message: localization.emailRequired }).email({
-            message: localization.emailInvalid
+        email: z.string().min(1, { message: localization.EMAIL_REQUIRED }).email({
+            message: localization.INVALID_EMAIL
         }),
         role: z.string().min(1, {
-            message: `${localization.role} ${localization.isRequired}`
+            message: `${localization.ROLE} ${localization.IS_REQUIRED}`
         })
     })
 
@@ -94,7 +94,7 @@ export function InviteMemberDialog({
 
             toast({
                 variant: "success",
-                message: localization.invitationSent || "Invitation sent successfully"
+                message: localization.SEND_INVITATION_SUCCESS || "Invitation sent successfully"
             })
         } catch (error) {
             toast({
@@ -109,13 +109,13 @@ export function InviteMemberDialog({
             <DialogContent className={classNames?.dialog?.content}>
                 <DialogHeader className={classNames?.dialog?.header}>
                     <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {localization.inviteMember}
+                        {localization.INVITE_MEMBER}
                     </DialogTitle>
 
                     <DialogDescription
                         className={cn("text-xs md:text-sm", classNames?.description)}
                     >
-                        {localization.inviteMemberDescription}
+                        {localization.INVITE_MEMBER_DESCRIPTION}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -127,12 +127,12 @@ export function InviteMemberDialog({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className={classNames?.label}>
-                                        {localization.email}
+                                        {localization.EMAIL}
                                     </FormLabel>
 
                                     <FormControl>
                                         <Input
-                                            placeholder={localization.emailPlaceholder}
+                                            placeholder={localization.EMAIL_PLACEHOLDER}
                                             type="email"
                                             {...field}
                                             className={classNames?.input}
@@ -150,7 +150,7 @@ export function InviteMemberDialog({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className={classNames?.label}>
-                                        {localization.role}
+                                        {localization.ROLE}
                                     </FormLabel>
 
                                     <Select
@@ -184,7 +184,7 @@ export function InviteMemberDialog({
                                 onClick={() => onOpenChange?.(false)}
                                 className={cn(classNames?.button, classNames?.outlineButton)}
                             >
-                                {localization.cancel}
+                                {localization.CANCEL}
                             </Button>
 
                             <Button
@@ -194,7 +194,7 @@ export function InviteMemberDialog({
                             >
                                 {isSubmitting && <Loader2 className="animate-spin" />}
 
-                                {localization.sendInvitation}
+                                {localization.SEND_INVITATION}
                             </Button>
                         </DialogFooter>
                     </form>

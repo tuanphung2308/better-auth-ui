@@ -46,7 +46,7 @@ export function AcceptInvitationCard({
         if (!invitationIdParam) {
             toast({
                 variant: "error",
-                message: localization.invalidInvitation
+                message: localization.INVITATION_NOT_FOUND
             })
 
             replace(redirectTo)
@@ -54,7 +54,7 @@ export function AcceptInvitationCard({
         }
 
         setInvitationId(invitationIdParam)
-    }, [localization.invalidInvitation, toast, replace, redirectTo])
+    }, [localization.INVITATION_NOT_FOUND, toast, replace, redirectTo])
 
     // If session is not loaded yet, use authenticate hook to check
     useAuthenticate()
@@ -110,7 +110,7 @@ function AcceptInvitationContent({
         if (!invitation) {
             toast({
                 variant: "error",
-                message: localization.invalidInvitation
+                message: localization.INVITATION_NOT_FOUND
             })
 
             replace(redirectTo)
@@ -122,8 +122,8 @@ function AcceptInvitationContent({
                 variant: "error",
                 message:
                     new Date(invitation.expiresAt) < new Date()
-                        ? localization.invitationExpired
-                        : localization.invalidInvitation
+                        ? localization.INVITATION_EXPIRED
+                        : localization.INVITATION_NOT_FOUND
             })
 
             replace(redirectTo)
@@ -143,7 +143,7 @@ function AcceptInvitationContent({
 
             toast({
                 variant: "success",
-                message: localization.invitationAccepted || "Invitation accepted"
+                message: localization.INVITATION_ACCEPTED || "Invitation accepted"
             })
 
             replace(redirectTo)
@@ -169,7 +169,7 @@ function AcceptInvitationContent({
 
             toast({
                 variant: "success",
-                message: localization.invitationRejected
+                message: localization.INVITATION_REJECTED
             })
 
             replace(redirectTo)
@@ -184,9 +184,9 @@ function AcceptInvitationContent({
     }
 
     const builtInRoles = [
-        { role: "owner", label: localization.owner },
-        { role: "admin", label: localization.admin },
-        { role: "member", label: localization.member }
+        { role: "owner", label: localization.OWNER },
+        { role: "admin", label: localization.ADMIN },
+        { role: "member", label: localization.MEMBER }
     ]
 
     const roles = [...builtInRoles, ...(organization?.customRoles || [])]
@@ -198,11 +198,11 @@ function AcceptInvitationContent({
         <Card className={cn("w-full max-w-sm", className, classNames?.base)}>
             <CardHeader className={cn("justify-items-center text-center", classNames?.header)}>
                 <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                    {localization.acceptInvitation}
+                    {localization.ACCEPT_INVITATION}
                 </CardTitle>
 
                 <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
-                    {localization.acceptInvitationDescription}
+                    {localization.ACCEPT_INVITATION_DESCRIPTION}
                 </CardDescription>
             </CardHeader>
 
@@ -235,7 +235,7 @@ function AcceptInvitationContent({
                     >
                         {isRejecting ? <Loader2 className="animate-spin" /> : <XIcon />}
 
-                        {localization.reject}
+                        {localization.REJECT}
                     </Button>
 
                     <Button
@@ -245,7 +245,7 @@ function AcceptInvitationContent({
                     >
                         {isAccepting ? <Loader2 className="animate-spin" /> : <CheckIcon />}
 
-                        {localization.accept}
+                        {localization.ACCEPT}
                     </Button>
                 </div>
             </CardContent>

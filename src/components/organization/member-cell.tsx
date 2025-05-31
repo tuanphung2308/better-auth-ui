@@ -49,9 +49,9 @@ export function MemberCell({
     const [updateRoleDialogOpen, setUpdateRoleDialogOpen] = useState(false)
 
     const builtInRoles = [
-        { role: "owner", label: localization.owner },
-        { role: "admin", label: localization.admin },
-        { role: "member", label: localization.member }
+        { role: "owner", label: localization.OWNER },
+        { role: "admin", label: localization.ADMIN },
+        { role: "member", label: localization.MEMBER }
     ]
 
     const myRole = activeOrganization?.members.find((m) => m.user.id === sessionData?.user.id)?.role
@@ -84,7 +84,7 @@ export function MemberCell({
                         <DropdownMenuContent onCloseAutoFocus={(e) => e.preventDefault()}>
                             <DropdownMenuItem onClick={() => setUpdateRoleDialogOpen(true)}>
                                 <UserCogIcon className={classNames?.icon} />
-                                {localization?.updateRole}
+                                {localization?.UPDATE_ROLE}
                             </DropdownMenuItem>
 
                             <DropdownMenuItem
@@ -92,7 +92,7 @@ export function MemberCell({
                                 variant="destructive"
                             >
                                 <UserXIcon className={classNames?.icon} />
-                                {localization?.removeMember}
+                                {localization?.REMOVE_MEMBER}
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

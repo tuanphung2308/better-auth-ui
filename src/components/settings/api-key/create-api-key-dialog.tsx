@@ -52,7 +52,7 @@ export function CreateAPIKeyDialog({
     const { lang } = useLang()
 
     const formSchema = z.object({
-        name: z.string().min(1, `${localization.name} ${localization.isRequired}`),
+        name: z.string().min(1, `${localization.NAME} ${localization.IS_REQUIRED}`),
         expiresInDays: z.string().optional()
     })
 
@@ -103,13 +103,13 @@ export function CreateAPIKeyDialog({
             >
                 <DialogHeader className={classNames?.dialog?.header}>
                     <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {localization.createApiKey}
+                        {localization.CREATE_API_KEY}
                     </DialogTitle>
 
                     <DialogDescription
                         className={cn("text-xs md:text-sm", classNames?.description)}
                     >
-                        {localization.createApiKeyDescription}
+                        {localization.CREATE_API_KEY_DESCRIPTION}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -122,13 +122,13 @@ export function CreateAPIKeyDialog({
                                 render={({ field }) => (
                                     <FormItem className="flex-1">
                                         <FormLabel className={classNames?.label}>
-                                            {localization.name}
+                                            {localization.NAME}
                                         </FormLabel>
 
                                         <FormControl>
                                             <Input
                                                 className={classNames?.input}
-                                                placeholder={localization.apiKeyNamePlaceholder}
+                                                placeholder={localization.API_KEY_NAME_PLACEHOLDER}
                                                 autoFocus
                                                 disabled={isSubmitting}
                                                 {...field}
@@ -146,7 +146,7 @@ export function CreateAPIKeyDialog({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className={classNames?.label}>
-                                            {localization.expires}
+                                            {localization.EXPIRES}
                                         </FormLabel>
 
                                         <Select
@@ -157,14 +157,14 @@ export function CreateAPIKeyDialog({
                                             <FormControl>
                                                 <SelectTrigger className={classNames?.input}>
                                                     <SelectValue
-                                                        placeholder={localization.noExpiration}
+                                                        placeholder={localization.NO_EXPIRATION}
                                                     />
                                                 </SelectTrigger>
                                             </FormControl>
 
                                             <SelectContent>
                                                 <SelectItem value="none">
-                                                    {localization.noExpiration}
+                                                    {localization.NO_EXPIRATION}
                                                 </SelectItem>
 
                                                 {[1, 7, 30, 60, 90, 180, 365].map((days) => (
@@ -191,7 +191,7 @@ export function CreateAPIKeyDialog({
                                 className={cn(classNames?.button, classNames?.outlineButton)}
                                 disabled={isSubmitting}
                             >
-                                {localization.cancel}
+                                {localization.CANCEL}
                             </Button>
 
                             <Button
@@ -202,7 +202,7 @@ export function CreateAPIKeyDialog({
                             >
                                 {isSubmitting && <Loader2 className="animate-spin" />}
 
-                                {localization.createApiKey}
+                                {localization.CREATE_API_KEY}
                             </Button>
                         </DialogFooter>
                     </form>

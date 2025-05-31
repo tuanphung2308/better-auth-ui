@@ -65,31 +65,31 @@ export function UpdateFieldCard({
             ? z.preprocess(
                   (val) => (!val ? undefined : Number(val)),
                   z.number({
-                      required_error: `${label} ${localization.isRequired}`,
-                      invalid_type_error: `${label} ${localization.isInvalid}`
+                      required_error: `${label} ${localization.IS_REQUIRED}`,
+                      invalid_type_error: `${label} ${localization.IS_INVALID}`
                   })
               )
             : z.coerce
                   .number({
-                      invalid_type_error: `${label} ${localization.isInvalid}`
+                      invalid_type_error: `${label} ${localization.IS_INVALID}`
                   })
                   .optional()
     } else if (type === "boolean") {
         fieldSchema = required
             ? z.coerce
                   .boolean({
-                      required_error: `${label} ${localization.isRequired}`,
-                      invalid_type_error: `${label} ${localization.isInvalid}`
+                      required_error: `${label} ${localization.IS_REQUIRED}`,
+                      invalid_type_error: `${label} ${localization.IS_INVALID}`
                   })
                   .refine((val) => val === true, {
-                      message: `${label} ${localization.isRequired}`
+                      message: `${label} ${localization.IS_REQUIRED}`
                   })
             : z.coerce.boolean({
-                  invalid_type_error: `${label} ${localization.isInvalid}`
+                  invalid_type_error: `${label} ${localization.IS_INVALID}`
               })
     } else {
         fieldSchema = required
-            ? z.string().min(1, `${label} ${localization.isRequired}`)
+            ? z.string().min(1, `${label} ${localization.IS_REQUIRED}`)
             : z.string().optional()
     }
 
@@ -107,14 +107,14 @@ export function UpdateFieldCard({
         if (value === newValue) {
             toast({
                 variant: "error",
-                message: `${label} ${localization.isTheSame}`
+                message: `${label} ${localization.IS_THE_SAME}`
             })
             return
         }
 
         if (validate && typeof newValue === "string" && !(await validate(newValue))) {
             form.setError(name, {
-                message: `${label} ${localization.isInvalid}`
+                message: `${label} ${localization.IS_INVALID}`
             })
 
             return
@@ -126,7 +126,7 @@ export function UpdateFieldCard({
             await refetch?.()
             toast({
                 variant: "success",
-                message: `${label} ${localization.updatedSuccessfully}`
+                message: `${label} ${localization.UPDATED_SUCCESSFULLY}`
             })
         } catch (error) {
             toast({
@@ -146,7 +146,7 @@ export function UpdateFieldCard({
                     instructions={instructions}
                     isPending={isPending}
                     title={label}
-                    actionLabel={localization.save}
+                    actionLabel={localization.SAVE}
                     optimistic={optimistic}
                 >
                     <CardContent className={classNames?.content}>

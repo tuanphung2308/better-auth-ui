@@ -52,9 +52,9 @@ export function UpdateMemberRoleDialog({
     const [selectedRole, setSelectedRole] = useState(member.role)
 
     const builtInRoles = [
-        { role: "owner", label: localization.owner },
-        { role: "admin", label: localization.admin },
-        { role: "member", label: localization.member }
+        { role: "owner", label: localization.OWNER },
+        { role: "admin", label: localization.ADMIN },
+        { role: "member", label: localization.MEMBER }
     ]
 
     const roles = [...builtInRoles, ...(organization?.customRoles || [])]
@@ -79,7 +79,7 @@ export function UpdateMemberRoleDialog({
         if (selectedRole === member.role) {
             toast({
                 variant: "error",
-                message: `${localization.role} ${localization.isTheSame}`
+                message: `${localization.ROLE} ${localization.IS_THE_SAME}`
             })
 
             return
@@ -100,7 +100,7 @@ export function UpdateMemberRoleDialog({
 
             toast({
                 variant: "success",
-                message: localization.memberRoleUpdated
+                message: localization.MEMBER_ROLE_UPDATED
             })
 
             await refetch?.()
@@ -123,13 +123,13 @@ export function UpdateMemberRoleDialog({
             >
                 <DialogHeader className={classNames?.dialog?.header}>
                     <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {localization.updateRole}
+                        {localization.UPDATE_ROLE}
                     </DialogTitle>
 
                     <DialogDescription
                         className={cn("text-xs md:text-sm", classNames?.description)}
                     >
-                        {localization.updateRoleDescription}
+                        {localization.UPDATE_ROLE_DESCRIPTION}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -143,7 +143,7 @@ export function UpdateMemberRoleDialog({
 
                     <Select value={selectedRole} onValueChange={setSelectedRole}>
                         <SelectTrigger className="w-full">
-                            <SelectValue placeholder={localization.selectRole} />
+                            <SelectValue placeholder={localization.SELECT_ROLE} />
                         </SelectTrigger>
 
                         <SelectContent>
@@ -164,7 +164,7 @@ export function UpdateMemberRoleDialog({
                         className={cn(classNames?.button, classNames?.outlineButton)}
                         disabled={isUpdating}
                     >
-                        {localization.cancel}
+                        {localization.CANCEL}
                     </Button>
 
                     <Button
@@ -175,7 +175,7 @@ export function UpdateMemberRoleDialog({
                     >
                         {isUpdating && <Loader2 className="animate-spin" />}
 
-                        {localization.updateRole}
+                        {localization.UPDATE_ROLE}
                     </Button>
                 </DialogFooter>
             </DialogContent>

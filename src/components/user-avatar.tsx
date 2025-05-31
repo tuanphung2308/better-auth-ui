@@ -98,7 +98,7 @@ export function UserAvatar({
             {...props}
         >
             <AvatarImage
-                alt={name || localization?.user}
+                alt={name || localization?.USER}
                 className={classNames?.image}
                 src={src || undefined}
             />

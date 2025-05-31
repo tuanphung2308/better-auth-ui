@@ -45,9 +45,9 @@ export function InvitationCell({
     const { refetch } = useActiveOrganization()
 
     const builtInRoles = [
-        { role: "owner", label: localization.owner },
-        { role: "admin", label: localization.admin },
-        { role: "member", label: localization.member }
+        { role: "owner", label: localization.OWNER },
+        { role: "admin", label: localization.ADMIN },
+        { role: "member", label: localization.MEMBER }
     ]
 
     const roles = [...builtInRoles, ...(organization?.customRoles || [])]
@@ -66,7 +66,7 @@ export function InvitationCell({
 
             toast({
                 variant: "success",
-                message: localization.invitationCancelled
+                message: localization.INVITATION_CANCELLED
             })
         } catch (error) {
             toast({
@@ -91,7 +91,7 @@ export function InvitationCell({
                     <span className="truncate font-semibold text-sm">{invitation.email}</span>
 
                     <span className="truncate text-muted-foreground text-xs">
-                        {localization.expires} {invitation.expiresAt.toLocaleDateString()}
+                        {localization.EXPIRES} {invitation.expiresAt.toLocaleDateString()}
                     </span>
                 </div>
             </div>
@@ -126,7 +126,7 @@ export function InvitationCell({
                         variant="destructive"
                     >
                         <XIcon className={classNames?.icon} />
-                        {localization.cancelInvitation}
+                        {localization.CANCEL_INVITATION}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

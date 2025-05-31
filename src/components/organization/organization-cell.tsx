@@ -123,7 +123,7 @@ export function OrganizationCell({
                         >
                             <SettingsIcon className={classNames?.icon} />
 
-                            {localization.manageOrganization}
+                            {localization.MANAGE_ORGANIZATION}
                         </DropdownMenuItem>
 
                         <DropdownMenuItem
@@ -132,7 +132,7 @@ export function OrganizationCell({
                         >
                             <LogOutIcon className={classNames?.icon} />
 
-                            {localization.leaveOrganization}
+                            {localization.LEAVE_ORGANIZATION}
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

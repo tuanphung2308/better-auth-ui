@@ -32,11 +32,11 @@ export function OrganizationNameCard({
             <SettingsCard
                 className={className}
                 classNames={classNames}
-                description={localization.organizationNameDescription}
-                instructions={localization.organizationNameInstructions}
+                description={localization.ORGANIZATION_NAME_DESCRIPTION}
+                instructions={localization.ORGANIZATION_NAME_INSTRUCTIONS}
                 isPending
-                title={localization.organizationName}
-                actionLabel={localization.save}
+                title={localization.ORGANIZATION_NAME}
+                actionLabel={localization.SAVE}
                 optimistic={props.optimistic}
                 {...props}
             >
@@ -83,7 +83,7 @@ function OrganizationNameForm({
 
     const formSchema = z.object({
         name: z.string().min(1, {
-            message: `${localization.organizationName} ${localization.isRequired}`
+            message: `${localization.ORGANIZATION_NAME} ${localization.IS_REQUIRED}`
         })
     })
 
@@ -100,7 +100,7 @@ function OrganizationNameForm({
         if (activeOrganization.name === name) {
             toast({
                 variant: "error",
-                message: `${localization.organizationName} ${localization.isTheSame}`
+                message: `${localization.ORGANIZATION_NAME} ${localization.IS_THE_SAME}`
             })
 
             return
@@ -119,7 +119,7 @@ function OrganizationNameForm({
 
             toast({
                 variant: "success",
-                message: `${localization.organizationName} ${localization.updatedSuccessfully}`
+                message: `${localization.ORGANIZATION_NAME} ${localization.UPDATED_SUCCESSFULLY}`
             })
         } catch (error) {
             toast({
@@ -135,11 +135,11 @@ function OrganizationNameForm({
                 <SettingsCard
                     className={className}
                     classNames={classNames}
-                    description={localization.organizationNameDescription}
-                    instructions={localization.organizationNameInstructions}
+                    description={localization.ORGANIZATION_NAME_DESCRIPTION}
+                    instructions={localization.ORGANIZATION_NAME_INSTRUCTIONS}
                     isPending={isPending}
-                    title={localization.organizationName}
-                    actionLabel={localization.save}
+                    title={localization.ORGANIZATION_NAME}
+                    actionLabel={localization.SAVE}
                     optimistic={optimistic}
                     disabled={!hasPermission?.success}
                     {...props}
@@ -157,7 +157,7 @@ function OrganizationNameForm({
                                             <Input
                                                 className={classNames?.input}
                                                 placeholder={
-                                                    localization.organizationNamePlaceholder
+                                                    localization.ORGANIZATION_NAME_PLACEHOLDER
                                                 }
                                                 disabled={isSubmitting || !hasPermission?.success}
                                                 {...field}

@@ -103,7 +103,7 @@ export function UserView({
                                 user?.name ||
                                 user?.fullName ||
                                 user?.email ||
-                                localization?.user}
+                                localization?.USER}
                         </span>
 
                         {!user?.isAnonymous && size !== "sm" && (user?.name || user?.username) && (

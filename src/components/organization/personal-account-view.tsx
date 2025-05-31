@@ -82,7 +82,7 @@ export function PersonalAccountView({
                                 user?.name ||
                                 user?.fullName ||
                                 user?.email ||
-                                localization?.user}
+                                localization?.USER}
                         </span>
 
                         {size !== "sm" && (
@@ -93,7 +93,7 @@ export function PersonalAccountView({
                                     classNames?.subtitle
                                 )}
                             >
-                                {localization?.personalAccount}
+                                {localization?.PERSONAL_ACCOUNT}
                             </span>
                         )}
                     </>

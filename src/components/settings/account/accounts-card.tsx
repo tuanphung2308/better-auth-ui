@@ -32,10 +32,10 @@ export function AccountsCard({ className, classNames, localization }: AccountsCa
         <SettingsCard
             className={className}
             classNames={classNames}
-            title={localization.accounts}
-            description={localization.accountsDescription}
-            actionLabel={localization.addAccount}
-            instructions={localization.accountsInstructions}
+            title={localization.ACCOUNTS}
+            description={localization.ACCOUNTS_DESCRIPTION}
+            actionLabel={localization.ADD_ACCOUNT}
+            instructions={localization.ACCOUNTS_INSTRUCTIONS}
             isPending={isPending}
             action={() => navigate(`${basePath}/${viewPaths.signIn}`)}
         >

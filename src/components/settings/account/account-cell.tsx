@@ -114,7 +114,7 @@ export function AccountCell({
                         <DropdownMenuItem onClick={handleSetActiveSession}>
                             <RepeatIcon className={classNames?.icon} />
 
-                            {localization.switchAccount}
+                            {localization.SWITCH_ACCOUNT}
                         </DropdownMenuItem>
                     )}
 
@@ -130,7 +130,7 @@ export function AccountCell({
                     >
                         <LogOutIcon className={classNames?.icon} />
 
-                        {isCurrentSession ? localization.signOut : localization.revoke}
+                        {isCurrentSession ? localization.SIGN_OUT : localization.REVOKE}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

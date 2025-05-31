@@ -72,11 +72,11 @@ export function PasskeysCard({ className, classNames, localization }: PasskeysCa
                     <SettingsCard
                         className={className}
                         classNames={classNames}
-                        actionLabel={localization.addPasskey}
-                        description={localization.passkeysDescription}
-                        instructions={localization.passkeysInstructions}
+                        actionLabel={localization.ADD_PASSKEY}
+                        description={localization.PASSKEYS_DESCRIPTION}
+                        instructions={localization.PASSKEYS_INSTRUCTIONS}
                         isPending={isPending}
-                        title={localization.passkeys}
+                        title={localization.PASSKEYS}
                     >
                         {passkeys && passkeys.length > 0 && (
                             <CardContent className={cn("grid gap-4", classNames?.content)}>

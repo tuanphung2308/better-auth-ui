@@ -35,8 +35,8 @@ export function ChangeEmailCard({
     const formSchema = z.object({
         email: z
             .string()
-            .min(1, { message: localization.emailRequired })
-            .email({ message: localization.emailInvalid })
+            .min(1, { message: localization.EMAIL_REQUIRED })
+            .email({ message: localization.INVALID_EMAIL })
     })
 
     const form = useForm({
@@ -55,7 +55,7 @@ export function ChangeEmailCard({
             await new Promise((resolve) => setTimeout(resolve))
             toast({
                 variant: "error",
-                message: localization.emailIsTheSame
+                message: localization.EMAIL_IS_THE_SAME
             })
             return
         }
@@ -68,12 +68,12 @@ export function ChangeEmailCard({
             })
 
             if (sessionData?.user.emailVerified) {
-                toast({ variant: "success", message: localization.emailVerifyChange! })
+                toast({ variant: "success", message: localization.EMAIL_VERIFY_CHANGE! })
             } else {
                 await refetch?.()
                 toast({
                     variant: "success",
-                    message: `${localization.email} ${localization.updatedSuccessfully}`
+                    message: `${localization.EMAIL} ${localization.UPDATED_SUCCESSFULLY}`
                 })
             }
         } catch (error) {
@@ -93,7 +93,7 @@ export function ChangeEmailCard({
                 fetchOptions: { throw: true }
             })
 
-            toast({ variant: "success", message: localization.emailVerification! })
+            toast({ variant: "success", message: localization.EMAIL_VERIFICATION! })
         } catch (error) {
             toast({ variant: "error", message: getLocalizedError({ error, localization }) })
             setResendDisabled(false)
@@ -108,11 +108,11 @@ export function ChangeEmailCard({
                     <SettingsCard
                         className={className}
                         classNames={classNames}
-                        description={localization.emailDescription}
-                        instructions={localization.emailInstructions}
+                        description={localization.EMAIL_DESCRIPTION}
+                        instructions={localization.EMAIL_INSTRUCTIONS}
                         isPending={isPending}
-                        title={localization.email}
-                        actionLabel={localization.save}
+                        title={localization.EMAIL}
+                        actionLabel={localization.SAVE}
                         {...props}
                     >
                         <CardContent className={classNames?.content}>
@@ -127,7 +127,7 @@ export function ChangeEmailCard({
                                             <FormControl>
                                                 <Input
                                                     className={classNames?.input}
-                                                    placeholder={localization.emailPlaceholder}
+                                                    placeholder={localization.EMAIL_PLACEHOLDER}
                                                     type="email"
                                                     disabled={isSubmitting}
                                                     {...field}
@@ -150,9 +150,9 @@ export function ChangeEmailCard({
                         <SettingsCard
                             className={className}
                             classNames={classNames}
-                            title={localization.verifyYourEmail}
-                            description={localization.verifyYourEmailDescription}
-                            actionLabel={localization.resendVerificationEmail}
+                            title={localization.VERIFY_YOUR_EMAIL}
+                            description={localization.VERIFY_YOUR_EMAIL_DESCRIPTION}
+                            actionLabel={localization.RESEND_VERIFICATION_EMAIL}
                             disabled={resendDisabled}
                             {...props}
                         />

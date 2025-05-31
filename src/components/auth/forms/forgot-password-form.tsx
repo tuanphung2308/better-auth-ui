@@ -51,10 +51,10 @@ export function ForgotPasswordForm({
         email: z
             .string()
             .min(1, {
-                message: `${localization.email} ${localization.isRequired}`
+                message: `${localization.EMAIL} ${localization.IS_REQUIRED}`
             })
             .email({
-                message: `${localization.email} ${localization.isInvalid}`
+                message: `${localization.EMAIL} ${localization.IS_INVALID}`
             })
     })
 
@@ -86,7 +86,7 @@ export function ForgotPasswordForm({
 
             toast({
                 variant: "success",
-                message: localization.forgotPasswordEmail
+                message: localization.FORGOT_PASSWORD_EMAIL
             })
 
             navigate(`${basePath}/${viewPaths.signIn}${window.location.search}`)
@@ -111,14 +111,14 @@ export function ForgotPasswordForm({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className={classNames?.label}>
-                                {localization.email}
+                                {localization.EMAIL}
                             </FormLabel>
 
                             <FormControl>
                                 <Input
                                     className={classNames?.input}
                                     type="email"
-                                    placeholder={localization.emailPlaceholder}
+                                    placeholder={localization.EMAIL_PLACEHOLDER}
                                     disabled={isSubmitting}
                                     {...field}
                                 />
@@ -139,7 +139,7 @@ export function ForgotPasswordForm({
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />
                     ) : (
-                        localization.forgotPasswordAction
+                        localization.FORGOT_PASSWORD_ACTION
                     )}
                 </Button>
             </form>

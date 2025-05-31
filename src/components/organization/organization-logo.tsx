@@ -91,7 +91,7 @@ export function OrganizationLogo({
             {...props}
         >
             <AvatarImage
-                alt={name || localization?.organization}
+                alt={name || localization?.ORGANIZATION}
                 className={classNames?.image}
                 src={src || undefined}
             />

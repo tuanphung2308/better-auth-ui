@@ -40,8 +40,8 @@ export function EmailOTPButton({
             ) : (
                 <MailIcon className={classNames?.form?.icon} />
             )}
-            {localization.signInWith}{" "}
-            {view === "emailOTP" ? localization.password : localization.emailOTP}
+            {localization.SIGN_IN_WITH}{" "}
+            {view === "emailOTP" ? localization.PASSWORD : localization.EMAIL_OTP}
         </Button>
     )
 }

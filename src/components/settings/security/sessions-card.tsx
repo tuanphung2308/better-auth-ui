@@ -30,9 +30,9 @@ export function SessionsCard({ className, classNames, localization }: SessionsCa
         <SettingsCard
             className={className}
             classNames={classNames}
-            description={localization.sessionsDescription}
+            description={localization.SESSIONS_DESCRIPTION}
             isPending={isPending}
-            title={localization.sessions}
+            title={localization.SESSIONS}
         >
             <CardContent className={cn("grid gap-4", classNames?.content)}>
                 {isPending ? (

@@ -36,10 +36,10 @@ export function InviteMemberCard({
             <SettingsCard
                 className={className}
                 classNames={classNames}
-                title={localization.members}
-                description={localization.membersDescription}
-                instructions={localization.membersInstructions}
-                actionLabel={localization.inviteMember}
+                title={localization.MEMBERS}
+                description={localization.MEMBERS_DESCRIPTION}
+                instructions={localization.MEMBERS_INSTRUCTIONS}
+                actionLabel={localization.INVITE_MEMBER}
                 action={() => setInviteDialogOpen(true)}
                 isPending={isPending}
                 {...props}

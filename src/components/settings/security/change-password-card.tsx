@@ -63,22 +63,22 @@ export function ChangePasswordCard({
         .object({
             currentPassword: getPasswordSchema(passwordValidation, localization),
             newPassword: getPasswordSchema(passwordValidation, {
-                passwordRequired: localization.newPasswordRequired,
-                passwordTooShort: localization.passwordTooShort,
-                passwordTooLong: localization.passwordTooLong,
-                passwordInvalid: localization.passwordInvalid
+                PASSWORD_REQUIRED: localization.NEW_PASSWORD_REQUIRED,
+                PASSWORD_TOO_SHORT: localization.PASSWORD_TOO_SHORT,
+                PASSWORD_TOO_LONG: localization.PASSWORD_TOO_LONG,
+                INVALID_PASSWORD: localization.INVALID_PASSWORD
             }),
             confirmPassword: confirmPasswordEnabled
                 ? getPasswordSchema(passwordValidation, {
-                      passwordRequired: localization.confirmPasswordRequired,
-                      passwordTooShort: localization.passwordTooShort,
-                      passwordTooLong: localization.passwordTooLong,
-                      passwordInvalid: localization.passwordInvalid
+                      PASSWORD_REQUIRED: localization.CONFIRM_PASSWORD_REQUIRED,
+                      PASSWORD_TOO_SHORT: localization.PASSWORD_TOO_SHORT,
+                      PASSWORD_TOO_LONG: localization.PASSWORD_TOO_LONG,
+                      INVALID_PASSWORD: localization.INVALID_PASSWORD
                   })
                 : z.string().optional()
         })
         .refine((data) => !confirmPasswordEnabled || data.newPassword === data.confirmPassword, {
-            message: localization.passwordsDoNotMatch,
+            message: localization.PASSWORDS_DO_NOT_MATCH,
             path: ["confirmPassword"]
         })
 
@@ -106,7 +106,7 @@ export function ChangePasswordCard({
                 fetchOptions: { throw: true }
             })
 
-            toast({ variant: "success", message: localization.forgotPasswordEmail! })
+            toast({ variant: "success", message: localization.FORGOT_PASSWORD_EMAIL! })
         } catch (error) {
             toast({ variant: "error", message: getLocalizedError({ error, localization }) })
         }
@@ -121,7 +121,7 @@ export function ChangePasswordCard({
                 fetchOptions: { throw: true }
             })
 
-            toast({ variant: "success", message: localization.changePasswordSuccess! })
+            toast({ variant: "success", message: localization.CHANGE_PASSWORD_SUCCESS! })
         } catch (error) {
             toast({ variant: "error", message: getLocalizedError({ error, localization }) })
         }
@@ -136,9 +136,9 @@ export function ChangePasswordCard({
             <Form {...setPasswordForm}>
                 <form onSubmit={setPasswordForm.handleSubmit(setPassword)}>
                     <SettingsCard
-                        title={localization.setPassword}
-                        description={localization.setPasswordDescription}
-                        actionLabel={localization.setPassword}
+                        title={localization.SET_PASSWORD}
+                        description={localization.SET_PASSWORD_DESCRIPTION}
+                        actionLabel={localization.SET_PASSWORD}
                         isPending={isPending}
                         className={className}
                         classNames={classNames}
@@ -154,11 +154,11 @@ export function ChangePasswordCard({
                 <SettingsCard
                     className={className}
                     classNames={classNames}
-                    actionLabel={localization.save}
-                    description={localization.changePasswordDescription}
-                    instructions={localization.changePasswordInstructions}
+                    actionLabel={localization.SAVE}
+                    description={localization.CHANGE_PASSWORD_DESCRIPTION}
+                    instructions={localization.CHANGE_PASSWORD_INSTRUCTIONS}
                     isPending={isPending}
-                    title={localization.changePassword}
+                    title={localization.CHANGE_PASSWORD}
                 >
                     <CardContent className={cn("grid gap-6", classNames?.content)}>
                         {isPending || !accounts ? (
@@ -178,7 +178,7 @@ export function ChangePasswordCard({
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className={classNames?.label}>
-                                                {localization.currentPassword}
+                                                {localization.CURRENT_PASSWORD}
                                             </FormLabel>
 
                                             <FormControl>
@@ -186,7 +186,7 @@ export function ChangePasswordCard({
                                                     className={classNames?.input}
                                                     autoComplete="current-password"
                                                     placeholder={
-                                                        localization.currentPasswordPlaceholder
+                                                        localization.CURRENT_PASSWORD_PLACEHOLDER
                                                     }
                                                     disabled={isSubmitting}
                                                     {...field}
@@ -204,7 +204,7 @@ export function ChangePasswordCard({
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className={classNames?.label}>
-                                                {localization.newPassword}
+                                                {localization.NEW_PASSWORD}
                                             </FormLabel>
 
                                             <FormControl>
@@ -213,7 +213,7 @@ export function ChangePasswordCard({
                                                     autoComplete="new-password"
                                                     disabled={isSubmitting}
                                                     placeholder={
-                                                        localization.newPasswordPlaceholder
+                                                        localization.NEW_PASSWORD_PLACEHOLDER
                                                     }
                                                     enableToggle
                                                     {...field}
@@ -232,7 +232,7 @@ export function ChangePasswordCard({
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel className={classNames?.label}>
-                                                    {localization.confirmPassword}
+                                                    {localization.CONFIRM_PASSWORD}
                                                 </FormLabel>
 
                                                 <FormControl>
@@ -240,7 +240,7 @@ export function ChangePasswordCard({
                                                         className={classNames?.input}
                                                         autoComplete="new-password"
                                                         placeholder={
-                                                            localization.confirmPasswordPlaceholder
+                                                            localization.CONFIRM_PASSWORD_PLACEHOLDER
                                                         }
                                                         disabled={isSubmitting}
                                                         enableToggle

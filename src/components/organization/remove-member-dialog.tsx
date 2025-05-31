@@ -46,9 +46,9 @@ export function RemoveMemberDialog({
     const { refetch } = useActiveOrganization()
 
     const builtInRoles = [
-        { role: "owner", label: localization.owner },
-        { role: "admin", label: localization.admin },
-        { role: "member", label: localization.member }
+        { role: "owner", label: localization.OWNER },
+        { role: "admin", label: localization.ADMIN },
+        { role: "member", label: localization.MEMBER }
     ]
 
     const roles = [...builtInRoles, ...(organization?.customRoles || [])]
@@ -70,7 +70,7 @@ export function RemoveMemberDialog({
 
             toast({
                 variant: "success",
-                message: localization.memberRemoved
+                message: localization.REMOVE_MEMBER_SUCCESS
             })
 
             await refetch?.()
@@ -93,13 +93,13 @@ export function RemoveMemberDialog({
             >
                 <DialogHeader className={classNames?.dialog?.header}>
                     <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {localization.removeMember}
+                        {localization.REMOVE_MEMBER}
                     </DialogTitle>
 
                     <DialogDescription
                         className={cn("text-xs md:text-sm", classNames?.description)}
                     >
-                        {localization.removeMemberConfirmation}
+                        {localization.REMOVE_MEMBER_CONFIRM}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -118,7 +118,7 @@ export function RemoveMemberDialog({
                         className={cn(classNames?.button, classNames?.outlineButton)}
                         disabled={isRemoving}
                     >
-                        {localization.cancel}
+                        {localization.CANCEL}
                     </Button>
 
                     <Button
@@ -129,7 +129,7 @@ export function RemoveMemberDialog({
                         disabled={isRemoving}
                     >
                         {isRemoving && <Loader2 className="animate-spin" />}
-                        {localization.removeMember}
+                        {localization.REMOVE_MEMBER}
                     </Button>
                 </DialogFooter>
             </DialogContent>

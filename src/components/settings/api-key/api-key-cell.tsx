@@ -38,10 +38,10 @@ export function APIKeyCell({
 
     // Format expiration date or show "Never expires"
     const formatExpiration = () => {
-        if (!apiKey.expiresAt) return localization.neverExpires
+        if (!apiKey.expiresAt) return localization.NEVER_EXPIRES
 
         const expiresDate = new Date(apiKey.expiresAt)
-        return `${localization.expires} ${expiresDate.toLocaleDateString(lang ?? "en", {
+        return `${localization.EXPIRES} ${expiresDate.toLocaleDateString(lang ?? "en", {
             month: "short",
             day: "numeric",
             year: "numeric"
@@ -84,7 +84,7 @@ export function APIKeyCell({
                     variant="outline"
                     onClick={() => setShowDeleteDialog(true)}
                 >
-                    {localization.delete}
+                    {localization.DELETE}
                 </Button>
             </Card>
 

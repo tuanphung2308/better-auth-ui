@@ -186,7 +186,7 @@ export function UserButton({
                                 className={cn(className, classNames?.base)}
                                 classNames={classNames?.trigger?.avatar}
                                 user={user}
-                                aria-label={localization.account}
+                                aria-label={localization.ACCOUNT}
                                 localization={localization}
                             />
                         </Button>
@@ -227,7 +227,7 @@ export function UserButton({
                         />
                     ) : (
                         <div className="-my-1 text-muted-foreground text-xs">
-                            {localization.account}
+                            {localization.ACCOUNT}
                         </div>
                     )}
                 </div>
@@ -255,7 +255,7 @@ export function UserButton({
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <LogInIcon />
 
-                                {localization.signIn}
+                                {localization.SIGN_IN}
                             </DropdownMenuItem>
                         </Link>
 
@@ -264,7 +264,7 @@ export function UserButton({
                                 <DropdownMenuItem className={classNames?.content?.menuItem}>
                                     <UserRoundPlus />
 
-                                    {localization.signUp}
+                                    {localization.SIGN_UP}
                                 </DropdownMenuItem>
                             </Link>
                         )}
@@ -276,7 +276,7 @@ export function UserButton({
                                 <DropdownMenuItem className={classNames?.content?.menuItem}>
                                     <SettingsIcon />
 
-                                    {localization.settings}
+                                    {localization.SETTINGS}
                                 </DropdownMenuItem>
                             </Link>
                         )}
@@ -285,7 +285,7 @@ export function UserButton({
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <LogOutIcon />
 
-                                {localization.signOut}
+                                {localization.SIGN_OUT}
                             </DropdownMenuItem>
                         </Link>
                     </>
@@ -335,7 +335,7 @@ export function UserButton({
                             <DropdownMenuItem className={classNames?.content?.menuItem}>
                                 <PlusCircleIcon />
 
-                                {localization.addAccount}
+                                {localization.ADD_ACCOUNT}
                             </DropdownMenuItem>
                         </Link>
                     </>

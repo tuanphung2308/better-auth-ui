@@ -52,8 +52,8 @@ export function ProvidersCard({
         <SettingsCard
             className={className}
             classNames={classNames}
-            title={localization.providers}
-            description={localization.providersDescription}
+            title={localization.PROVIDERS}
+            description={localization.PROVIDERS_DESCRIPTION}
             isPending={isPending}
         >
             <CardContent className={cn("grid gap-4", classNames?.content)}>

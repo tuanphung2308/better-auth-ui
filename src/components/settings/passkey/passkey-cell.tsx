@@ -88,7 +88,7 @@ export function PasskeyCell({ className, classNames, localization, passkey }: Pa
                 >
                     {isLoading && <Loader2 className="animate-spin" />}
 
-                    {localization.delete}
+                    {localization.DELETE}
                 </Button>
             </Card>
         </>

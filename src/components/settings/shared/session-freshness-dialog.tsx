@@ -47,13 +47,13 @@ export function SessionFreshnessDialog({
             <DialogContent className={cn("sm:max-w-md", classNames?.dialog?.content)}>
                 <DialogHeader className={classNames?.dialog?.header}>
                     <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {title || localization?.sessionExpired || "Session Expired"}
+                        {title || localization?.SESSION_EXPIRED || "Session Expired"}
                     </DialogTitle>
 
                     <DialogDescription
                         className={cn("text-xs md:text-sm", classNames?.description)}
                     >
-                        {description || localization?.sessionNotFresh}
+                        {description || localization?.SESSION_NOT_FRESH}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -64,7 +64,7 @@ export function SessionFreshnessDialog({
                         className={cn(classNames?.button, classNames?.secondaryButton)}
                         onClick={() => onOpenChange?.(false)}
                     >
-                        {localization.cancel}
+                        {localization.CANCEL}
                     </Button>
 
                     <Button
@@ -72,7 +72,7 @@ export function SessionFreshnessDialog({
                         variant="default"
                         onClick={handleSignOut}
                     >
-                        {localization?.signOut}
+                        {localization?.SIGN_OUT}
                     </Button>
                 </DialogFooter>
             </DialogContent>

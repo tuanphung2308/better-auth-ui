@@ -66,10 +66,10 @@ export function ApiKeyDeleteDialog({
 
     // Format expiration date or show "Never expires"
     const formatExpiration = () => {
-        if (!apiKey.expiresAt) return localization.neverExpires
+        if (!apiKey.expiresAt) return localization.NEVER_EXPIRES
 
         const expiresDate = new Date(apiKey.expiresAt)
-        return `${localization.expires} ${expiresDate.toLocaleDateString(lang ?? "en", {
+        return `${localization.EXPIRES} ${expiresDate.toLocaleDateString(lang ?? "en", {
             month: "short",
             day: "numeric",
             year: "numeric"
@@ -84,13 +84,13 @@ export function ApiKeyDeleteDialog({
             >
                 <DialogHeader className={classNames?.dialog?.header}>
                     <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {localization.delete} {localization.apiKey}
+                        {localization.DELETE} {localization.API_KEY}
                     </DialogTitle>
 
                     <DialogDescription
                         className={cn("text-xs md:text-sm", classNames?.description)}
                     >
-                        {localization.deleteApiKeyConfirmation}
+                        {localization.DELETE_API_KEY_CONFIRM}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -121,7 +121,7 @@ export function ApiKeyDeleteDialog({
                         disabled={isLoading}
                         className={cn(classNames?.button, classNames?.secondaryButton)}
                     >
-                        {localization.cancel}
+                        {localization.CANCEL}
                     </Button>
 
                     <Button
@@ -132,7 +132,7 @@ export function ApiKeyDeleteDialog({
                         className={cn(classNames?.button, classNames?.destructiveButton)}
                     >
                         {isLoading && <Loader2 className="animate-spin" />}
-                        {localization.delete}
+                        {localization.DELETE}
                     </Button>
                 </DialogFooter>
             </DialogContent>

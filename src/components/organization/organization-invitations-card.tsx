@@ -35,8 +35,8 @@ export function OrganizationInvitationsCard({
         <SettingsCard
             className={className}
             classNames={classNames}
-            title={localization.pendingInvitations}
-            description={localization.pendingInvitationsDescription}
+            title={localization.PENDING_INVITATIONS}
+            description={localization.PENDING_INVITATIONS_DESCRIPTION}
             isPending={isPending}
             {...props}
         >

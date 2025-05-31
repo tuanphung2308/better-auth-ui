@@ -58,7 +58,7 @@ export function DeleteAccountDialog({
 
     const formSchema = z.object({
         password: credentialsLinked
-            ? z.string().min(1, { message: localization.passwordRequired! })
+            ? z.string().min(1, { message: localization.PASSWORD_REQUIRED! })
             : z.string().optional()
     })
 
@@ -94,9 +94,9 @@ export function DeleteAccountDialog({
             })
 
             if (deleteUser?.verification) {
-                toast({ variant: "success", message: localization.deleteAccountVerify! })
+                toast({ variant: "success", message: localization.DELETE_ACCOUNT_VERIFY! })
             } else {
-                toast({ variant: "success", message: localization.deleteAccountSuccess! })
+                toast({ variant: "success", message: localization.DELETE_ACCOUNT_SUCCESS! })
                 navigate(`${basePath}/${viewPaths.signOut}`)
             }
         } catch (error) {
@@ -114,15 +114,15 @@ export function DeleteAccountDialog({
             <DialogContent className={cn("sm:max-w-md", classNames?.dialog?.content)}>
                 <DialogHeader className={classNames?.dialog?.header}>
                     <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {localization?.deleteAccount}
+                        {localization?.DELETE_ACCOUNT}
                     </DialogTitle>
 
                     <DialogDescription
                         className={cn("text-xs md:text-sm", classNames?.description)}
                     >
                         {isFresh
-                            ? localization?.deleteAccountInstructions
-                            : localization?.deleteAccountNotFresh}
+                            ? localization?.DELETE_ACCOUNT_INSTRUCTIONS
+                            : localization?.SESSION_NOT_FRESH}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -139,13 +139,13 @@ export function DeleteAccountDialog({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className={classNames?.label}>
-                                            {localization?.password}
+                                            {localization?.PASSWORD}
                                         </FormLabel>
 
                                         <FormControl>
                                             <Input
                                                 autoComplete="current-password"
-                                                placeholder={localization?.passwordPlaceholder}
+                                                placeholder={localization?.PASSWORD_PLACEHOLDER}
                                                 type="password"
                                                 className={classNames?.input}
                                                 {...field}
@@ -165,7 +165,7 @@ export function DeleteAccountDialog({
                                 className={cn(classNames?.button, classNames?.secondaryButton)}
                                 onClick={() => onOpenChange?.(false)}
                             >
-                                {localization.cancel}
+                                {localization.CANCEL}
                             </Button>
 
                             <Button
@@ -175,7 +175,7 @@ export function DeleteAccountDialog({
                                 type="submit"
                             >
                                 {isSubmitting && <Loader2 className="animate-spin" />}
-                                {isFresh ? localization?.deleteAccount : localization?.signOut}
+                                {isFresh ? localization?.DELETE_ACCOUNT : localization?.SIGN_OUT}
                             </Button>
                         </DialogFooter>
                     </form>

@@ -73,10 +73,10 @@ export function TwoFactorForm({
         code: z
             .string()
             .min(1, {
-                message: `${localization.oneTimePassword} ${localization.isRequired}`
+                message: `${localization.ONE_TIME_PASSWORD} ${localization.IS_REQUIRED}`
             })
             .min(6, {
-                message: `${localization.oneTimePassword} ${localization.isInvalid}`
+                message: `${localization.ONE_TIME_PASSWORD} ${localization.IS_INVALID}`
             }),
         trustDevice: z.boolean().optional()
     })
@@ -149,7 +149,7 @@ export function TwoFactorForm({
             if (sessionData && !isTwoFactorEnabled) {
                 toast({
                     variant: "success",
-                    message: localization?.twoFactorEnabled
+                    message: localization?.TWO_FACTOR_ENABLED
                 })
             }
         } catch (error) {
@@ -171,7 +171,7 @@ export function TwoFactorForm({
                 {twoFactor?.includes("totp") && totpURI && method === "totp" && (
                     <div className="space-y-3">
                         <Label className={classNames?.label}>
-                            {localization.twoFactorTotpLabel}
+                            {localization.TWO_FACTOR_TOTP_LABEL}
                         </Label>
 
                         <QRCode
@@ -190,7 +190,7 @@ export function TwoFactorForm({
                                 <FormItem>
                                     <div className="flex items-center justify-between">
                                         <FormLabel className={classNames?.label}>
-                                            {localization.oneTimePassword}
+                                            {localization.ONE_TIME_PASSWORD}
                                         </FormLabel>
 
                                         <Link
@@ -200,7 +200,7 @@ export function TwoFactorForm({
                                             )}
                                             href={`${basePath}/${viewPaths.recoverAccount}${isHydrated ? window.location.search : ""}`}
                                         >
-                                            {localization.forgotAuthenticator}
+                                            {localization.FORGOT_AUTHENTICATOR}
                                         </Link>
                                     </div>
 
@@ -243,7 +243,7 @@ export function TwoFactorForm({
                                     </FormControl>
 
                                     <FormLabel className={classNames?.label}>
-                                        {localization.trustDevice}
+                                        {localization.TRUST_DEVICE}
                                     </FormLabel>
                                 </FormItem>
                             )}
@@ -259,7 +259,7 @@ export function TwoFactorForm({
                             className={cn(classNames?.button, classNames?.primaryButton)}
                         >
                             {isSubmitting && <Loader2 className="animate-spin" />}
-                            {localization.twoFactorAction}
+                            {localization.TWO_FACTOR_ACTION}
                         </Button>
                     )}
 
@@ -277,7 +277,7 @@ export function TwoFactorForm({
                                 <SendIcon className={classNames?.icon} />
                             )}
 
-                            {localization.resendCode}
+                            {localization.RESEND_CODE}
                             {cooldownSeconds > 0 && ` (${cooldownSeconds})`}
                         </Button>
                     )}
@@ -291,7 +291,7 @@ export function TwoFactorForm({
                             disabled={isSubmitting}
                         >
                             <SendIcon className={classNames?.icon} />
-                            {localization.sendVerificationCode}
+                            {localization.SEND_VERIFICATION_CODE}
                         </Button>
                     )}
 
@@ -304,7 +304,7 @@ export function TwoFactorForm({
                             disabled={isSubmitting}
                         >
                             <QrCodeIcon className={classNames?.icon} />
-                            {localization.continueWithAuthenticator}
+                            {localization.CONTINUE_WITH_AUTHENTICATOR}
                         </Button>
                     )}
                 </div>

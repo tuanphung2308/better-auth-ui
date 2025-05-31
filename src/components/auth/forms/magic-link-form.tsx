@@ -72,8 +72,8 @@ export function MagicLinkForm({
     const formSchema = z.object({
         email: z
             .string()
-            .min(1, { message: `${localization.email} ${localization.isRequired}` })
-            .email({ message: `${localization.email} ${localization.isInvalid}` })
+            .min(1, { message: `${localization.EMAIL} ${localization.IS_REQUIRED}` })
+            .email({ message: `${localization.EMAIL} ${localization.IS_INVALID}` })
     })
 
     const form = useForm({
@@ -104,7 +104,7 @@ export function MagicLinkForm({
 
             toast({
                 variant: "success",
-                message: localization.magicLinkEmail
+                message: localization.MAGIC_LINK_EMAIL
             })
 
             form.reset()
@@ -129,14 +129,14 @@ export function MagicLinkForm({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className={classNames?.label}>
-                                {localization.email}
+                                {localization.EMAIL}
                             </FormLabel>
 
                             <FormControl>
                                 <Input
                                     className={classNames?.input}
                                     type="email"
-                                    placeholder={localization.emailPlaceholder}
+                                    placeholder={localization.EMAIL_PLACEHOLDER}
                                     disabled={isSubmitting}
                                     {...field}
                                 />
@@ -161,7 +161,7 @@ export function MagicLinkForm({
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />
                     ) : (
-                        localization.magicLinkAction
+                        localization.MAGIC_LINK_ACTION
                     )}
                 </Button>
             </form>

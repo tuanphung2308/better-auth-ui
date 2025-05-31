@@ -47,8 +47,8 @@ export function OrganizationLogoCard({
                 <div className="flex justify-between">
                     <SettingsCardHeader
                         className="grow self-start"
-                        title={localization.logo}
-                        description={localization.logoDescription}
+                        title={localization.LOGO}
+                        description={localization.LOGO_DESCRIPTION}
                         isPending={true}
                         classNames={classNames}
                     />
@@ -71,7 +71,7 @@ export function OrganizationLogoCard({
 
                 <SettingsCardFooter
                     className="!py-5"
-                    instructions={localization.logoInstructions}
+                    instructions={localization.LOGO_INSTRUCTIONS}
                     classNames={classNames}
                     isPending={true}
                     isSubmitting={false}
@@ -212,8 +212,8 @@ function OrganizationLogoForm({
             <div className="flex justify-between">
                 <SettingsCardHeader
                     className="grow self-start"
-                    title={localization.logo}
-                    description={localization.logoDescription}
+                    title={localization.LOGO}
+                    description={localization.LOGO_DESCRIPTION}
                     isPending={isPending}
                     classNames={classNames}
                 />
@@ -244,7 +244,7 @@ function OrganizationLogoForm({
                             disabled={loading || !hasPermission?.success}
                         >
                             <UploadCloudIcon />
-                            {localization.uploadLogo}
+                            {localization.UPLOAD_LOGO}
                         </DropdownMenuItem>
                         {activeOrganization?.logo && (
                             <DropdownMenuItem
@@ -253,7 +253,7 @@ function OrganizationLogoForm({
                                 variant="destructive"
                             >
                                 <Trash2Icon />
-                                {localization.deleteLogo}
+                                {localization.DELETE_LOGO}
                             </DropdownMenuItem>
                         )}
                     </DropdownMenuContent>
@@ -262,7 +262,7 @@ function OrganizationLogoForm({
 
             <SettingsCardFooter
                 className="!py-5"
-                instructions={localization.logoInstructions}
+                instructions={localization.LOGO_INSTRUCTIONS}
                 classNames={classNames}
                 isPending={isPending}
                 isSubmitting={loading}

@@ -26,12 +26,12 @@ export function UpdateNameCard({
             className={className}
             classNames={classNames}
             value={sessionData?.user.name}
-            description={localization.nameDescription}
+            description={localization.NAME_DESCRIPTION}
             name="name"
-            instructions={localization.nameInstructions}
-            label={localization.name}
+            instructions={localization.NAME_INSTRUCTIONS}
+            label={localization.NAME}
             localization={localization}
-            placeholder={localization.namePlaceholder}
+            placeholder={localization.NAME_PLACEHOLDER}
             required={nameRequired}
             {...props}
         />

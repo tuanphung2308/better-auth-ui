@@ -40,8 +40,8 @@ export function MagicLinkButton({
             ) : (
                 <MailIcon className={classNames?.form?.icon} />
             )}
-            {localization.signInWith}{" "}
-            {view === "magicLink" ? localization.password : localization.magicLink}
+            {localization.SIGN_IN_WITH}{" "}
+            {view === "magicLink" ? localization.PASSWORD : localization.MAGIC_LINK}
         </Button>
     )
 }

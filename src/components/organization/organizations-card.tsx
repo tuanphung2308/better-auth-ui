@@ -35,10 +35,10 @@ export function OrganizationsCard({
             <SettingsCard
                 className={className}
                 classNames={classNames}
-                title={localization.organizations}
-                description={localization.organizationsDescription}
-                instructions={localization.organizationsInstructions}
-                actionLabel={localization.createOrganization}
+                title={localization.ORGANIZATIONS}
+                description={localization.ORGANIZATIONS_DESCRIPTION}
+                instructions={localization.ORGANIZATIONS_INSTRUCTIONS}
+                actionLabel={localization.CREATE_ORGANIZATION}
                 action={() => setCreateDialogOpen(true)}
                 isPending={isPending}
                 {...props}

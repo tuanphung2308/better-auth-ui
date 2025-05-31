@@ -157,7 +157,7 @@ export function AuthCard({
 
     const description =
         !credentials && !magicLink && !emailOTP
-            ? localization.disabledCredentialsDescription
+            ? localization.DISABLED_CREDENTIALS_DESCRIPTION
             : localization[`${view}Description` as keyof typeof localization]
 
     return (
@@ -248,7 +248,7 @@ export function AuthCard({
                                     />
 
                                     <span className="flex-shrink-0 text-muted-foreground text-sm">
-                                        {localization.orContinueWith}
+                                        {localization.OR_CONTINUE_WITH}
                                     </span>
 
                                     <Separator
@@ -336,9 +336,9 @@ export function AuthCard({
                     )}
                 >
                     {view === "signIn" || view === "magicLink" || view === "emailOTP" ? (
-                        localization.dontHaveAnAccount
+                        localization.DONT_HAVE_AN_ACCOUNT
                     ) : view === "signUp" ? (
-                        localization.alreadyHaveAnAccount
+                        localization.ALREADY_HAVE_AN_ACCOUNT
                     ) : (
                         <ArrowLeftIcon className="size-3" />
                     )}
@@ -360,8 +360,8 @@ export function AuthCard({
                                 )}
                             >
                                 {view === "signIn" || view === "magicLink" || view === "emailOTP"
-                                    ? localization.signUp
-                                    : localization.signIn}
+                                    ? localization.SIGN_UP
+                                    : localization.SIGN_IN}
                             </Button>
                         </Link>
                     ) : (
@@ -371,7 +371,7 @@ export function AuthCard({
                             className={cn("px-0 text-foreground underline", classNames?.footerLink)}
                             onClick={() => window.history.back()}
                         >
-                            {localization.goBack}
+                            {localization.GO_BACK}
                         </Button>
                     )}
                 </CardFooter>

@@ -45,10 +45,10 @@ export function DeleteAccountCard({
             <SettingsCard
                 className={className}
                 classNames={classNames}
-                actionLabel={localization?.deleteAccount}
-                description={localization?.deleteAccountDescription}
+                actionLabel={localization?.DELETE_ACCOUNT}
+                description={localization?.DELETE_ACCOUNT_DESCRIPTION}
                 isPending={isPending}
-                title={localization?.deleteAccount}
+                title={localization?.DELETE_ACCOUNT}
                 variant="destructive"
                 action={() => setShowDialog(true)}
             />

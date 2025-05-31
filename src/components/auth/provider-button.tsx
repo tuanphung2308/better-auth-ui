@@ -140,7 +140,7 @@ export function ProviderButton({
                 ))}
 
             {socialLayout === "grid" && provider.name}
-            {socialLayout === "vertical" && `${localization.signInWith} ${provider.name}`}
+            {socialLayout === "vertical" && `${localization.SIGN_IN_WITH} ${provider.name}`}
         </Button>
     )
 }

@@ -34,11 +34,11 @@ export function APIKeysCard({ className, classNames, localization, ...props }: S
             <SettingsCard
                 className={className}
                 classNames={classNames}
-                actionLabel={localization.createApiKey}
-                description={localization.apiKeysDescription}
-                instructions={localization.apiKeysInstructions}
+                actionLabel={localization.CREATE_API_KEY}
+                description={localization.API_KEYS_DESCRIPTION}
+                instructions={localization.API_KEYS_INSTRUCTIONS}
                 isPending={isPending}
-                title={localization.apiKeys}
+                title={localization.API_KEYS}
                 action={() => setCreateDialogOpen(true)}
                 {...props}
             >

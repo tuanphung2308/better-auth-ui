@@ -41,7 +41,7 @@ export function useCaptcha({
     const { executeRecaptcha } = useGoogleReCaptcha()
 
     const executeCaptcha = async (action: string) => {
-        if (!captcha) throw new Error(localization.missingCaptchaResponse)
+        if (!captcha) throw new Error(localization.MISSING_RESPONSE)
 
         // Sanitize the action name for reCAPTCHA
         let response: string | undefined | null
@@ -75,7 +75,7 @@ export function useCaptcha({
         }
 
         if (!response) {
-            throw new Error(localization.missingCaptchaResponse)
+            throw new Error(localization.MISSING_RESPONSE)
         }
 
         return response

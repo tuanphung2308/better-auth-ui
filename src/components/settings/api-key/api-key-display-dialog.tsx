@@ -49,13 +49,13 @@ export function APIKeyDisplayDialog({
             >
                 <DialogHeader className={classNames?.dialog?.header}>
                     <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {localization.apiKeyCreated}
+                        {localization.API_KEY_CREATED}
                     </DialogTitle>
 
                     <DialogDescription
                         className={cn("text-xs md:text-sm", classNames?.description)}
                     >
-                        {localization.apiKeyCreatedDescription}
+                        {localization.CREATE_API_KEY_SUCCESS}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -72,12 +72,12 @@ export function APIKeyDisplayDialog({
                         {copied ? (
                             <>
                                 <CheckIcon className={classNames?.icon} />
-                                {localization.copiedToClipboard}
+                                {localization.COPIED_TO_CLIPBOARD}
                             </>
                         ) : (
                             <>
                                 <CopyIcon className={classNames?.icon} />
-                                {localization.copyToClipboard}
+                                {localization.COPY_TO_CLIPBOARD}
                             </>
                         )}
                     </Button>
@@ -88,7 +88,7 @@ export function APIKeyDisplayDialog({
                         onClick={() => onOpenChange?.(false)}
                         className={cn(classNames?.button, classNames?.primaryButton)}
                     >
-                        {localization.done}
+                        {localization.DONE}
                     </Button>
                 </DialogFooter>
             </DialogContent>

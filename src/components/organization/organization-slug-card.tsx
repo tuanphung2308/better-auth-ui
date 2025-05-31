@@ -32,11 +32,11 @@ export function OrganizationSlugCard({
             <SettingsCard
                 className={className}
                 classNames={classNames}
-                description={localization.slugUrlDescription}
-                instructions={localization.slugUrlInstructions}
+                description={localization.ORGANIZATION_SLUG_DESCRIPTION}
+                instructions={localization.ORGANIZATION_SLUG_INSTRUCTIONS}
                 isPending
-                title={localization.slugUrl}
-                actionLabel={localization.save}
+                title={localization.ORGANIZATION_SLUG}
+                actionLabel={localization.SAVE}
                 optimistic={props.optimistic}
                 {...props}
             >
@@ -85,10 +85,10 @@ function OrganizationSlugForm({
         slug: z
             .string()
             .min(1, {
-                message: `${localization.slugUrl} ${localization.isRequired}`
+                message: `${localization.ORGANIZATION_SLUG} ${localization.IS_REQUIRED}`
             })
             .regex(/^[a-z0-9-]+$/, {
-                message: `${localization.slugUrl} ${localization.isInvalid}`
+                message: `${localization.ORGANIZATION_SLUG} ${localization.IS_INVALID}`
             })
     })
 
@@ -105,7 +105,7 @@ function OrganizationSlugForm({
         if (activeOrganization.slug === slug) {
             toast({
                 variant: "error",
-                message: `${localization.slugUrl} ${localization.isTheSame}`
+                message: `${localization.ORGANIZATION_SLUG} ${localization.IS_THE_SAME}`
             })
 
             return
@@ -124,7 +124,7 @@ function OrganizationSlugForm({
 
             toast({
                 variant: "success",
-                message: `${localization.slugUrl} ${localization.updatedSuccessfully}`
+                message: `${localization.ORGANIZATION_SLUG} ${localization.UPDATED_SUCCESSFULLY}`
             })
         } catch (error) {
             toast({
@@ -140,11 +140,11 @@ function OrganizationSlugForm({
                 <SettingsCard
                     className={className}
                     classNames={classNames}
-                    description={localization.slugUrlDescription}
-                    instructions={localization.slugUrlInstructions}
+                    description={localization.ORGANIZATION_SLUG_DESCRIPTION}
+                    instructions={localization.ORGANIZATION_SLUG_INSTRUCTIONS}
                     isPending={isPending}
-                    title={localization.slugUrl}
-                    actionLabel={localization.save}
+                    title={localization.ORGANIZATION_SLUG}
+                    actionLabel={localization.SAVE}
                     optimistic={optimistic}
                     disabled={!hasPermission?.success}
                     {...props}
@@ -162,7 +162,7 @@ function OrganizationSlugForm({
                                             <Input
                                                 className={classNames?.input}
                                                 placeholder={
-                                                    localization.organizationSlugPlaceholder
+                                                    localization.ORGANIZATION_SLUG_PLACEHOLDER
                                                 }
                                                 disabled={isSubmitting || !hasPermission?.success}
                                                 {...field}

@@ -34,14 +34,14 @@ export function RecaptchaBadge({
             `}</style>
 
             <p className={cn("text-muted-foreground text-xs", className)}>
-                {localization.protectedByRecaptcha} {localization.byContinuingYouAgree} Google{" "}
+                {localization.PROTECTED_BY_RECAPTCHA} {localization.BY_CONTINUING_YOU_AGREE} Google{" "}
                 <a
                     className="text-foreground hover:underline"
                     href="https://policies.google.com/privacy"
                     target="_blank"
                     rel="noreferrer"
                 >
-                    {localization.privacyPolicy}
+                    {localization.PRIVACY_POLICY}
                 </a>{" "}
                 &{" "}
                 <a
@@ -50,7 +50,7 @@ export function RecaptchaBadge({
                     target="_blank"
                     rel="noreferrer"
                 >
-                    {localization.termsOfService}
+                    {localization.TERMS_OF_SERVICE}
                 </a>
                 .
             </p>

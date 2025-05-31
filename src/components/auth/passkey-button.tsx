@@ -68,7 +68,7 @@ export function PasskeyButton({
             onClick={signInPassKey}
         >
             <FingerprintIcon />
-            {localization.signInWith} {localization.passkey}
+            {localization.SIGN_IN_WITH} {localization.PASSKEY}
         </Button>
     )
 }

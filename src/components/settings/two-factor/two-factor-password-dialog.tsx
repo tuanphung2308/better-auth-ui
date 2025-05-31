@@ -40,7 +40,7 @@ export function TwoFactorPasswordDialog({
     const [totpURI, setTotpURI] = useState<string | null>(null)
 
     const formSchema = z.object({
-        password: z.string().min(1, { message: localization.passwordRequired })
+        password: z.string().min(1, { message: localization.PASSWORD_REQUIRED })
     })
 
     const form = useForm({
@@ -86,7 +86,7 @@ export function TwoFactorPasswordDialog({
 
             toast({
                 variant: "success",
-                message: localization.twoFactorDisabled
+                message: localization.TWO_FACTOR_DISABLED
             })
 
             onOpenChange?.(false)
@@ -104,13 +104,13 @@ export function TwoFactorPasswordDialog({
                 <DialogContent className={cn("sm:max-w-md", classNames?.dialog)}>
                     <DialogHeader className={classNames?.dialog?.header}>
                         <DialogTitle className={classNames?.title}>
-                            {localization.twoFactor}
+                            {localization.TWO_FACTOR}
                         </DialogTitle>
 
                         <DialogDescription className={classNames?.description}>
                             {isTwoFactorEnabled
-                                ? localization.twoFactorDisableInstructions
-                                : localization.twoFactorEnableInstructions}
+                                ? localization.TWO_FACTOR_DISABLE_INSTRUCTIONS
+                                : localization.TWO_FACTOR_ENABLE_INSTRUCTIONS}
                         </DialogDescription>
                     </DialogHeader>
 
@@ -127,13 +127,13 @@ export function TwoFactorPasswordDialog({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className={classNames?.label}>
-                                            {localization.password}
+                                            {localization.PASSWORD}
                                         </FormLabel>
 
                                         <FormControl>
                                             <PasswordInput
                                                 className={classNames?.input}
-                                                placeholder={localization.passwordPlaceholder}
+                                                placeholder={localization.PASSWORD_PLACEHOLDER}
                                                 autoComplete="current-password"
                                                 {...field}
                                             />
@@ -151,7 +151,7 @@ export function TwoFactorPasswordDialog({
                                     onClick={() => onOpenChange?.(false)}
                                     className={cn(classNames?.button, classNames?.secondaryButton)}
                                 >
-                                    {localization.cancel}
+                                    {localization.CANCEL}
                                 </Button>
 
                                 <Button
@@ -161,8 +161,8 @@ export function TwoFactorPasswordDialog({
                                 >
                                     {isSubmitting && <Loader2 className="animate-spin" />}
                                     {isTwoFactorEnabled
-                                        ? localization.disableTwoFactor
-                                        : localization.enableTwoFactor}
+                                        ? localization.DISABLE_TWO_FACTOR
+                                        : localization.ENABLE_TWO_FACTOR}
                                 </Button>
                             </DialogFooter>
                         </form>

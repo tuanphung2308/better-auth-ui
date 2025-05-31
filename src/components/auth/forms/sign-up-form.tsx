@@ -109,10 +109,10 @@ export function SignUpForm({
         email: z
             .string()
             .min(1, {
-                message: `${localization.email} ${localization.isRequired}`
+                message: `${localization.EMAIL} ${localization.IS_REQUIRED}`
             })
             .email({
-                message: `${localization.email} ${localization.isInvalid}`
+                message: `${localization.EMAIL} ${localization.IS_INVALID}`
             }),
         password: getPasswordSchema(passwordValidation, localization)
     }
@@ -120,10 +120,10 @@ export function SignUpForm({
     // Add confirmPassword field if enabled
     if (confirmPasswordEnabled) {
         schemaFields.confirmPassword = getPasswordSchema(passwordValidation, {
-            passwordRequired: localization.confirmPasswordRequired,
-            passwordTooShort: localization.passwordTooShort,
-            passwordTooLong: localization.passwordTooLong,
-            passwordInvalid: localization.passwordInvalid
+            PASSWORD_REQUIRED: localization.CONFIRM_PASSWORD_REQUIRED,
+            PASSWORD_TOO_SHORT: localization.PASSWORD_TOO_SHORT,
+            PASSWORD_TOO_LONG: localization.PASSWORD_TOO_LONG,
+            INVALID_PASSWORD: localization.INVALID_PASSWORD
         })
     }
 
@@ -131,7 +131,7 @@ export function SignUpForm({
     if (nameRequired || signUpFields?.includes("name")) {
         schemaFields.name = nameRequired
             ? z.string().min(1, {
-                  message: `${localization.name} ${localization.isRequired}`
+                  message: `${localization.NAME} ${localization.IS_REQUIRED}`
               })
             : z.string().optional()
     }
@@ -139,7 +139,7 @@ export function SignUpForm({
     // Add username field if enabled
     if (usernameEnabled) {
         schemaFields.username = z.string().min(1, {
-            message: `${localization.username} ${localization.isRequired}`
+            message: `${localization.USERNAME} ${localization.IS_REQUIRED}`
         })
     }
 
@@ -165,33 +165,33 @@ export function SignUpForm({
                     ? z.preprocess(
                           (val) => (!val ? undefined : Number(val)),
                           z.number({
-                              required_error: `${additionalField.label} ${localization.isRequired}`,
-                              invalid_type_error: `${additionalField.label} ${localization.isInvalid}`
+                              required_error: `${additionalField.label} ${localization.IS_REQUIRED}`,
+                              invalid_type_error: `${additionalField.label} ${localization.IS_INVALID}`
                           })
                       )
                     : z.coerce
                           .number({
-                              invalid_type_error: `${additionalField.label} ${localization.isInvalid}`
+                              invalid_type_error: `${additionalField.label} ${localization.IS_INVALID}`
                           })
                           .optional()
             } else if (additionalField.type === "boolean") {
                 fieldSchema = additionalField.required
                     ? z.coerce
                           .boolean({
-                              required_error: `${additionalField.label} ${localization.isRequired}`,
-                              invalid_type_error: `${additionalField.label} ${localization.isInvalid}`
+                              required_error: `${additionalField.label} ${localization.IS_REQUIRED}`,
+                              invalid_type_error: `${additionalField.label} ${localization.IS_INVALID}`
                           })
                           .refine((val) => val === true, {
-                              message: `${additionalField.label} ${localization.isRequired}`
+                              message: `${additionalField.label} ${localization.IS_REQUIRED}`
                           })
                     : z.coerce
                           .boolean({
-                              invalid_type_error: `${additionalField.label} ${localization.isInvalid}`
+                              invalid_type_error: `${additionalField.label} ${localization.IS_INVALID}`
                           })
                           .optional()
             } else {
                 fieldSchema = additionalField.required
-                    ? z.string().min(1, `${additionalField.label} ${localization.isRequired}`)
+                    ? z.string().min(1, `${additionalField.label} ${localization.IS_REQUIRED}`)
                     : z.string().optional()
             }
 
@@ -206,7 +206,7 @@ export function SignUpForm({
             return data.password === data.confirmPassword
         },
         {
-            message: localization.passwordsDoNotMatch!,
+            message: localization.PASSWORDS_DO_NOT_MATCH!,
             path: ["confirmPassword"]
         }
     )
@@ -307,7 +307,7 @@ export function SignUpForm({
 
                 if (typeof value === "string" && !(await additionalField.validate(value))) {
                     form.setError(field, {
-                        message: `${additionalField.label} ${localization.isInvalid}`
+                        message: `${additionalField.label} ${localization.IS_INVALID}`
                     })
                     return
                 }
@@ -333,7 +333,7 @@ export function SignUpForm({
                 await onSuccess()
             } else {
                 navigate(`${basePath}/${viewPaths.signIn}${window.location.search}`)
-                toast({ variant: "success", message: localization.signUpEmail! })
+                toast({ variant: "success", message: localization.SIGN_UP_EMAIL! })
             }
         } catch (error) {
             toast({
@@ -373,7 +373,7 @@ export function SignUpForm({
                             name="image"
                             render={() => (
                                 <FormItem>
-                                    <FormLabel>{localization.avatar}</FormLabel>
+                                    <FormLabel>{localization.AVATAR}</FormLabel>
 
                                     <div className="flex items-center gap-4">
                                         <DropdownMenu>
@@ -411,7 +411,7 @@ export function SignUpForm({
                                                     disabled={uploadingAvatar}
                                                 >
                                                     <UploadCloudIcon />
-                                                    {localization.uploadAvatar}
+                                                    {localization.UPLOAD_AVATAR}
                                                 </DropdownMenuItem>
 
                                                 {avatarImage && (
@@ -421,7 +421,7 @@ export function SignUpForm({
                                                         variant="destructive"
                                                     >
                                                         <Trash2Icon />
-                                                        {localization.deleteAvatar}
+                                                        {localization.DELETE_AVATAR}
                                                     </DropdownMenuItem>
                                                 )}
                                             </DropdownMenuContent>
@@ -437,7 +437,7 @@ export function SignUpForm({
                                                 <Loader2 className="animate-spin" />
                                             )}
 
-                                            {localization.upload}
+                                            {localization.UPLOAD}
                                         </Button>
                                     </div>
 
@@ -455,13 +455,13 @@ export function SignUpForm({
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel className={classNames?.label}>
-                                    {localization.name}
+                                    {localization.NAME}
                                 </FormLabel>
 
                                 <FormControl>
                                     <Input
                                         className={classNames?.input}
-                                        placeholder={localization.namePlaceholder}
+                                        placeholder={localization.NAME_PLACEHOLDER}
                                         disabled={isSubmitting}
                                         {...field}
                                     />
@@ -480,13 +480,13 @@ export function SignUpForm({
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel className={classNames?.label}>
-                                    {localization.username}
+                                    {localization.USERNAME}
                                 </FormLabel>
 
                                 <FormControl>
                                     <Input
                                         className={classNames?.input}
-                                        placeholder={localization.usernamePlaceholder}
+                                        placeholder={localization.USERNAME_PLACEHOLDER}
                                         disabled={isSubmitting}
                                         {...field}
                                     />
@@ -504,14 +504,14 @@ export function SignUpForm({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className={classNames?.label}>
-                                {localization.email}
+                                {localization.EMAIL}
                             </FormLabel>
 
                             <FormControl>
                                 <Input
                                     className={classNames?.input}
                                     type="email"
-                                    placeholder={localization.emailPlaceholder}
+                                    placeholder={localization.EMAIL_PLACEHOLDER}
                                     disabled={isSubmitting}
                                     {...field}
                                 />
@@ -528,14 +528,14 @@ export function SignUpForm({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className={classNames?.label}>
-                                {localization.password}
+                                {localization.PASSWORD}
                             </FormLabel>
 
                             <FormControl>
                                 <PasswordInput
                                     autoComplete="new-password"
                                     className={classNames?.input}
-                                    placeholder={localization.passwordPlaceholder}
+                                    placeholder={localization.PASSWORD_PLACEHOLDER}
                                     disabled={isSubmitting}
                                     enableToggle
                                     {...field}
@@ -554,14 +554,14 @@ export function SignUpForm({
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel className={classNames?.label}>
-                                    {localization.confirmPassword}
+                                    {localization.CONFIRM_PASSWORD}
                                 </FormLabel>
 
                                 <FormControl>
                                     <PasswordInput
                                         autoComplete="new-password"
                                         className={classNames?.input}
-                                        placeholder={localization.confirmPasswordPlaceholder}
+                                        placeholder={localization.CONFIRM_PASSWORD_PLACEHOLDER}
                                         disabled={isSubmitting}
                                         enableToggle
                                         {...field}
@@ -653,7 +653,7 @@ export function SignUpForm({
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />
                     ) : (
-                        localization.signUpAction
+                        localization.SIGN_UP_ACTION
                     )}
                 </Button>
             </form>

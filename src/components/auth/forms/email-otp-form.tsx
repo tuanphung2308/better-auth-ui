@@ -58,8 +58,8 @@ function EmailForm({
     const formSchema = z.object({
         email: z
             .string()
-            .min(1, { message: `${localization.email} ${localization.isRequired}` })
-            .email({ message: `${localization.email} ${localization.isInvalid}` })
+            .min(1, { message: `${localization.EMAIL} ${localization.IS_REQUIRED}` })
+            .email({ message: `${localization.EMAIL} ${localization.IS_INVALID}` })
     })
 
     const form = useForm({
@@ -85,7 +85,7 @@ function EmailForm({
 
             toast({
                 variant: "success",
-                message: localization.emailOTPVerificationSent
+                message: localization.EMAIL_OTP_VERIFICATION_SENT
             })
 
             setEmail(email)
@@ -110,14 +110,14 @@ function EmailForm({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className={classNames?.label}>
-                                {localization.email}
+                                {localization.EMAIL}
                             </FormLabel>
 
                             <FormControl>
                                 <Input
                                     className={classNames?.input}
                                     type="email"
-                                    placeholder={localization.emailPlaceholder}
+                                    placeholder={localization.EMAIL_PLACEHOLDER}
                                     disabled={isSubmitting}
                                     {...field}
                                 />
@@ -136,7 +136,7 @@ function EmailForm({
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />
                     ) : (
-                        localization.emailOTPSendAction
+                        localization.EMAIL_OTP_SEND_ACTION
                     )}
                 </Button>
             </form>
@@ -166,10 +166,10 @@ export function OTPForm({
         code: z
             .string()
             .min(1, {
-                message: `${localization.emailOTP} ${localization.isRequired}`
+                message: `${localization.EMAIL_OTP} ${localization.IS_REQUIRED}`
             })
             .min(6, {
-                message: `${localization.emailOTP} ${localization.isInvalid}`
+                message: `${localization.EMAIL_OTP} ${localization.IS_INVALID}`
             })
     })
 
@@ -217,7 +217,7 @@ export function OTPForm({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className={classNames?.label}>
-                                {localization.emailOTP}
+                                {localization.EMAIL_OTP}
                             </FormLabel>
 
                             <FormControl>
@@ -251,7 +251,7 @@ export function OTPForm({
                         className={cn(classNames?.button, classNames?.primaryButton)}
                     >
                         {isSubmitting && <Loader2 className="animate-spin" />}
-                        {localization.emailOTPVerifyAction}
+                        {localization.EMAIL_OTP_VERIFY_ACTION}
                     </Button>
                 </div>
             </form>

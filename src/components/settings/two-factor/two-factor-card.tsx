@@ -33,17 +33,17 @@ export function TwoFactorCard({ className, classNames, localization }: TwoFactor
                 classNames={classNames}
                 actionLabel={
                     isTwoFactorEnabled
-                        ? localization.disableTwoFactor
-                        : localization.enableTwoFactor
+                        ? localization.DISABLE_TWO_FACTOR
+                        : localization.ENABLE_TWO_FACTOR
                 }
-                description={localization.twoFactorCardDescription}
+                description={localization.TWO_FACTOR_CARD_DESCRIPTION}
                 instructions={
                     isTwoFactorEnabled
-                        ? localization.twoFactorDisableInstructions
-                        : localization.twoFactorEnableInstructions
+                        ? localization.TWO_FACTOR_DISABLE_INSTRUCTIONS
+                        : localization.TWO_FACTOR_ENABLE_INSTRUCTIONS
                 }
                 isPending={isPending}
-                title={localization.twoFactor}
+                title={localization.TWO_FACTOR}
                 action={() => setShowPasswordDialog(true)}
             />
 

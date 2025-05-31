@@ -45,11 +45,11 @@ export function getLocalizedError({
             error.error.message ||
             error.error.code ||
             error.error.statusText ||
-            localization?.requestFailed
+            localization?.REQUEST_FAILED
         )
     }
 
-    return error?.message || localization?.requestFailed || "Request failed"
+    return error?.message || localization?.REQUEST_FAILED || "Request failed"
 }
 
 export function getSearchParam(paramName: string) {
@@ -78,21 +78,21 @@ export function getPasswordSchema(
     localization?: AuthLocalization
 ) {
     let schema = z.string().min(1, {
-        message: localization?.passwordRequired
+        message: localization?.PASSWORD_REQUIRED
     })
     if (passwordValidation?.minLength) {
         schema = schema.min(passwordValidation.minLength, {
-            message: localization?.passwordTooShort
+            message: localization?.PASSWORD_TOO_SHORT
         })
     }
     if (passwordValidation?.maxLength) {
         schema = schema.max(passwordValidation.maxLength, {
-            message: localization?.passwordTooLong
+            message: localization?.PASSWORD_TOO_LONG
         })
     }
     if (passwordValidation?.regex) {
         schema = schema.regex(passwordValidation.regex, {
-            message: localization?.passwordInvalid
+            message: localization?.INVALID_PASSWORD
         })
     }
     return schema

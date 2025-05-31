@@ -78,25 +78,25 @@ export function SettingsCards({ className, classNames, localization, view }: Set
     const personalGroup: NavigationItem[] = [
         {
             view: "settings",
-            label: localization.account
+            label: localization.ACCOUNT
         },
         {
             view: "security",
-            label: localization.security
+            label: localization.SECURITY
         }
     ]
 
     if (apiKey) {
         personalGroup.push({
             view: "apiKeys",
-            label: localization.apiKeys
+            label: localization.API_KEYS
         })
     }
 
     if (organization) {
         personalGroup.push({
             view: "organizations",
-            label: localization.organizations
+            label: localization.ORGANIZATIONS
         })
     }
 
@@ -106,12 +106,12 @@ export function SettingsCards({ className, classNames, localization, view }: Set
     if (organization) {
         organizationGroup.push({
             view: "organization",
-            label: localization.organization
+            label: localization.ORGANIZATION
         })
 
         organizationGroup.push({
             view: "members",
-            label: localization.members
+            label: localization.MEMBERS
         })
     }
 
@@ -146,7 +146,7 @@ export function SettingsCards({ className, classNames, localization, view }: Set
 
                     <DrawerContent className={cn(classNames?.drawer?.content)}>
                         <DrawerHeader>
-                            <DrawerTitle className="hidden">{localization.settings}</DrawerTitle>
+                            <DrawerTitle className="hidden">{localization.SETTINGS}</DrawerTitle>
                         </DrawerHeader>
                         <div className="flex flex-col px-4 pb-4">
                             {currentNavigationGroup.map((item) => (

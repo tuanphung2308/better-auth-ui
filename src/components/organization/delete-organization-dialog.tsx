@@ -52,9 +52,9 @@ export function DeleteOrganizationDialog({
     const formSchema = z.object({
         slug: z
             .string()
-            .min(1, { message: localization.slugRequired! })
+            .min(1, { message: localization.SLUG_REQUIRED! })
             .refine((val) => val === activeOrganization?.slug, {
-                message: localization.slugDoesNotMatch!
+                message: localization.SLUG_DOES_NOT_MATCH!
             })
     })
 
@@ -81,7 +81,7 @@ export function DeleteOrganizationDialog({
             await refetchOrganizations?.()
             await refetchActiveOrganization?.()
 
-            toast({ variant: "success", message: localization.deleteOrganizationSuccess! })
+            toast({ variant: "success", message: localization.DELETE_ORGANIZATION_SUCCESS! })
             navigate(redirectTo)
             onOpenChange?.(false)
         } catch (error) {
@@ -94,13 +94,13 @@ export function DeleteOrganizationDialog({
             <DialogContent className={cn("sm:max-w-md", classNames?.dialog?.content)}>
                 <DialogHeader className={classNames?.dialog?.header}>
                     <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {localization?.deleteOrganization}
+                        {localization?.DELETE_ORGANIZATION}
                     </DialogTitle>
 
                     <DialogDescription
                         className={cn("text-xs md:text-sm", classNames?.description)}
                     >
-                        {localization?.deleteOrganizationDescription}
+                        {localization?.DELETE_ORGANIZATION_DESCRIPTION}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -119,7 +119,7 @@ export function DeleteOrganizationDialog({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className={classNames?.label}>
-                                        {localization?.deleteOrganizationInstructions}
+                                        {localization?.DELETE_ORGANIZATION_INSTRUCTIONS}
 
                                         <span className="font-bold">
                                             {activeOrganization?.slug}
@@ -147,7 +147,7 @@ export function DeleteOrganizationDialog({
                                 className={cn(classNames?.button, classNames?.secondaryButton)}
                                 onClick={() => onOpenChange?.(false)}
                             >
-                                {localization.cancel}
+                                {localization.CANCEL}
                             </Button>
 
                             <Button
@@ -158,7 +158,7 @@ export function DeleteOrganizationDialog({
                             >
                                 {isSubmitting && <Loader2 className="animate-spin" />}
 
-                                {localization?.deleteOrganization}
+                                {localization?.DELETE_ORGANIZATION}
                             </Button>
                         </DialogFooter>
                     </form>

@@ -169,7 +169,7 @@ export function OrganizationSwitcher({
                                         classNames={classNames?.trigger?.avatar}
                                         isPending={isPending || activeOrganizationPending}
                                         organization={activeOrganization}
-                                        aria-label={localization.organization}
+                                        aria-label={localization.ORGANIZATION}
                                         localization={localization}
                                     />
                                 ) : (
@@ -179,7 +179,7 @@ export function OrganizationSwitcher({
                                         classNames={classNames?.trigger?.avatar}
                                         isPending={isPending}
                                         user={user}
-                                        aria-label={localization.account}
+                                        aria-label={localization.ACCOUNT}
                                         localization={localization}
                                     />
                                 )}
@@ -269,7 +269,7 @@ export function OrganizationSwitcher({
                             </>
                         ) : (
                             <div className="-my-1 text-muted-foreground text-xs">
-                                {localization.organization}
+                                {localization.ORGANIZATION}
                             </div>
                         )}
                     </div>
@@ -314,13 +314,13 @@ export function OrganizationSwitcher({
                             onClick={() => setIsCreateOrgDialogOpen(true)}
                         >
                             <PlusCircleIcon />
-                            {localization.createOrganization}
+                            {localization.CREATE_ORGANIZATION}
                         </DropdownMenuItem>
                     ) : (
                         <Link href={`${basePath}/${viewPaths.signIn}`}>
                             <DropdownMenuItem className={cn(classNames?.content?.menuItem)}>
                                 <LogInIcon />
-                                {localization.signIn}
+                                {localization.SIGN_IN}
                             </DropdownMenuItem>
                         </Link>
                     )}

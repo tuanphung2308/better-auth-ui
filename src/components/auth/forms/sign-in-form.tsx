@@ -67,15 +67,15 @@ export function SignInForm({
     const formSchema = z.object({
         email: usernameEnabled
             ? z.string().min(1, {
-                  message: `${localization.username} ${localization.isRequired}`
+                  message: `${localization.USERNAME} ${localization.IS_REQUIRED}`
               })
             : z
                   .string()
                   .min(1, {
-                      message: `${localization.email} ${localization.isRequired}`
+                      message: `${localization.EMAIL} ${localization.IS_REQUIRED}`
                   })
                   .email({
-                      message: `${localization.email} ${localization.isInvalid}`
+                      message: `${localization.EMAIL} ${localization.IS_INVALID}`
                   }),
         password: getPasswordSchema(passwordValidation, localization),
         rememberMe: z.boolean().optional()
@@ -154,7 +154,7 @@ export function SignInForm({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className={classNames?.label}>
-                                {usernameEnabled ? localization.username : localization.email}
+                                {usernameEnabled ? localization.USERNAME : localization.EMAIL}
                             </FormLabel>
 
                             <FormControl>
@@ -163,8 +163,8 @@ export function SignInForm({
                                     type={usernameEnabled ? "text" : "email"}
                                     placeholder={
                                         usernameEnabled
-                                            ? localization.signInUsernamePlaceholder
-                                            : localization.emailPlaceholder
+                                            ? localization.SIGN_IN_USERNAME_PLACEHOLDER
+                                            : localization.EMAIL_PLACEHOLDER
                                     }
                                     disabled={isSubmitting}
                                     {...field}
@@ -183,7 +183,7 @@ export function SignInForm({
                         <FormItem>
                             <div className="flex items-center justify-between">
                                 <FormLabel className={classNames?.label}>
-                                    {localization.password}
+                                    {localization.PASSWORD}
                                 </FormLabel>
 
                                 {credentials?.forgotPassword && (
@@ -194,7 +194,7 @@ export function SignInForm({
                                         )}
                                         href={`${basePath}/${viewPaths.forgotPassword}${isHydrated ? window.location.search : ""}`}
                                     >
-                                        {localization.forgotPasswordLink}
+                                        {localization.FORGOT_PASSWORD_LINK}
                                     </Link>
                                 )}
                             </div>
@@ -203,7 +203,7 @@ export function SignInForm({
                                 <PasswordInput
                                     autoComplete="current-password"
                                     className={classNames?.input}
-                                    placeholder={localization.passwordPlaceholder}
+                                    placeholder={localization.PASSWORD_PLACEHOLDER}
                                     disabled={isSubmitting}
                                     {...field}
                                 />
@@ -228,7 +228,7 @@ export function SignInForm({
                                     />
                                 </FormControl>
 
-                                <FormLabel>{localization.rememberMe}</FormLabel>
+                                <FormLabel>{localization.REMEMBER_ME}</FormLabel>
                             </FormItem>
                         )}
                     />
@@ -244,7 +244,7 @@ export function SignInForm({
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />
                     ) : (
-                        localization.signInAction
+                        localization.SIGN_IN_ACTION
                     )}
                 </Button>
             </form>

@@ -78,7 +78,7 @@ export function SessionCell({
 
             <div className="flex flex-col">
                 <span className="font-semibold text-sm">
-                    {isCurrentSession ? localization.currentSession : session?.ipAddress}
+                    {isCurrentSession ? localization.CURRENT_SESSION : session?.ipAddress}
                 </span>
 
                 <span className="text-muted-foreground text-xs">
@@ -94,7 +94,7 @@ export function SessionCell({
                 onClick={handleRevoke}
             >
                 {isLoading && <Loader2 className="animate-spin" />}
-                {isCurrentSession ? localization.signOut : localization.revoke}
+                {isCurrentSession ? localization.SIGN_OUT : localization.REVOKE}
             </Button>
         </Card>
     )

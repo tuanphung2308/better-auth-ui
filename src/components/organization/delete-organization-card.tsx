@@ -34,10 +34,10 @@ export function DeleteOrganizationCard({ className, classNames, localization }: 
             <SettingsCard
                 className={className}
                 classNames={classNames}
-                actionLabel={localization?.deleteOrganization}
-                description={localization?.deleteOrganizationDescription}
+                actionLabel={localization?.DELETE_ORGANIZATION}
+                description={localization?.DELETE_ORGANIZATION_DESCRIPTION}
                 isPending={isPending}
-                title={localization?.deleteOrganization}
+                title={localization?.DELETE_ORGANIZATION}
                 variant="destructive"
                 action={() => setShowDialog(true)}
             />

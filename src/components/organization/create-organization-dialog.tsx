@@ -66,15 +66,15 @@ export function CreateOrganizationDialog({
     const formSchema = z.object({
         logo: z.string().optional(),
         name: z.string().min(1, {
-            message: `${localization.organizationName} ${localization.isRequired}`
+            message: `${localization.ORGANIZATION_NAME} ${localization.IS_REQUIRED}`
         }),
         slug: z
             .string()
             .min(1, {
-                message: `${localization.slugUrl} ${localization.isRequired}`
+                message: `${localization.ORGANIZATION_SLUG} ${localization.IS_REQUIRED}`
             })
             .regex(/^[a-z0-9-]+$/, {
-                message: `${localization.slugUrl} ${localization.isInvalid}`
+                message: `${localization.ORGANIZATION_SLUG} ${localization.IS_INVALID}`
             })
     })
 
@@ -148,7 +148,7 @@ export function CreateOrganizationDialog({
 
             toast({
                 variant: "success",
-                message: localization.organizationCreated
+                message: localization.CREATE_ORGANIZATION_SUCCESS
             })
         } catch (error) {
             toast({
@@ -163,13 +163,13 @@ export function CreateOrganizationDialog({
             <DialogContent className={classNames?.dialog?.content}>
                 <DialogHeader className={classNames?.dialog?.header}>
                     <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {localization.createOrganization}
+                        {localization.CREATE_ORGANIZATION}
                     </DialogTitle>
 
                     <DialogDescription
                         className={cn("text-xs md:text-sm", classNames?.description)}
                     >
-                        {localization.organizationsInstructions}
+                        {localization.ORGANIZATIONS_INSTRUCTIONS}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -194,7 +194,7 @@ export function CreateOrganizationDialog({
                                             }}
                                         />
 
-                                        <FormLabel>{localization.logo}</FormLabel>
+                                        <FormLabel>{localization.LOGO}</FormLabel>
 
                                         <div className="flex items-center gap-4">
                                             <DropdownMenu>
@@ -230,7 +230,7 @@ export function CreateOrganizationDialog({
                                                         disabled={uploadingLogo}
                                                     >
                                                         <UploadCloudIcon />
-                                                        {localization.uploadLogo}
+                                                        {localization.UPLOAD_LOGO}
                                                     </DropdownMenuItem>
 
                                                     {logo && (
@@ -240,7 +240,7 @@ export function CreateOrganizationDialog({
                                                             variant="destructive"
                                                         >
                                                             <Trash2Icon />
-                                                            {localization.deleteLogo}
+                                                            {localization.DELETE_LOGO}
                                                         </DropdownMenuItem>
                                                     )}
                                                 </DropdownMenuContent>
@@ -256,7 +256,7 @@ export function CreateOrganizationDialog({
                                                     <Loader2 className="animate-spin" />
                                                 )}
 
-                                                {localization.upload}
+                                                {localization.UPLOAD}
                                             </Button>
                                         </div>
 
@@ -271,11 +271,11 @@ export function CreateOrganizationDialog({
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{localization.organizationName}</FormLabel>
+                                    <FormLabel>{localization.ORGANIZATION_NAME}</FormLabel>
 
                                     <FormControl>
                                         <Input
-                                            placeholder={localization.organizationNamePlaceholder}
+                                            placeholder={localization.ORGANIZATION_NAME_PLACEHOLDER}
                                             {...field}
                                         />
                                     </FormControl>
@@ -290,11 +290,11 @@ export function CreateOrganizationDialog({
                             name="slug"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{localization.slugUrl}</FormLabel>
+                                    <FormLabel>{localization.ORGANIZATION_SLUG}</FormLabel>
 
                                     <FormControl>
                                         <Input
-                                            placeholder={localization.organizationSlugPlaceholder}
+                                            placeholder={localization.ORGANIZATION_SLUG_PLACEHOLDER}
                                             {...field}
                                         />
                                     </FormControl>
@@ -311,7 +311,7 @@ export function CreateOrganizationDialog({
                                 onClick={() => onOpenChange?.(false)}
                                 className={cn(classNames?.button, classNames?.outlineButton)}
                             >
-                                {localization.cancel}
+                                {localization.CANCEL}
                             </Button>
 
                             <Button
@@ -321,7 +321,7 @@ export function CreateOrganizationDialog({
                             >
                                 {isSubmitting && <Loader2 className="animate-spin" />}
 
-                                {localization.createOrganization}
+                                {localization.CREATE_ORGANIZATION}
                             </Button>
                         </DialogFooter>
                     </form>

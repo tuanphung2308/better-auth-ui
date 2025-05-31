@@ -126,7 +126,7 @@ export function ProviderCell({
                 onClick={account ? handleUnlink : handleLink}
             >
                 {isLoading && <Loader2 className="animate-spin" />}
-                {account ? localization.unlink : localization.link}
+                {account ? localization.UNLINK : localization.LINK}
             </Button>
         </Card>
     )

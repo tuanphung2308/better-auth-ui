@@ -63,7 +63,7 @@ export function LeaveOrganizationDialog({
 
             toast({
                 variant: "success",
-                message: localization.leaveOrganizationSuccess
+                message: localization.LEAVE_ORGANIZATION_SUCCESS
             })
 
             if (activeOrganization?.id === organization.id) {
@@ -91,13 +91,13 @@ export function LeaveOrganizationDialog({
             >
                 <DialogHeader className={classNames?.dialog?.header}>
                     <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {localization.leaveOrganization}
+                        {localization.LEAVE_ORGANIZATION}
                     </DialogTitle>
 
                     <DialogDescription
                         className={cn("text-xs md:text-sm", classNames?.description)}
                     >
-                        {localization.leaveOrganizationConfirmation}
+                        {localization.LEAVE_ORGANIZATION_CONFIRM}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -113,7 +113,7 @@ export function LeaveOrganizationDialog({
                         className={cn(classNames?.button, classNames?.outlineButton)}
                         disabled={isLeaving}
                     >
-                        {localization.cancel}
+                        {localization.CANCEL}
                     </Button>
 
                     <Button
@@ -125,7 +125,7 @@ export function LeaveOrganizationDialog({
                     >
                         {isLeaving && <Loader2 className="animate-spin" />}
 
-                        {localization.leaveOrganization}
+                        {localization.LEAVE_ORGANIZATION}
                     </Button>
                 </DialogFooter>
             </DialogContent>

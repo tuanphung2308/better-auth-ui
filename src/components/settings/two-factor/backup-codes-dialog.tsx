@@ -45,13 +45,13 @@ export function BackupCodesDialog({
             >
                 <DialogHeader className={classNames?.dialog?.header}>
                     <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {localization.backupCodes}
+                        {localization.BACKUP_CODES}
                     </DialogTitle>
 
                     <DialogDescription
                         className={cn("text-xs md:text-sm", classNames?.description)}
                     >
-                        {localization.backupCodesDescription}
+                        {localization.BACKUP_CODES_DESCRIPTION}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -77,12 +77,12 @@ export function BackupCodesDialog({
                         {copied ? (
                             <>
                                 <CheckIcon className={classNames?.icon} />
-                                {localization.copiedToClipboard}
+                                {localization.COPIED_TO_CLIPBOARD}
                             </>
                         ) : (
                             <>
                                 <CopyIcon className={classNames?.icon} />
-                                {localization.copyAllCodes}
+                                {localization.COPY_ALL_CODES}
                             </>
                         )}
                     </Button>
@@ -93,7 +93,7 @@ export function BackupCodesDialog({
                         onClick={() => onOpenChange?.(false)}
                         className={cn(classNames?.button, classNames?.primaryButton)}
                     >
-                        {localization.continue}
+                        {localization.CONTINUE}
                     </Button>
                 </DialogFooter>
             </DialogContent>
