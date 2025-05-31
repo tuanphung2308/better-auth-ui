@@ -3,9 +3,9 @@
 import { useContext } from "react"
 
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import type { AuthLocalization } from "../../../lib/localization/auth-localization"
 import { socialProviders } from "../../../lib/social-providers"
 import { cn } from "../../../lib/utils"
+import type { AuthLocalization } from "../../../localization/auth-localization"
 import type { Refetch } from "../../../types/refetch"
 import { CardContent } from "../../ui/card"
 import { SettingsCard } from "../shared/settings-card"

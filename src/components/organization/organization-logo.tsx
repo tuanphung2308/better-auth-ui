@@ -6,8 +6,8 @@ import type { ComponentProps } from "react"
 import { useContext } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import type { AuthLocalization } from "../../lib/localization/auth-localization"
 import { cn } from "../../lib/utils"
+import type { AuthLocalization } from "../../localization/auth-localization"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Skeleton } from "../ui/skeleton"
 

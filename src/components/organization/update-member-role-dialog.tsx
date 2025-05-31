@@ -6,8 +6,8 @@ import { Loader2 } from "lucide-react"
 import { type ComponentProps, useContext, useState } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import type { AuthLocalization } from "../../lib/localization/auth-localization"
 import { cn, getLocalizedError } from "../../lib/utils"
+import type { AuthLocalization } from "../../localization/auth-localization"
 import type { SettingsCardClassNames } from "../settings/shared/settings-card"
 import { Button } from "../ui/button"
 import {

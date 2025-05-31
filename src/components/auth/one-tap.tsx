@@ -2,8 +2,8 @@ import { useContext, useEffect, useMemo, useRef } from "react"
 
 import { useOnSuccessTransition } from "../../hooks/use-success-transition"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import type { AuthLocalization } from "../../lib/localization/auth-localization"
 import { getLocalizedError } from "../../lib/utils"
+import type { AuthLocalization } from "../../localization/auth-localization"
 
 interface OneTapProps {
     localization: Partial<AuthLocalization>

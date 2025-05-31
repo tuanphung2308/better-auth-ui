@@ -6,9 +6,9 @@ import { type ReactNode, useContext, useEffect, useState } from "react"
 import { useIsHydrated } from "../../hooks/use-hydrated"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
-import type { AuthLocalization } from "../../lib/localization/auth-localization"
 import { socialProviders } from "../../lib/social-providers"
 import { cn, getAuthViewByPath } from "../../lib/utils"
+import type { AuthLocalization } from "../../localization/auth-localization"
 import { AcceptInvitationCard } from "../organization/accept-invitation-card"
 import {
     SettingsCards,

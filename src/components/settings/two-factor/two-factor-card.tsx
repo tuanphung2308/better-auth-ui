@@ -2,7 +2,7 @@
 
 import { useContext, useState } from "react"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import type { AuthLocalization } from "../../../lib/localization/auth-localization"
+import type { AuthLocalization } from "../../../localization/auth-localization"
 import { SettingsCard } from "../shared/settings-card"
 import type { SettingsCardClassNames } from "../shared/settings-card"
 import { TwoFactorPasswordDialog } from "./two-factor-password-dialog"

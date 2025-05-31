@@ -3,8 +3,8 @@ import { useContext } from "react"
 
 import { useOnSuccessTransition } from "../../hooks/use-success-transition"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import type { AuthLocalization } from "../../lib/localization/auth-localization"
 import { cn, getLocalizedError } from "../../lib/utils"
+import type { AuthLocalization } from "../../localization/auth-localization"
 import { Button } from "../ui/button"
 import type { AuthCardClassNames } from "./auth-card"
 

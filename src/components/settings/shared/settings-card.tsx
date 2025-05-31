@@ -2,8 +2,8 @@
 
 import type { ComponentProps, ReactNode } from "react"
 
-import type { AuthLocalization } from "../../../lib/localization/auth-localization"
 import { cn } from "../../../lib/utils"
+import type { AuthLocalization } from "../../../localization/auth-localization"
 import { Card } from "../../ui/card"
 import type { UserAvatarClassNames } from "../../user-avatar"
 import { SettingsCardFooter } from "./settings-card-footer"

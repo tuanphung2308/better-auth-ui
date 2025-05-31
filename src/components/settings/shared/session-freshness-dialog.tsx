@@ -1,7 +1,7 @@
 import { type ComponentProps, useContext } from "react"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import type { AuthLocalization } from "../../../lib/localization/auth-localization"
 import { cn } from "../../../lib/utils"
+import type { AuthLocalization } from "../../../localization/auth-localization"
 import { Button } from "../../ui/button"
 import {
     Dialog,

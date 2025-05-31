@@ -8,8 +8,8 @@ import * as z from "zod"
 
 import { useLang } from "../../../hooks/use-lang"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import type { AuthLocalization } from "../../../lib/localization/auth-localization"
 import { cn, getLocalizedError } from "../../../lib/utils"
+import type { AuthLocalization } from "../../../localization/auth-localization"
 import type { Refetch } from "../../../types/refetch"
 import { Button } from "../../ui/button"
 import {

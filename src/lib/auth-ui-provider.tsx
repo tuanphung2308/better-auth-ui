@@ -6,6 +6,7 @@ import { toast } from "sonner"
 
 import { RecaptchaV3 } from "../components/captcha/recaptcha-v3"
 import { useAuthData } from "../hooks/use-auth-data"
+import { type AuthLocalization, authLocalization } from "../localization/auth-localization"
 import type { AdditionalFields } from "../types/additional-fields"
 import type { AnyAuthClient } from "../types/any-auth-client"
 import type { AuthClient } from "../types/auth-client"
@@ -24,7 +25,6 @@ import type { SettingsOptions } from "../types/settings-options"
 import type { SignUpOptions } from "../types/sign-up-options"
 import type { SocialOptions } from "../types/social-options"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
-import { type AuthLocalization, authLocalization } from "./localization/auth-localization"
 import type { Provider } from "./social-providers"
 
 const DefaultLink: Link = ({ href, className, children }) => (

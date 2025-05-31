@@ -5,7 +5,7 @@ import { type RefObject, useContext, useRef } from "react"
 import type ReCAPTCHA from "react-google-recaptcha"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
-import type { AuthLocalization } from "../lib/localization/auth-localization"
+import type { AuthLocalization } from "../localization/auth-localization"
 
 // Default captcha endpoints
 const DEFAULT_CAPTCHA_ENDPOINTS = ["/sign-up/email", "/sign-in/email", "/forget-password"]

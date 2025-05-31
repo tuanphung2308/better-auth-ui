@@ -2,8 +2,8 @@
 import { useContext } from "react"
 
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import type { AuthLocalization } from "../../../lib/localization/auth-localization"
 import { cn } from "../../../lib/utils"
+import type { AuthLocalization } from "../../../localization/auth-localization"
 import { CardContent } from "../../ui/card"
 import { SettingsCard } from "../shared/settings-card"
 import type { SettingsCardClassNames } from "../shared/settings-card"
