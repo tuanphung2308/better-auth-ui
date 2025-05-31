@@ -1,4 +1,15 @@
+import { ADMIN_ERROR_CODES } from "./admin-error-codes"
+import { ANONYMOUS_ERROR_CODES } from "./anonymous-error-codes"
+import { API_KEY_ERROR_CODES } from "./api-key-error-codes"
 import { BASE_ERROR_CODES } from "./base-error-codes"
+import { CAPTCHA_ERROR_CODES } from "./captcha-error-codes"
+import { GENERIC_OAUTH_ERROR_CODES } from "./generic-oauth-error-codes"
+import { HAVEIBEENPWNED_ERROR_CODES } from "./haveibeenpwned-error-codes"
+import { MULTI_SESSION_ERROR_CODES } from "./multi-session-error-codes"
+import { ORGANIZATION_ERROR_CODES } from "./organization-error-codes"
+import { PHONE_NUMBER_ERROR_CODES } from "./phone-number-error-codes"
+import { TWO_FACTOR_ERROR_CODES } from "./two-factor-error-codes"
+import { USERNAME_ERROR_CODES } from "./username-error-codes"
 
 export const authLocalization = {
     /** @default "Account" */
@@ -716,7 +727,21 @@ export const authLocalization = {
 
     /** @default "The slug does not match" */
     slugDoesNotMatch: "The slug does not match",
-    ...BASE_ERROR_CODES
+    ...BASE_ERROR_CODES,
+    ...ADMIN_ERROR_CODES,
+    ...ANONYMOUS_ERROR_CODES,
+    ...API_KEY_ERROR_CODES,
+    ...CAPTCHA_ERROR_CODES,
+    ...EMAIL_OTP_ERROR_CODES,
+    ...GENERIC_OAUTH_ERROR_CODES,
+    ...HAVEIBEENPWNED_ERROR_CODES,
+    ...MULTI_SESSION_ERROR_CODES,
+    ...ORGANIZATION_ERROR_CODES,
+    ...PASSKEY_ERROR_CODES,
+    ...PHONE_NUMBER_ERROR_CODES,
+    ...STRIPE_ERROR_CODES,
+    ...TWO_FACTOR_ERROR_CODES,
+    ...USERNAME_ERROR_CODES
 }
 
 export type AuthLocalization = Partial<typeof authLocalization>
