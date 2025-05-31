@@ -1,4 +1,4 @@
-const STRIPE_ERROR_CODES = {
+export const STRIPE_ERROR_CODES = {
     SUBSCRIPTION_NOT_FOUND: "Subscription not found",
     SUBSCRIPTION_PLAN_NOT_FOUND: "Subscription plan not found",
     ALREADY_SUBSCRIBED_PLAN: "You're already subscribed to this plan",

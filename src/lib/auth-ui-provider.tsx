@@ -1,7 +1,7 @@
 "use client"
 
 import type { SocialProvider } from "better-auth/social-providers"
-import { type ReactNode, createContext, useContext, useEffect, useMemo } from "react"
+import { type ReactNode, createContext, useContext, useEffect, useMemo, useRef } from "react"
 import { toast } from "sonner"
 
 import { RecaptchaV3 } from "../components/captcha/recaptcha-v3"
@@ -26,6 +26,7 @@ import type { SignUpOptions } from "../types/sign-up-options"
 import type { SocialOptions } from "../types/social-options"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
 import type { Provider } from "./social-providers"
+import { getLocalizedError, getSearchParam } from "./utils"
 
 const DefaultLink: Link = ({ href, className, children }) => (
     <a className={className} href={href}>
@@ -742,6 +743,21 @@ export const AuthUIProvider = ({
     basePath = basePath.endsWith("/") ? basePath.slice(0, -1) : basePath
 
     const { data: sessionData } = hooks.useSession()
+
+    const errorShown = useRef(false)
+    useEffect(() => {
+        if (errorShown.current) return
+
+        const error = getSearchParam("error")
+        if (error) {
+            errorShown.current = true
+            console.log({ error })
+            toast({
+                variant: "error",
+                message: getLocalizedError({ error, localization })
+            })
+        }
+    }, [localization, toast])
 
     return (
         <AuthUIContext.Provider

@@ -1,4 +1,4 @@
-const PASSKEY_ERROR_CODES = {
+export const PASSKEY_ERROR_CODES = {
     CHALLENGE_NOT_FOUND: "Challenge not found",
     YOU_ARE_NOT_ALLOWED_TO_REGISTER_THIS_PASSKEY: "You are not allowed to register this passkey",
     FAILED_TO_VERIFY_REGISTRATION: "Failed to verify registration",

@@ -33,12 +33,15 @@ export function getLocalizedError({
     error: any
     localization?: Partial<AuthLocalization>
 }) {
+    if (typeof error === "string") {
+        if (localization?.[error as keyof AuthLocalization])
+            return localization[error as keyof AuthLocalization]
+    }
+
     if (error?.error) {
         if (error.error.code) {
-            const camelCaseErrorCode = errorCodeToCamelCase(
-                error.error.code
-            ) as keyof AuthLocalization
-            if (localization?.[camelCaseErrorCode]) return localization[camelCaseErrorCode]
+            const errorCode = error.error.code as keyof AuthLocalization
+            if (localization?.[errorCode]) return localization[errorCode]
         }
 
         return (

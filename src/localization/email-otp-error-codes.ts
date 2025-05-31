@@ -1,4 +1,4 @@
-const EMAIL_OTP_ERROR_CODES = {
+export const EMAIL_OTP_ERROR_CODES = {
     OTP_EXPIRED: "otp expired",
     INVALID_OTP: "Invalid OTP",
     INVALID_EMAIL: "Invalid email",

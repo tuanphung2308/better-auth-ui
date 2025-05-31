@@ -87,7 +87,7 @@ export function ResetPasswordForm({
 
         if (!token || token === "INVALID_TOKEN") {
             navigate(`${basePath}/${viewPaths.signIn}${window.location.search}`)
-            toast({ variant: "error", message: localization.RESET_PASSWORD_INVALID_TOKEN })
+            toast({ variant: "error", message: localization.INVALID_TOKEN })
         }
     }, [basePath, navigate, toast, viewPaths, localization])
 
