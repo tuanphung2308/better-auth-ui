@@ -710,6 +710,11 @@ export const AuthUIProvider = ({
                 useAuthData({
                     queryFn: () => authClient.organization.hasPermission(params),
                     cacheKey: `hasPermission:${JSON.stringify(params)}`
+                }),
+            useInvitation: (params) =>
+                useAuthData({
+                    queryFn: () => authClient.organization.getInvitation(params),
+                    cacheKey: `invitation:${JSON.stringify(params)}`
                 })
         } as AuthHooks
     }, [authClient])

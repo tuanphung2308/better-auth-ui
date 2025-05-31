@@ -1,8 +1,7 @@
 "use client"
 
-import type { Invitation } from "better-auth/plugins/organization"
 import { CheckIcon, Loader2, XIcon } from "lucide-react"
-import { useContext, useEffect, useMemo, useRef, useState } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 
 import { useAuthenticate } from "../../hooks/use-authenticate"
 import type { AuthLocalization } from "../../lib/auth-localization"
@@ -13,12 +12,6 @@ import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { Skeleton } from "../ui/skeleton"
 import { OrganizationView } from "./organization-view"
-
-interface InvitationWithOrganization extends Invitation {
-    organizationName: string
-    organizationSlug: string
-    organizationLogo: string
-}
 
 export interface AcceptInvitationCardProps {
     className?: string
@@ -32,12 +25,11 @@ export function AcceptInvitationCard({
     localization: localizationProp
 }: AcceptInvitationCardProps) {
     const {
-        authClient,
+        hooks: { useSession },
         localization: contextLocalization,
         toast,
         redirectTo,
-        replace,
-        organization
+        replace
     } = useContext(AuthUIContext)
 
     const localization = useMemo(
@@ -45,14 +37,8 @@ export function AcceptInvitationCard({
         [contextLocalization, localizationProp]
     )
 
-    const { data: sessionData } = useAuthenticate()
-
-    const [isRejecting, setIsRejecting] = useState(false)
-    const [isAccepting, setIsAccepting] = useState(false)
-    const isProcessing = isRejecting || isAccepting
-    const [invitationId, setInvitationId] = useState<string | null>(getSearchParam("invitationId"))
-    const [invitation, setInvitation] = useState<InvitationWithOrganization>()
-    const invitationFetched = useRef(false)
+    const { data: sessionData } = useSession()
+    const [invitationId, setInvitationId] = useState<string | null>(null)
 
     useEffect(() => {
         const invitationIdParam = getSearchParam("invitationId")
@@ -64,55 +50,85 @@ export function AcceptInvitationCard({
             })
 
             replace(redirectTo)
-
             return
         }
 
         setInvitationId(invitationIdParam)
     }, [localization.invalidInvitation, toast, replace, redirectTo])
 
+    // If session is not loaded yet, use authenticate hook to check
+    useAuthenticate()
+
+    if (!sessionData || !invitationId) {
+        return <AcceptInvitationSkeleton className={className} classNames={classNames} />
+    }
+
+    return (
+        <AcceptInvitationContent
+            className={className}
+            classNames={classNames}
+            localization={localization}
+            invitationId={invitationId}
+        />
+    )
+}
+
+function AcceptInvitationContent({
+    className,
+    classNames,
+    localization: localizationProp,
+    invitationId
+}: AcceptInvitationCardProps & { invitationId: string }) {
+    const {
+        authClient,
+        localization: contextLocalization,
+        toast,
+        redirectTo,
+        replace,
+        organization,
+        hooks: { useInvitation }
+    } = useContext(AuthUIContext)
+
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
+
+    const [isRejecting, setIsRejecting] = useState(false)
+    const [isAccepting, setIsAccepting] = useState(false)
+    const isProcessing = isRejecting || isAccepting
+
+    const { data: invitation, isPending } = useInvitation({
+        query: {
+            id: invitationId
+        }
+    })
+
     useEffect(() => {
-        if (!sessionData || !invitationId || invitationFetched.current) return
-        invitationFetched.current = true
+        if (isPending || !invitationId) return
 
-        const fetchInvitation = async () => {
-            try {
-                const invitation = await authClient.organization.getInvitation({
-                    query: {
-                        id: invitationId
-                    },
-                    fetchOptions: { throw: true }
-                })
+        if (!invitation) {
+            toast({
+                variant: "error",
+                message: localization.invalidInvitation
+            })
 
-                if (
-                    invitation.status !== "pending" ||
-                    new Date(invitation.expiresAt) < new Date()
-                ) {
-                    toast({
-                        variant: "error",
-                        message:
-                            new Date(invitation.expiresAt) < new Date()
-                                ? localization.invitationExpired
-                                : localization.invalidInvitation
-                    })
-
-                    replace(redirectTo)
-                    return
-                }
-
-                setInvitation(invitation as unknown as InvitationWithOrganization)
-            } catch (error) {
-                toast({
-                    variant: "error",
-                    message: getLocalizedError({ error, localization })
-                })
-
-                replace(redirectTo)
-            }
+            replace(redirectTo)
+            return
         }
 
-        fetchInvitation()
-    }, [invitationId, sessionData, authClient, localization, toast, replace, redirectTo])
+        if (invitation.status !== "pending" || new Date(invitation.expiresAt) < new Date()) {
+            toast({
+                variant: "error",
+                message:
+                    new Date(invitation.expiresAt) < new Date()
+                        ? localization.invitationExpired
+                        : localization.invalidInvitation
+            })
+
+            replace(redirectTo)
+        }
+    }, [invitation, isPending, invitationId, localization, toast, replace, redirectTo])
 
     const acceptInvitation = async () => {
         if (!invitationId) return
@@ -176,46 +192,23 @@ export function AcceptInvitationCard({
     const roles = [...builtInRoles, ...(organization?.customRoles || [])]
     const roleLabel = roles.find((r) => r.role === invitation?.role)?.label || invitation?.role
 
-    const isPending = !invitation
+    if (isPending) return <AcceptInvitationSkeleton className={className} classNames={classNames} />
 
     return (
         <Card className={cn("w-full max-w-sm", className, classNames?.base)}>
             <CardHeader className={cn("justify-items-center text-center", classNames?.header)}>
-                {isPending ? (
-                    <>
-                        <Skeleton
-                            className={cn(
-                                "my-1 h-5 w-full max-w-32 md:h-5.5 md:w-40",
-                                classNames?.skeleton
-                            )}
-                        />
+                <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                    {localization.acceptInvitation}
+                </CardTitle>
 
-                        <Skeleton
-                            className={cn(
-                                "my-0.5 h-3 w-full max-w-56 md:h-3.5 md:w-6",
-                                classNames?.skeleton
-                            )}
-                        />
-                    </>
-                ) : (
-                    <>
-                        <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                            {localization.acceptInvitation}
-                        </CardTitle>
-
-                        <CardDescription
-                            className={cn("text-xs md:text-sm", classNames?.description)}
-                        >
-                            {localization.acceptInvitationDescription}
-                        </CardDescription>
-                    </>
-                )}
+                <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
+                    {localization.acceptInvitationDescription}
+                </CardDescription>
             </CardHeader>
 
             <CardContent className={cn("flex flex-col gap-6 truncate", classNames?.content)}>
                 <Card className={cn("flex-row items-center p-4")}>
                     <OrganizationView
-                        isPending={isPending}
                         organization={
                             invitation
                                 ? {
@@ -230,42 +223,70 @@ export function AcceptInvitationCard({
                         localization={localization}
                     />
 
-                    {isPending ? (
-                        <Skeleton className="mt-0.5 ml-auto h-4 w-full max-w-14 shrink-2" />
-                    ) : (
-                        <p className="ml-auto text-muted-foreground text-sm">{roleLabel}</p>
-                    )}
+                    <p className="ml-auto text-muted-foreground text-sm">{roleLabel}</p>
                 </Card>
 
                 <div className="grid grid-cols-2 gap-3">
-                    {isPending ? (
-                        <Skeleton className="h-9 w-full" />
-                    ) : (
-                        <Button
-                            variant="outline"
-                            className={cn(classNames?.button, classNames?.outlineButton)}
-                            onClick={rejectInvitation}
-                            disabled={isProcessing}
-                        >
-                            {isRejecting ? <Loader2 className="animate-spin" /> : <XIcon />}
+                    <Button
+                        variant="outline"
+                        className={cn(classNames?.button, classNames?.outlineButton)}
+                        onClick={rejectInvitation}
+                        disabled={isProcessing}
+                    >
+                        {isRejecting ? <Loader2 className="animate-spin" /> : <XIcon />}
 
-                            {localization.reject}
-                        </Button>
+                        {localization.reject}
+                    </Button>
+
+                    <Button
+                        className={cn(classNames?.button, classNames?.primaryButton)}
+                        onClick={acceptInvitation}
+                        disabled={isProcessing}
+                    >
+                        {isAccepting ? <Loader2 className="animate-spin" /> : <CheckIcon />}
+
+                        {localization.accept}
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
+    )
+}
+
+const AcceptInvitationSkeleton = ({
+    className,
+    classNames,
+    localization
+}: AcceptInvitationCardProps) => {
+    return (
+        <Card className={cn("w-full max-w-sm", className, classNames?.base)}>
+            <CardHeader className={cn("justify-items-center", classNames?.header)}>
+                <Skeleton
+                    className={cn(
+                        "my-1 h-5 w-full max-w-32 md:h-5.5 md:w-40",
+                        classNames?.skeleton
                     )}
+                />
 
-                    {isPending ? (
-                        <Skeleton className="h-9 w-full" />
-                    ) : (
-                        <Button
-                            className={cn(classNames?.button, classNames?.primaryButton)}
-                            onClick={acceptInvitation}
-                            disabled={isProcessing}
-                        >
-                            {isAccepting ? <Loader2 className="animate-spin" /> : <CheckIcon />}
-
-                            {localization.accept}
-                        </Button>
+                <Skeleton
+                    className={cn(
+                        "my-0.5 h-3 w-full max-w-56 md:h-3.5 md:w-64",
+                        classNames?.skeleton
                     )}
+                />
+            </CardHeader>
+
+            <CardContent className={cn("flex flex-col gap-6 truncate", classNames?.content)}>
+                <Card className={cn("flex-row items-center p-4")}>
+                    <OrganizationView isPending localization={localization} />
+
+                    <Skeleton className="mt-0.5 ml-auto h-4 w-full max-w-14 shrink-2" />
+                </Card>
+
+                <div className="grid grid-cols-2 gap-3">
+                    <Skeleton className="h-9 w-full" />
+
+                    <Skeleton className="h-9 w-full" />
                 </div>
             </CardContent>
         </Card>

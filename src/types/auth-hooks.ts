@@ -1,4 +1,5 @@
 import type { BetterFetchError } from "@better-fetch/fetch"
+import type { Invitation } from "better-auth/plugins/organization"
 import type { ApiKey } from "./api-key"
 import type { AuthClient, Session, User } from "./auth-client"
 import type { Refetch } from "./refetch"
@@ -25,5 +26,12 @@ export type AuthHooks = {
         error: null
         success: boolean
     }>
+    useInvitation: (params: Parameters<AuthClient["organization"]["getInvitation"]>[0]) => AuthHook<
+        Invitation & {
+            organizationName: string
+            organizationSlug: string
+            organizationLogo?: string
+        }
+    >
     useIsRestoring?: () => boolean
 }
