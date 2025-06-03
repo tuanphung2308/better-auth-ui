@@ -97,20 +97,35 @@ export function ProviderCell({
     }
 
     return (
-        <Card className={cn("flex-row items-center gap-3 px-4 py-3", className, classNames?.cell)}>
+        <Card
+            className={cn(
+                "flex-row items-center gap-3 px-4 py-3",
+                className,
+                classNames?.cell
+            )}
+        >
             {provider.icon &&
                 (colorIcons === true ? (
-                    <provider.icon className={cn("size-4", classNames?.icon)} variant="color" />
+                    <provider.icon
+                        className={cn("size-4", classNames?.icon)}
+                        variant="color"
+                    />
                 ) : colorIcons === false ? (
                     <provider.icon className={cn("size-4", classNames?.icon)} />
                 ) : (
                     <>
                         <provider.icon
-                            className={cn("size-4 dark:hidden", classNames?.icon)}
+                            className={cn(
+                                "size-4 dark:hidden",
+                                classNames?.icon
+                            )}
                             variant="color"
                         />
                         <provider.icon
-                            className={cn("hidden size-4 dark:block", classNames?.icon)}
+                            className={cn(
+                                "hidden size-4 dark:block",
+                                classNames?.icon
+                            )}
                         />
                     </>
                 ))}

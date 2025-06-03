@@ -1,4 +1,11 @@
-import { useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore } from "react"
+import {
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+    useSyncExternalStore
+} from "react"
 
 import { authDataCache } from "../lib/auth-data-cache"
 import { AuthUIContext } from "../lib/auth-ui-provider"
@@ -15,7 +22,8 @@ export function useAuthData<T>({
     staleTime?: number
 }) {
     const { authClient, toast, localization } = useContext(AuthUIContext)
-    const { data: sessionData, isPending: sessionPending } = authClient.useSession()
+    const { data: sessionData, isPending: sessionPending } =
+        authClient.useSession()
 
     // Generate a stable cache key based on the queryFn if not provided
     const queryFnRef = useRef(queryFn)
@@ -29,8 +37,14 @@ export function useAuthData<T>({
             (callback) => authDataCache.subscribe(stableCacheKey, callback),
             [stableCacheKey]
         ),
-        useCallback(() => authDataCache.get<T>(stableCacheKey), [stableCacheKey]),
-        useCallback(() => authDataCache.get<T>(stableCacheKey), [stableCacheKey])
+        useCallback(
+            () => authDataCache.get<T>(stableCacheKey),
+            [stableCacheKey]
+        ),
+        useCallback(
+            () => authDataCache.get<T>(stableCacheKey),
+            [stableCacheKey]
+        )
     )
 
     const initialized = useRef(false)
@@ -111,7 +125,8 @@ export function useAuthData<T>({
 
         // Check if user ID has changed
         const userIdChanged =
-            previousUserId.current !== undefined && previousUserId.current !== currentUserId
+            previousUserId.current !== undefined &&
+            previousUserId.current !== currentUserId
 
         // If user changed, clear cache to ensure isPending becomes true
         if (userIdChanged) {
@@ -122,9 +137,15 @@ export function useAuthData<T>({
         const hasCachedData = cacheEntry?.data !== undefined
 
         // Check if data is stale
-        const isStale = !cacheEntry || Date.now() - cacheEntry.timestamp > staleTime
+        const isStale =
+            !cacheEntry || Date.now() - cacheEntry.timestamp > staleTime
 
-        if (!initialized.current || !hasCachedData || userIdChanged || (hasCachedData && isStale)) {
+        if (
+            !initialized.current ||
+            !hasCachedData ||
+            userIdChanged ||
+            (hasCachedData && isStale)
+        ) {
             // Only fetch if we don't have data or if the data is stale
             if (!hasCachedData || isStale) {
                 initialized.current = true
@@ -134,7 +155,14 @@ export function useAuthData<T>({
 
         // Update the previous user ID
         previousUserId.current = currentUserId
-    }, [sessionData, sessionData?.user?.id, stableCacheKey, refetch, cacheEntry, staleTime])
+    }, [
+        sessionData,
+        sessionData?.user?.id,
+        stableCacheKey,
+        refetch,
+        cacheEntry,
+        staleTime
+    ])
 
     // Determine if we're in a pending state
     // We're only pending if:

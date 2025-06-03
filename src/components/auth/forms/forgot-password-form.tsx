@@ -13,7 +13,14 @@ import { cn, getLocalizedError } from "../../../lib/utils"
 import type { AuthLocalization } from "../../../localization/auth-localization"
 import { Captcha } from "../../captcha/captcha"
 import { Button } from "../../ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "../../ui/form"
 import { Input } from "../../ui/input"
 import type { AuthFormClassNames } from "../auth-form"
 
@@ -89,7 +96,9 @@ export function ForgotPasswordForm({
                 message: localization.FORGOT_PASSWORD_EMAIL
             })
 
-            navigate(`${basePath}/${viewPaths.SIGN_IN}${window.location.search}`)
+            navigate(
+                `${basePath}/${viewPaths.SIGN_IN}${window.location.search}`
+            )
         } catch (error) {
             toast({
                 variant: "error",
@@ -129,12 +138,20 @@ export function ForgotPasswordForm({
                     )}
                 />
 
-                <Captcha ref={captchaRef} localization={localization} action="/forget-password" />
+                <Captcha
+                    ref={captchaRef}
+                    localization={localization}
+                    action="/forget-password"
+                />
 
                 <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className={cn("w-full", classNames?.button, classNames?.primaryButton)}
+                    className={cn(
+                        "w-full",
+                        classNames?.button,
+                        classNames?.primaryButton
+                    )}
                 >
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />

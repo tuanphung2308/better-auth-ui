@@ -47,7 +47,8 @@ export function OrganizationCell({
         [contextLocalization, localizationProp]
     )
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } = useActiveOrganization()
+    const { data: activeOrganization, refetch: refetchActiveOrganization } =
+        useActiveOrganization()
     const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false)
     const [isManagingOrganization, setIsManagingOrganization] = useState(false)
 
@@ -93,7 +94,10 @@ export function OrganizationCell({
     return (
         <>
             <Card className={cn("flex-row p-4", className, classNames?.cell)}>
-                <OrganizationView organization={organization} localization={localization} />
+                <OrganizationView
+                    organization={organization}
+                    localization={localization}
+                />
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

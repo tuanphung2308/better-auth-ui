@@ -41,11 +41,14 @@ export function APIKeyCell({
         if (!apiKey.expiresAt) return localization.NEVER_EXPIRES
 
         const expiresDate = new Date(apiKey.expiresAt)
-        return `${localization.EXPIRES} ${expiresDate.toLocaleDateString(lang ?? "en", {
-            month: "short",
-            day: "numeric",
-            year: "numeric"
-        })}`
+        return `${localization.EXPIRES} ${expiresDate.toLocaleDateString(
+            lang ?? "en",
+            {
+                month: "short",
+                day: "numeric",
+                year: "numeric"
+            }
+        )}`
     }
 
     return (
@@ -57,11 +60,15 @@ export function APIKeyCell({
                     classNames?.cell
                 )}
             >
-                <KeyRoundIcon className={cn("size-4 flex-shrink-0", classNames?.icon)} />
+                <KeyRoundIcon
+                    className={cn("size-4 flex-shrink-0", classNames?.icon)}
+                />
 
                 <div className="flex flex-col truncate">
                     <div className="flex items-center gap-2">
-                        <span className="truncate font-semibold text-sm">{apiKey.name}</span>
+                        <span className="truncate font-semibold text-sm">
+                            {apiKey.name}
+                        </span>
 
                         <span className="flex-1 truncate text-muted-foreground text-sm">
                             {apiKey.start}

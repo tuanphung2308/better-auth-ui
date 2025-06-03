@@ -19,7 +19,9 @@ export function useListAccounts({
     })
 
     const { data, isLoading, error } = db.useQuery(
-        authUser ? { [modelName]: { $: { where: { userId: authUser?.id } } } } : null
+        authUser
+            ? { [modelName]: { $: { where: { userId: authUser?.id } } } }
+            : null
     )
 
     const accounts = useMemo(() => {

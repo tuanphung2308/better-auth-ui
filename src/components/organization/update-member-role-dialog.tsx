@@ -18,10 +18,17 @@ import {
     DialogHeader,
     DialogTitle
 } from "../ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
+} from "../ui/select"
 import { MemberCell } from "./member-cell"
 
-export interface UpdateMemberRoleDialogProps extends ComponentProps<typeof Dialog> {
+export interface UpdateMemberRoleDialogProps
+    extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
     member: Member & { user: Partial<User> }
@@ -122,12 +129,17 @@ export function UpdateMemberRoleDialog({
                 onOpenAutoFocus={(e) => e.preventDefault()}
             >
                 <DialogHeader className={classNames?.dialog?.header}>
-                    <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                    <DialogTitle
+                        className={cn("text-lg md:text-xl", classNames?.title)}
+                    >
                         {localization.UPDATE_ROLE}
                     </DialogTitle>
 
                     <DialogDescription
-                        className={cn("text-xs md:text-sm", classNames?.description)}
+                        className={cn(
+                            "text-xs md:text-sm",
+                            classNames?.description
+                        )}
                     >
                         {localization.UPDATE_ROLE_DESCRIPTION}
                     </DialogDescription>
@@ -141,9 +153,14 @@ export function UpdateMemberRoleDialog({
                         hideActions
                     />
 
-                    <Select value={selectedRole} onValueChange={setSelectedRole}>
+                    <Select
+                        value={selectedRole}
+                        onValueChange={setSelectedRole}
+                    >
                         <SelectTrigger className="w-full">
-                            <SelectValue placeholder={localization.SELECT_ROLE} />
+                            <SelectValue
+                                placeholder={localization.SELECT_ROLE}
+                            />
                         </SelectTrigger>
 
                         <SelectContent>
@@ -161,7 +178,10 @@ export function UpdateMemberRoleDialog({
                         type="button"
                         variant="outline"
                         onClick={() => onOpenChange?.(false)}
-                        className={cn(classNames?.button, classNames?.outlineButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.outlineButton
+                        )}
                         disabled={isUpdating}
                     >
                         {localization.CANCEL}
@@ -170,7 +190,10 @@ export function UpdateMemberRoleDialog({
                     <Button
                         type="button"
                         onClick={updateMemberRole}
-                        className={cn(classNames?.button, classNames?.primaryButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.primaryButton
+                        )}
                         disabled={isUpdating}
                     >
                         {isUpdating && <Loader2 className="animate-spin" />}

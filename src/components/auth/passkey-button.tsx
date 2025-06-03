@@ -23,7 +23,11 @@ export function PasskeyButton({
     redirectTo,
     setIsSubmitting
 }: PasskeyButtonProps) {
-    const { authClient, localization: contextLocalization, toast } = useContext(AuthUIContext)
+    const {
+        authClient,
+        localization: contextLocalization,
+        toast
+    } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
 
@@ -40,7 +44,10 @@ export function PasskeyButton({
             if (response?.error) {
                 toast({
                     variant: "error",
-                    message: getLocalizedError({ error: response.error, localization })
+                    message: getLocalizedError({
+                        error: response.error,
+                        localization
+                    })
                 })
 
                 setIsSubmitting?.(false)
@@ -59,7 +66,11 @@ export function PasskeyButton({
 
     return (
         <Button
-            className={cn("w-full", classNames?.form?.button, classNames?.form?.secondaryButton)}
+            className={cn(
+                "w-full",
+                classNames?.form?.button,
+                classNames?.form?.secondaryButton
+            )}
             disabled={isSubmitting}
             formNoValidate
             name="passkey"

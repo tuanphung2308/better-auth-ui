@@ -37,10 +37,18 @@ export function SecuritySettingsCards({
         refetch: refetchAccounts
     } = useListAccounts()
 
-    const credentialsLinked = accounts?.some((acc) => acc.provider === "credential")
+    const credentialsLinked = accounts?.some(
+        (acc) => acc.provider === "credential"
+    )
 
     return (
-        <div className={cn("flex w-full flex-col gap-4 md:gap-6", className, classNames?.cards)}>
+        <div
+            className={cn(
+                "flex w-full flex-col gap-4 md:gap-6",
+                className,
+                classNames?.cards
+            )}
+        >
             {credentials && (
                 <ChangePasswordCard
                     accounts={accounts}
@@ -63,12 +71,23 @@ export function SecuritySettingsCards({
             )}
 
             {twoFactor && credentialsLinked && (
-                <TwoFactorCard classNames={classNames?.card} localization={localization} />
+                <TwoFactorCard
+                    classNames={classNames?.card}
+                    localization={localization}
+                />
             )}
 
-            {passkey && <PasskeysCard classNames={classNames?.card} localization={localization} />}
+            {passkey && (
+                <PasskeysCard
+                    classNames={classNames?.card}
+                    localization={localization}
+                />
+            )}
 
-            <SessionsCard classNames={classNames?.card} localization={localization} />
+            <SessionsCard
+                classNames={classNames?.card}
+                localization={localization}
+            />
 
             {deleteUser && (
                 <DeleteAccountCard

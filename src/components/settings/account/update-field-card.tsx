@@ -11,10 +11,20 @@ import type { AuthLocalization } from "../../../localization/auth-localization"
 import type { FieldType } from "../../../types/additional-fields"
 import { CardContent } from "../../ui/card"
 import { Checkbox } from "../../ui/checkbox"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "../../ui/form"
 import { Input } from "../../ui/input"
 import { Skeleton } from "../../ui/skeleton"
-import { SettingsCard, type SettingsCardClassNames } from "../shared/settings-card"
+import {
+    SettingsCard,
+    type SettingsCardClassNames
+} from "../shared/settings-card"
 
 export interface UpdateFieldCardProps {
     className?: string
@@ -112,7 +122,11 @@ export function UpdateFieldCard({
             return
         }
 
-        if (validate && typeof newValue === "string" && !(await validate(newValue))) {
+        if (
+            validate &&
+            typeof newValue === "string" &&
+            !(await validate(newValue))
+        ) {
             form.setError(name, {
                 message: `${label} ${localization.IS_INVALID}`
             })
@@ -165,14 +179,25 @@ export function UpdateFieldCard({
                                             />
                                         </FormControl>
 
-                                        <FormLabel className={classNames?.label}>{label}</FormLabel>
+                                        <FormLabel
+                                            className={classNames?.label}
+                                        >
+                                            {label}
+                                        </FormLabel>
 
-                                        <FormMessage className={classNames?.error} />
+                                        <FormMessage
+                                            className={classNames?.error}
+                                        />
                                     </FormItem>
                                 )}
                             />
                         ) : isPending ? (
-                            <Skeleton className={cn("h-9 w-full", classNames?.skeleton)} />
+                            <Skeleton
+                                className={cn(
+                                    "h-9 w-full",
+                                    classNames?.skeleton
+                                )}
+                            />
                         ) : (
                             <FormField
                                 control={form.control}
@@ -184,7 +209,9 @@ export function UpdateFieldCard({
                                                 className={classNames?.input}
                                                 placeholder={
                                                     placeholder ||
-                                                    (typeof label === "string" ? label : "")
+                                                    (typeof label === "string"
+                                                        ? label
+                                                        : "")
                                                 }
                                                 type={type}
                                                 disabled={isSubmitting}
@@ -193,7 +220,9 @@ export function UpdateFieldCard({
                                             />
                                         </FormControl>
 
-                                        <FormMessage className={classNames?.error} />
+                                        <FormMessage
+                                            className={classNames?.error}
+                                        />
                                     </FormItem>
                                 )}
                             />

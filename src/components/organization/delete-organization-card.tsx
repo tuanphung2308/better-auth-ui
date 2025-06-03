@@ -7,7 +7,11 @@ import { SettingsCard } from "../settings/shared/settings-card"
 import type { SettingsCardProps } from "../settings/shared/settings-card"
 import { DeleteOrganizationDialog } from "./delete-organization-dialog"
 
-export function DeleteOrganizationCard({ className, classNames, localization }: SettingsCardProps) {
+export function DeleteOrganizationCard({
+    className,
+    classNames,
+    localization
+}: SettingsCardProps) {
     const {
         hooks: { useActiveOrganization, useSession },
         localization: contextLocalization
@@ -17,7 +21,8 @@ export function DeleteOrganizationCard({ className, classNames, localization }: 
 
     const [showDialog, setShowDialog] = useState(false)
 
-    const { data: activeOrganization, isPending: organizationPending } = useActiveOrganization()
+    const { data: activeOrganization, isPending: organizationPending } =
+        useActiveOrganization()
     const { data: sessionData, isPending: sessionPending } = useSession()
 
     const isPending = organizationPending || sessionPending

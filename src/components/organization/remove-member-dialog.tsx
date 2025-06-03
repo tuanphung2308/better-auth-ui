@@ -92,12 +92,17 @@ export function RemoveMemberDialog({
                 onOpenAutoFocus={(e) => e.preventDefault()}
             >
                 <DialogHeader className={classNames?.dialog?.header}>
-                    <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                    <DialogTitle
+                        className={cn("text-lg md:text-xl", classNames?.title)}
+                    >
                         {localization.REMOVE_MEMBER}
                     </DialogTitle>
 
                     <DialogDescription
-                        className={cn("text-xs md:text-sm", classNames?.description)}
+                        className={cn(
+                            "text-xs md:text-sm",
+                            classNames?.description
+                        )}
                     >
                         {localization.REMOVE_MEMBER_CONFIRM}
                     </DialogDescription>
@@ -115,7 +120,10 @@ export function RemoveMemberDialog({
                         type="button"
                         variant="outline"
                         onClick={() => onOpenChange?.(false)}
-                        className={cn(classNames?.button, classNames?.outlineButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.outlineButton
+                        )}
                         disabled={isRemoving}
                     >
                         {localization.CANCEL}
@@ -125,7 +133,10 @@ export function RemoveMemberDialog({
                         type="button"
                         variant="destructive"
                         onClick={removeMember}
-                        className={cn(classNames?.button, classNames?.destructiveButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.destructiveButton
+                        )}
                         disabled={isRemoving}
                     >
                         {isRemoving && <Loader2 className="animate-spin" />}

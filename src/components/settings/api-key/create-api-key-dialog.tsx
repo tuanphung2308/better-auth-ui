@@ -20,9 +20,22 @@ import {
     DialogHeader,
     DialogTitle
 } from "../../ui/dialog"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "../../ui/form"
 import { Input } from "../../ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
+} from "../../ui/select"
 import type { SettingsCardClassNames } from "../shared/settings-card"
 
 interface CreateAPIKeyDialogProps extends ComponentProps<typeof Dialog> {
@@ -52,7 +65,9 @@ export function CreateAPIKeyDialog({
     const { lang } = useLang()
 
     const formSchema = z.object({
-        name: z.string().min(1, `${localization.NAME} ${localization.IS_REQUIRED}`),
+        name: z
+            .string()
+            .min(1, `${localization.NAME} ${localization.IS_REQUIRED}`),
         expiresInDays: z.string().optional()
     })
 
@@ -77,7 +92,8 @@ export function CreateAPIKeyDialog({
                 name: values.name,
                 expiresIn,
                 prefix: typeof apiKey === "object" ? apiKey.prefix : undefined,
-                metadata: typeof apiKey === "object" ? apiKey.metadata : undefined,
+                metadata:
+                    typeof apiKey === "object" ? apiKey.metadata : undefined,
                 fetchOptions: { throw: true }
             })
 
@@ -102,33 +118,45 @@ export function CreateAPIKeyDialog({
                 className={classNames?.dialog?.content}
             >
                 <DialogHeader className={classNames?.dialog?.header}>
-                    <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                    <DialogTitle
+                        className={cn("text-lg md:text-xl", classNames?.title)}
+                    >
                         {localization.CREATE_API_KEY}
                     </DialogTitle>
 
                     <DialogDescription
-                        className={cn("text-xs md:text-sm", classNames?.description)}
+                        className={cn(
+                            "text-xs md:text-sm",
+                            classNames?.description
+                        )}
                     >
                         {localization.CREATE_API_KEY_DESCRIPTION}
                     </DialogDescription>
                 </DialogHeader>
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <form
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="space-y-6"
+                    >
                         <div className="flex gap-4">
                             <FormField
                                 control={form.control}
                                 name="name"
                                 render={({ field }) => (
                                     <FormItem className="flex-1">
-                                        <FormLabel className={classNames?.label}>
+                                        <FormLabel
+                                            className={classNames?.label}
+                                        >
                                             {localization.NAME}
                                         </FormLabel>
 
                                         <FormControl>
                                             <Input
                                                 className={classNames?.input}
-                                                placeholder={localization.API_KEY_NAME_PLACEHOLDER}
+                                                placeholder={
+                                                    localization.API_KEY_NAME_PLACEHOLDER
+                                                }
                                                 autoFocus
                                                 disabled={isSubmitting}
                                                 {...field}
@@ -145,7 +173,9 @@ export function CreateAPIKeyDialog({
                                 name="expiresInDays"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className={classNames?.label}>
+                                        <FormLabel
+                                            className={classNames?.label}
+                                        >
                                             {localization.EXPIRES}
                                         </FormLabel>
 
@@ -155,9 +185,15 @@ export function CreateAPIKeyDialog({
                                             disabled={isSubmitting}
                                         >
                                             <FormControl>
-                                                <SelectTrigger className={classNames?.input}>
+                                                <SelectTrigger
+                                                    className={
+                                                        classNames?.input
+                                                    }
+                                                >
                                                     <SelectValue
-                                                        placeholder={localization.NO_EXPIRATION}
+                                                        placeholder={
+                                                            localization.NO_EXPIRATION
+                                                        }
                                                     />
                                                 </SelectTrigger>
                                             </FormControl>
@@ -167,11 +203,22 @@ export function CreateAPIKeyDialog({
                                                     {localization.NO_EXPIRATION}
                                                 </SelectItem>
 
-                                                {[1, 7, 30, 60, 90, 180, 365].map((days) => (
-                                                    <SelectItem key={days} value={days.toString()}>
+                                                {[
+                                                    1, 7, 30, 60, 90, 180, 365
+                                                ].map((days) => (
+                                                    <SelectItem
+                                                        key={days}
+                                                        value={days.toString()}
+                                                    >
                                                         {days === 365
-                                                            ? rtf.format(1, "year")
-                                                            : rtf.format(days, "day")}
+                                                            ? rtf.format(
+                                                                  1,
+                                                                  "year"
+                                                              )
+                                                            : rtf.format(
+                                                                  days,
+                                                                  "day"
+                                                              )}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -188,7 +235,10 @@ export function CreateAPIKeyDialog({
                                 type="button"
                                 variant="outline"
                                 onClick={() => onOpenChange?.(false)}
-                                className={cn(classNames?.button, classNames?.outlineButton)}
+                                className={cn(
+                                    classNames?.button,
+                                    classNames?.outlineButton
+                                )}
                                 disabled={isSubmitting}
                             >
                                 {localization.CANCEL}
@@ -197,10 +247,15 @@ export function CreateAPIKeyDialog({
                             <Button
                                 type="submit"
                                 variant="default"
-                                className={cn(classNames?.button, classNames?.primaryButton)}
+                                className={cn(
+                                    classNames?.button,
+                                    classNames?.primaryButton
+                                )}
                                 disabled={isSubmitting}
                             >
-                                {isSubmitting && <Loader2 className="animate-spin" />}
+                                {isSubmitting && (
+                                    <Loader2 className="animate-spin" />
+                                )}
 
                                 {localization.CREATE_API_KEY}
                             </Button>

@@ -15,7 +15,14 @@ import { cn, getLocalizedError, getSearchParam } from "../../../lib/utils"
 import type { AuthLocalization } from "../../../localization/auth-localization"
 import { Button } from "../../ui/button"
 import { Checkbox } from "../../ui/checkbox"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "../../ui/form"
 import { InputOTP } from "../../ui/input-otp"
 import { Label } from "../../ui/label"
 import type { AuthFormClassNames } from "../auth-form"
@@ -57,7 +64,9 @@ export function TwoFactorForm({
 
     localization = { ...contextLocalization, ...localization }
 
-    const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({ redirectTo })
+    const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({
+        redirectTo
+    })
 
     const { data: sessionData } = useSession()
     const isTwoFactorEnabled = sessionData?.user.twoFactorEnabled
@@ -88,7 +97,8 @@ export function TwoFactorForm({
         }
     })
 
-    isSubmitting = isSubmitting || form.formState.isSubmitting || transitionPending
+    isSubmitting =
+        isSubmitting || form.formState.isSubmitting || transitionPending
 
     useEffect(() => {
         setIsSubmitting?.(form.formState.isSubmitting || transitionPending)
@@ -96,7 +106,11 @@ export function TwoFactorForm({
 
     // biome-ignore lint/correctness/useExhaustiveDependencies:
     useEffect(() => {
-        if (method === "otp" && cooldownSeconds <= 0 && !initialSendRef.current) {
+        if (
+            method === "otp" &&
+            cooldownSeconds <= 0 &&
+            !initialSendRef.current
+        ) {
             initialSendRef.current = true
             sendOtp()
         }
@@ -116,7 +130,9 @@ export function TwoFactorForm({
 
         try {
             setIsSendingOtp(true)
-            await authClient.twoFactor.sendOtp({ fetchOptions: { throw: true } })
+            await authClient.twoFactor.sendOtp({
+                fetchOptions: { throw: true }
+            })
             setCooldownSeconds(60)
         } catch (error) {
             toast({
@@ -124,7 +140,10 @@ export function TwoFactorForm({
                 message: getLocalizedError({ error, localization })
             })
 
-            if ((error as BetterFetchError).error.code === "INVALID_TWO_FACTOR_COOKIE") {
+            if (
+                (error as BetterFetchError).error.code ===
+                "INVALID_TWO_FACTOR_COOKIE"
+            ) {
                 history.back()
             }
         }
@@ -133,10 +152,15 @@ export function TwoFactorForm({
         setIsSendingOtp(false)
     }
 
-    async function verifyCode({ code, trustDevice }: z.infer<typeof formSchema>) {
+    async function verifyCode({
+        code,
+        trustDevice
+    }: z.infer<typeof formSchema>) {
         try {
             const verifyMethod =
-                method === "totp" ? authClient.twoFactor.verifyTotp : authClient.twoFactor.verifyOtp
+                method === "totp"
+                    ? authClient.twoFactor.verifyTotp
+                    : authClient.twoFactor.verifyOtp
 
             await verifyMethod({
                 code,
@@ -168,18 +192,23 @@ export function TwoFactorForm({
                 onSubmit={form.handleSubmit(verifyCode)}
                 className={cn("grid w-full gap-6", className, classNames?.base)}
             >
-                {twoFactor?.includes("totp") && totpURI && method === "totp" && (
-                    <div className="space-y-3">
-                        <Label className={classNames?.label}>
-                            {localization.TWO_FACTOR_TOTP_LABEL}
-                        </Label>
+                {twoFactor?.includes("totp") &&
+                    totpURI &&
+                    method === "totp" && (
+                        <div className="space-y-3">
+                            <Label className={classNames?.label}>
+                                {localization.TWO_FACTOR_TOTP_LABEL}
+                            </Label>
 
-                        <QRCode
-                            className={cn("border shadow-xs", classNames?.qrCode)}
-                            value={totpURI}
-                        />
-                    </div>
-                )}
+                            <QRCode
+                                className={cn(
+                                    "border shadow-xs",
+                                    classNames?.qrCode
+                                )}
+                                value={totpURI}
+                            />
+                        </div>
+                    )}
 
                 {method !== null && (
                     <>
@@ -189,7 +218,9 @@ export function TwoFactorForm({
                             render={({ field }) => (
                                 <FormItem>
                                     <div className="flex items-center justify-between">
-                                        <FormLabel className={classNames?.label}>
+                                        <FormLabel
+                                            className={classNames?.label}
+                                        >
                                             {localization.ONE_TIME_PASSWORD}
                                         </FormLabel>
 
@@ -212,18 +243,26 @@ export function TwoFactorForm({
                                                 field.onChange(value)
 
                                                 if (value.length === 6) {
-                                                    form.handleSubmit(verifyCode)()
+                                                    form.handleSubmit(
+                                                        verifyCode
+                                                    )()
                                                 }
                                             }}
-                                            containerClassName={classNames?.otpInputContainer}
+                                            containerClassName={
+                                                classNames?.otpInputContainer
+                                            }
                                             className={classNames?.otpInput}
                                             disabled={isSubmitting}
                                         >
-                                            <OTPInputGroup otpSeparators={otpSeparators} />
+                                            <OTPInputGroup
+                                                otpSeparators={otpSeparators}
+                                            />
                                         </InputOTP>
                                     </FormControl>
 
-                                    <FormMessage className={classNames?.error} />
+                                    <FormMessage
+                                        className={classNames?.error}
+                                    />
                                 </FormItem>
                             )}
                         />
@@ -256,9 +295,14 @@ export function TwoFactorForm({
                         <Button
                             type="submit"
                             disabled={isSubmitting}
-                            className={cn(classNames?.button, classNames?.primaryButton)}
+                            className={cn(
+                                classNames?.button,
+                                classNames?.primaryButton
+                            )}
                         >
-                            {isSubmitting && <Loader2 className="animate-spin" />}
+                            {isSubmitting && (
+                                <Loader2 className="animate-spin" />
+                            )}
                             {localization.TWO_FACTOR_ACTION}
                         </Button>
                     )}
@@ -268,8 +312,15 @@ export function TwoFactorForm({
                             type="button"
                             variant="outline"
                             onClick={sendOtp}
-                            disabled={cooldownSeconds > 0 || isSendingOtp || isSubmitting}
-                            className={cn(classNames?.button, classNames?.outlineButton)}
+                            disabled={
+                                cooldownSeconds > 0 ||
+                                isSendingOtp ||
+                                isSubmitting
+                            }
+                            className={cn(
+                                classNames?.button,
+                                classNames?.outlineButton
+                            )}
                         >
                             {isSendingOtp ? (
                                 <Loader2 className="animate-spin" />
@@ -286,7 +337,10 @@ export function TwoFactorForm({
                         <Button
                             type="button"
                             variant="secondary"
-                            className={cn(classNames?.button, classNames?.secondaryButton)}
+                            className={cn(
+                                classNames?.button,
+                                classNames?.secondaryButton
+                            )}
                             onClick={() => setMethod("otp")}
                             disabled={isSubmitting}
                         >
@@ -299,7 +353,10 @@ export function TwoFactorForm({
                         <Button
                             type="button"
                             variant="secondary"
-                            className={cn(classNames?.button, classNames?.secondaryButton)}
+                            className={cn(
+                                classNames?.button,
+                                classNames?.secondaryButton
+                            )}
                             onClick={() => setMethod("totp")}
                             disabled={isSubmitting}
                         >

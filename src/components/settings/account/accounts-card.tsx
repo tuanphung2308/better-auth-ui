@@ -15,7 +15,11 @@ export interface AccountsCardProps {
     localization?: Partial<AuthLocalization>
 }
 
-export function AccountsCard({ className, classNames, localization }: AccountsCardProps) {
+export function AccountsCard({
+    className,
+    classNames,
+    localization
+}: AccountsCardProps) {
     const {
         basePath,
         hooks: { useListDeviceSessions },

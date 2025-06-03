@@ -17,7 +17,14 @@ import {
     settingsViews
 } from "../settings/settings-cards"
 import { Button } from "../ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle
+} from "../ui/card"
 import { Separator } from "../ui/separator"
 import { AuthCallback } from "./auth-callback"
 import { AuthForm, type AuthFormClassNames } from "./auth-form"
@@ -167,13 +174,21 @@ export function AuthCard({
                     cardHeader
                 ) : (
                     <>
-                        <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                        <CardTitle
+                            className={cn(
+                                "text-lg md:text-xl",
+                                classNames?.title
+                            )}
+                        >
                             {localization[view as keyof typeof localization]}
                         </CardTitle>
 
                         {description && (
                             <CardDescription
-                                className={cn("text-xs md:text-sm", classNames?.description)}
+                                className={cn(
+                                    "text-xs md:text-sm",
+                                    classNames?.description
+                                )}
                             >
                                 {description}
                             </CardDescription>
@@ -183,9 +198,15 @@ export function AuthCard({
             </CardHeader>
 
             <CardContent className={cn("grid gap-6", classNames?.content)}>
-                {oneTap && ["SIGN_IN", "SIGN_UP", "MAGIC_LINK", "EMAIL_OTP"].includes(view) && (
-                    <OneTap localization={localization} redirectTo={redirectTo} />
-                )}
+                {oneTap &&
+                    ["SIGN_IN", "SIGN_UP", "MAGIC_LINK", "EMAIL_OTP"].includes(
+                        view
+                    ) && (
+                        <OneTap
+                            localization={localization}
+                            redirectTo={redirectTo}
+                        />
+                    )}
 
                 {(credentials || magicLink || emailOTP) && (
                     <div className="grid gap-4">
@@ -227,7 +248,10 @@ export function AuthCard({
                                     "MAGIC_LINK",
                                     "EMAIL_OTP"
                                 ].includes(view)) ||
-                                (magicLink && ["SIGN_IN", "MAGIC_LINK"].includes(view))) && (
+                                (magicLink &&
+                                    ["SIGN_IN", "MAGIC_LINK"].includes(
+                                        view
+                                    ))) && (
                                 <EmailOTPButton
                                     classNames={classNames}
                                     localization={localization}
@@ -239,12 +263,17 @@ export function AuthCard({
                 )}
 
                 {view !== "RESET_PASSWORD" &&
-                    (social?.providers?.length || genericOAuth?.providers?.length || passkey) && (
+                    (social?.providers?.length ||
+                        genericOAuth?.providers?.length ||
+                        passkey) && (
                         <>
                             {(credentials || magicLink || emailOTP) && (
                                 <div className="flex items-center gap-2">
                                     <Separator
-                                        className={cn("!w-auto grow", classNames?.separator)}
+                                        className={cn(
+                                            "!w-auto grow",
+                                            classNames?.separator
+                                        )}
                                     />
 
                                     <span className="flex-shrink-0 text-muted-foreground text-sm">
@@ -252,26 +281,35 @@ export function AuthCard({
                                     </span>
 
                                     <Separator
-                                        className={cn("!w-auto grow", classNames?.separator)}
+                                        className={cn(
+                                            "!w-auto grow",
+                                            classNames?.separator
+                                        )}
                                     />
                                 </div>
                             )}
 
                             <div className="grid gap-4">
-                                {(social?.providers?.length || genericOAuth?.providers?.length) && (
+                                {(social?.providers?.length ||
+                                    genericOAuth?.providers?.length) && (
                                     <div
                                         className={cn(
                                             "flex w-full items-center justify-between gap-4",
-                                            socialLayout === "horizontal" && "flex-wrap",
-                                            socialLayout === "vertical" && "flex-col",
-                                            socialLayout === "grid" && "grid grid-cols-2"
+                                            socialLayout === "horizontal" &&
+                                                "flex-wrap",
+                                            socialLayout === "vertical" &&
+                                                "flex-col",
+                                            socialLayout === "grid" &&
+                                                "grid grid-cols-2"
                                         )}
                                     >
                                         {social?.providers?.map((provider) => {
-                                            const socialProvider = socialProviders.find(
-                                                (socialProvider) =>
-                                                    socialProvider.provider === provider
-                                            )
+                                            const socialProvider =
+                                                socialProviders.find(
+                                                    (socialProvider) =>
+                                                        socialProvider.provider ===
+                                                        provider
+                                                )
                                             if (!socialProvider) return null
 
                                             return (
@@ -283,26 +321,32 @@ export function AuthCard({
                                                     localization={localization}
                                                     provider={socialProvider}
                                                     redirectTo={redirectTo}
-                                                    setIsSubmitting={setIsSubmitting}
+                                                    setIsSubmitting={
+                                                        setIsSubmitting
+                                                    }
                                                     socialLayout={socialLayout}
                                                 />
                                             )
                                         })}
 
-                                        {genericOAuth?.providers?.map((provider) => (
-                                            <ProviderButton
-                                                key={provider.provider}
-                                                classNames={classNames}
-                                                callbackURL={callbackURL}
-                                                isSubmitting={isSubmitting}
-                                                localization={localization}
-                                                provider={provider}
-                                                redirectTo={redirectTo}
-                                                setIsSubmitting={setIsSubmitting}
-                                                socialLayout={socialLayout}
-                                                other
-                                            />
-                                        ))}
+                                        {genericOAuth?.providers?.map(
+                                            (provider) => (
+                                                <ProviderButton
+                                                    key={provider.provider}
+                                                    classNames={classNames}
+                                                    callbackURL={callbackURL}
+                                                    isSubmitting={isSubmitting}
+                                                    localization={localization}
+                                                    provider={provider}
+                                                    redirectTo={redirectTo}
+                                                    setIsSubmitting={
+                                                        setIsSubmitting
+                                                    }
+                                                    socialLayout={socialLayout}
+                                                    other
+                                                />
+                                            )
+                                        )}
                                     </div>
                                 )}
 
@@ -335,7 +379,9 @@ export function AuthCard({
                         classNames?.footer
                     )}
                 >
-                    {view === "SIGN_IN" || view === "MAGIC_LINK" || view === "EMAIL_OTP" ? (
+                    {view === "SIGN_IN" ||
+                    view === "MAGIC_LINK" ||
+                    view === "EMAIL_OTP" ? (
                         localization.DONT_HAVE_AN_ACCOUNT
                     ) : view === "SIGN_UP" ? (
                         localization.ALREADY_HAVE_AN_ACCOUNT
@@ -348,7 +394,10 @@ export function AuthCard({
                     view === "EMAIL_OTP" ||
                     view === "SIGN_UP" ? (
                         <Link
-                            className={cn("text-foreground underline", classNames?.footerLink)}
+                            className={cn(
+                                "text-foreground underline",
+                                classNames?.footerLink
+                            )}
                             href={`${basePath}/${viewPaths[view === "SIGN_IN" || view === "MAGIC_LINK" || view === "EMAIL_OTP" ? "SIGN_UP" : "SIGN_IN"]}${isHydrated ? window.location.search : ""}`}
                         >
                             <Button
@@ -359,7 +408,9 @@ export function AuthCard({
                                     classNames?.footerLink
                                 )}
                             >
-                                {view === "SIGN_IN" || view === "MAGIC_LINK" || view === "EMAIL_OTP"
+                                {view === "SIGN_IN" ||
+                                view === "MAGIC_LINK" ||
+                                view === "EMAIL_OTP"
                                     ? localization.SIGN_UP
                                     : localization.SIGN_IN}
                             </Button>
@@ -368,7 +419,10 @@ export function AuthCard({
                         <Button
                             variant="link"
                             size="sm"
-                            className={cn("px-0 text-foreground underline", classNames?.footerLink)}
+                            className={cn(
+                                "px-0 text-foreground underline",
+                                classNames?.footerLink
+                            )}
                             onClick={() => window.history.back()}
                         >
                             {localization.GO_BACK}

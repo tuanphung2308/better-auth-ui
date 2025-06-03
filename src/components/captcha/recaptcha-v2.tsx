@@ -46,7 +46,11 @@ export function RecaptchaV2({
                 sitekey={captcha.siteKey}
                 theme={theme}
                 hl={lang}
-                size={captcha.provider === "google-recaptcha-v2-invisible" ? "invisible" : "normal"}
+                size={
+                    captcha.provider === "google-recaptcha-v2-invisible"
+                        ? "invisible"
+                        : "normal"
+                }
                 className={cn(
                     captcha.provider === "google-recaptcha-v2-invisible"
                         ? "absolute"

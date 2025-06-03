@@ -12,7 +12,14 @@ import type { AuthLocalization } from "../../../localization/auth-localization"
 import type { PasswordValidation } from "../../../types/password-validation"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "../../ui/form"
 import type { AuthFormClassNames } from "../auth-form"
 
 export interface ResetPasswordFormProps {
@@ -63,10 +70,15 @@ export function ResetPasswordForm({
                   })
                 : z.string().optional()
         })
-        .refine((data) => !confirmPasswordEnabled || data.newPassword === data.confirmPassword, {
-            message: localization.PASSWORDS_DO_NOT_MATCH,
-            path: ["confirmPassword"]
-        })
+        .refine(
+            (data) =>
+                !confirmPasswordEnabled ||
+                data.newPassword === data.confirmPassword,
+            {
+                message: localization.PASSWORDS_DO_NOT_MATCH,
+                path: ["confirmPassword"]
+            }
+        )
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -86,7 +98,9 @@ export function ResetPasswordForm({
         const token = searchParams.get("token")
 
         if (!token || token === "INVALID_TOKEN") {
-            navigate(`${basePath}/${viewPaths.SIGN_IN}${window.location.search}`)
+            navigate(
+                `${basePath}/${viewPaths.SIGN_IN}${window.location.search}`
+            )
             toast({ variant: "error", message: localization.INVALID_TOKEN })
         }
     }, [basePath, navigate, toast, viewPaths, localization])
@@ -107,7 +121,9 @@ export function ResetPasswordForm({
                 message: localization.RESET_PASSWORD_SUCCESS
             })
 
-            navigate(`${basePath}/${viewPaths.SIGN_IN}${window.location.search}`)
+            navigate(
+                `${basePath}/${viewPaths.SIGN_IN}${window.location.search}`
+            )
         } catch (error) {
             toast({
                 variant: "error",
@@ -137,7 +153,9 @@ export function ResetPasswordForm({
                                 <PasswordInput
                                     autoComplete="new-password"
                                     className={classNames?.input}
-                                    placeholder={localization.NEW_PASSWORD_PLACEHOLDER}
+                                    placeholder={
+                                        localization.NEW_PASSWORD_PLACEHOLDER
+                                    }
                                     disabled={isSubmitting}
                                     {...field}
                                 />
@@ -162,7 +180,9 @@ export function ResetPasswordForm({
                                     <PasswordInput
                                         autoComplete="new-password"
                                         className={classNames?.input}
-                                        placeholder={localization.CONFIRM_PASSWORD_PLACEHOLDER}
+                                        placeholder={
+                                            localization.CONFIRM_PASSWORD_PLACEHOLDER
+                                        }
                                         disabled={isSubmitting}
                                         {...field}
                                     />
@@ -177,7 +197,11 @@ export function ResetPasswordForm({
                 <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className={cn("w-full", classNames?.button, classNames?.primaryButton)}
+                    className={cn(
+                        "w-full",
+                        classNames?.button,
+                        classNames?.primaryButton
+                    )}
                 >
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />

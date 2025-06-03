@@ -104,11 +104,16 @@ export function UserAvatar({
             />
 
             <AvatarFallback
-                className={cn("text-foreground uppercase", classNames?.fallback)}
+                className={cn(
+                    "text-foreground uppercase",
+                    classNames?.fallback
+                )}
                 delayMs={src ? 600 : undefined}
             >
                 {firstTwoCharacters(name) || (
-                    <UserRoundIcon className={cn("size-[50%]", classNames?.fallbackIcon)} />
+                    <UserRoundIcon
+                        className={cn("size-[50%]", classNames?.fallbackIcon)}
+                    />
                 )}
             </AvatarFallback>
         </Avatar>

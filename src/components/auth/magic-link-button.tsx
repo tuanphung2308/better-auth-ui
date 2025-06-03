@@ -21,11 +21,16 @@ export function MagicLinkButton({
     localization,
     view
 }: MagicLinkButtonProps) {
-    const { viewPaths, navigate, basePath, credentials } = useContext(AuthUIContext)
+    const { viewPaths, navigate, basePath, credentials } =
+        useContext(AuthUIContext)
 
     return (
         <Button
-            className={cn("w-full", classNames?.form?.button, classNames?.form?.secondaryButton)}
+            className={cn(
+                "w-full",
+                classNames?.form?.button,
+                classNames?.form?.secondaryButton
+            )}
             disabled={isSubmitting}
             type="button"
             variant="secondary"
@@ -41,7 +46,9 @@ export function MagicLinkButton({
                 <MailIcon className={classNames?.form?.icon} />
             )}
             {localization.SIGN_IN_WITH}{" "}
-            {view === "MAGIC_LINK" ? localization.PASSWORD : localization.MAGIC_LINK}
+            {view === "MAGIC_LINK"
+                ? localization.PASSWORD
+                : localization.MAGIC_LINK}
         </Button>
     )
 }

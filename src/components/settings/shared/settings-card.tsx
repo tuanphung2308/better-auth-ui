@@ -37,7 +37,8 @@ export type SettingsCardClassNames = {
     title?: string
 }
 
-export interface SettingsCardProps extends Omit<ComponentProps<typeof Card>, "title"> {
+export interface SettingsCardProps
+    extends Omit<ComponentProps<typeof Card>, "title"> {
     children?: ReactNode
     className?: string
     classNames?: SettingsCardClassNames

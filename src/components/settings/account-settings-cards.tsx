@@ -29,20 +29,40 @@ export function AccountSettingsCards({
     const { data: sessionData } = useSession()
 
     return (
-        <div className={cn("flex w-full flex-col gap-4 md:gap-6", className, classNames?.cards)}>
+        <div
+            className={cn(
+                "flex w-full flex-col gap-4 md:gap-6",
+                className,
+                classNames?.cards
+            )}
+        >
             {settings?.fields?.includes("image") && avatar && (
-                <UpdateAvatarCard classNames={classNames} localization={localization} />
+                <UpdateAvatarCard
+                    classNames={classNames}
+                    localization={localization}
+                />
             )}
 
             {credentials?.username && (
-                <UpdateUsernameCard classNames={classNames} localization={localization} />
+                <UpdateUsernameCard
+                    classNames={classNames}
+                    localization={localization}
+                />
             )}
 
             {(settings?.fields?.includes("name") || nameRequired) && (
-                <UpdateNameCard classNames={classNames} localization={localization} />
+                <UpdateNameCard
+                    classNames={classNames}
+                    localization={localization}
+                />
             )}
 
-            {changeEmail && <ChangeEmailCard classNames={classNames} localization={localization} />}
+            {changeEmail && (
+                <ChangeEmailCard
+                    classNames={classNames}
+                    localization={localization}
+                />
+            )}
 
             {settings?.fields?.map((field) => {
                 if (field === "image") return null
@@ -50,8 +70,15 @@ export function AccountSettingsCards({
                 const additionalField = additionalFields?.[field]
                 if (!additionalField) return null
 
-                const { label, description, instructions, placeholder, required, type, validate } =
-                    additionalField
+                const {
+                    label,
+                    description,
+                    instructions,
+                    placeholder,
+                    required,
+                    type,
+                    validate
+                } = additionalField
 
                 // @ts-ignore Custom fields are not typed
                 const defaultValue = sessionData?.user[field] as unknown
@@ -74,7 +101,12 @@ export function AccountSettingsCards({
                 )
             })}
 
-            {multiSession && <AccountsCard classNames={classNames} localization={localization} />}
+            {multiSession && (
+                <AccountsCard
+                    classNames={classNames}
+                    localization={localization}
+                />
+            )}
         </div>
     )
 }

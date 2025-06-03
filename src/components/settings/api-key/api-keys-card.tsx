@@ -10,7 +10,12 @@ import { APIKeyCell } from "./api-key-cell"
 import { APIKeyDisplayDialog } from "./api-key-display-dialog"
 import { CreateAPIKeyDialog } from "./create-api-key-dialog"
 
-export function APIKeysCard({ className, classNames, localization, ...props }: SettingsCardProps) {
+export function APIKeysCard({
+    className,
+    classNames,
+    localization,
+    ...props
+}: SettingsCardProps) {
     const {
         hooks: { useListApiKeys },
         localization: contextLocalization
@@ -43,7 +48,9 @@ export function APIKeysCard({ className, classNames, localization, ...props }: S
                 {...props}
             >
                 {apiKeys && apiKeys.length > 0 && (
-                    <CardContent className={cn("grid gap-4", classNames?.content)}>
+                    <CardContent
+                        className={cn("grid gap-4", classNames?.content)}
+                    >
                         {apiKeys?.map((apiKey) => (
                             <APIKeyCell
                                 key={apiKey.id}

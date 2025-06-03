@@ -46,5 +46,8 @@ export function useListSessions({
         }
     }, [data, modelName])
 
-    return { data: sessions, isPending: !sessions && (isPending || authLoading || isLoading) }
+    return {
+        data: sessions,
+        isPending: !sessions && (isPending || authLoading || isLoading)
+    }
 }

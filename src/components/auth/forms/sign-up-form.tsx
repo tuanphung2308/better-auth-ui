@@ -13,7 +13,12 @@ import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { fileToBase64, resizeAndCropImage } from "../../../lib/image-utils"
-import { cn, getLocalizedError, getPasswordSchema, getSearchParam } from "../../../lib/utils"
+import {
+    cn,
+    getLocalizedError,
+    getPasswordSchema,
+    getSearchParam
+} from "../../../lib/utils"
 import type { AuthLocalization } from "../../../localization/auth-localization"
 import type { PasswordValidation } from "../../../types/password-validation"
 import { Captcha } from "../../captcha/captcha"
@@ -26,7 +31,14 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "../../ui/dropdown-menu"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "../../ui/form"
 import { Input } from "../../ui/input"
 import { UserAvatar } from "../../user-avatar"
 import type { AuthFormClassNames } from "../auth-form"
@@ -99,10 +111,19 @@ export function SignUpForm({
                     ? `${basePath}/${viewPaths.CALLBACK}?redirectTo=${getRedirectTo()}`
                     : getRedirectTo())
             }`,
-        [callbackURL, persistClient, basePath, viewPaths, baseURL, getRedirectTo]
+        [
+            callbackURL,
+            persistClient,
+            basePath,
+            viewPaths,
+            baseURL,
+            getRedirectTo
+        ]
     )
 
-    const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({ redirectTo })
+    const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({
+        redirectTo
+    })
 
     // Create the base schema for standard fields
     const schemaFields: Record<string, z.ZodTypeAny> = {
@@ -191,7 +212,12 @@ export function SignUpForm({
                           .optional()
             } else {
                 fieldSchema = additionalField.required
-                    ? z.string().min(1, `${additionalField.label} ${localization.IS_REQUIRED}`)
+                    ? z
+                          .string()
+                          .min(
+                              1,
+                              `${additionalField.label} ${localization.IS_REQUIRED}`
+                          )
                     : z.string().optional()
             }
 
@@ -229,7 +255,8 @@ export function SignUpForm({
             const additionalField = additionalFields?.[field]
             if (!additionalField) continue
 
-            defaultValues[field] = additionalField.type === "boolean" ? false : ""
+            defaultValues[field] =
+                additionalField.type === "boolean" ? false : ""
         }
     }
 
@@ -238,7 +265,8 @@ export function SignUpForm({
         defaultValues
     })
 
-    isSubmitting = isSubmitting || form.formState.isSubmitting || transitionPending
+    isSubmitting =
+        isSubmitting || form.formState.isSubmitting || transitionPending
 
     useEffect(() => {
         setIsSubmitting?.(form.formState.isSubmitting || transitionPending)
@@ -301,11 +329,16 @@ export function SignUpForm({
     }: z.infer<typeof formSchema>) {
         try {
             // Validate additional fields with custom validators if provided
-            for (const [field, value] of Object.entries(additionalFieldValues)) {
+            for (const [field, value] of Object.entries(
+                additionalFieldValues
+            )) {
                 const additionalField = additionalFields?.[field]
                 if (!additionalField?.validate) continue
 
-                if (typeof value === "string" && !(await additionalField.validate(value))) {
+                if (
+                    typeof value === "string" &&
+                    !(await additionalField.validate(value))
+                ) {
                     form.setError(field, {
                         message: `${additionalField.label} ${localization.IS_INVALID}`
                     })
@@ -325,15 +358,21 @@ export function SignUpForm({
                 ...(username !== undefined && { username }),
                 ...(image !== undefined && { image }),
                 ...additionalFieldValues,
-                ...(emailVerification && persistClient && { callbackURL: getCallbackURL() }),
+                ...(emailVerification &&
+                    persistClient && { callbackURL: getCallbackURL() }),
                 fetchOptions
             })
 
             if ("token" in data && data.token) {
                 await onSuccess()
             } else {
-                navigate(`${basePath}/${viewPaths.SIGN_IN}${window.location.search}`)
-                toast({ variant: "success", message: localization.SIGN_UP_EMAIL! })
+                navigate(
+                    `${basePath}/${viewPaths.SIGN_IN}${window.location.search}`
+                )
+                toast({
+                    variant: "success",
+                    message: localization.SIGN_UP_EMAIL!
+                })
             }
         } catch (error) {
             toast({
@@ -385,26 +424,37 @@ export function SignUpForm({
                                                     type="button"
                                                 >
                                                     <UserAvatar
-                                                        isPending={uploadingAvatar}
+                                                        isPending={
+                                                            uploadingAvatar
+                                                        }
                                                         className="size-16"
                                                         user={
                                                             avatarImage
                                                                 ? {
                                                                       name:
-                                                                          form.watch("name") || "",
-                                                                      email: form.watch("email"),
+                                                                          form.watch(
+                                                                              "name"
+                                                                          ) ||
+                                                                          "",
+                                                                      email: form.watch(
+                                                                          "email"
+                                                                      ),
                                                                       image: avatarImage
                                                                   }
                                                                 : null
                                                         }
-                                                        localization={localization}
+                                                        localization={
+                                                            localization
+                                                        }
                                                     />
                                                 </Button>
                                             </DropdownMenuTrigger>
 
                                             <DropdownMenuContent
                                                 align="start"
-                                                onCloseAutoFocus={(e) => e.preventDefault()}
+                                                onCloseAutoFocus={(e) =>
+                                                    e.preventDefault()
+                                                }
                                             >
                                                 <DropdownMenuItem
                                                     onClick={openFileDialog}
@@ -416,12 +466,18 @@ export function SignUpForm({
 
                                                 {avatarImage && (
                                                     <DropdownMenuItem
-                                                        onClick={handleDeleteAvatar}
-                                                        disabled={uploadingAvatar}
+                                                        onClick={
+                                                            handleDeleteAvatar
+                                                        }
+                                                        disabled={
+                                                            uploadingAvatar
+                                                        }
                                                         variant="destructive"
                                                     >
                                                         <Trash2Icon />
-                                                        {localization.DELETE_AVATAR}
+                                                        {
+                                                            localization.DELETE_AVATAR
+                                                        }
                                                     </DropdownMenuItem>
                                                 )}
                                             </DropdownMenuContent>
@@ -461,7 +517,9 @@ export function SignUpForm({
                                 <FormControl>
                                     <Input
                                         className={classNames?.input}
-                                        placeholder={localization.NAME_PLACEHOLDER}
+                                        placeholder={
+                                            localization.NAME_PLACEHOLDER
+                                        }
                                         disabled={isSubmitting}
                                         {...field}
                                     />
@@ -486,7 +544,9 @@ export function SignUpForm({
                                 <FormControl>
                                     <Input
                                         className={classNames?.input}
-                                        placeholder={localization.USERNAME_PLACEHOLDER}
+                                        placeholder={
+                                            localization.USERNAME_PLACEHOLDER
+                                        }
                                         disabled={isSubmitting}
                                         {...field}
                                     />
@@ -535,7 +595,9 @@ export function SignUpForm({
                                 <PasswordInput
                                     autoComplete="new-password"
                                     className={classNames?.input}
-                                    placeholder={localization.PASSWORD_PLACEHOLDER}
+                                    placeholder={
+                                        localization.PASSWORD_PLACEHOLDER
+                                    }
                                     disabled={isSubmitting}
                                     enableToggle
                                     {...field}
@@ -561,7 +623,9 @@ export function SignUpForm({
                                     <PasswordInput
                                         autoComplete="new-password"
                                         className={classNames?.input}
-                                        placeholder={localization.CONFIRM_PASSWORD_PLACEHOLDER}
+                                        placeholder={
+                                            localization.CONFIRM_PASSWORD_PLACEHOLDER
+                                        }
                                         disabled={isSubmitting}
                                         enableToggle
                                         {...field}
@@ -592,17 +656,25 @@ export function SignUpForm({
                                     <FormItem className="flex">
                                         <FormControl>
                                             <Checkbox
-                                                checked={formField.value as boolean}
-                                                onCheckedChange={formField.onChange}
+                                                checked={
+                                                    formField.value as boolean
+                                                }
+                                                onCheckedChange={
+                                                    formField.onChange
+                                                }
                                                 disabled={isSubmitting}
                                             />
                                         </FormControl>
 
-                                        <FormLabel className={classNames?.label}>
+                                        <FormLabel
+                                            className={classNames?.label}
+                                        >
                                             {additionalField.label}
                                         </FormLabel>
 
-                                        <FormMessage className={classNames?.error} />
+                                        <FormMessage
+                                            className={classNames?.error}
+                                        />
                                     </FormItem>
                                 )}
                             />
@@ -613,7 +685,9 @@ export function SignUpForm({
                                 name={field}
                                 render={({ field: formField }) => (
                                     <FormItem>
-                                        <FormLabel className={classNames?.label}>
+                                        <FormLabel
+                                            className={classNames?.label}
+                                        >
                                             {additionalField.label}
                                         </FormLabel>
 
@@ -621,13 +695,15 @@ export function SignUpForm({
                                             <Input
                                                 className={classNames?.input}
                                                 type={
-                                                    additionalField.type === "number"
+                                                    additionalField.type ===
+                                                    "number"
                                                         ? "number"
                                                         : "text"
                                                 }
                                                 placeholder={
                                                     additionalField.placeholder ||
-                                                    (typeof additionalField.label === "string"
+                                                    (typeof additionalField.label ===
+                                                    "string"
                                                         ? additionalField.label
                                                         : "")
                                                 }
@@ -636,19 +712,29 @@ export function SignUpForm({
                                             />
                                         </FormControl>
 
-                                        <FormMessage className={classNames?.error} />
+                                        <FormMessage
+                                            className={classNames?.error}
+                                        />
                                     </FormItem>
                                 )}
                             />
                         )
                     })}
 
-                <Captcha ref={captchaRef} localization={localization} action="/sign-up/email" />
+                <Captcha
+                    ref={captchaRef}
+                    localization={localization}
+                    action="/sign-up/email"
+                />
 
                 <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className={cn("w-full", classNames?.button, classNames?.primaryButton)}
+                    className={cn(
+                        "w-full",
+                        classNames?.button,
+                        classNames?.primaryButton
+                    )}
                 >
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />

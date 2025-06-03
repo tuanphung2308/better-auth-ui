@@ -175,11 +175,18 @@ export function UserButton({
         <DropdownMenu>
             <DropdownMenuTrigger
                 asChild
-                className={cn(size === "icon" && "rounded-full", classNames?.trigger?.base)}
+                className={cn(
+                    size === "icon" && "rounded-full",
+                    classNames?.trigger?.base
+                )}
             >
                 {customTrigger ||
                     (size === "icon" ? (
-                        <Button size="icon" className="size-fit rounded-full" variant="ghost">
+                        <Button
+                            size="icon"
+                            className="size-fit rounded-full"
+                            variant="ghost"
+                        >
                             <UserAvatar
                                 key={user?.image}
                                 isPending={isPending}
@@ -192,7 +199,11 @@ export function UserButton({
                         </Button>
                     ) : (
                         <Button
-                            className={cn("!p-2 h-fit", className, classNames?.trigger?.base)}
+                            className={cn(
+                                "!p-2 h-fit",
+                                className,
+                                classNames?.trigger?.base
+                            )}
                             size={size}
                             {...props}
                         >
@@ -232,7 +243,9 @@ export function UserButton({
                     )}
                 </div>
 
-                <DropdownMenuSeparator className={classNames?.content?.separator} />
+                <DropdownMenuSeparator
+                    className={classNames?.content?.separator}
+                />
 
                 {additionalLinks?.map(
                     ({ href, icon, label, signedIn }, index) =>
@@ -240,7 +253,9 @@ export function UserButton({
                             (signedIn && !!sessionData) ||
                             (!signedIn && !sessionData)) && (
                             <Link key={index} href={href}>
-                                <DropdownMenuItem className={classNames?.content?.menuItem}>
+                                <DropdownMenuItem
+                                    className={classNames?.content?.menuItem}
+                                >
                                     {icon}
 
                                     {label}
@@ -252,7 +267,9 @@ export function UserButton({
                 {!user || user.isAnonymous ? (
                     <>
                         <Link href={`${basePath}/${viewPaths.SIGN_IN}`}>
-                            <DropdownMenuItem className={classNames?.content?.menuItem}>
+                            <DropdownMenuItem
+                                className={classNames?.content?.menuItem}
+                            >
                                 <LogInIcon />
 
                                 {localization.SIGN_IN}
@@ -261,7 +278,9 @@ export function UserButton({
 
                         {signUp && (
                             <Link href={`${basePath}/${viewPaths.SIGN_UP}`}>
-                                <DropdownMenuItem className={classNames?.content?.menuItem}>
+                                <DropdownMenuItem
+                                    className={classNames?.content?.menuItem}
+                                >
                                     <UserRoundPlus />
 
                                     {localization.SIGN_UP}
@@ -272,8 +291,15 @@ export function UserButton({
                 ) : (
                     <>
                         {!disableDefaultLinks && settings && (
-                            <Link href={settings.url || `${basePath}/${viewPaths.SETTINGS}`}>
-                                <DropdownMenuItem className={classNames?.content?.menuItem}>
+                            <Link
+                                href={
+                                    settings.url ||
+                                    `${basePath}/${viewPaths.SETTINGS}`
+                                }
+                            >
+                                <DropdownMenuItem
+                                    className={classNames?.content?.menuItem}
+                                >
                                     <SettingsIcon />
 
                                     {localization.SETTINGS}
@@ -282,7 +308,9 @@ export function UserButton({
                         )}
 
                         <Link href={`${basePath}/${viewPaths.SIGN_OUT}`}>
-                            <DropdownMenuItem className={classNames?.content?.menuItem}>
+                            <DropdownMenuItem
+                                className={classNames?.content?.menuItem}
+                            >
                                 <LogOutIcon />
 
                                 {localization.SIGN_OUT}
@@ -293,7 +321,9 @@ export function UserButton({
 
                 {user && multiSession && (
                     <>
-                        <DropdownMenuSeparator className={classNames?.content?.separator} />
+                        <DropdownMenuSeparator
+                            className={classNames?.content?.separator}
+                        />
 
                         {!deviceSessions && deviceSessionsPending && (
                             <>
@@ -307,32 +337,47 @@ export function UserButton({
                                     />
                                 </DropdownMenuItem>
 
-                                <DropdownMenuSeparator className={classNames?.content?.separator} />
+                                <DropdownMenuSeparator
+                                    className={classNames?.content?.separator}
+                                />
                             </>
                         )}
 
                         {deviceSessions
-                            ?.filter((sessionData) => sessionData.user.id !== user?.id)
+                            ?.filter(
+                                (sessionData) =>
+                                    sessionData.user.id !== user?.id
+                            )
                             .map(({ session, user }) => (
                                 <Fragment key={session.id}>
                                     <DropdownMenuItem
-                                        className={classNames?.content?.menuItem}
-                                        onClick={() => switchAccount(session.token)}
+                                        className={
+                                            classNames?.content?.menuItem
+                                        }
+                                        onClick={() =>
+                                            switchAccount(session.token)
+                                        }
                                     >
                                         <UserView
                                             user={user}
-                                            classNames={classNames?.content?.user}
+                                            classNames={
+                                                classNames?.content?.user
+                                            }
                                         />
                                     </DropdownMenuItem>
 
                                     <DropdownMenuSeparator
-                                        className={classNames?.content?.separator}
+                                        className={
+                                            classNames?.content?.separator
+                                        }
                                     />
                                 </Fragment>
                             ))}
 
                         <Link href={`${basePath}/${viewPaths.SIGN_IN}`}>
-                            <DropdownMenuItem className={classNames?.content?.menuItem}>
+                            <DropdownMenuItem
+                                className={classNames?.content?.menuItem}
+                            >
                                 <PlusCircleIcon />
 
                                 {localization.ADD_ACCOUNT}

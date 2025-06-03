@@ -16,12 +16,20 @@ import {
     DialogHeader,
     DialogTitle
 } from "../../ui/dialog"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "../../ui/form"
 import { Input } from "../../ui/input"
 import { UserView } from "../../user-view"
 import type { SettingsCardClassNames } from "../shared/settings-card"
 
-export interface DeleteAccountDialogProps extends ComponentProps<typeof Dialog> {
+export interface DeleteAccountDialogProps
+    extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     accounts?: { provider: string }[] | null
     localization?: AuthLocalization
@@ -53,8 +61,12 @@ export function DeleteAccountDialog({
     const session = sessionData?.session
     const user = sessionData?.user
 
-    const isFresh = session ? Date.now() - session?.createdAt.getTime() < freshAge * 1000 : false
-    const credentialsLinked = accounts?.some((acc) => acc.provider === "credential")
+    const isFresh = session
+        ? Date.now() - session?.createdAt.getTime() < freshAge * 1000
+        : false
+    const credentialsLinked = accounts?.some(
+        (acc) => acc.provider === "credential"
+    )
 
     const formSchema = z.object({
         password: credentialsLinked
@@ -94,9 +106,15 @@ export function DeleteAccountDialog({
             })
 
             if (deleteUser?.verification) {
-                toast({ variant: "success", message: localization.DELETE_ACCOUNT_VERIFY! })
+                toast({
+                    variant: "success",
+                    message: localization.DELETE_ACCOUNT_VERIFY!
+                })
             } else {
-                toast({ variant: "success", message: localization.DELETE_ACCOUNT_SUCCESS! })
+                toast({
+                    variant: "success",
+                    message: localization.DELETE_ACCOUNT_SUCCESS!
+                })
                 navigate(`${basePath}/${viewPaths.SIGN_OUT}`)
             }
         } catch (error) {
@@ -111,14 +129,21 @@ export function DeleteAccountDialog({
 
     return (
         <Dialog onOpenChange={onOpenChange} {...props}>
-            <DialogContent className={cn("sm:max-w-md", classNames?.dialog?.content)}>
+            <DialogContent
+                className={cn("sm:max-w-md", classNames?.dialog?.content)}
+            >
                 <DialogHeader className={classNames?.dialog?.header}>
-                    <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                    <DialogTitle
+                        className={cn("text-lg md:text-xl", classNames?.title)}
+                    >
                         {localization?.DELETE_ACCOUNT}
                     </DialogTitle>
 
                     <DialogDescription
-                        className={cn("text-xs md:text-sm", classNames?.description)}
+                        className={cn(
+                            "text-xs md:text-sm",
+                            classNames?.description
+                        )}
                     >
                         {isFresh
                             ? localization?.DELETE_ACCOUNT_INSTRUCTIONS
@@ -131,28 +156,37 @@ export function DeleteAccountDialog({
                 </Card>
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(deleteAccount)} className="grid gap-6">
+                    <form
+                        onSubmit={form.handleSubmit(deleteAccount)}
+                        className="grid gap-6"
+                    >
                         {credentialsLinked && (
                             <FormField
                                 control={form.control}
                                 name="password"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className={classNames?.label}>
+                                        <FormLabel
+                                            className={classNames?.label}
+                                        >
                                             {localization?.PASSWORD}
                                         </FormLabel>
 
                                         <FormControl>
                                             <Input
                                                 autoComplete="current-password"
-                                                placeholder={localization?.PASSWORD_PLACEHOLDER}
+                                                placeholder={
+                                                    localization?.PASSWORD_PLACEHOLDER
+                                                }
                                                 type="password"
                                                 className={classNames?.input}
                                                 {...field}
                                             />
                                         </FormControl>
 
-                                        <FormMessage className={classNames?.error} />
+                                        <FormMessage
+                                            className={classNames?.error}
+                                        />
                                     </FormItem>
                                 )}
                             />
@@ -162,20 +196,30 @@ export function DeleteAccountDialog({
                             <Button
                                 type="button"
                                 variant="secondary"
-                                className={cn(classNames?.button, classNames?.secondaryButton)}
+                                className={cn(
+                                    classNames?.button,
+                                    classNames?.secondaryButton
+                                )}
                                 onClick={() => onOpenChange?.(false)}
                             >
                                 {localization.CANCEL}
                             </Button>
 
                             <Button
-                                className={cn(classNames?.button, classNames?.destructiveButton)}
+                                className={cn(
+                                    classNames?.button,
+                                    classNames?.destructiveButton
+                                )}
                                 disabled={isSubmitting}
                                 variant="destructive"
                                 type="submit"
                             >
-                                {isSubmitting && <Loader2 className="animate-spin" />}
-                                {isFresh ? localization?.DELETE_ACCOUNT : localization?.SIGN_OUT}
+                                {isSubmitting && (
+                                    <Loader2 className="animate-spin" />
+                                )}
+                                {isFresh
+                                    ? localization?.DELETE_ACCOUNT
+                                    : localization?.SIGN_OUT}
                             </Button>
                         </DialogFooter>
                     </form>

@@ -10,5 +10,7 @@ export type SocialOptions = {
     /**
      * Custom social sign in function
      */
-    signIn?: (params: Parameters<AuthClient["signIn"]["social"]>[0]) => Promise<unknown>
+    signIn?: (
+        params: Parameters<AuthClient["signIn"]["social"]>[0]
+    ) => Promise<unknown>
 }

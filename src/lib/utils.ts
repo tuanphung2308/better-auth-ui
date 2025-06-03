@@ -19,7 +19,9 @@ export function isValidEmail(email: string) {
  * Example: INVALID_TWO_FACTOR_COOKIE -> invalidTwoFactorCookie
  */
 export function errorCodeToCamelCase(errorCode: string): string {
-    return errorCode.toLowerCase().replace(/_([a-z])/g, (_, char) => char.toUpperCase())
+    return errorCode
+        .toLowerCase()
+        .replace(/_([a-z])/g, (_, char) => char.toUpperCase())
 }
 
 /**
@@ -73,7 +75,9 @@ export function getKeyByValue<T extends Record<string, unknown>>(
     object: T,
     value?: T[keyof T]
 ): keyof T | undefined {
-    return (Object.keys(object) as Array<keyof T>).find((key) => object[key] === value)
+    return (Object.keys(object) as Array<keyof T>).find(
+        (key) => object[key] === value
+    )
 }
 
 export function getPasswordSchema(

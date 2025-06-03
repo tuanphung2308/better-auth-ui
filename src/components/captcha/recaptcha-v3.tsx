@@ -1,4 +1,7 @@
-import { GoogleReCaptchaProvider, useGoogleReCaptcha } from "@wojtekmaj/react-recaptcha-v3"
+import {
+    GoogleReCaptchaProvider,
+    useGoogleReCaptcha
+} from "@wojtekmaj/react-recaptcha-v3"
 import { type ReactNode, useContext, useEffect } from "react"
 
 import { useIsHydrated } from "../../hooks/use-hydrated"
@@ -56,7 +59,9 @@ function RecaptchaV3Style() {
 
         const updateRecaptcha = async () => {
             // find iframe with title "reCAPTCHA"
-            const iframe = document.querySelector("iframe[title='reCAPTCHA']") as HTMLIFrameElement
+            const iframe = document.querySelector(
+                "iframe[title='reCAPTCHA']"
+            ) as HTMLIFrameElement
             if (iframe) {
                 const iframeSrcUrl = new URL(iframe.src)
                 iframeSrcUrl.searchParams.set("theme", theme)

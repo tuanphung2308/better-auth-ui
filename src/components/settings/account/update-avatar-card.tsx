@@ -107,7 +107,14 @@ export function UpdateAvatarCard({
     const openFileDialog = () => fileInputRef.current?.click()
 
     return (
-        <Card className={cn("w-full pb-0 text-start", className, classNames?.base)} {...props}>
+        <Card
+            className={cn(
+                "w-full pb-0 text-start",
+                className,
+                classNames?.base
+            )}
+            {...props}
+        >
             <input
                 ref={fileInputRef}
                 accept="image/*"
@@ -133,7 +140,11 @@ export function UpdateAvatarCard({
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button className="me-6 size-fit rounded-full" size="icon" variant="ghost">
+                        <Button
+                            className="me-6 size-fit rounded-full"
+                            size="icon"
+                            variant="ghost"
+                        >
                             <UserAvatar
                                 isPending={isPending || loading}
                                 key={sessionData?.user.image}
@@ -145,8 +156,14 @@ export function UpdateAvatarCard({
                         </Button>
                     </DropdownMenuTrigger>
 
-                    <DropdownMenuContent align="end" onCloseAutoFocus={(e) => e.preventDefault()}>
-                        <DropdownMenuItem onClick={openFileDialog} disabled={loading}>
+                    <DropdownMenuContent
+                        align="end"
+                        onCloseAutoFocus={(e) => e.preventDefault()}
+                    >
+                        <DropdownMenuItem
+                            onClick={openFileDialog}
+                            disabled={loading}
+                        >
                             <UploadCloudIcon />
                             {localization.UPLOAD_AVATAR}
                         </DropdownMenuItem>

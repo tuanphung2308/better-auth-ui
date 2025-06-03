@@ -25,7 +25,9 @@ export function OrganizationInvitationsCard({
     const { data: activeOrganization } = useActiveOrganization()
     const invitations = activeOrganization?.invitations
 
-    const pendingInvitations = invitations?.filter((invitation) => invitation.status === "pending")
+    const pendingInvitations = invitations?.filter(
+        (invitation) => invitation.status === "pending"
+    )
 
     const isPending = !activeOrganization
 

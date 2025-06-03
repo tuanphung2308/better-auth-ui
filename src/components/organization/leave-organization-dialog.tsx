@@ -21,7 +21,8 @@ import {
 } from "../ui/dialog"
 import { OrganizationView } from "./organization-view"
 
-export interface LeaveOrganizationDialogProps extends ComponentProps<typeof Dialog> {
+export interface LeaveOrganizationDialogProps
+    extends ComponentProps<typeof Dialog> {
     className?: string
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
@@ -45,7 +46,8 @@ export function LeaveOrganizationDialog({
 
     const localization = { ...contextLocalization, ...localizationProp }
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } = useActiveOrganization()
+    const { data: activeOrganization, refetch: refetchActiveOrganization } =
+        useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
 
     const [isLeaving, setIsLeaving] = useState(false)
@@ -90,19 +92,33 @@ export function LeaveOrganizationDialog({
                 onOpenAutoFocus={(e) => e.preventDefault()}
             >
                 <DialogHeader className={classNames?.dialog?.header}>
-                    <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                    <DialogTitle
+                        className={cn("text-lg md:text-xl", classNames?.title)}
+                    >
                         {localization.LEAVE_ORGANIZATION}
                     </DialogTitle>
 
                     <DialogDescription
-                        className={cn("text-xs md:text-sm", classNames?.description)}
+                        className={cn(
+                            "text-xs md:text-sm",
+                            classNames?.description
+                        )}
                     >
                         {localization.LEAVE_ORGANIZATION_CONFIRM}
                     </DialogDescription>
                 </DialogHeader>
 
-                <Card className={cn("my-2 flex-row p-4", className, classNames?.cell)}>
-                    <OrganizationView organization={organization} localization={localization} />
+                <Card
+                    className={cn(
+                        "my-2 flex-row p-4",
+                        className,
+                        classNames?.cell
+                    )}
+                >
+                    <OrganizationView
+                        organization={organization}
+                        localization={localization}
+                    />
                 </Card>
 
                 <DialogFooter className={classNames?.dialog?.footer}>
@@ -110,7 +126,10 @@ export function LeaveOrganizationDialog({
                         type="button"
                         variant="outline"
                         onClick={() => onOpenChange?.(false)}
-                        className={cn(classNames?.button, classNames?.outlineButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.outlineButton
+                        )}
                         disabled={isLeaving}
                     >
                         {localization.CANCEL}
@@ -120,7 +139,10 @@ export function LeaveOrganizationDialog({
                         type="button"
                         variant="destructive"
                         onClick={handleLeaveOrganization}
-                        className={cn(classNames?.button, classNames?.destructiveButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.destructiveButton
+                        )}
                         disabled={isLeaving}
                     >
                         {isLeaving && <Loader2 className="animate-spin" />}

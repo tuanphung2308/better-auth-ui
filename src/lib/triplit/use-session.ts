@@ -30,7 +30,9 @@ export function useSession({
         data: sessionData
             ? {
                   session: sessionData.session,
-                  user: (sessionData?.user.id === user?.id ? user : sessionData.user) as User
+                  user: (sessionData?.user.id === user?.id
+                      ? user
+                      : sessionData.user) as User
               }
             : null,
         error,

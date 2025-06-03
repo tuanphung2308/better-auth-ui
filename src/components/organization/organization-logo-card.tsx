@@ -43,7 +43,14 @@ export function OrganizationLogoCard({
 
     if (!activeOrganization) {
         return (
-            <Card className={cn("w-full pb-0 text-start", className, classNames?.base)} {...props}>
+            <Card
+                className={cn(
+                    "w-full pb-0 text-start",
+                    className,
+                    classNames?.base
+                )}
+                {...props}
+            >
                 <div className="flex justify-between">
                     <SettingsCardHeader
                         className="grow self-start"
@@ -98,7 +105,11 @@ function OrganizationLogoForm({
 }: OrganizationLogoCardProps) {
     const {
         authClient,
-        hooks: { useActiveOrganization, useListOrganizations, useHasPermission },
+        hooks: {
+            useActiveOrganization,
+            useListOrganizations,
+            useHasPermission
+        },
         localization: authLocalization,
         optimistic,
         organization,
@@ -107,13 +118,15 @@ function OrganizationLogoForm({
 
     localization = { ...authLocalization, ...localization }
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } = useActiveOrganization()
+    const { data: activeOrganization, refetch: refetchActiveOrganization } =
+        useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
-    const { data: hasPermission, isPending: permissionPending } = useHasPermission({
-        permissions: {
-            organization: ["update"]
-        }
-    })
+    const { data: hasPermission, isPending: permissionPending } =
+        useHasPermission({
+            permissions: {
+                organization: ["update"]
+            }
+        })
 
     const isPending = !activeOrganization || permissionPending
 
@@ -121,7 +134,12 @@ function OrganizationLogoForm({
     const [loading, setLoading] = useState(false)
 
     const handleLogoChange = async (file: File) => {
-        if (!activeOrganization || !organization?.logo || !hasPermission?.success) return
+        if (
+            !activeOrganization ||
+            !organization?.logo ||
+            !hasPermission?.success
+        )
+            return
 
         setLoading(true)
         const resizedFile = await resizeAndCropImage(
@@ -194,7 +212,14 @@ function OrganizationLogoForm({
     }
 
     return (
-        <Card className={cn("w-full pb-0 text-start", className, classNames?.base)} {...props}>
+        <Card
+            className={cn(
+                "w-full pb-0 text-start",
+                className,
+                classNames?.base
+            )}
+            {...props}
+        >
             <input
                 ref={fileInputRef}
                 accept="image/*"
@@ -238,7 +263,10 @@ function OrganizationLogoForm({
                         </Button>
                     </DropdownMenuTrigger>
 
-                    <DropdownMenuContent align="end" onCloseAutoFocus={(e) => e.preventDefault()}>
+                    <DropdownMenuContent
+                        align="end"
+                        onCloseAutoFocus={(e) => e.preventDefault()}
+                    >
                         <DropdownMenuItem
                             onClick={openFileDialog}
                             disabled={loading || !hasPermission?.success}

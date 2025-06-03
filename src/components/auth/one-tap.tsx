@@ -11,7 +11,11 @@ interface OneTapProps {
 }
 
 export function OneTap({ localization, redirectTo }: OneTapProps) {
-    const { authClient, localization: contextLocalization, toast } = useContext(AuthUIContext)
+    const {
+        authClient,
+        localization: contextLocalization,
+        toast
+    } = useContext(AuthUIContext)
     const oneTapFetched = useRef(false)
 
     localization = useMemo(

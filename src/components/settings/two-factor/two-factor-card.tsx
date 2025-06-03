@@ -13,7 +13,11 @@ export interface TwoFactorCardProps {
     localization?: AuthLocalization
 }
 
-export function TwoFactorCard({ className, classNames, localization }: TwoFactorCardProps) {
+export function TwoFactorCard({
+    className,
+    classNames,
+    localization
+}: TwoFactorCardProps) {
     const {
         localization: contextLocalization,
         hooks: { useSession }

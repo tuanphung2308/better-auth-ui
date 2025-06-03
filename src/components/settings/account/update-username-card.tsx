@@ -19,7 +19,8 @@ export function UpdateUsernameCard({
     localization = { ...contextLocalization, ...localization }
 
     const { data: sessionData } = useSession()
-    const value = sessionData?.user.displayUsername || sessionData?.user.username
+    const value =
+        sessionData?.user.displayUsername || sessionData?.user.username
 
     return (
         <UpdateFieldCard

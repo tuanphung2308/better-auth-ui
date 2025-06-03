@@ -69,7 +69,13 @@ export function SessionCell({
     const isMobile = parser.device.type === "mobile"
 
     return (
-        <Card className={cn("flex-row items-center gap-3 px-4 py-3", className, classNames?.cell)}>
+        <Card
+            className={cn(
+                "flex-row items-center gap-3 px-4 py-3",
+                className,
+                classNames?.cell
+            )}
+        >
             {isMobile ? (
                 <SmartphoneIcon className={cn("size-4", classNames?.icon)} />
             ) : (
@@ -78,7 +84,9 @@ export function SessionCell({
 
             <div className="flex flex-col">
                 <span className="font-semibold text-sm">
-                    {isCurrentSession ? localization.CURRENT_SESSION : session?.ipAddress}
+                    {isCurrentSession
+                        ? localization.CURRENT_SESSION
+                        : session?.ipAddress}
                 </span>
 
                 <span className="text-muted-foreground text-xs">
@@ -87,7 +95,11 @@ export function SessionCell({
             </div>
 
             <Button
-                className={cn("relative ms-auto", classNames?.button, classNames?.outlineButton)}
+                className={cn(
+                    "relative ms-auto",
+                    classNames?.button,
+                    classNames?.outlineButton
+                )}
                 disabled={isLoading}
                 size="sm"
                 variant="outline"

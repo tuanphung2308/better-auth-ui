@@ -83,13 +83,17 @@ function OrganizationMembersContent({
     const localization = { ...contextLocalization, ...localizationProp }
 
     const { data: activeOrganization } = useActiveOrganization()
-    const { data: hasPermissionInvite, isPending: isPendingInvite } = useHasPermission({
-        permissions: {
-            invitation: ["create"]
-        }
-    })
+    const { data: hasPermissionInvite, isPending: isPendingInvite } =
+        useHasPermission({
+            permissions: {
+                invitation: ["create"]
+            }
+        })
 
-    const { data: hasPermissionUpdateMember, isPending: isPendingUpdateMember } = useHasPermission({
+    const {
+        data: hasPermissionUpdateMember,
+        isPending: isPendingUpdateMember
+    } = useHasPermission({
         permission: {
             member: ["update"]
         }
@@ -116,16 +120,24 @@ function OrganizationMembersContent({
                 {...props}
             >
                 {!isPending && members && members.length > 0 && (
-                    <CardContent className={cn("grid gap-4", classNames?.content)}>
+                    <CardContent
+                        className={cn("grid gap-4", classNames?.content)}
+                    >
                         {members
-                            .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+                            .sort(
+                                (a, b) =>
+                                    a.createdAt.getTime() -
+                                    b.createdAt.getTime()
+                            )
                             .map((member) => (
                                 <MemberCell
                                     key={member.id}
                                     classNames={classNames}
                                     member={member}
                                     localization={localization}
-                                    hideActions={!hasPermissionUpdateMember?.success}
+                                    hideActions={
+                                        !hasPermissionUpdateMember?.success
+                                    }
                                 />
                             ))}
                     </CardContent>

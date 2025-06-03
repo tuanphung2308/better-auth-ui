@@ -79,7 +79,13 @@ export function InvitationCell({
     }
 
     return (
-        <Card className={cn("flex-row items-center p-4", className, classNames?.cell)}>
+        <Card
+            className={cn(
+                "flex-row items-center p-4",
+                className,
+                classNames?.cell
+            )}
+        >
             <div className="flex flex-1 items-center gap-2">
                 <UserAvatar
                     className="my-0.5"
@@ -88,10 +94,13 @@ export function InvitationCell({
                 />
 
                 <div className="grid flex-1 text-left leading-tight">
-                    <span className="truncate font-semibold text-sm">{invitation.email}</span>
+                    <span className="truncate font-semibold text-sm">
+                        {invitation.email}
+                    </span>
 
                     <span className="truncate text-muted-foreground text-xs">
-                        {localization.EXPIRES} {invitation.expiresAt.toLocaleDateString()}
+                        {localization.EXPIRES}{" "}
+                        {invitation.expiresAt.toLocaleDateString()}
                     </span>
                 </div>
             </div>
@@ -119,7 +128,9 @@ export function InvitationCell({
                     </Button>
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent onCloseAutoFocus={(e) => e.preventDefault()}>
+                <DropdownMenuContent
+                    onCloseAutoFocus={(e) => e.preventDefault()}
+                >
                     <DropdownMenuItem
                         onClick={handleCancelInvitation}
                         disabled={isLoading}

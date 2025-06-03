@@ -39,7 +39,15 @@ export function useAuthenticate<TAuthClient extends AnyAuthClient>(
         replace(
             `${basePath}/${viewPaths[authView]}?redirectTo=${window.location.href.replace(window.location.origin, "")}`
         )
-    }, [isPending, sessionData, basePath, viewPaths, replace, authView, enabled])
+    }, [
+        isPending,
+        sessionData,
+        basePath,
+        viewPaths,
+        replace,
+        authView,
+        enabled
+    ])
 
     return {
         data: sessionData,

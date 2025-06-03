@@ -55,7 +55,13 @@ export function UserView({
     )
 
     return (
-        <div className={cn("flex items-center gap-2", className, classNames?.base)}>
+        <div
+            className={cn(
+                "flex items-center gap-2",
+                className,
+                classNames?.base
+            )}
+        >
             <UserAvatar
                 className={cn(size !== "sm" && "my-0.5")}
                 classNames={classNames?.avatar}
@@ -65,7 +71,12 @@ export function UserView({
                 localization={localization}
             />
 
-            <div className={cn("grid flex-1 text-left leading-tight", classNames?.content)}>
+            <div
+                className={cn(
+                    "grid flex-1 text-left leading-tight",
+                    classNames?.content
+                )}
+            >
                 {isPending ? (
                     <>
                         <Skeleton
@@ -106,17 +117,19 @@ export function UserView({
                                 localization?.USER}
                         </span>
 
-                        {!user?.isAnonymous && size !== "sm" && (user?.name || user?.username) && (
-                            <span
-                                className={cn(
-                                    "truncate opacity-70",
-                                    size === "lg" ? "text-sm" : "text-xs",
-                                    classNames?.subtitle
-                                )}
-                            >
-                                {user?.email}
-                            </span>
-                        )}
+                        {!user?.isAnonymous &&
+                            size !== "sm" &&
+                            (user?.name || user?.username) && (
+                                <span
+                                    className={cn(
+                                        "truncate opacity-70",
+                                        size === "lg" ? "text-sm" : "text-xs",
+                                        classNames?.subtitle
+                                    )}
+                                >
+                                    {user?.email}
+                                </span>
+                            )}
                     </>
                 )}
             </div>

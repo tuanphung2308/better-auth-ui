@@ -56,7 +56,12 @@ export function SettingsCardFooter({
                     )}
 
                     {actionLabel && (
-                        <Skeleton className={cn("h-8 w-14 md:ms-auto", classNames?.skeleton)} />
+                        <Skeleton
+                            className={cn(
+                                "h-8 w-14 md:ms-auto",
+                                classNames?.skeleton
+                            )}
+                        />
                     )}
                 </>
             ) : (

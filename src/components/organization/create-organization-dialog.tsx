@@ -27,11 +27,19 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "../ui/form"
 import { Input } from "../ui/input"
 import { OrganizationLogo } from "./organization-logo"
 
-export interface CreateOrganizationDialogProps extends ComponentProps<typeof Dialog> {
+export interface CreateOrganizationDialogProps
+    extends ComponentProps<typeof Dialog> {
     className?: string
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
@@ -162,19 +170,27 @@ export function CreateOrganizationDialog({
         <Dialog onOpenChange={onOpenChange} {...props}>
             <DialogContent className={classNames?.dialog?.content}>
                 <DialogHeader className={classNames?.dialog?.header}>
-                    <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                    <DialogTitle
+                        className={cn("text-lg md:text-xl", classNames?.title)}
+                    >
                         {localization.CREATE_ORGANIZATION}
                     </DialogTitle>
 
                     <DialogDescription
-                        className={cn("text-xs md:text-sm", classNames?.description)}
+                        className={cn(
+                            "text-xs md:text-sm",
+                            classNames?.description
+                        )}
                     >
                         {localization.ORGANIZATIONS_INSTRUCTIONS}
                     </DialogDescription>
                 </DialogHeader>
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <form
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="space-y-6"
+                    >
                         {organization?.logo && (
                             <FormField
                                 control={form.control}
@@ -188,13 +204,16 @@ export function CreateOrganizationDialog({
                                             hidden
                                             type="file"
                                             onChange={(e) => {
-                                                const file = e.target.files?.item(0)
+                                                const file =
+                                                    e.target.files?.item(0)
                                                 if (file) handleLogoChange(file)
                                                 e.target.value = ""
                                             }}
                                         />
 
-                                        <FormLabel>{localization.LOGO}</FormLabel>
+                                        <FormLabel>
+                                            {localization.LOGO}
+                                        </FormLabel>
 
                                         <div className="flex items-center gap-4">
                                             <DropdownMenu>
@@ -207,12 +226,18 @@ export function CreateOrganizationDialog({
                                                     >
                                                         <OrganizationLogo
                                                             className="size-16"
-                                                            isPending={uploadingLogo}
-                                                            localization={localization}
+                                                            isPending={
+                                                                uploadingLogo
+                                                            }
+                                                            localization={
+                                                                localization
+                                                            }
                                                             organization={
                                                                 logo
                                                                     ? {
-                                                                          name: form.watch("name"),
+                                                                          name: form.watch(
+                                                                              "name"
+                                                                          ),
                                                                           logo
                                                                       }
                                                                     : null
@@ -223,24 +248,32 @@ export function CreateOrganizationDialog({
 
                                                 <DropdownMenuContent
                                                     align="start"
-                                                    onCloseAutoFocus={(e) => e.preventDefault()}
+                                                    onCloseAutoFocus={(e) =>
+                                                        e.preventDefault()
+                                                    }
                                                 >
                                                     <DropdownMenuItem
                                                         onClick={openFileDialog}
                                                         disabled={uploadingLogo}
                                                     >
                                                         <UploadCloudIcon />
-                                                        {localization.UPLOAD_LOGO}
+                                                        {
+                                                            localization.UPLOAD_LOGO
+                                                        }
                                                     </DropdownMenuItem>
 
                                                     {logo && (
                                                         <DropdownMenuItem
                                                             onClick={deleteLogo}
-                                                            disabled={uploadingLogo}
+                                                            disabled={
+                                                                uploadingLogo
+                                                            }
                                                             variant="destructive"
                                                         >
                                                             <Trash2Icon />
-                                                            {localization.DELETE_LOGO}
+                                                            {
+                                                                localization.DELETE_LOGO
+                                                            }
                                                         </DropdownMenuItem>
                                                     )}
                                                 </DropdownMenuContent>
@@ -271,11 +304,15 @@ export function CreateOrganizationDialog({
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{localization.ORGANIZATION_NAME}</FormLabel>
+                                    <FormLabel>
+                                        {localization.ORGANIZATION_NAME}
+                                    </FormLabel>
 
                                     <FormControl>
                                         <Input
-                                            placeholder={localization.ORGANIZATION_NAME_PLACEHOLDER}
+                                            placeholder={
+                                                localization.ORGANIZATION_NAME_PLACEHOLDER
+                                            }
                                             {...field}
                                         />
                                     </FormControl>
@@ -290,11 +327,15 @@ export function CreateOrganizationDialog({
                             name="slug"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{localization.ORGANIZATION_SLUG}</FormLabel>
+                                    <FormLabel>
+                                        {localization.ORGANIZATION_SLUG}
+                                    </FormLabel>
 
                                     <FormControl>
                                         <Input
-                                            placeholder={localization.ORGANIZATION_SLUG_PLACEHOLDER}
+                                            placeholder={
+                                                localization.ORGANIZATION_SLUG_PLACEHOLDER
+                                            }
                                             {...field}
                                         />
                                     </FormControl>
@@ -309,17 +350,25 @@ export function CreateOrganizationDialog({
                                 type="button"
                                 variant="outline"
                                 onClick={() => onOpenChange?.(false)}
-                                className={cn(classNames?.button, classNames?.outlineButton)}
+                                className={cn(
+                                    classNames?.button,
+                                    classNames?.outlineButton
+                                )}
                             >
                                 {localization.CANCEL}
                             </Button>
 
                             <Button
                                 type="submit"
-                                className={cn(classNames?.button, classNames?.primaryButton)}
+                                className={cn(
+                                    classNames?.button,
+                                    classNames?.primaryButton
+                                )}
                                 disabled={isSubmitting}
                             >
-                                {isSubmitting && <Loader2 className="animate-spin" />}
+                                {isSubmitting && (
+                                    <Loader2 className="animate-spin" />
+                                )}
 
                                 {localization.CREATE_ORGANIZATION}
                             </Button>

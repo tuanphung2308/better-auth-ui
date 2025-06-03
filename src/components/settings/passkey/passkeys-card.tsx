@@ -19,7 +19,11 @@ export interface PasskeysCardProps {
     localization?: AuthLocalization
 }
 
-export function PasskeysCard({ className, classNames, localization }: PasskeysCardProps) {
+export function PasskeysCard({
+    className,
+    classNames,
+    localization
+}: PasskeysCardProps) {
     const {
         authClient,
         freshAge,
@@ -34,7 +38,9 @@ export function PasskeysCard({ className, classNames, localization }: PasskeysCa
 
     const { data: sessionData } = useSession()
     const session = sessionData?.session
-    const isFresh = session ? Date.now() - session?.createdAt.getTime() < freshAge * 1000 : false
+    const isFresh = session
+        ? Date.now() - session?.createdAt.getTime() < freshAge * 1000
+        : false
 
     const [showFreshnessDialog, setShowFreshnessDialog] = useState(false)
 
@@ -46,7 +52,9 @@ export function PasskeysCard({ className, classNames, localization }: PasskeysCa
         }
 
         try {
-            await authClient.passkey.addPasskey({ fetchOptions: { throw: true } })
+            await authClient.passkey.addPasskey({
+                fetchOptions: { throw: true }
+            })
             await refetch?.()
         } catch (error) {
             toast({
@@ -79,7 +87,12 @@ export function PasskeysCard({ className, classNames, localization }: PasskeysCa
                         title={localization.PASSKEYS}
                     >
                         {passkeys && passkeys.length > 0 && (
-                            <CardContent className={cn("grid gap-4", classNames?.content)}>
+                            <CardContent
+                                className={cn(
+                                    "grid gap-4",
+                                    classNames?.content
+                                )}
+                            >
                                 {passkeys?.map((passkey) => (
                                     <PasskeyCell
                                         key={passkey.id}

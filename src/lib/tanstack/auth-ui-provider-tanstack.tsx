@@ -1,5 +1,8 @@
 import { useCallback, useMemo } from "react"
-import { AuthUIProvider, type AuthUIProviderProps } from "../../lib/auth-ui-provider"
+import {
+    AuthUIProvider,
+    type AuthUIProviderProps
+} from "../../lib/auth-ui-provider"
 import { useTanstackOptions } from "./use-tanstack-options"
 
 export function AuthUIProviderTanstack({
@@ -17,7 +20,10 @@ export function AuthUIProviderTanstack({
         optimistic
     } = useTanstackOptions({ authClient })
 
-    const hooks = useMemo(() => ({ ...contextHooks, ...hooksProp }), [contextHooks, hooksProp])
+    const hooks = useMemo(
+        () => ({ ...contextHooks, ...hooksProp }),
+        [contextHooks, hooksProp]
+    )
     const mutators = useMemo(
         () => ({ ...contextMutators, ...mutatorsProp }),
         [contextMutators, mutatorsProp]

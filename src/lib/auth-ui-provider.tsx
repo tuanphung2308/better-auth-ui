@@ -1,12 +1,22 @@
 "use client"
 
 import type { SocialProvider } from "better-auth/social-providers"
-import { type ReactNode, createContext, useContext, useEffect, useMemo, useRef } from "react"
+import {
+    type ReactNode,
+    createContext,
+    useContext,
+    useEffect,
+    useMemo,
+    useRef
+} from "react"
 import { toast } from "sonner"
 
 import { RecaptchaV3 } from "../components/captcha/recaptcha-v3"
 import { useAuthData } from "../hooks/use-auth-data"
-import { type AuthLocalization, authLocalization } from "../localization/auth-localization"
+import {
+    type AuthLocalization,
+    authLocalization
+} from "../localization/auth-localization"
 import type { AdditionalFields } from "../types/additional-fields"
 import type { AnyAuthClient } from "../types/any-auth-client"
 import type { AuthClient } from "../types/auth-client"
@@ -18,7 +28,10 @@ import type { CredentialsOptions } from "../types/credentials-options"
 import type { DeleteUserOptions } from "../types/delete-user-options"
 import type { GenericOAuthOptions } from "../types/generic-oauth-options"
 import type { Link } from "../types/link"
-import type { OrganizationOptions, OrganizationOptionsContext } from "../types/organization-options"
+import type {
+    OrganizationOptions,
+    OrganizationOptionsContext
+} from "../types/organization-options"
 import type { PasswordValidation } from "../types/password-validation"
 import type { RenderToast } from "../types/render-toast"
 import type { SettingsOptions } from "../types/settings-options"
@@ -288,7 +301,9 @@ export type AuthUIProviderProps = {
     /**
      * @deprecated use social.signIn instead
      */
-    signInSocial?: (params: Parameters<AuthClient["signIn"]["social"]>[0]) => Promise<unknown>
+    signInSocial?: (
+        params: Parameters<AuthClient["signIn"]["social"]>[0]
+    ) => Promise<unknown>
     /**
      * Enable or disable Credentials support
      * @default { forgotPassword: true }
@@ -349,7 +364,9 @@ export type AuthUIProviderProps = {
     >
 >
 
-export const AuthUIContext = createContext<AuthUIContextType>({} as unknown as AuthUIContextType)
+export const AuthUIContext = createContext<AuthUIContextType>(
+    {} as unknown as AuthUIContextType
+)
 
 export const AuthUIProvider = ({
     children,
@@ -398,11 +415,15 @@ export const AuthUIProvider = ({
 }: AuthUIProviderProps) => {
     useEffect(() => {
         if (noColorIcons !== undefined) {
-            console.warn("[Better Auth UI] noColorIcons is deprecated, use colorIcons instead")
+            console.warn(
+                "[Better Auth UI] noColorIcons is deprecated, use colorIcons instead"
+            )
         }
 
         if (uploadAvatar !== undefined) {
-            console.warn("[Better Auth UI] uploadAvatar is deprecated, use avatar.upload instead")
+            console.warn(
+                "[Better Auth UI] uploadAvatar is deprecated, use avatar.upload instead"
+            )
         }
 
         if (avatarExtension !== undefined) {
@@ -412,7 +433,9 @@ export const AuthUIProvider = ({
         }
 
         if (avatarSize !== undefined) {
-            console.warn("[Better Auth UI] avatarSize is deprecated, use avatar.size instead")
+            console.warn(
+                "[Better Auth UI] avatarSize is deprecated, use avatar.size instead"
+            )
         }
 
         if (settingsFields !== undefined) {
@@ -422,7 +445,9 @@ export const AuthUIProvider = ({
         }
 
         if (settingsURL !== undefined) {
-            console.warn("[Better Auth UI] settingsURL is deprecated, use settings.url instead")
+            console.warn(
+                "[Better Auth UI] settingsURL is deprecated, use settings.url instead"
+            )
         }
 
         if (deleteAccountVerification !== undefined) {
@@ -432,7 +457,9 @@ export const AuthUIProvider = ({
         }
 
         if (providers !== undefined) {
-            console.warn("[Better Auth UI] providers is deprecated, use social.providers instead")
+            console.warn(
+                "[Better Auth UI] providers is deprecated, use social.providers instead"
+            )
         }
 
         if (otherProviders !== undefined) {
@@ -442,7 +469,9 @@ export const AuthUIProvider = ({
         }
 
         if (signInSocial !== undefined) {
-            console.warn("[Better Auth UI] signInSocial is deprecated, use social.signIn instead")
+            console.warn(
+                "[Better Auth UI] signInSocial is deprecated, use social.signIn instead"
+            )
         }
 
         if (confirmPassword !== undefined) {
@@ -476,7 +505,9 @@ export const AuthUIProvider = ({
         }
 
         if (signUpFields !== undefined) {
-            console.warn("[Better Auth UI] signUpFields is deprecated, use signUp.fields instead")
+            console.warn(
+                "[Better Auth UI] signUpFields is deprecated, use signUp.fields instead"
+            )
         }
     }, [
         noColorIcons,
@@ -588,13 +619,23 @@ export const AuthUIProvider = ({
         }
 
         return {
-            confirmPassword: credentialsProp?.confirmPassword || confirmPassword,
-            forgotPassword: (credentialsProp?.forgotPassword || forgotPassword) ?? true,
-            passwordValidation: credentialsProp?.passwordValidation || passwordValidation,
+            confirmPassword:
+                credentialsProp?.confirmPassword || confirmPassword,
+            forgotPassword:
+                (credentialsProp?.forgotPassword || forgotPassword) ?? true,
+            passwordValidation:
+                credentialsProp?.passwordValidation || passwordValidation,
             rememberMe: credentialsProp?.rememberMe || rememberMe,
             username: credentialsProp?.username || username
         }
-    }, [credentialsProp, confirmPassword, forgotPassword, passwordValidation, rememberMe, username])
+    }, [
+        credentialsProp,
+        confirmPassword,
+        forgotPassword,
+        passwordValidation,
+        rememberMe,
+        username
+    ])
 
     const signUp = useMemo<SignUpOptions | undefined>(() => {
         if (signUpProp === false) return
@@ -630,7 +671,10 @@ export const AuthUIProvider = ({
             logo = {
                 upload: organizationProp.logo.upload,
                 extension: organizationProp.logo.extension || "png",
-                size: organizationProp.logo.size || organizationProp.logo.upload ? 256 : 128
+                size:
+                    organizationProp.logo.size || organizationProp.logo.upload
+                        ? 256
+                        : 128
             }
         }
 
@@ -709,12 +753,14 @@ export const AuthUIProvider = ({
             useListOrganizations: authClient.useListOrganizations,
             useHasPermission: (params) =>
                 useAuthData({
-                    queryFn: () => authClient.organization.hasPermission(params),
+                    queryFn: () =>
+                        authClient.organization.hasPermission(params),
                     cacheKey: `hasPermission:${JSON.stringify(params)}`
                 }),
             useInvitation: (params) =>
                 useAuthData({
-                    queryFn: () => authClient.organization.getInvitation(params),
+                    queryFn: () =>
+                        authClient.organization.getInvitation(params),
                     cacheKey: `invitation:${JSON.stringify(params)}`
                 })
         } as AuthHooks
@@ -791,8 +837,10 @@ export const AuthUIProvider = ({
             }}
         >
             {sessionData &&
-                (hooks.useActiveOrganization === authClient.useActiveOrganization ||
-                    hooks.useListOrganizations === authClient.useListOrganizations) && (
+                (hooks.useActiveOrganization ===
+                    authClient.useActiveOrganization ||
+                    hooks.useListOrganizations ===
+                        authClient.useListOrganizations) && (
                     <OrganizationRefetcher />
                 )}
             {captcha?.provider === "google-recaptcha-v3" ? (
@@ -809,14 +857,19 @@ const OrganizationRefetcher = () => {
     const { data: sessionData } = hooks.useSession()
     const { data: activeOrganization, refetch: refetchActiveOrganization } =
         hooks.useActiveOrganization()
-    const { data: organizations, refetch: refetchListOrganizations } = hooks.useListOrganizations()
+    const { data: organizations, refetch: refetchListOrganizations } =
+        hooks.useListOrganizations()
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: Refetch fix
     useEffect(() => {
         if (!sessionData?.user.id) return
         if (activeOrganization) refetchActiveOrganization?.()
         if (organizations) refetchListOrganizations()
-    }, [sessionData?.user.id, refetchActiveOrganization, refetchListOrganizations])
+    }, [
+        sessionData?.user.id,
+        refetchActiveOrganization,
+        refetchListOrganizations
+    ])
 
     return null
 }

@@ -1,7 +1,9 @@
 export const API_KEY_ERROR_CODES = {
     INVALID_METADATA_TYPE: "metadata must be an object or undefined",
-    REFILL_AMOUNT_AND_INTERVAL_REQUIRED: "refillAmount is required when refillInterval is provided",
-    REFILL_INTERVAL_AND_AMOUNT_REQUIRED: "refillInterval is required when refillAmount is provided",
+    REFILL_AMOUNT_AND_INTERVAL_REQUIRED:
+        "refillAmount is required when refillInterval is provided",
+    REFILL_INTERVAL_AND_AMOUNT_REQUIRED:
+        "refillInterval is required when refillAmount is provided",
     USER_BANNED: "User is banned",
     UNAUTHORIZED_SESSION: "Unauthorized or invalid session",
     KEY_NOT_FOUND: "API Key not found",
@@ -9,10 +11,13 @@ export const API_KEY_ERROR_CODES = {
     KEY_EXPIRED: "API Key has expired",
     USAGE_EXCEEDED: "API Key has reached its usage limit",
     KEY_NOT_RECOVERABLE: "API Key is not recoverable",
-    EXPIRES_IN_IS_TOO_SMALL: "The expiresIn is smaller than the predefined minimum value.",
-    EXPIRES_IN_IS_TOO_LARGE: "The expiresIn is larger than the predefined maximum value.",
+    EXPIRES_IN_IS_TOO_SMALL:
+        "The expiresIn is smaller than the predefined minimum value.",
+    EXPIRES_IN_IS_TOO_LARGE:
+        "The expiresIn is larger than the predefined maximum value.",
     INVALID_REMAINING: "The remaining count is either too large or too small.",
-    INVALID_PREFIX_LENGTH: "The prefix length is either too large or too small.",
+    INVALID_PREFIX_LENGTH:
+        "The prefix length is either too large or too small.",
     INVALID_NAME_LENGTH: "The name length is either too large or too small.",
     METADATA_DISABLED: "Metadata is disabled.",
     RATE_LIMIT_EXCEEDED: "Rate limit exceeded.",

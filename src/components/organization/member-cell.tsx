@@ -54,49 +54,70 @@ export function MemberCell({
         { role: "member", label: localization.MEMBER }
     ]
 
-    const myRole = activeOrganization?.members.find((m) => m.user.id === sessionData?.user.id)?.role
+    const myRole = activeOrganization?.members.find(
+        (m) => m.user.id === sessionData?.user.id
+    )?.role
     const roles = [...builtInRoles, ...(organization?.customRoles || [])]
     const role = roles.find((r) => r.role === member.role)
 
     return (
         <>
-            <Card className={cn("flex-row items-center p-4", className, classNames?.cell)}>
-                <UserView user={member.user} localization={localization} className="flex-1" />
+            <Card
+                className={cn(
+                    "flex-row items-center p-4",
+                    className,
+                    classNames?.cell
+                )}
+            >
+                <UserView
+                    user={member.user}
+                    localization={localization}
+                    className="flex-1"
+                />
                 <span className="text-sm opacity-70">{role?.label}</span>
 
-                {(member.role !== "owner" || myRole === "owner") && !hideActions && (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                className={cn(
-                                    "relative ms-auto",
-                                    classNames?.button,
-                                    classNames?.outlineButton
-                                )}
-                                size="icon"
-                                type="button"
-                                variant="outline"
-                            >
-                                <EllipsisIcon className={classNames?.icon} />
-                            </Button>
-                        </DropdownMenuTrigger>
+                {(member.role !== "owner" || myRole === "owner") &&
+                    !hideActions && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    className={cn(
+                                        "relative ms-auto",
+                                        classNames?.button,
+                                        classNames?.outlineButton
+                                    )}
+                                    size="icon"
+                                    type="button"
+                                    variant="outline"
+                                >
+                                    <EllipsisIcon
+                                        className={classNames?.icon}
+                                    />
+                                </Button>
+                            </DropdownMenuTrigger>
 
-                        <DropdownMenuContent onCloseAutoFocus={(e) => e.preventDefault()}>
-                            <DropdownMenuItem onClick={() => setUpdateRoleDialogOpen(true)}>
-                                <UserCogIcon className={classNames?.icon} />
-                                {localization?.UPDATE_ROLE}
-                            </DropdownMenuItem>
-
-                            <DropdownMenuItem
-                                onClick={() => setRemoveDialogOpen(true)}
-                                variant="destructive"
+                            <DropdownMenuContent
+                                onCloseAutoFocus={(e) => e.preventDefault()}
                             >
-                                <UserXIcon className={classNames?.icon} />
-                                {localization?.REMOVE_MEMBER}
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                )}
+                                <DropdownMenuItem
+                                    onClick={() =>
+                                        setUpdateRoleDialogOpen(true)
+                                    }
+                                >
+                                    <UserCogIcon className={classNames?.icon} />
+                                    {localization?.UPDATE_ROLE}
+                                </DropdownMenuItem>
+
+                                <DropdownMenuItem
+                                    onClick={() => setRemoveDialogOpen(true)}
+                                    variant="destructive"
+                                >
+                                    <UserXIcon className={classNames?.icon} />
+                                    {localization?.REMOVE_MEMBER}
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
             </Card>
 
             <RemoveMemberDialog

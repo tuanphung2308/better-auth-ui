@@ -100,7 +100,9 @@ export function OrganizationLogo({
                 className={cn("text-foreground", classNames?.fallback)}
                 delayMs={src ? 600 : undefined}
             >
-                <BuildingIcon className={cn("size-[50%]", classNames?.fallbackIcon)} />
+                <BuildingIcon
+                    className={cn("size-[50%]", classNames?.fallbackIcon)}
+                />
             </AvatarFallback>
         </Avatar>
     )

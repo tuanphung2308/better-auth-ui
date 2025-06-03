@@ -18,7 +18,12 @@ export interface PasskeyCellProps {
     passkey: { id: string; createdAt: Date }
 }
 
-export function PasskeyCell({ className, classNames, localization, passkey }: PasskeyCellProps) {
+export function PasskeyCell({
+    className,
+    classNames,
+    localization,
+    passkey
+}: PasskeyCellProps) {
     const {
         freshAge,
         hooks: { useSession, useListPasskeys },
@@ -33,7 +38,9 @@ export function PasskeyCell({ className, classNames, localization, passkey }: Pa
 
     const { data: sessionData } = useSession()
     const session = sessionData?.session
-    const isFresh = session ? Date.now() - session?.createdAt.getTime() < freshAge * 1000 : false
+    const isFresh = session
+        ? Date.now() - session?.createdAt.getTime() < freshAge * 1000
+        : false
 
     const [showFreshnessDialog, setShowFreshnessDialog] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
@@ -69,10 +76,20 @@ export function PasskeyCell({ className, classNames, localization, passkey }: Pa
                 localization={localization}
             />
 
-            <Card className={cn("flex-row items-center p-4", className, classNames?.cell)}>
+            <Card
+                className={cn(
+                    "flex-row items-center p-4",
+                    className,
+                    classNames?.cell
+                )}
+            >
                 <div className="flex items-center gap-3">
-                    <FingerprintIcon className={cn("size-4", classNames?.icon)} />
-                    <span className="text-sm">{passkey.createdAt.toLocaleString()}</span>
+                    <FingerprintIcon
+                        className={cn("size-4", classNames?.icon)}
+                    />
+                    <span className="text-sm">
+                        {passkey.createdAt.toLocaleString()}
+                    </span>
                 </div>
 
                 <Button

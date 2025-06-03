@@ -20,11 +20,19 @@ import {
     DialogHeader,
     DialogTitle
 } from "../ui/dialog"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "../ui/form"
 import { Input } from "../ui/input"
 import { OrganizationView } from "./organization-view"
 
-export interface DeleteOrganizationDialogProps extends ComponentProps<typeof Dialog> {
+export interface DeleteOrganizationDialogProps
+    extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
 }
@@ -46,7 +54,8 @@ export function DeleteOrganizationDialog({
 
     localization = { ...contextLocalization, ...localization }
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } = useActiveOrganization()
+    const { data: activeOrganization, refetch: refetchActiveOrganization } =
+        useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
 
     const formSchema = z.object({
@@ -81,24 +90,37 @@ export function DeleteOrganizationDialog({
             await refetchOrganizations?.()
             await refetchActiveOrganization?.()
 
-            toast({ variant: "success", message: localization.DELETE_ORGANIZATION_SUCCESS! })
+            toast({
+                variant: "success",
+                message: localization.DELETE_ORGANIZATION_SUCCESS!
+            })
             navigate(redirectTo)
             onOpenChange?.(false)
         } catch (error) {
-            toast({ variant: "error", message: getLocalizedError({ error, localization }) })
+            toast({
+                variant: "error",
+                message: getLocalizedError({ error, localization })
+            })
         }
     }
 
     return (
         <Dialog onOpenChange={onOpenChange} {...props}>
-            <DialogContent className={cn("sm:max-w-md", classNames?.dialog?.content)}>
+            <DialogContent
+                className={cn("sm:max-w-md", classNames?.dialog?.content)}
+            >
                 <DialogHeader className={classNames?.dialog?.header}>
-                    <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                    <DialogTitle
+                        className={cn("text-lg md:text-xl", classNames?.title)}
+                    >
                         {localization?.DELETE_ORGANIZATION}
                     </DialogTitle>
 
                     <DialogDescription
-                        className={cn("text-xs md:text-sm", classNames?.description)}
+                        className={cn(
+                            "text-xs md:text-sm",
+                            classNames?.description
+                        )}
                     >
                         {localization?.DELETE_ORGANIZATION_DESCRIPTION}
                     </DialogDescription>
@@ -112,14 +134,19 @@ export function DeleteOrganizationDialog({
                 </Card>
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(deleteOrganization)} className="grid gap-6">
+                    <form
+                        onSubmit={form.handleSubmit(deleteOrganization)}
+                        className="grid gap-6"
+                    >
                         <FormField
                             control={form.control}
                             name="slug"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className={classNames?.label}>
-                                        {localization?.DELETE_ORGANIZATION_INSTRUCTIONS}
+                                        {
+                                            localization?.DELETE_ORGANIZATION_INSTRUCTIONS
+                                        }
 
                                         <span className="font-bold">
                                             {activeOrganization?.slug}
@@ -128,14 +155,18 @@ export function DeleteOrganizationDialog({
 
                                     <FormControl>
                                         <Input
-                                            placeholder={activeOrganization?.slug}
+                                            placeholder={
+                                                activeOrganization?.slug
+                                            }
                                             className={classNames?.input}
                                             autoComplete="off"
                                             {...field}
                                         />
                                     </FormControl>
 
-                                    <FormMessage className={classNames?.error} />
+                                    <FormMessage
+                                        className={classNames?.error}
+                                    />
                                 </FormItem>
                             )}
                         />
@@ -144,19 +175,27 @@ export function DeleteOrganizationDialog({
                             <Button
                                 type="button"
                                 variant="secondary"
-                                className={cn(classNames?.button, classNames?.secondaryButton)}
+                                className={cn(
+                                    classNames?.button,
+                                    classNames?.secondaryButton
+                                )}
                                 onClick={() => onOpenChange?.(false)}
                             >
                                 {localization.CANCEL}
                             </Button>
 
                             <Button
-                                className={cn(classNames?.button, classNames?.destructiveButton)}
+                                className={cn(
+                                    classNames?.button,
+                                    classNames?.destructiveButton
+                                )}
                                 disabled={isSubmitting}
                                 variant="destructive"
                                 type="submit"
                             >
-                                {isSubmitting && <Loader2 className="animate-spin" />}
+                                {isSubmitting && (
+                                    <Loader2 className="animate-spin" />
+                                )}
 
                                 {localization?.DELETE_ORGANIZATION}
                             </Button>

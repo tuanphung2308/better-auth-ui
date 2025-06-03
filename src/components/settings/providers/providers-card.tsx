@@ -59,13 +59,17 @@ export function ProvidersCard({
             <CardContent className={cn("grid gap-4", classNames?.content)}>
                 {isPending ? (
                     social?.providers?.map((provider) => (
-                        <SettingsCellSkeleton key={provider} classNames={classNames} />
+                        <SettingsCellSkeleton
+                            key={provider}
+                            classNames={classNames}
+                        />
                     ))
                 ) : (
                     <>
                         {social?.providers?.map((provider) => {
                             const socialProvider = socialProviders.find(
-                                (socialProvider) => socialProvider.provider === provider
+                                (socialProvider) =>
+                                    socialProvider.provider === provider
                             )
 
                             if (!socialProvider) return null
@@ -74,7 +78,9 @@ export function ProvidersCard({
                                 <ProviderCell
                                     key={provider}
                                     classNames={classNames}
-                                    account={accounts?.find((acc) => acc.provider === provider)}
+                                    account={accounts?.find(
+                                        (acc) => acc.provider === provider
+                                    )}
                                     provider={socialProvider}
                                     refetch={refetch}
                                 />

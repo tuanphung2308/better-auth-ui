@@ -45,7 +45,9 @@ export function InviteMemberCard({
                 {...props}
             >
                 {members && members.length > 0 && (
-                    <CardContent className={cn("grid gap-4", classNames?.content)}>
+                    <CardContent
+                        className={cn("grid gap-4", classNames?.content)}
+                    >
                         {members.map((member) => (
                             <MemberCell
                                 key={member.id}

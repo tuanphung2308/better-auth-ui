@@ -12,7 +12,14 @@ import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
 import type { AuthLocalization } from "../../../localization/auth-localization"
 import { Button } from "../../ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "../../ui/form"
 import { Input } from "../../ui/input"
 import { InputOTP } from "../../ui/input-otp"
 import type { AuthFormClassNames } from "../auth-form"
@@ -51,15 +58,23 @@ function EmailForm({
 }) {
     const isHydrated = useIsHydrated()
 
-    const { authClient, localization: contextLocalization, toast } = useContext(AuthUIContext)
+    const {
+        authClient,
+        localization: contextLocalization,
+        toast
+    } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
 
     const formSchema = z.object({
         email: z
             .string()
-            .min(1, { message: `${localization.EMAIL} ${localization.IS_REQUIRED}` })
-            .email({ message: `${localization.EMAIL} ${localization.IS_INVALID}` })
+            .min(1, {
+                message: `${localization.EMAIL} ${localization.IS_REQUIRED}`
+            })
+            .email({
+                message: `${localization.EMAIL} ${localization.IS_INVALID}`
+            })
     })
 
     const form = useForm({
@@ -131,7 +146,11 @@ function EmailForm({
                 <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className={cn("w-full", classNames?.button, classNames?.primaryButton)}
+                    className={cn(
+                        "w-full",
+                        classNames?.button,
+                        classNames?.primaryButton
+                    )}
                 >
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />
@@ -156,11 +175,17 @@ export function OTPForm({
 }: EmailOTPFormProps & {
     email: string
 }) {
-    const { authClient, localization: contextLocalization, toast } = useContext(AuthUIContext)
+    const {
+        authClient,
+        localization: contextLocalization,
+        toast
+    } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
 
-    const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({ redirectTo })
+    const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({
+        redirectTo
+    })
 
     const formSchema = z.object({
         code: z
@@ -180,7 +205,8 @@ export function OTPForm({
         }
     })
 
-    isSubmitting = isSubmitting || form.formState.isSubmitting || transitionPending
+    isSubmitting =
+        isSubmitting || form.formState.isSubmitting || transitionPending
 
     useEffect(() => {
         setIsSubmitting?.(form.formState.isSubmitting || transitionPending)
@@ -231,11 +257,15 @@ export function OTPForm({
                                             form.handleSubmit(verifyCode)()
                                         }
                                     }}
-                                    containerClassName={classNames?.otpInputContainer}
+                                    containerClassName={
+                                        classNames?.otpInputContainer
+                                    }
                                     className={classNames?.otpInput}
                                     disabled={isSubmitting}
                                 >
-                                    <OTPInputGroup otpSeparators={otpSeparators} />
+                                    <OTPInputGroup
+                                        otpSeparators={otpSeparators}
+                                    />
                                 </InputOTP>
                             </FormControl>
 
@@ -248,7 +278,10 @@ export function OTPForm({
                     <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className={cn(classNames?.button, classNames?.primaryButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.primaryButton
+                        )}
                     >
                         {isSubmitting && <Loader2 className="animate-spin" />}
                         {localization.EMAIL_OTP_VERIFY_ACTION}

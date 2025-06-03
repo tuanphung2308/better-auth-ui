@@ -33,7 +33,13 @@ export function PersonalAccountView({
     )
 
     return (
-        <div className={cn("flex items-center gap-2", className, classNames?.base)}>
+        <div
+            className={cn(
+                "flex items-center gap-2",
+                className,
+                classNames?.base
+            )}
+        >
             <UserAvatar
                 className={cn(size !== "sm" && "my-0.5")}
                 classNames={classNames?.avatar}
@@ -43,7 +49,12 @@ export function PersonalAccountView({
                 user={user}
             />
 
-            <div className={cn("grid flex-1 text-left leading-tight", classNames?.content)}>
+            <div
+                className={cn(
+                    "grid flex-1 text-left leading-tight",
+                    classNames?.content
+                )}
+            >
                 {isPending ? (
                     <>
                         <Skeleton

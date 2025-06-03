@@ -25,7 +25,11 @@ export function EmailOTPButton({
 
     return (
         <Button
-            className={cn("w-full", classNames?.form?.button, classNames?.form?.secondaryButton)}
+            className={cn(
+                "w-full",
+                classNames?.form?.button,
+                classNames?.form?.secondaryButton
+            )}
             disabled={isSubmitting}
             type="button"
             variant="secondary"
@@ -41,7 +45,9 @@ export function EmailOTPButton({
                 <MailIcon className={classNames?.form?.icon} />
             )}
             {localization.SIGN_IN_WITH}{" "}
-            {view === "EMAIL_OTP" ? localization.PASSWORD : localization.EMAIL_OTP}
+            {view === "EMAIL_OTP"
+                ? localization.PASSWORD
+                : localization.EMAIL_OTP}
         </Button>
     )
 }

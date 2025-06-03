@@ -7,7 +7,9 @@ export function useTheme() {
         const checkTheme = () => {
             const isDark =
                 document.documentElement.classList.contains("dark") ||
-                document.documentElement.getAttribute("style")?.includes("color-scheme: dark")
+                document.documentElement
+                    .getAttribute("style")
+                    ?.includes("color-scheme: dark")
             setTheme(isDark ? "dark" : "light")
         }
 
@@ -17,7 +19,10 @@ export function useTheme() {
         // Listen for changes to html tag
         const observer = new MutationObserver((mutations) => {
             for (const mutation of mutations) {
-                if (mutation.attributeName === "style" || mutation.attributeName === "class") {
+                if (
+                    mutation.attributeName === "style" ||
+                    mutation.attributeName === "class"
+                ) {
                     checkTheme()
                 }
             }

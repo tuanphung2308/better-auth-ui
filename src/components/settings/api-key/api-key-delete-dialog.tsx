@@ -69,11 +69,14 @@ export function ApiKeyDeleteDialog({
         if (!apiKey.expiresAt) return localization.NEVER_EXPIRES
 
         const expiresDate = new Date(apiKey.expiresAt)
-        return `${localization.EXPIRES} ${expiresDate.toLocaleDateString(lang ?? "en", {
-            month: "short",
-            day: "numeric",
-            year: "numeric"
-        })}`
+        return `${localization.EXPIRES} ${expiresDate.toLocaleDateString(
+            lang ?? "en",
+            {
+                month: "short",
+                day: "numeric",
+                year: "numeric"
+            }
+        )}`
     }
 
     return (
@@ -83,25 +86,35 @@ export function ApiKeyDeleteDialog({
                 className={classNames?.dialog?.content}
             >
                 <DialogHeader className={classNames?.dialog?.header}>
-                    <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                    <DialogTitle
+                        className={cn("text-lg md:text-xl", classNames?.title)}
+                    >
                         {localization.DELETE} {localization.API_KEY}
                     </DialogTitle>
 
                     <DialogDescription
-                        className={cn("text-xs md:text-sm", classNames?.description)}
+                        className={cn(
+                            "text-xs md:text-sm",
+                            classNames?.description
+                        )}
                     >
                         {localization.DELETE_API_KEY_CONFIRM}
                     </DialogDescription>
                 </DialogHeader>
 
                 <Card
-                    className={cn("my-2 flex-row items-center gap-3 px-4 py-3", classNames?.cell)}
+                    className={cn(
+                        "my-2 flex-row items-center gap-3 px-4 py-3",
+                        classNames?.cell
+                    )}
                 >
                     <KeyRoundIcon className={cn("size-4", classNames?.icon)} />
 
                     <div className="flex flex-col">
                         <div className="flex items-center gap-2">
-                            <span className="font-semibold text-sm">{apiKey.name}</span>
+                            <span className="font-semibold text-sm">
+                                {apiKey.name}
+                            </span>
 
                             <span className="text-muted-foreground text-sm">
                                 {apiKey.start}
@@ -109,7 +122,9 @@ export function ApiKeyDeleteDialog({
                             </span>
                         </div>
 
-                        <div className="text-muted-foreground text-xs">{formatExpiration()}</div>
+                        <div className="text-muted-foreground text-xs">
+                            {formatExpiration()}
+                        </div>
                     </div>
                 </Card>
 
@@ -119,7 +134,10 @@ export function ApiKeyDeleteDialog({
                         variant="secondary"
                         onClick={() => onOpenChange?.(false)}
                         disabled={isLoading}
-                        className={cn(classNames?.button, classNames?.secondaryButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.secondaryButton
+                        )}
                     >
                         {localization.CANCEL}
                     </Button>
@@ -129,7 +147,10 @@ export function ApiKeyDeleteDialog({
                         variant="destructive"
                         onClick={handleDelete}
                         disabled={isLoading}
-                        className={cn(classNames?.button, classNames?.destructiveButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.destructiveButton
+                        )}
                     >
                         {isLoading && <Loader2 className="animate-spin" />}
                         {localization.DELETE}

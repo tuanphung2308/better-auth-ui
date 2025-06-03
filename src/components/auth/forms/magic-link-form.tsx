@@ -14,7 +14,14 @@ import { cn, getLocalizedError, getSearchParam } from "../../../lib/utils"
 import type { AuthLocalization } from "../../../localization/auth-localization"
 import { Captcha } from "../../captcha/captcha"
 import { Button } from "../../ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "../../ui/form"
 import { Input } from "../../ui/input"
 import type { AuthFormClassNames } from "../auth-form"
 
@@ -54,7 +61,8 @@ export function MagicLinkForm({
     localization = { ...contextLocalization, ...localization }
 
     const getRedirectTo = useCallback(
-        () => redirectToProp || getSearchParam("redirectTo") || contextRedirectTo,
+        () =>
+            redirectToProp || getSearchParam("redirectTo") || contextRedirectTo,
         [redirectToProp, contextRedirectTo]
     )
 
@@ -66,14 +74,25 @@ export function MagicLinkForm({
                     ? `${basePath}/${viewPaths.CALLBACK}?redirectTo=${getRedirectTo()}`
                     : getRedirectTo())
             }`,
-        [callbackURLProp, persistClient, basePath, viewPaths, baseURL, getRedirectTo]
+        [
+            callbackURLProp,
+            persistClient,
+            basePath,
+            viewPaths,
+            baseURL,
+            getRedirectTo
+        ]
     )
 
     const formSchema = z.object({
         email: z
             .string()
-            .min(1, { message: `${localization.EMAIL} ${localization.IS_REQUIRED}` })
-            .email({ message: `${localization.EMAIL} ${localization.IS_INVALID}` })
+            .min(1, {
+                message: `${localization.EMAIL} ${localization.IS_REQUIRED}`
+            })
+            .email({
+                message: `${localization.EMAIL} ${localization.IS_INVALID}`
+            })
     })
 
     const form = useForm({
@@ -156,7 +175,11 @@ export function MagicLinkForm({
                 <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className={cn("w-full", classNames?.button, classNames?.primaryButton)}
+                    className={cn(
+                        "w-full",
+                        classNames?.button,
+                        classNames?.primaryButton
+                    )}
                 >
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />

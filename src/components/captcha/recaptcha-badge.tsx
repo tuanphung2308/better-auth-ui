@@ -14,7 +14,8 @@ export function RecaptchaBadge({
     localization: propLocalization
 }: RecaptchaV3BadgeProps) {
     const isHydrated = useIsHydrated()
-    const { captcha, localization: contextLocalization } = useContext(AuthUIContext)
+    const { captcha, localization: contextLocalization } =
+        useContext(AuthUIContext)
     const localization = { ...contextLocalization, ...propLocalization }
 
     if (!captcha) return null
@@ -34,7 +35,8 @@ export function RecaptchaBadge({
             `}</style>
 
             <p className={cn("text-muted-foreground text-xs", className)}>
-                {localization.PROTECTED_BY_RECAPTCHA} {localization.BY_CONTINUING_YOU_AGREE} Google{" "}
+                {localization.PROTECTED_BY_RECAPTCHA}{" "}
+                {localization.BY_CONTINUING_YOU_AGREE} Google{" "}
                 <a
                     className="text-foreground hover:underline"
                     href="https://policies.google.com/privacy"

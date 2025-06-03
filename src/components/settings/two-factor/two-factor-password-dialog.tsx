@@ -18,7 +18,14 @@ import {
     DialogHeader,
     DialogTitle
 } from "../../ui/dialog"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "../../ui/form"
 import type { SettingsCardClassNames } from "../shared/settings-card"
 import { BackupCodesDialog } from "./backup-codes-dialog"
 
@@ -33,8 +40,15 @@ export function TwoFactorPasswordDialog({
     isTwoFactorEnabled,
     ...props
 }: TwoFactorPasswordDialogProps) {
-    const { localization, authClient, basePath, viewPaths, navigate, toast, twoFactor } =
-        useContext(AuthUIContext)
+    const {
+        localization,
+        authClient,
+        basePath,
+        viewPaths,
+        navigate,
+        toast,
+        twoFactor
+    } = useContext(AuthUIContext)
     const [showBackupCodesDialog, setShowBackupCodesDialog] = useState(false)
     const [backupCodes, setBackupCodes] = useState<string[]>([])
     const [totpURI, setTotpURI] = useState<string | null>(null)
@@ -101,7 +115,9 @@ export function TwoFactorPasswordDialog({
     return (
         <>
             <Dialog onOpenChange={onOpenChange} {...props}>
-                <DialogContent className={cn("sm:max-w-md", classNames?.dialog)}>
+                <DialogContent
+                    className={cn("sm:max-w-md", classNames?.dialog)}
+                >
                     <DialogHeader className={classNames?.dialog?.header}>
                         <DialogTitle className={classNames?.title}>
                             {localization.TWO_FACTOR}
@@ -117,7 +133,9 @@ export function TwoFactorPasswordDialog({
                     <Form {...form}>
                         <form
                             onSubmit={form.handleSubmit(
-                                isTwoFactorEnabled ? disableTwoFactor : enableTwoFactor
+                                isTwoFactorEnabled
+                                    ? disableTwoFactor
+                                    : enableTwoFactor
                             )}
                             className="grid gap-4"
                         >
@@ -126,30 +144,41 @@ export function TwoFactorPasswordDialog({
                                 name="password"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className={classNames?.label}>
+                                        <FormLabel
+                                            className={classNames?.label}
+                                        >
                                             {localization.PASSWORD}
                                         </FormLabel>
 
                                         <FormControl>
                                             <PasswordInput
                                                 className={classNames?.input}
-                                                placeholder={localization.PASSWORD_PLACEHOLDER}
+                                                placeholder={
+                                                    localization.PASSWORD_PLACEHOLDER
+                                                }
                                                 autoComplete="current-password"
                                                 {...field}
                                             />
                                         </FormControl>
 
-                                        <FormMessage className={classNames?.error} />
+                                        <FormMessage
+                                            className={classNames?.error}
+                                        />
                                     </FormItem>
                                 )}
                             />
 
-                            <DialogFooter className={classNames?.dialog?.footer}>
+                            <DialogFooter
+                                className={classNames?.dialog?.footer}
+                            >
                                 <Button
                                     type="button"
                                     variant="secondary"
                                     onClick={() => onOpenChange?.(false)}
-                                    className={cn(classNames?.button, classNames?.secondaryButton)}
+                                    className={cn(
+                                        classNames?.button,
+                                        classNames?.secondaryButton
+                                    )}
                                 >
                                     {localization.CANCEL}
                                 </Button>
@@ -157,9 +186,14 @@ export function TwoFactorPasswordDialog({
                                 <Button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className={cn(classNames?.button, classNames?.primaryButton)}
+                                    className={cn(
+                                        classNames?.button,
+                                        classNames?.primaryButton
+                                    )}
                                 >
-                                    {isSubmitting && <Loader2 className="animate-spin" />}
+                                    {isSubmitting && (
+                                        <Loader2 className="animate-spin" />
+                                    )}
                                     {isTwoFactorEnabled
                                         ? localization.DISABLE_TWO_FACTOR
                                         : localization.ENABLE_TWO_FACTOR}

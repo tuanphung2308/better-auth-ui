@@ -48,18 +48,25 @@ export function APIKeyDisplayDialog({
                 className={classNames?.dialog?.content}
             >
                 <DialogHeader className={classNames?.dialog?.header}>
-                    <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+                    <DialogTitle
+                        className={cn("text-lg md:text-xl", classNames?.title)}
+                    >
                         {localization.API_KEY_CREATED}
                     </DialogTitle>
 
                     <DialogDescription
-                        className={cn("text-xs md:text-sm", classNames?.description)}
+                        className={cn(
+                            "text-xs md:text-sm",
+                            classNames?.description
+                        )}
                     >
                         {localization.CREATE_API_KEY_SUCCESS}
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="break-all rounded-md bg-muted p-4 font-mono text-sm">{apiKey}</div>
+                <div className="break-all rounded-md bg-muted p-4 font-mono text-sm">
+                    {apiKey}
+                </div>
 
                 <DialogFooter className={classNames?.dialog?.footer}>
                     <Button
@@ -67,7 +74,10 @@ export function APIKeyDisplayDialog({
                         variant="outline"
                         onClick={handleCopy}
                         disabled={copied}
-                        className={cn(classNames?.button, classNames?.outlineButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.outlineButton
+                        )}
                     >
                         {copied ? (
                             <>
@@ -86,7 +96,10 @@ export function APIKeyDisplayDialog({
                         type="button"
                         variant="default"
                         onClick={() => onOpenChange?.(false)}
-                        className={cn(classNames?.button, classNames?.primaryButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.primaryButton
+                        )}
                     >
                         {localization.DONE}
                     </Button>

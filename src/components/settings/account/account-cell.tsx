@@ -54,7 +54,9 @@ export function AccountCell({
         setIsLoading(true)
 
         try {
-            await revokeDeviceSession({ sessionToken: deviceSession.session.token })
+            await revokeDeviceSession({
+                sessionToken: deviceSession.session.token
+            })
             refetch?.()
         } catch (error) {
             setIsLoading(false)
@@ -70,7 +72,9 @@ export function AccountCell({
         setIsLoading(true)
 
         try {
-            await setActiveSession({ sessionToken: deviceSession.session.token })
+            await setActiveSession({
+                sessionToken: deviceSession.session.token
+            })
             refetch?.()
         } catch (error) {
             setIsLoading(false)
@@ -82,7 +86,8 @@ export function AccountCell({
         }
     }
 
-    const isCurrentSession = deviceSession.session.id === sessionData?.session.id
+    const isCurrentSession =
+        deviceSession.session.id === sessionData?.session.id
 
     return (
         <Card className={cn("flex-row p-4", className, classNames?.cell)}>
@@ -130,7 +135,9 @@ export function AccountCell({
                     >
                         <LogOutIcon className={classNames?.icon} />
 
-                        {isCurrentSession ? localization.SIGN_OUT : localization.REVOKE}
+                        {isCurrentSession
+                            ? localization.SIGN_OUT
+                            : localization.REVOKE}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

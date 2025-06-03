@@ -7,5 +7,6 @@ export const STRIPE_ERROR_CODES = {
     EMAIL_VERIFICATION_REQUIRED:
         "Email verification is required before you can subscribe to a plan",
     SUBSCRIPTION_NOT_ACTIVE: "Subscription is not active",
-    SUBSCRIPTION_NOT_SCHEDULED_FOR_CANCELLATION: "Subscription is not scheduled for cancellation"
+    SUBSCRIPTION_NOT_SCHEDULED_FOR_CANCELLATION:
+        "Subscription is not scheduled for cancellation"
 } as const

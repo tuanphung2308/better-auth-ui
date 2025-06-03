@@ -6,7 +6,10 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
 import { Skeleton } from "../ui/skeleton"
-import { OrganizationLogo, type OrganizationLogoClassNames } from "./organization-logo"
+import {
+    OrganizationLogo,
+    type OrganizationLogoClassNames
+} from "./organization-logo"
 
 export interface OrganizationViewClassNames {
     base?: string
@@ -52,7 +55,13 @@ export function OrganizationView({
     const localization = { ...contextLocalization, ...propLocalization }
 
     return (
-        <div className={cn("flex items-center gap-2 truncate", className, classNames?.base)}>
+        <div
+            className={cn(
+                "flex items-center gap-2 truncate",
+                className,
+                classNames?.base
+            )}
+        >
             <OrganizationLogo
                 className={cn(size !== "sm" && "my-0.5")}
                 classNames={classNames?.avatar}

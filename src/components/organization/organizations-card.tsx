@@ -24,7 +24,8 @@ export function OrganizationsCard({
     localization = { ...contextLocalization, ...localization }
 
     const isHydrated = useIsHydrated()
-    const { data: organizations, isPending: organizationsPending } = useListOrganizations()
+    const { data: organizations, isPending: organizationsPending } =
+        useListOrganizations()
 
     const isPending = !isHydrated || organizationsPending
 
@@ -44,7 +45,9 @@ export function OrganizationsCard({
                 {...props}
             >
                 {organizations && organizations?.length > 0 && (
-                    <CardContent className={cn("grid gap-4", classNames?.content)}>
+                    <CardContent
+                        className={cn("grid gap-4", classNames?.content)}
+                    >
                         {organizations?.map((organization) => (
                             <OrganizationCell
                                 key={organization.id}

@@ -11,14 +11,26 @@ import { useCaptcha } from "../../../hooks/use-captcha"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import { cn, getLocalizedError, getPasswordSchema, isValidEmail } from "../../../lib/utils"
+import {
+    cn,
+    getLocalizedError,
+    getPasswordSchema,
+    isValidEmail
+} from "../../../lib/utils"
 import type { AuthLocalization } from "../../../localization/auth-localization"
 import type { PasswordValidation } from "../../../types/password-validation"
 import { Captcha } from "../../captcha/captcha"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
 import { Checkbox } from "../../ui/checkbox"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "../../ui/form"
 import { Input } from "../../ui/input"
 import type { AuthFormClassNames } from "../auth-form"
 
@@ -62,7 +74,9 @@ export function SignInForm({
     localization = { ...contextLocalization, ...localization }
     passwordValidation = { ...contextPasswordValidation, ...passwordValidation }
 
-    const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({ redirectTo })
+    const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({
+        redirectTo
+    })
 
     const formSchema = z.object({
         email: usernameEnabled
@@ -90,13 +104,18 @@ export function SignInForm({
         }
     })
 
-    isSubmitting = isSubmitting || form.formState.isSubmitting || transitionPending
+    isSubmitting =
+        isSubmitting || form.formState.isSubmitting || transitionPending
 
     useEffect(() => {
         setIsSubmitting?.(form.formState.isSubmitting || transitionPending)
     }, [form.formState.isSubmitting, transitionPending, setIsSubmitting])
 
-    async function signIn({ email, password, rememberMe }: z.infer<typeof formSchema>) {
+    async function signIn({
+        email,
+        password,
+        rememberMe
+    }: z.infer<typeof formSchema>) {
         try {
             let response: Record<string, unknown> = {}
 
@@ -127,7 +146,9 @@ export function SignInForm({
             }
 
             if (response.twoFactorRedirect) {
-                navigate(`${basePath}/${viewPaths.TWO_FACTOR}${window.location.search}`)
+                navigate(
+                    `${basePath}/${viewPaths.TWO_FACTOR}${window.location.search}`
+                )
             } else {
                 await onSuccess()
             }
@@ -154,7 +175,9 @@ export function SignInForm({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className={classNames?.label}>
-                                {usernameEnabled ? localization.USERNAME : localization.EMAIL}
+                                {usernameEnabled
+                                    ? localization.USERNAME
+                                    : localization.EMAIL}
                             </FormLabel>
 
                             <FormControl>
@@ -203,7 +226,9 @@ export function SignInForm({
                                 <PasswordInput
                                     autoComplete="current-password"
                                     className={classNames?.input}
-                                    placeholder={localization.PASSWORD_PLACEHOLDER}
+                                    placeholder={
+                                        localization.PASSWORD_PLACEHOLDER
+                                    }
                                     disabled={isSubmitting}
                                     {...field}
                                 />
@@ -228,18 +253,28 @@ export function SignInForm({
                                     />
                                 </FormControl>
 
-                                <FormLabel>{localization.REMEMBER_ME}</FormLabel>
+                                <FormLabel>
+                                    {localization.REMEMBER_ME}
+                                </FormLabel>
                             </FormItem>
                         )}
                     />
                 )}
 
-                <Captcha ref={captchaRef} localization={localization} action="/sign-in/email" />
+                <Captcha
+                    ref={captchaRef}
+                    localization={localization}
+                    action="/sign-in/email"
+                />
 
                 <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className={cn("w-full", classNames?.button, classNames?.primaryButton)}
+                    className={cn(
+                        "w-full",
+                        classNames?.button,
+                        classNames?.primaryButton
+                    )}
                 >
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />

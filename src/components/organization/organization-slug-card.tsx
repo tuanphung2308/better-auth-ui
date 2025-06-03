@@ -7,7 +7,10 @@ import * as z from "zod"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
-import { SettingsCard, type SettingsCardProps } from "../settings/shared/settings-card"
+import {
+    SettingsCard,
+    type SettingsCardProps
+} from "../settings/shared/settings-card"
 import { CardContent } from "../ui/card"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
 import { Input } from "../ui/input"
@@ -41,7 +44,9 @@ export function OrganizationSlugCard({
                 {...props}
             >
                 <CardContent className={classNames?.content}>
-                    <Skeleton className={cn("h-9 w-full", classNames?.skeleton)} />
+                    <Skeleton
+                        className={cn("h-9 w-full", classNames?.skeleton)}
+                    />
                 </CardContent>
             </SettingsCard>
         )
@@ -66,14 +71,19 @@ function OrganizationSlugForm({
     const {
         authClient,
         localization: contextLocalization,
-        hooks: { useActiveOrganization, useListOrganizations, useHasPermission },
+        hooks: {
+            useActiveOrganization,
+            useListOrganizations,
+            useHasPermission
+        },
         optimistic,
         toast
     } = useContext(AuthUIContext)
 
     const localization = { ...contextLocalization, ...localizationProp }
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } = useActiveOrganization()
+    const { data: activeOrganization, refetch: refetchActiveOrganization } =
+        useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
     const { data: hasPermission, isPending } = useHasPermission({
         permissions: {
@@ -99,7 +109,9 @@ function OrganizationSlugForm({
 
     const { isSubmitting } = form.formState
 
-    const updateOrganizationSlug = async ({ slug }: z.infer<typeof formSchema>) => {
+    const updateOrganizationSlug = async ({
+        slug
+    }: z.infer<typeof formSchema>) => {
         if (!activeOrganization) return
 
         if (activeOrganization.slug === slug) {
@@ -151,7 +163,12 @@ function OrganizationSlugForm({
                 >
                     <CardContent className={classNames?.content}>
                         {isPending ? (
-                            <Skeleton className={cn("h-9 w-full", classNames?.skeleton)} />
+                            <Skeleton
+                                className={cn(
+                                    "h-9 w-full",
+                                    classNames?.skeleton
+                                )}
+                            />
                         ) : (
                             <FormField
                                 control={form.control}
@@ -164,12 +181,17 @@ function OrganizationSlugForm({
                                                 placeholder={
                                                     localization.ORGANIZATION_SLUG_PLACEHOLDER
                                                 }
-                                                disabled={isSubmitting || !hasPermission?.success}
+                                                disabled={
+                                                    isSubmitting ||
+                                                    !hasPermission?.success
+                                                }
                                                 {...field}
                                             />
                                         </FormControl>
 
-                                        <FormMessage className={classNames?.error} />
+                                        <FormMessage
+                                            className={classNames?.error}
+                                        />
                                     </FormItem>
                                 )}
                             />

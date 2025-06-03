@@ -1,4 +1,6 @@
-type MutateFn<T = Record<string, unknown>> = (params: T) => Promise<unknown> | Promise<void>
+type MutateFn<T = Record<string, unknown>> = (
+    params: T
+) => Promise<unknown> | Promise<void>
 
 export interface AuthMutators {
     deleteApiKey: MutateFn<{ keyId: string }>

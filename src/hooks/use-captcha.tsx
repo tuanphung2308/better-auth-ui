@@ -8,7 +8,11 @@ import { AuthUIContext } from "../lib/auth-ui-provider"
 import type { AuthLocalization } from "../localization/auth-localization"
 
 // Default captcha endpoints
-const DEFAULT_CAPTCHA_ENDPOINTS = ["/sign-up/email", "/sign-in/email", "/forget-password"]
+const DEFAULT_CAPTCHA_ENDPOINTS = [
+    "/sign-up/email",
+    "/sign-in/email",
+    "/forget-password"
+]
 
 // Sanitize action name for reCAPTCHA
 // Google reCAPTCHA only allows A-Za-z/_ in action names
@@ -32,7 +36,8 @@ export function useCaptcha({
 }: {
     localization: Partial<AuthLocalization>
 }) {
-    const { captcha, localization: contextLocalization } = useContext(AuthUIContext)
+    const { captcha, localization: contextLocalization } =
+        useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
 

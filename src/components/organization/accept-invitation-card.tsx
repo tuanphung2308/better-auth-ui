@@ -9,7 +9,13 @@ import { cn, getLocalizedError, getSearchParam } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
 import type { SettingsCardClassNames } from "../settings/shared/settings-card"
 import { Button } from "../ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle
+} from "../ui/card"
 import { Skeleton } from "../ui/skeleton"
 import { OrganizationView } from "./organization-view"
 
@@ -60,7 +66,12 @@ export function AcceptInvitationCard({
     useAuthenticate()
 
     if (!sessionData || !invitationId) {
-        return <AcceptInvitationSkeleton className={className} classNames={classNames} />
+        return (
+            <AcceptInvitationSkeleton
+                className={className}
+                classNames={classNames}
+            />
+        )
     }
 
     return (
@@ -117,7 +128,10 @@ function AcceptInvitationContent({
             return
         }
 
-        if (invitation.status !== "pending" || new Date(invitation.expiresAt) < new Date()) {
+        if (
+            invitation.status !== "pending" ||
+            new Date(invitation.expiresAt) < new Date()
+        ) {
             toast({
                 variant: "error",
                 message:
@@ -128,7 +142,15 @@ function AcceptInvitationContent({
 
             replace(redirectTo)
         }
-    }, [invitation, isPending, invitationId, localization, toast, replace, redirectTo])
+    }, [
+        invitation,
+        isPending,
+        invitationId,
+        localization,
+        toast,
+        replace,
+        redirectTo
+    ])
 
     const acceptInvitation = async () => {
         if (!invitationId) return
@@ -143,7 +165,8 @@ function AcceptInvitationContent({
 
             toast({
                 variant: "success",
-                message: localization.INVITATION_ACCEPTED || "Invitation accepted"
+                message:
+                    localization.INVITATION_ACCEPTED || "Invitation accepted"
             })
 
             replace(redirectTo)
@@ -190,23 +213,48 @@ function AcceptInvitationContent({
     ]
 
     const roles = [...builtInRoles, ...(organization?.customRoles || [])]
-    const roleLabel = roles.find((r) => r.role === invitation?.role)?.label || invitation?.role
+    const roleLabel =
+        roles.find((r) => r.role === invitation?.role)?.label ||
+        invitation?.role
 
-    if (isPending) return <AcceptInvitationSkeleton className={className} classNames={classNames} />
+    if (isPending)
+        return (
+            <AcceptInvitationSkeleton
+                className={className}
+                classNames={classNames}
+            />
+        )
 
     return (
         <Card className={cn("w-full max-w-sm", className, classNames?.base)}>
-            <CardHeader className={cn("justify-items-center text-center", classNames?.header)}>
-                <CardTitle className={cn("text-lg md:text-xl", classNames?.title)}>
+            <CardHeader
+                className={cn(
+                    "justify-items-center text-center",
+                    classNames?.header
+                )}
+            >
+                <CardTitle
+                    className={cn("text-lg md:text-xl", classNames?.title)}
+                >
                     {localization.ACCEPT_INVITATION}
                 </CardTitle>
 
-                <CardDescription className={cn("text-xs md:text-sm", classNames?.description)}>
+                <CardDescription
+                    className={cn(
+                        "text-xs md:text-sm",
+                        classNames?.description
+                    )}
+                >
                     {localization.ACCEPT_INVITATION_DESCRIPTION}
                 </CardDescription>
             </CardHeader>
 
-            <CardContent className={cn("flex flex-col gap-6 truncate", classNames?.content)}>
+            <CardContent
+                className={cn(
+                    "flex flex-col gap-6 truncate",
+                    classNames?.content
+                )}
+            >
                 <Card className={cn("flex-row items-center p-4")}>
                     <OrganizationView
                         organization={
@@ -223,27 +271,43 @@ function AcceptInvitationContent({
                         localization={localization}
                     />
 
-                    <p className="ml-auto text-muted-foreground text-sm">{roleLabel}</p>
+                    <p className="ml-auto text-muted-foreground text-sm">
+                        {roleLabel}
+                    </p>
                 </Card>
 
                 <div className="grid grid-cols-2 gap-3">
                     <Button
                         variant="outline"
-                        className={cn(classNames?.button, classNames?.outlineButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.outlineButton
+                        )}
                         onClick={rejectInvitation}
                         disabled={isProcessing}
                     >
-                        {isRejecting ? <Loader2 className="animate-spin" /> : <XIcon />}
+                        {isRejecting ? (
+                            <Loader2 className="animate-spin" />
+                        ) : (
+                            <XIcon />
+                        )}
 
                         {localization.REJECT}
                     </Button>
 
                     <Button
-                        className={cn(classNames?.button, classNames?.primaryButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.primaryButton
+                        )}
                         onClick={acceptInvitation}
                         disabled={isProcessing}
                     >
-                        {isAccepting ? <Loader2 className="animate-spin" /> : <CheckIcon />}
+                        {isAccepting ? (
+                            <Loader2 className="animate-spin" />
+                        ) : (
+                            <CheckIcon />
+                        )}
 
                         {localization.ACCEPT}
                     </Button>
@@ -260,7 +324,9 @@ const AcceptInvitationSkeleton = ({
 }: AcceptInvitationCardProps) => {
     return (
         <Card className={cn("w-full max-w-sm", className, classNames?.base)}>
-            <CardHeader className={cn("justify-items-center", classNames?.header)}>
+            <CardHeader
+                className={cn("justify-items-center", classNames?.header)}
+            >
                 <Skeleton
                     className={cn(
                         "my-1 h-5 w-full max-w-32 md:h-5.5 md:w-40",
@@ -276,7 +342,12 @@ const AcceptInvitationSkeleton = ({
                 />
             </CardHeader>
 
-            <CardContent className={cn("flex flex-col gap-6 truncate", classNames?.content)}>
+            <CardContent
+                className={cn(
+                    "flex flex-col gap-6 truncate",
+                    classNames?.content
+                )}
+            >
                 <Card className={cn("flex-row items-center p-4")}>
                     <OrganizationView isPending localization={localization} />
 

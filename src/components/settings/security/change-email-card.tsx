@@ -7,7 +7,13 @@ import * as z from "zod"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
 import { CardContent } from "../../ui/card"
-import { Form, FormControl, FormField, FormItem, FormMessage } from "../../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormMessage
+} from "../../ui/form"
 import { Input } from "../../ui/input"
 import { Skeleton } from "../../ui/skeleton"
 import { SettingsCard } from "../shared/settings-card"
@@ -68,7 +74,10 @@ export function ChangeEmailCard({
             })
 
             if (sessionData?.user.emailVerified) {
-                toast({ variant: "success", message: localization.EMAIL_VERIFY_CHANGE! })
+                toast({
+                    variant: "success",
+                    message: localization.EMAIL_VERIFY_CHANGE!
+                })
             } else {
                 await refetch?.()
                 toast({
@@ -77,7 +86,10 @@ export function ChangeEmailCard({
                 })
             }
         } catch (error) {
-            toast({ variant: "error", message: getLocalizedError({ error, localization }) })
+            toast({
+                variant: "error",
+                message: getLocalizedError({ error, localization })
+            })
         }
     }
 
@@ -93,9 +105,15 @@ export function ChangeEmailCard({
                 fetchOptions: { throw: true }
             })
 
-            toast({ variant: "success", message: localization.EMAIL_VERIFICATION! })
+            toast({
+                variant: "success",
+                message: localization.EMAIL_VERIFICATION!
+            })
         } catch (error) {
-            toast({ variant: "error", message: getLocalizedError({ error, localization }) })
+            toast({
+                variant: "error",
+                message: getLocalizedError({ error, localization })
+            })
             setResendDisabled(false)
             throw error
         }
@@ -117,7 +135,12 @@ export function ChangeEmailCard({
                     >
                         <CardContent className={classNames?.content}>
                             {isPending ? (
-                                <Skeleton className={cn("h-9 w-full", classNames?.skeleton)} />
+                                <Skeleton
+                                    className={cn(
+                                        "h-9 w-full",
+                                        classNames?.skeleton
+                                    )}
+                                />
                             ) : (
                                 <FormField
                                     control={form.control}
@@ -126,15 +149,21 @@ export function ChangeEmailCard({
                                         <FormItem>
                                             <FormControl>
                                                 <Input
-                                                    className={classNames?.input}
-                                                    placeholder={localization.EMAIL_PLACEHOLDER}
+                                                    className={
+                                                        classNames?.input
+                                                    }
+                                                    placeholder={
+                                                        localization.EMAIL_PLACEHOLDER
+                                                    }
                                                     type="email"
                                                     disabled={isSubmitting}
                                                     {...field}
                                                 />
                                             </FormControl>
 
-                                            <FormMessage className={classNames?.error} />
+                                            <FormMessage
+                                                className={classNames?.error}
+                                            />
                                         </FormItem>
                                     )}
                                 />
@@ -144,21 +173,31 @@ export function ChangeEmailCard({
                 </form>
             </Form>
 
-            {emailVerification && sessionData?.user && !sessionData?.user.emailVerified && (
-                <Form {...resendForm}>
-                    <form onSubmit={resendForm.handleSubmit(resendVerification)}>
-                        <SettingsCard
-                            className={className}
-                            classNames={classNames}
-                            title={localization.VERIFY_YOUR_EMAIL}
-                            description={localization.VERIFY_YOUR_EMAIL_DESCRIPTION}
-                            actionLabel={localization.RESEND_VERIFICATION_EMAIL}
-                            disabled={resendDisabled}
-                            {...props}
-                        />
-                    </form>
-                </Form>
-            )}
+            {emailVerification &&
+                sessionData?.user &&
+                !sessionData?.user.emailVerified && (
+                    <Form {...resendForm}>
+                        <form
+                            onSubmit={resendForm.handleSubmit(
+                                resendVerification
+                            )}
+                        >
+                            <SettingsCard
+                                className={className}
+                                classNames={classNames}
+                                title={localization.VERIFY_YOUR_EMAIL}
+                                description={
+                                    localization.VERIFY_YOUR_EMAIL_DESCRIPTION
+                                }
+                                actionLabel={
+                                    localization.RESEND_VERIFICATION_EMAIL
+                                }
+                                disabled={resendDisabled}
+                                {...props}
+                            />
+                        </form>
+                    </Form>
+                )}
         </>
     )
 }

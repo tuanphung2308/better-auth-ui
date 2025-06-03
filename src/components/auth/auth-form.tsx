@@ -92,11 +92,17 @@ export function AuthForm({
     useEffect(() => {
         let isInvalidView = false
 
-        if (view === "MAGIC_LINK" && (!magicLink || (!credentials && !emailOTP))) {
+        if (
+            view === "MAGIC_LINK" &&
+            (!magicLink || (!credentials && !emailOTP))
+        ) {
             isInvalidView = true
         }
 
-        if (view === "EMAIL_OTP" && (!emailOTP || (!credentials && !magicLink))) {
+        if (
+            view === "EMAIL_OTP" &&
+            (!emailOTP || (!credentials && !magicLink))
+        ) {
             isInvalidView = true
         }
 
@@ -117,7 +123,10 @@ export function AuthForm({
             isInvalidView = true
         }
 
-        if (["TWO_FACTOR", "RECOVER_ACCOUNT"].includes(view) && !twoFactorEnabled) {
+        if (
+            ["TWO_FACTOR", "RECOVER_ACCOUNT"].includes(view) &&
+            !twoFactorEnabled
+        ) {
             isInvalidView = true
         }
 

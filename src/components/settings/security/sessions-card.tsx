@@ -16,7 +16,11 @@ export interface SessionsCardProps {
     localization?: Partial<AuthLocalization>
 }
 
-export function SessionsCard({ className, classNames, localization }: SessionsCardProps) {
+export function SessionsCard({
+    className,
+    classNames,
+    localization
+}: SessionsCardProps) {
     const {
         hooks: { useListSessions },
         localization: contextLocalization

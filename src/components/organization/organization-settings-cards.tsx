@@ -42,16 +42,34 @@ export function OrganizationSettingsCards({
     ])
 
     return (
-        <div className={cn("flex w-full flex-col gap-4 md:gap-6", className, classNames?.cards)}>
+        <div
+            className={cn(
+                "flex w-full flex-col gap-4 md:gap-6",
+                className,
+                classNames?.cards
+            )}
+        >
             {organization?.logo && (
-                <OrganizationLogoCard classNames={classNames?.card} localization={localization} />
+                <OrganizationLogoCard
+                    classNames={classNames?.card}
+                    localization={localization}
+                />
             )}
 
-            <OrganizationNameCard classNames={classNames?.card} localization={localization} />
+            <OrganizationNameCard
+                classNames={classNames?.card}
+                localization={localization}
+            />
 
-            <OrganizationSlugCard classNames={classNames?.card} localization={localization} />
+            <OrganizationSlugCard
+                classNames={classNames?.card}
+                localization={localization}
+            />
 
-            <DeleteOrganizationCard classNames={classNames?.card} localization={localization} />
+            <DeleteOrganizationCard
+                classNames={classNames?.card}
+                localization={localization}
+            />
         </div>
     )
 }

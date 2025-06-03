@@ -47,7 +47,8 @@ export function ProviderButton({
     } = useContext(AuthUIContext)
 
     const getRedirectTo = useCallback(
-        () => redirectToProp || getSearchParam("redirectTo") || contextRedirectTo,
+        () =>
+            redirectToProp || getSearchParam("redirectTo") || contextRedirectTo,
         [redirectToProp, contextRedirectTo]
     )
 
@@ -59,7 +60,14 @@ export function ProviderButton({
                     ? `${basePath}/${viewPaths.CALLBACK}?redirectTo=${getRedirectTo()}`
                     : getRedirectTo())
             }`,
-        [callbackURLProp, persistClient, basePath, viewPaths, baseURL, getRedirectTo]
+        [
+            callbackURLProp,
+            persistClient,
+            basePath,
+            viewPaths,
+            baseURL,
+            getRedirectTo
+        ]
     )
 
     const doSignInSocial = async () => {
@@ -124,23 +132,33 @@ export function ProviderButton({
         >
             {provider.icon &&
                 (colorIcons === true ? (
-                    <provider.icon variant="color" className={classNames?.form?.icon} />
+                    <provider.icon
+                        variant="color"
+                        className={classNames?.form?.icon}
+                    />
                 ) : colorIcons === false ? (
                     <provider.icon className={classNames?.form?.icon} />
                 ) : (
                     <>
                         <provider.icon
-                            className={cn("dark:hidden", classNames?.form?.icon)}
+                            className={cn(
+                                "dark:hidden",
+                                classNames?.form?.icon
+                            )}
                             variant="color"
                         />
                         <provider.icon
-                            className={cn("hidden dark:block", classNames?.form?.icon)}
+                            className={cn(
+                                "hidden dark:block",
+                                classNames?.form?.icon
+                            )}
                         />
                     </>
                 ))}
 
             {socialLayout === "grid" && provider.name}
-            {socialLayout === "vertical" && `${localization.SIGN_IN_WITH} ${provider.name}`}
+            {socialLayout === "vertical" &&
+                `${localization.SIGN_IN_WITH} ${provider.name}`}
         </Button>
     )
 }
