@@ -16,12 +16,14 @@ export type AuthHooks = {
     useListAccounts: () => AuthHook<{ accountId: string; provider: string }[]>
     useListDeviceSessions: () => AuthHook<{ session: Session; user: User }[]>
     useListSessions: () => AuthHook<Session[]>
-    useListPasskeys: () => ReturnType<AuthClient["useListPasskeys"]>
+    useListPasskeys: () => Partial<ReturnType<AuthClient["useListPasskeys"]>>
     useListApiKeys: () => AuthHook<ApiKey[]>
     useActiveOrganization: () => Partial<
         ReturnType<AuthClient["useActiveOrganization"]>
     >
-    useListOrganizations: () => ReturnType<AuthClient["useListOrganizations"]>
+    useListOrganizations: () => Partial<
+        ReturnType<AuthClient["useListOrganizations"]>
+    >
     useHasPermission: (
         params: Parameters<AuthClient["organization"]["hasPermission"]>[0]
     ) => AuthHook<{

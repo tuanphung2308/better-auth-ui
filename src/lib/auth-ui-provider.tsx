@@ -864,7 +864,7 @@ const OrganizationRefetcher = () => {
     useEffect(() => {
         if (!sessionData?.user.id) return
         if (activeOrganization) refetchActiveOrganization?.()
-        if (organizations) refetchListOrganizations()
+        if (organizations) refetchListOrganizations?.()
     }, [
         sessionData?.user.id,
         refetchActiveOrganization,
