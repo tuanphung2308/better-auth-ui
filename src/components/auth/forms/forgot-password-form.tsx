@@ -85,7 +85,7 @@ export function ForgotPasswordForm({
                 headers: await getCaptchaHeaders("/forget-password")
             }
 
-            await authClient.forgetPassword({
+            await authClient.requestPasswordReset({
                 email,
                 redirectTo: `${baseURL}${basePath}/${viewPaths.RESET_PASSWORD}`,
                 fetchOptions

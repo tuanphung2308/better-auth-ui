@@ -8,7 +8,7 @@ import {
 } from "lucide-react"
 import {
     type ComponentProps,
-    type ReactNode,
+    type ReactPortal,
     useCallback,
     useContext,
     useEffect,
@@ -59,10 +59,10 @@ export interface OrganizationSwitcherClassNames {
 }
 
 export interface OrganizationSwitcherProps
-    extends ComponentProps<typeof Button> {
+    extends Omit<ComponentProps<typeof Button>, "trigger"> {
     classNames?: OrganizationSwitcherClassNames
     align?: "center" | "start" | "end"
-    trigger?: ReactNode
+    trigger?: ReactPortal
     localization?: AuthLocalization
     onSetActive?: (organizationId: string | null) => void
 }

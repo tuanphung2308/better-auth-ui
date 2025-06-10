@@ -13,6 +13,7 @@ import {
     type ComponentProps,
     Fragment,
     type ReactNode,
+    type ReactPortal,
     useCallback,
     useContext,
     useEffect,
@@ -64,7 +65,7 @@ export interface UserButtonProps {
         label: ReactNode
         signedIn?: boolean
     }[]
-    customTrigger?: ReactNode
+    trigger?: ReactPortal
     disableDefaultLinks?: boolean
     /**
      * @default authLocalization
@@ -92,7 +93,7 @@ export function UserButton({
     className,
     classNames,
     align,
-    customTrigger,
+    trigger,
     additionalLinks,
     disableDefaultLinks,
     localization: propLocalization,
@@ -180,7 +181,7 @@ export function UserButton({
                     classNames?.trigger?.base
                 )}
             >
-                {customTrigger ||
+                {trigger ||
                     (size === "icon" ? (
                         <Button
                             size="icon"
@@ -256,9 +257,10 @@ export function UserButton({
                                 <DropdownMenuItem
                                     className={classNames?.content?.menuItem}
                                 >
-                                    {icon}
-
-                                    {label}
+                                    <>
+                                        {icon}
+                                        {label}
+                                    </>
                                 </DropdownMenuItem>
                             </Link>
                         )

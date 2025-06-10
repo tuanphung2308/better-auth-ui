@@ -118,7 +118,7 @@ export function ChangePasswordCard({
         const email = sessionData?.user.email
 
         try {
-            await authClient.forgetPassword({
+            await authClient.requestPasswordReset({
                 email,
                 redirectTo: `${baseURL}${basePath}/${viewPaths.RESET_PASSWORD}`,
                 fetchOptions: { throw: true }
