@@ -33,7 +33,9 @@ export function useOnSuccessTransition({
     useEffect(() => {
         if (!success || isPending) return
 
-        startTransition(() => navigate(getRedirectTo()))
+        startTransition(() => {
+            navigate(getRedirectTo())
+        })
     }, [success, isPending, navigate, getRedirectTo])
 
     const onSuccess = useCallback(async () => {
