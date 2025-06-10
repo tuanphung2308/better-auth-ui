@@ -1,19 +1,23 @@
 import HCaptcha from "@hcaptcha/react-hcaptcha"
 import { Turnstile } from "@marsidev/react-turnstile"
-import { useContext } from "react"
+import { type RefObject, useContext } from "react"
 
 import { useTheme } from "../../hooks/use-theme"
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
+import type { AuthLocalization } from "../../localization/auth-localization"
 import { RecaptchaBadge } from "./recaptcha-badge"
 import { RecaptchaV2 } from "./recaptcha-v2"
 
 // Default captcha endpoints
-const DEFAULT_CAPTCHA_ENDPOINTS = ["/sign-up/email", "/sign-in/email", "/forget-password"]
+const DEFAULT_CAPTCHA_ENDPOINTS = [
+    "/sign-up/email",
+    "/sign-in/email",
+    "/forget-password"
+]
 
 interface CaptchaProps {
     // biome-ignore lint/suspicious/noExplicitAny:
-    ref: React.RefObject<any>
+    ref: RefObject<any>
     localization: Partial<AuthLocalization>
     action?: string // Optional action to check if it's in the endpoints list
 }
@@ -47,7 +51,9 @@ export function Captcha({ ref, localization, action }: CaptchaProps) {
     return (
         <>
             {showRecaptchaV2 && <RecaptchaV2 ref={ref} />}
-            {showRecaptchaBadge && <RecaptchaBadge localization={localization} />}
+            {showRecaptchaBadge && (
+                <RecaptchaBadge localization={localization} />
+            )}
             {showTurnstile && (
                 <Turnstile
                     className="mx-auto"
@@ -61,7 +67,11 @@ export function Captcha({ ref, localization, action }: CaptchaProps) {
             )}
             {showHCaptcha && (
                 <div className="mx-auto">
-                    <HCaptcha ref={ref} sitekey={captcha.siteKey} theme={theme} />
+                    <HCaptcha
+                        ref={ref}
+                        sitekey={captcha.siteKey}
+                        theme={theme}
+                    />
                 </div>
             )}
         </>

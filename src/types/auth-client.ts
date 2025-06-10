@@ -1,4 +1,4 @@
-import type {
+import {
     anonymousClient,
     apiKeyClient,
     emailOTPClient,
@@ -6,11 +6,12 @@ import type {
     magicLinkClient,
     multiSessionClient,
     oneTapClient,
+    organizationClient,
     passkeyClient,
     twoFactorClient,
     usernameClient
 } from "better-auth/client/plugins"
-import type { createAuthClient } from "better-auth/react"
+import { createAuthClient } from "better-auth/react"
 
 type ApiKeyClientPlugin = ReturnType<typeof apiKeyClient>
 type MultiSessionClientPlugin = ReturnType<typeof multiSessionClient>
@@ -23,22 +24,25 @@ type MagicLinkClientPlugin = ReturnType<typeof magicLinkClient>
 type EmailOTPClientPlugin = ReturnType<typeof emailOTPClient>
 type TwoFactorClientPlugin = ReturnType<typeof twoFactorClient>
 
-export type AuthClient = ReturnType<
-    typeof createAuthClient<{
-        plugins: [
-            ApiKeyClientPlugin,
-            MultiSessionClientPlugin,
-            PasskeyClientPlugin,
-            OneTapClientPlugin,
-            GenericOAuthClientPlugin,
-            AnonymousClientPlugin,
-            UsernameClientPlugin,
-            MagicLinkClientPlugin,
-            EmailOTPClientPlugin,
-            TwoFactorClientPlugin
-        ]
-    }>
->
+export const authClient = createAuthClient({
+    plugins: [
+        apiKeyClient(),
+        multiSessionClient(),
+        passkeyClient(),
+        oneTapClient({
+            clientId: ""
+        }),
+        genericOAuthClient(),
+        anonymousClient(),
+        usernameClient(),
+        magicLinkClient(),
+        emailOTPClient(),
+        twoFactorClient(),
+        organizationClient()
+    ]
+})
+
+export type AuthClient = typeof authClient
 
 export type Session = AuthClient["$Infer"]["Session"]["session"]
 export type User = AuthClient["$Infer"]["Session"]["user"]

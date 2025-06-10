@@ -32,17 +32,17 @@ export function Providers({ children }: { children: React.ReactNode }) {
             onSessionChange={() => router.refresh()}
             Link={Link}
             localization={{
-                signIn: "Log in",
-                signInDescription: "Use your email and password to log in.",
-                signUp: "Create Account",
-                forgotPassword: "Reset Password",
-                emailPlaceholder: "your-email@example.com",
-                passwordPlaceholder: "Secret password",
-                magicLinkEmail: "Check your inbox for your login link!",
-                forgotPasswordEmail: "Check your inbox for the password reset link.",
-                resetPasswordSuccess: "You can now sign in with your new password!",
-                changePasswordSuccess: "Your password has been successfully updated.",
-                deleteAccountSuccess: "Your account has been permanently deleted.",
+                SIGN_IN: "Log in",
+                SIGN_IN_DESCRIPTION: "Use your email and password to log in.",
+                SIGN_UP: "Create Account",
+                FORGOT_PASSWORD: "Reset Password",
+                EMAIL_PLACEHOLDER: "your-email@example.com",
+                PASSWORD_PLACEHOLDER: "Secret password",
+                MAGIC_LINK_EMAIL: "Check your inbox for your login link!",
+                FORGOT_PASSWORD_EMAIL: "Check your inbox for the password reset link.",
+                RESET_PASSWORD_SUCCESS: "You can now sign in with your new password!",
+                CHANGE_PASSWORD_SUCCESS: "Your password has been successfully updated.",
+                DELETE_ACCOUNT_SUCCESS: "Your account has been permanently deleted.",
             }}
         >
             {children}
@@ -64,11 +64,11 @@ export default function AuthPage({ params }: { params: { pathname: string } }) {
             <AuthCard
                 pathname={params.pathname}
                 localization={{
-                    signIn: "Log In",
-                    signUp: "Register an Account",
-                    forgotPassword: "Forgot Your Password?",
-                    signInDescription: "Log in and start using your account.",
-                    magicLink: "Log in via Email",
+                    SIGN_IN: "Log In",
+                    SIGN_UP: "Register an Account",
+                    FORGOT_PASSWORD: "Forgot Your Password?",
+                    SIGN_IN_DESCRIPTION: "Log in and start using your account.",
+                    MAGIC_LINK: "Log in via Email",
                 }}
             />
         </div>

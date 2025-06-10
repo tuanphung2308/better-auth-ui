@@ -1,8 +1,8 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import * as z from "zod"
-import type { AuthLocalization } from "./auth-localization"
-import type { PasswordValidation } from "./auth-ui-provider"
+import type { AuthLocalization } from "../localization/auth-localization"
+import type { PasswordValidation } from "../types/password-validation"
 import type { AuthView, AuthViewPaths } from "./auth-view-paths"
 
 export function cn(...inputs: ClassValue[]) {
@@ -19,7 +19,9 @@ export function isValidEmail(email: string) {
  * Example: INVALID_TWO_FACTOR_COOKIE -> invalidTwoFactorCookie
  */
 export function errorCodeToCamelCase(errorCode: string): string {
-    return errorCode.toLowerCase().replace(/_([a-z])/g, (_, char) => char.toUpperCase())
+    return errorCode
+        .toLowerCase()
+        .replace(/_([a-z])/g, (_, char) => char.toUpperCase())
 }
 
 /**
@@ -33,23 +35,26 @@ export function getLocalizedError({
     error: any
     localization?: Partial<AuthLocalization>
 }) {
+    if (typeof error === "string") {
+        if (localization?.[error as keyof AuthLocalization])
+            return localization[error as keyof AuthLocalization]
+    }
+
     if (error?.error) {
         if (error.error.code) {
-            const camelCaseErrorCode = errorCodeToCamelCase(
-                error.error.code
-            ) as keyof AuthLocalization
-            if (localization?.[camelCaseErrorCode]) return localization[camelCaseErrorCode]
+            const errorCode = error.error.code as keyof AuthLocalization
+            if (localization?.[errorCode]) return localization[errorCode]
         }
 
         return (
             error.error.message ||
             error.error.code ||
             error.error.statusText ||
-            localization?.requestFailed
+            localization?.REQUEST_FAILED
         )
     }
 
-    return error?.message || localization?.requestFailed || "Request failed"
+    return error?.message || localization?.REQUEST_FAILED || "Request failed"
 }
 
 export function getSearchParam(paramName: string) {
@@ -70,29 +75,31 @@ export function getKeyByValue<T extends Record<string, unknown>>(
     object: T,
     value?: T[keyof T]
 ): keyof T | undefined {
-    return (Object.keys(object) as Array<keyof T>).find((key) => object[key] === value)
+    return (Object.keys(object) as Array<keyof T>).find(
+        (key) => object[key] === value
+    )
 }
 
 export function getPasswordSchema(
     passwordValidation?: PasswordValidation,
-    localization?: Partial<AuthLocalization>
+    localization?: AuthLocalization
 ) {
     let schema = z.string().min(1, {
-        message: localization?.passwordRequired
+        message: localization?.PASSWORD_REQUIRED
     })
     if (passwordValidation?.minLength) {
         schema = schema.min(passwordValidation.minLength, {
-            message: localization?.passwordTooShort
+            message: localization?.PASSWORD_TOO_SHORT
         })
     }
     if (passwordValidation?.maxLength) {
         schema = schema.max(passwordValidation.maxLength, {
-            message: localization?.passwordTooLong
+            message: localization?.PASSWORD_TOO_LONG
         })
     }
     if (passwordValidation?.regex) {
         schema = schema.regex(passwordValidation.regex, {
-            message: localization?.passwordInvalid
+            message: localization?.INVALID_PASSWORD
         })
     }
     return schema

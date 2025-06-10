@@ -9,12 +9,23 @@ import {
     SettingsIcon,
     UserRoundPlus
 } from "lucide-react"
-import { Fragment, type ReactNode, useContext, useEffect, useState } from "react"
+import {
+    type ComponentProps,
+    Fragment,
+    type ReactNode,
+    type ReactPortal,
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useRef,
+    useState
+} from "react"
 
-import type { AuthLocalization } from "../lib/auth-localization"
 import { AuthUIContext } from "../lib/auth-ui-provider"
 import { getLocalizedError } from "../lib/utils"
 import { cn } from "../lib/utils"
+import type { AuthLocalization } from "../localization/auth-localization"
 import { Button } from "./ui/button"
 import {
     DropdownMenu,
@@ -47,22 +58,20 @@ export interface UserButtonClassNames {
 export interface UserButtonProps {
     className?: string
     classNames?: UserButtonClassNames
+    align?: "center" | "start" | "end"
     additionalLinks?: {
         href: string
         icon?: ReactNode
         label: ReactNode
         signedIn?: boolean
     }[]
+    trigger?: ReactPortal
     disableDefaultLinks?: boolean
     /**
      * @default authLocalization
      * @remarks `AuthLocalization`
      */
     localization?: AuthLocalization
-    /**
-     * @default "icon"
-     */
-    size?: "icon" | "full"
 }
 
 type DeviceSession = {
@@ -83,18 +92,21 @@ type DeviceSession = {
 export function UserButton({
     className,
     classNames,
+    align,
+    trigger,
     additionalLinks,
     disableDefaultLinks,
-    localization,
-    size = "icon"
-}: UserButtonProps) {
+    localization: propLocalization,
+    size,
+    ...props
+}: UserButtonProps & ComponentProps<typeof Button>) {
     const {
         basePath,
         hooks: { useSession, useListDeviceSessions },
         mutators: { setActiveSession },
-        localization: authLocalization,
+        localization: contextLocalization,
         multiSession,
-        settingsURL,
+        settings,
         signUp,
         toast,
         viewPaths,
@@ -102,7 +114,10 @@ export function UserButton({
         Link
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...propLocalization }),
+        [contextLocalization, propLocalization]
+    )
 
     let deviceSessions: DeviceSession[] | undefined | null = null
     let deviceSessionsPending = false
@@ -119,20 +134,24 @@ export function UserButton({
 
     const isPending = sessionPending || activeSessionPending
 
-    const switchAccount = async (sessionToken: string) => {
-        setActiveSessionPending(true)
+    const switchAccount = useCallback(
+        async (sessionToken: string) => {
+            setActiveSessionPending(true)
 
-        try {
-            await setActiveSession({ sessionToken })
-            onSessionChange?.()
-        } catch (error) {
-            toast({
-                variant: "error",
-                message: getLocalizedError({ error, localization })
-            })
-            setActiveSessionPending(false)
-        }
-    }
+            try {
+                await setActiveSession({ sessionToken })
+
+                onSessionChange?.()
+            } catch (error) {
+                toast({
+                    variant: "error",
+                    message: getLocalizedError({ error, localization })
+                })
+                setActiveSessionPending(false)
+            }
+        },
+        [setActiveSession, onSessionChange, toast, localization]
+    )
 
     // biome-ignore lint/correctness/useExhaustiveDependencies:
     useEffect(() => {
@@ -141,53 +160,73 @@ export function UserButton({
         setActiveSessionPending(false)
     }, [sessionData, multiSession])
 
+    const warningLogged = useRef(false)
+
+    useEffect(() => {
+        if (size || warningLogged.current) return
+
+        console.warn(
+            "[Better Auth UI] The `size` prop of `UserButton` no longer defaults to `icon`. Please pass `size='icon'` to the `UserButton` component to get the same behaviour as before. This warning will be removed in a future release. It can be suppressed in the meantime by defining the `size` prop."
+        )
+
+        warningLogged.current = true
+    }, [size])
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger
-                asChild={size === "full"}
-                className={cn(size === "icon" && "rounded-full", classNames?.trigger?.base)}
+                asChild
+                className={cn(
+                    size === "icon" && "rounded-full",
+                    classNames?.trigger?.base
+                )}
             >
-                {size === "icon" ? (
-                    <UserAvatar
-                        key={user?.image}
-                        isPending={isPending}
-                        className={cn("size-8", className, classNames?.base)}
-                        classNames={classNames?.trigger?.avatar}
-                        user={user}
-                        aria-label={localization.account}
-                    />
-                ) : (
-                    <Button
-                        className={cn(
-                            "h-fit justify-between",
-                            className,
-                            classNames?.trigger?.base
-                        )}
-                        variant="outline"
-                    >
-                        {(user && !user.isAnonymous) || isPending ? (
-                            <UserView
+                {trigger ||
+                    (size === "icon" ? (
+                        <Button
+                            size="icon"
+                            className="size-fit rounded-full"
+                            variant="ghost"
+                        >
+                            <UserAvatar
+                                key={user?.image}
+                                isPending={isPending}
+                                className={cn(className, classNames?.base)}
+                                classNames={classNames?.trigger?.avatar}
                                 user={user}
+                                aria-label={localization.ACCOUNT}
+                                localization={localization}
+                            />
+                        </Button>
+                    ) : (
+                        <Button
+                            className={cn(
+                                "!p-2 h-fit",
+                                className,
+                                classNames?.trigger?.base
+                            )}
+                            size={size}
+                            {...props}
+                        >
+                            <UserView
+                                size={size}
+                                user={!user?.isAnonymous ? user : null}
                                 isPending={isPending}
                                 classNames={classNames?.trigger?.user}
+                                localization={localization}
                             />
-                        ) : (
-                            <div className="flex items-center gap-2 truncate">
-                                <UserAvatar className={cn("my-0.5", classNames?.trigger?.avatar)} />
 
-                                <span className="truncate font-medium text-sm">
-                                    {localization?.account}
-                                </span>
-                            </div>
-                        )}
-
-                        <ChevronsUpDown />
-                    </Button>
-                )}
+                            <ChevronsUpDown className="ml-auto" />
+                        </Button>
+                    ))}
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
-                className={cn("max-w-64", classNames?.content?.base)}
+                className={cn(
+                    "w-[--radix-dropdown-menu-trigger-width] min-w-56 max-w-64",
+                    classNames?.content?.base
+                )}
+                align={align}
                 onCloseAutoFocus={(e) => e.preventDefault()}
             >
                 <div className={cn("p-2", classNames?.content?.menuItem)}>
@@ -196,15 +235,18 @@ export function UserButton({
                             user={user}
                             isPending={isPending}
                             classNames={classNames?.content?.user}
+                            localization={localization}
                         />
                     ) : (
                         <div className="-my-1 text-muted-foreground text-xs">
-                            {localization.account}
+                            {localization.ACCOUNT}
                         </div>
                     )}
                 </div>
 
-                <DropdownMenuSeparator className={classNames?.content?.separator} />
+                <DropdownMenuSeparator
+                    className={classNames?.content?.separator}
+                />
 
                 {additionalLinks?.map(
                     ({ href, icon, label, signedIn }, index) =>
@@ -212,10 +254,13 @@ export function UserButton({
                             (signedIn && !!sessionData) ||
                             (!signedIn && !sessionData)) && (
                             <Link key={index} href={href}>
-                                <DropdownMenuItem className={classNames?.content?.menuItem}>
-                                    {icon}
-
-                                    {label}
+                                <DropdownMenuItem
+                                    className={classNames?.content?.menuItem}
+                                >
+                                    <>
+                                        {icon}
+                                        {label}
+                                    </>
                                 </DropdownMenuItem>
                             </Link>
                         )
@@ -223,41 +268,54 @@ export function UserButton({
 
                 {!user || user.isAnonymous ? (
                     <>
-                        <Link href={`${basePath}/${viewPaths.signIn}`}>
-                            <DropdownMenuItem className={classNames?.content?.menuItem}>
+                        <Link href={`${basePath}/${viewPaths.SIGN_IN}`}>
+                            <DropdownMenuItem
+                                className={classNames?.content?.menuItem}
+                            >
                                 <LogInIcon />
 
-                                {localization.signIn}
+                                {localization.SIGN_IN}
                             </DropdownMenuItem>
                         </Link>
 
                         {signUp && (
-                            <Link href={`${basePath}/${viewPaths.signUp}`}>
-                                <DropdownMenuItem className={classNames?.content?.menuItem}>
+                            <Link href={`${basePath}/${viewPaths.SIGN_UP}`}>
+                                <DropdownMenuItem
+                                    className={classNames?.content?.menuItem}
+                                >
                                     <UserRoundPlus />
 
-                                    {localization.signUp}
+                                    {localization.SIGN_UP}
                                 </DropdownMenuItem>
                             </Link>
                         )}
                     </>
                 ) : (
                     <>
-                        {!disableDefaultLinks && (
-                            <Link href={settingsURL || `${basePath}/${viewPaths.settings}`}>
-                                <DropdownMenuItem className={classNames?.content?.menuItem}>
+                        {!disableDefaultLinks && settings && (
+                            <Link
+                                href={
+                                    settings.url ||
+                                    `${basePath}/${viewPaths.SETTINGS}`
+                                }
+                            >
+                                <DropdownMenuItem
+                                    className={classNames?.content?.menuItem}
+                                >
                                     <SettingsIcon />
 
-                                    {localization.settings}
+                                    {localization.SETTINGS}
                                 </DropdownMenuItem>
                             </Link>
                         )}
 
-                        <Link href={`${basePath}/${viewPaths.signOut}`}>
-                            <DropdownMenuItem className={classNames?.content?.menuItem}>
+                        <Link href={`${basePath}/${viewPaths.SIGN_OUT}`}>
+                            <DropdownMenuItem
+                                className={classNames?.content?.menuItem}
+                            >
                                 <LogOutIcon />
 
-                                {localization.signOut}
+                                {localization.SIGN_OUT}
                             </DropdownMenuItem>
                         </Link>
                     </>
@@ -265,7 +323,9 @@ export function UserButton({
 
                 {user && multiSession && (
                     <>
-                        <DropdownMenuSeparator className={classNames?.content?.separator} />
+                        <DropdownMenuSeparator
+                            className={classNames?.content?.separator}
+                        />
 
                         {!deviceSessions && deviceSessionsPending && (
                             <>
@@ -279,35 +339,50 @@ export function UserButton({
                                     />
                                 </DropdownMenuItem>
 
-                                <DropdownMenuSeparator className={classNames?.content?.separator} />
+                                <DropdownMenuSeparator
+                                    className={classNames?.content?.separator}
+                                />
                             </>
                         )}
 
                         {deviceSessions
-                            ?.filter((sessionData) => sessionData.user.id !== user?.id)
+                            ?.filter(
+                                (sessionData) =>
+                                    sessionData.user.id !== user?.id
+                            )
                             .map(({ session, user }) => (
                                 <Fragment key={session.id}>
                                     <DropdownMenuItem
-                                        className={classNames?.content?.menuItem}
-                                        onClick={() => switchAccount(session.token)}
+                                        className={
+                                            classNames?.content?.menuItem
+                                        }
+                                        onClick={() =>
+                                            switchAccount(session.token)
+                                        }
                                     >
                                         <UserView
                                             user={user}
-                                            classNames={classNames?.content?.user}
+                                            classNames={
+                                                classNames?.content?.user
+                                            }
                                         />
                                     </DropdownMenuItem>
 
                                     <DropdownMenuSeparator
-                                        className={classNames?.content?.separator}
+                                        className={
+                                            classNames?.content?.separator
+                                        }
                                     />
                                 </Fragment>
                             ))}
 
-                        <Link href={`${basePath}/${viewPaths.signIn}`}>
-                            <DropdownMenuItem className={classNames?.content?.menuItem}>
+                        <Link href={`${basePath}/${viewPaths.SIGN_IN}`}>
+                            <DropdownMenuItem
+                                className={classNames?.content?.menuItem}
+                            >
                                 <PlusCircleIcon />
 
-                                {localization.addAccount}
+                                {localization.ADD_ACCOUNT}
                             </DropdownMenuItem>
                         </Link>
                     </>

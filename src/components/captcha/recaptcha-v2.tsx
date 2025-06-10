@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react"
+import { type RefObject, useContext, useEffect } from "react"
 import ReCAPTCHA from "react-google-recaptcha"
 import { useLang } from "../../hooks/use-lang"
 import { useTheme } from "../../hooks/use-theme"
@@ -8,7 +8,7 @@ import { cn } from "../../lib/utils"
 export function RecaptchaV2({
     ref
 }: {
-    ref: React.RefObject<ReCAPTCHA | null>
+    ref: RefObject<ReCAPTCHA | null>
 }) {
     const { captcha } = useContext(AuthUIContext)
     const { theme } = useTheme()
@@ -46,7 +46,11 @@ export function RecaptchaV2({
                 sitekey={captcha.siteKey}
                 theme={theme}
                 hl={lang}
-                size={captcha.provider === "google-recaptcha-v2-invisible" ? "invisible" : "normal"}
+                size={
+                    captcha.provider === "google-recaptcha-v2-invisible"
+                        ? "invisible"
+                        : "normal"
+                }
                 className={cn(
                     captcha.provider === "google-recaptcha-v2-invisible"
                         ? "absolute"

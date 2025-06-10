@@ -1,9 +1,10 @@
-import { useQuery } from "@triplit/react"
 import { useMemo } from "react"
 
 import type { AuthHooks } from "../../types/auth-hooks"
 import { getModelName } from "./model-names"
+import { useConditionalQuery } from "./use-conditional-query"
 import type { UseTriplitOptionsProps } from "./use-triplit-hooks"
+import { useTriplitToken } from "./use-triplit-token"
 
 export function useListAccounts({
     triplit,
@@ -17,7 +18,12 @@ export function useListAccounts({
         usePlural
     })
 
-    const { results, error, fetching } = useQuery(triplit, triplit.query(modelName))
+    const { payload } = useTriplitToken(triplit)
+
+    const { results, error, fetching } = useConditionalQuery(
+        triplit,
+        payload?.sub && triplit.query(modelName)
+    )
 
     const accounts = useMemo(() => {
         return results?.map((account) => ({
@@ -28,7 +34,7 @@ export function useListAccounts({
 
     return {
         data: accounts,
-        isPending: !accounts && (isPending || fetching),
+        isPending: isPending || fetching,
         error
     }
 }

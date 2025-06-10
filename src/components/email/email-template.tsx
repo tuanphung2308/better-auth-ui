@@ -58,9 +58,11 @@ export const EmailTemplate = ({
     variant = "vercel",
     url
 }: EmailTemplateProps) => {
-    baseUrl = baseUrl || process.env.BASE_URL || process.env.NEXT_PUBLIC_BASE_URL
+    baseUrl =
+        baseUrl || process.env.BASE_URL || process.env.NEXT_PUBLIC_BASE_URL
     imageUrl = imageUrl || `${baseUrl}/apple-touch-icon.png`
-    siteName = siteName || process.env.SITE_NAME || process.env.NEXT_PUBLIC_SITE_NAME
+    siteName =
+        siteName || process.env.SITE_NAME || process.env.NEXT_PUBLIC_SITE_NAME
     preview = preview || (typeof heading === "string" ? heading : undefined)
 
     return (
@@ -125,12 +127,20 @@ export const EmailTemplate = ({
             {preview && <Preview>{preview}</Preview>}
 
             <Tailwind>
-                <Body className={cn("mx-auto my-auto px-2 font-sans", classNames?.body)}>
+                <Body
+                    className={cn(
+                        "mx-auto my-auto px-2 font-sans",
+                        classNames?.body
+                    )}
+                >
                     <Container className="mx-auto my-[40px] max-w-[465px] rounded border border-color border-solid p-[20px]">
                         <Section className="mt-[32px]">
                             <Img
                                 alt={siteName}
-                                className={cn("mx-auto my-0 rounded-full", classNames?.image)}
+                                className={cn(
+                                    "mx-auto my-0 rounded-full",
+                                    classNames?.image
+                                )}
                                 height="40"
                                 src={imageUrl}
                                 width="40"
@@ -146,7 +156,12 @@ export const EmailTemplate = ({
                             {heading}
                         </Heading>
 
-                        <Text className={cn("text-[14px] leading-[24px]", classNames?.content)}>
+                        <Text
+                            className={cn(
+                                "text-[14px] leading-[24px]",
+                                classNames?.content
+                            )}
+                        >
                             {content}
                         </Text>
 
@@ -181,10 +196,15 @@ export const EmailTemplate = ({
 
                             {baseUrl && (
                                 <Link
-                                    className={cn("no-underline", classNames?.link)}
+                                    className={cn(
+                                        "no-underline",
+                                        classNames?.link
+                                    )}
                                     href={baseUrl}
                                 >
-                                    {baseUrl?.replace("https://", "").replace("http://", "")}
+                                    {baseUrl
+                                        ?.replace("https://", "")
+                                        .replace("http://", "")}
                                 </Link>
                             )}
                         </Text>

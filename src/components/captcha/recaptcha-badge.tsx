@@ -1,8 +1,8 @@
 import { useContext } from "react"
 import { useIsHydrated } from "../../hooks/use-hydrated"
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
+import type { AuthLocalization } from "../../localization/auth-localization"
 
 export interface RecaptchaV3BadgeProps {
     className?: string
@@ -14,7 +14,8 @@ export function RecaptchaBadge({
     localization: propLocalization
 }: RecaptchaV3BadgeProps) {
     const isHydrated = useIsHydrated()
-    const { captcha, localization: contextLocalization } = useContext(AuthUIContext)
+    const { captcha, localization: contextLocalization } =
+        useContext(AuthUIContext)
     const localization = { ...contextLocalization, ...propLocalization }
 
     if (!captcha) return null
@@ -34,14 +35,15 @@ export function RecaptchaBadge({
             `}</style>
 
             <p className={cn("text-muted-foreground text-xs", className)}>
-                {localization.protectedByRecaptcha} {localization.byContinuingYouAgree} Google{" "}
+                {localization.PROTECTED_BY_RECAPTCHA}{" "}
+                {localization.BY_CONTINUING_YOU_AGREE} Google{" "}
                 <a
                     className="text-foreground hover:underline"
                     href="https://policies.google.com/privacy"
                     target="_blank"
                     rel="noreferrer"
                 >
-                    {localization.privacyPolicy}
+                    {localization.PRIVACY_POLICY}
                 </a>{" "}
                 &{" "}
                 <a
@@ -50,7 +52,7 @@ export function RecaptchaBadge({
                     target="_blank"
                     rel="noreferrer"
                 >
-                    {localization.termsOfService}
+                    {localization.TERMS_OF_SERVICE}
                 </a>
                 .
             </p>

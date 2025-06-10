@@ -1,8 +1,8 @@
 "use client"
 
 import { useContext, useState } from "react"
-import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import type { AuthLocalization } from "../../../localization/auth-localization"
 import { SettingsCard } from "../shared/settings-card"
 import type { SettingsCardClassNames } from "../shared/settings-card"
 import { TwoFactorPasswordDialog } from "./two-factor-password-dialog"
@@ -13,7 +13,11 @@ export interface TwoFactorCardProps {
     localization?: AuthLocalization
 }
 
-export function TwoFactorCard({ className, classNames, localization }: TwoFactorCardProps) {
+export function TwoFactorCard({
+    className,
+    classNames,
+    localization
+}: TwoFactorCardProps) {
     const {
         localization: contextLocalization,
         hooks: { useSession }
@@ -31,15 +35,19 @@ export function TwoFactorCard({ className, classNames, localization }: TwoFactor
             <SettingsCard
                 className={className}
                 classNames={classNames}
-                actionLabel={isTwoFactorEnabled ? localization.disable : localization.enable}
-                description={localization.twoFactorCardDescription}
+                actionLabel={
+                    isTwoFactorEnabled
+                        ? localization.DISABLE_TWO_FACTOR
+                        : localization.ENABLE_TWO_FACTOR
+                }
+                description={localization.TWO_FACTOR_CARD_DESCRIPTION}
                 instructions={
                     isTwoFactorEnabled
-                        ? localization.twoFactorDisableInstructions
-                        : localization.twoFactorEnableInstructions
+                        ? localization.TWO_FACTOR_DISABLE_INSTRUCTIONS
+                        : localization.TWO_FACTOR_ENABLE_INSTRUCTIONS
                 }
                 isPending={isPending}
-                title={localization.twoFactor}
+                title={localization.TWO_FACTOR}
                 action={() => setShowPasswordDialog(true)}
             />
 

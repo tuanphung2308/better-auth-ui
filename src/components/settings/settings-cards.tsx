@@ -1,140 +1,146 @@
 "use client"
 
-import type { Session, User } from "better-auth"
-import { KeyIcon, LockIcon, MenuIcon, UserIcon } from "lucide-react"
-import { useContext, useState } from "react"
+import { MenuIcon } from "lucide-react"
+import { useContext } from "react"
 
 import { useAuthenticate } from "../../hooks/use-authenticate"
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
-import type { ApiKey } from "../../types/api-key"
+import type { AuthLocalization } from "../../localization/auth-localization"
+import { OrganizationInvitationsCard } from "../organization/organization-invitations-card"
+import { OrganizationMembersCard } from "../organization/organization-members-card"
+import { OrganizationSettingsCards } from "../organization/organization-settings-cards"
+import { OrganizationsCard } from "../organization/organizations-card"
 import { Button } from "../ui/button"
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger
-} from "../ui/dropdown-menu"
-import { AccountsCard } from "./accounts-card"
+    Drawer,
+    DrawerContent,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger
+} from "../ui/drawer"
+import { Label } from "../ui/label"
+import { AccountSettingsCards } from "./account-settings-cards"
 import { APIKeysCard } from "./api-key/api-keys-card"
-import { ChangeEmailCard } from "./change-email-card"
-import { ChangePasswordCard } from "./change-password-card"
-import { DeleteAccountCard } from "./delete-account-card"
-import { PasskeysCard } from "./passkeys-card"
-import { ProvidersCard } from "./providers-card"
-import { SessionsCard } from "./sessions-card"
+import { SecuritySettingsCards } from "./security-settings-cards"
 import type { SettingsCardClassNames } from "./shared/settings-card"
-import { UpdateFieldCard } from "./shared/update-field-card"
-import { TwoFactorCard } from "./two-factor/two-factor-card"
-import { UpdateAvatarCard } from "./update-avatar-card"
-import { UpdateNameCard } from "./update-name-card"
-import { UpdateUsernameCard } from "./update-username-card"
 
 export type SettingsCardsClassNames = {
     base?: string
     card?: SettingsCardClassNames
     cards?: string
     icon?: string
-    dropdown?: {
+    drawer?: {
         base?: string
         trigger?: string
         content?: string
         menuIcon?: string
+        menuItem?: string
     }
     sidebar?: {
         base?: string
         button?: string
+        buttonActive?: string
     }
+}
+
+export const settingsViews = [
+    "SETTINGS",
+    "SECURITY",
+    "API_KEYS",
+    "ORGANIZATION",
+    "ORGANIZATIONS",
+    "MEMBERS"
+] as const
+export type SettingsView = (typeof settingsViews)[number]
+
+interface NavigationItem {
+    view: SettingsView
+    label?: string
 }
 
 export interface SettingsCardsProps {
     className?: string
     classNames?: SettingsCardsClassNames
     localization?: AuthLocalization
+    view?: SettingsView
 }
 
-export function SettingsCards({ className, classNames, localization }: SettingsCardsProps) {
+export function SettingsCards({
+    className,
+    classNames,
+    localization,
+    view
+}: SettingsCardsProps) {
     useAuthenticate()
-    const [tab, setTab] = useState<"account" | "security" | "api-keys">("account")
 
     const {
-        additionalFields,
-        apiKeys: contextApiKeys,
-        avatar,
-        credentials,
-        changeEmail,
-        deleteUser,
-        hooks,
+        apiKey,
+        basePath,
         localization: contextLocalization,
-        multiSession,
-        nameRequired,
-        otherProviders,
-        passkey,
-        providers,
-        settingsFields,
-        username,
-        twoFactor
+        organization,
+        viewPaths,
+        Link
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
 
-    const {
-        useListAccounts,
-        useListDeviceSessions,
-        useListPasskeys,
-        useListSessions,
-        useListApiKeys,
-        useSession
-    } = hooks
-    const { data: sessionData, isPending: sessionPending } = useSession()
+    // Personal settings group
+    const personalGroup: NavigationItem[] = [
+        {
+            view: "SETTINGS",
+            label: localization.ACCOUNT
+        },
+        {
+            view: "SECURITY",
+            label: localization.SECURITY
+        }
+    ]
 
-    const {
-        data: accounts,
-        isPending: accountsPending,
-        refetch: refetchAccounts
-    } = useListAccounts()
-
-    const credentialsLinked = accounts?.some((acc) => acc.provider === "credential")
-
-    const {
-        data: sessions,
-        isPending: sessionsPending,
-        refetch: refetchSessions
-    } = useListSessions()
-
-    let passkeys: { id: string; createdAt: Date }[] | undefined | null = undefined
-    let passkeysPending: boolean | undefined = undefined
-    let refetchPasskeys: (() => Promise<void>) | undefined = undefined
-
-    if (passkey) {
-        const result = useListPasskeys()
-        passkeys = result.data
-        passkeysPending = result.isPending
-        refetchPasskeys = result.refetch
+    if (apiKey) {
+        personalGroup.push({
+            view: "API_KEYS",
+            label: localization.API_KEYS
+        })
     }
 
-    let deviceSessions: { user: User; session: Session }[] | undefined | null = undefined
-    let deviceSessionsPending: boolean | undefined = undefined
-    let refetchDeviceSessions: (() => Promise<void>) | undefined = undefined
-
-    if (multiSession) {
-        const result = useListDeviceSessions()
-        deviceSessions = result.data
-        deviceSessionsPending = result.isPending
-        refetchDeviceSessions = result.refetch
+    if (organization) {
+        personalGroup.push({
+            view: "ORGANIZATIONS",
+            label: localization.ORGANIZATIONS
+        })
     }
 
-    let apiKeys: ApiKey[] | undefined | null = undefined
-    let apiKeysPending: boolean | undefined = undefined
-    let refetchApiKeys: (() => Promise<void>) | undefined = undefined
+    // Organization settings group
+    const organizationGroup: NavigationItem[] = []
 
-    if (contextApiKeys) {
-        const result = useListApiKeys()
-        apiKeys = result.data
-        apiKeysPending = result.isPending
-        refetchApiKeys = result.refetch
+    if (organization) {
+        organizationGroup.push({
+            view: "ORGANIZATION",
+            label: localization.ORGANIZATION
+        })
+
+        organizationGroup.push({
+            view: "MEMBERS",
+            label: localization.MEMBERS
+        })
     }
+
+    // Determine which group the current view belongs to
+    const isPersonalView = personalGroup.some((item) => item.view === view)
+    const isOrganizationView =
+        organizationGroup.some((item) => item.view === view) ||
+        view === "MEMBERS"
+
+    // Show navigation for the current group
+    const currentNavigationGroup = isOrganizationView
+        ? organizationGroup
+        : personalGroup
+
+    // Flatten all items for finding current item
+    const currentItem = currentNavigationGroup.find(
+        (item) => item.view === view
+    )
 
     return (
         <div
@@ -144,253 +150,144 @@ export function SettingsCards({ className, classNames, localization }: SettingsC
                 classNames?.base
             )}
         >
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        size="lg"
-                        className={cn(
-                            "w-full justify-start md:hidden",
-                            classNames?.dropdown?.trigger
-                        )}
-                    >
-                        {tab === "account" && (
-                            <>
-                                <UserIcon className={classNames?.icon} />
-                                {localization.account}
-                            </>
-                        )}
+            <div className="flex justify-between gap-2 md:hidden">
+                <Label className="font-semibold text-base">
+                    {currentItem?.label}
+                </Label>
 
-                        {tab === "security" && (
-                            <>
-                                <LockIcon className={classNames?.icon} />
-                                {localization.security}
-                            </>
-                        )}
+                <Drawer>
+                    <DrawerTrigger asChild>
+                        <Button
+                            className={cn(classNames?.drawer?.trigger)}
+                            variant="outline"
+                        >
+                            <MenuIcon
+                                className={cn(classNames?.drawer?.menuIcon)}
+                            />
+                        </Button>
+                    </DrawerTrigger>
 
-                        {tab === "api-keys" && (
-                            <>
-                                <KeyIcon className={classNames?.icon} />
-                                {localization.apiKeys}
-                            </>
-                        )}
-
-                        <MenuIcon className={cn("ml-auto", classNames?.dropdown?.menuIcon)} />
-                    </Button>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent
-                    className={cn("w-[calc(100svw-1rem)]", classNames?.dropdown?.content)}
-                >
-                    <DropdownMenuItem onClick={() => setTab("account")}>
-                        <UserIcon />
-                        {localization.account}
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem onClick={() => setTab("security")}>
-                        <LockIcon />
-                        {localization.security}
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem onClick={() => setTab("api-keys")}>
-                        <KeyIcon />
-                        {localization.apiKeys}
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+                    <DrawerContent className={cn(classNames?.drawer?.content)}>
+                        <DrawerHeader>
+                            <DrawerTitle className="hidden">
+                                {localization.SETTINGS}
+                            </DrawerTitle>
+                        </DrawerHeader>
+                        <div className="flex flex-col px-4 pb-4">
+                            {currentNavigationGroup.map((item) => (
+                                <Link
+                                    key={item.view}
+                                    href={`${basePath}/${viewPaths[item.view]}`}
+                                >
+                                    <Button
+                                        size="lg"
+                                        className={cn(
+                                            "w-full justify-start px-4 transition-none",
+                                            classNames?.drawer?.menuItem,
+                                            view === item.view
+                                                ? "font-semibold"
+                                                : "text-foreground/70"
+                                        )}
+                                        variant="ghost"
+                                    >
+                                        {item.label}
+                                    </Button>
+                                </Link>
+                            ))}
+                        </div>
+                    </DrawerContent>
+                </Drawer>
+            </div>
 
             <div className="hidden md:block">
-                <div className={cn("grid w-64 gap-1 xl:w-72", classNames?.sidebar?.base)}>
-                    <Button
-                        size="lg"
-                        className={cn("w-full justify-start", classNames?.sidebar?.button)}
-                        variant={tab === "account" ? "default" : "ghost"}
-                        onClick={() => setTab("account")}
-                    >
-                        <UserIcon className={classNames?.icon} />
-                        {localization.account}
-                    </Button>
-
-                    <Button
-                        size="lg"
-                        className={cn("w-full justify-start", classNames?.sidebar?.button)}
-                        variant={tab === "security" ? "default" : "ghost"}
-                        onClick={() => setTab("security")}
-                    >
-                        <LockIcon className={classNames?.icon} />
-                        {localization.security}
-                    </Button>
-
-                    {contextApiKeys && (
-                        <Button
-                            size="lg"
-                            className={cn("w-full justify-start", classNames?.sidebar?.button)}
-                            variant={tab === "api-keys" ? "default" : "ghost"}
-                            onClick={() => setTab("api-keys")}
-                        >
-                            <KeyIcon className={classNames?.icon} />
-                            {localization.apiKeys}
-                        </Button>
+                <div
+                    className={cn(
+                        "flex w-60 flex-col gap-1",
+                        classNames?.sidebar?.base
                     )}
+                >
+                    {currentNavigationGroup.map((item) => (
+                        <Link
+                            key={item.view}
+                            href={`${basePath}/${viewPaths[item.view]}`}
+                        >
+                            <Button
+                                size="lg"
+                                className={cn(
+                                    "w-full justify-start px-4 transition-none",
+                                    classNames?.sidebar?.button,
+                                    view === item.view
+                                        ? "font-semibold"
+                                        : "text-foreground/70",
+                                    view === item.view &&
+                                        classNames?.sidebar?.buttonActive
+                                )}
+                                variant="ghost"
+                            >
+                                {item.label}
+                            </Button>
+                        </Link>
+                    ))}
                 </div>
             </div>
 
-            <div className={cn("flex w-full flex-col gap-4 md:gap-6", classNames?.cards)}>
-                {tab === "account" && (
-                    <>
-                        {avatar && (
-                            <UpdateAvatarCard
-                                classNames={classNames?.card}
-                                isPending={sessionPending}
-                                localization={localization}
-                            />
-                        )}
+            {view === "SETTINGS" && (
+                <AccountSettingsCards
+                    classNames={classNames}
+                    localization={localization}
+                />
+            )}
 
-                        {username && (
-                            <UpdateUsernameCard
-                                classNames={classNames?.card}
-                                isPending={sessionPending}
-                                localization={localization}
-                            />
-                        )}
+            {view === "SECURITY" && (
+                <SecuritySettingsCards
+                    classNames={classNames}
+                    localization={localization}
+                />
+            )}
 
-                        {(settingsFields?.includes("name") || nameRequired) && (
-                            <UpdateNameCard
-                                classNames={classNames?.card}
-                                isPending={sessionPending}
-                                localization={localization}
-                            />
-                        )}
-
-                        {changeEmail && (
-                            <ChangeEmailCard
-                                classNames={classNames?.card}
-                                isPending={sessionPending}
-                                localization={localization}
-                            />
-                        )}
-
-                        {settingsFields?.map((field) => {
-                            const additionalField = additionalFields?.[field]
-                            if (!additionalField) return null
-
-                            const {
-                                label,
-                                description,
-                                instructions,
-                                placeholder,
-                                required,
-                                type,
-                                validate
-                            } = additionalField
-
-                            // @ts-ignore Custom fields are not typed
-                            const defaultValue = sessionData?.user[field] as unknown
-
-                            return (
-                                <UpdateFieldCard
-                                    key={field}
-                                    classNames={classNames?.card}
-                                    value={defaultValue}
-                                    description={description}
-                                    name={field}
-                                    instructions={instructions}
-                                    isPending={sessionPending}
-                                    label={label}
-                                    localization={localization}
-                                    placeholder={placeholder}
-                                    required={required}
-                                    type={type}
-                                    validate={validate}
-                                />
-                            )
-                        })}
-
-                        {multiSession && (
-                            <AccountsCard
-                                classNames={classNames?.card}
-                                deviceSessions={deviceSessions}
-                                isPending={deviceSessionsPending}
-                                localization={localization}
-                                refetch={refetchDeviceSessions}
-                                skipHook
-                            />
-                        )}
-                    </>
-                )}
-
-                {tab === "security" && (
-                    <>
-                        {credentials && (
-                            <ChangePasswordCard
-                                accounts={accounts}
-                                classNames={classNames?.card}
-                                isPending={sessionPending}
-                                localization={localization}
-                                skipHook
-                            />
-                        )}
-
-                        {(providers?.length || otherProviders?.length) && (
-                            <ProvidersCard
-                                accounts={accounts}
-                                classNames={classNames?.card}
-                                isPending={accountsPending}
-                                localization={localization}
-                                refetch={refetchAccounts}
-                                skipHook
-                            />
-                        )}
-
-                        {twoFactor && credentialsLinked && (
-                            <TwoFactorCard
-                                classNames={classNames?.card}
-                                localization={localization}
-                            />
-                        )}
-
-                        {passkey && (
-                            <PasskeysCard
-                                classNames={classNames?.card}
-                                isPending={passkeysPending}
-                                localization={localization}
-                                passkeys={passkeys}
-                                refetch={refetchPasskeys}
-                                skipHook
-                            />
-                        )}
-
-                        <SessionsCard
-                            classNames={classNames?.card}
-                            isPending={sessionsPending}
-                            localization={localization}
-                            sessions={sessions}
-                            refetch={refetchSessions}
-                            skipHook
-                        />
-
-                        {deleteUser && (
-                            <DeleteAccountCard
-                                accounts={accounts}
-                                classNames={classNames?.card}
-                                isPending={sessionPending}
-                                localization={localization}
-                                skipHook
-                            />
-                        )}
-                    </>
-                )}
-
-                {tab === "api-keys" && contextApiKeys && (
+            {view === "API_KEYS" && apiKey && (
+                <div className={cn("flex w-full flex-col", classNames?.cards)}>
                     <APIKeysCard
                         classNames={classNames?.card}
-                        isPending={apiKeysPending}
                         localization={localization}
-                        apiKeys={apiKeys}
-                        refetch={refetchApiKeys}
-                        skipHook
                     />
-                )}
-            </div>
+                </div>
+            )}
+
+            {view === "ORGANIZATION" && organization && (
+                <OrganizationSettingsCards
+                    classNames={classNames}
+                    localization={localization}
+                />
+            )}
+
+            {view === "ORGANIZATIONS" && organization && (
+                <div className={cn("flex w-full flex-col", classNames?.cards)}>
+                    <OrganizationsCard
+                        classNames={classNames?.card}
+                        localization={localization}
+                    />
+                </div>
+            )}
+
+            {view === "MEMBERS" && organization && (
+                <div
+                    className={cn(
+                        "flex w-full flex-col gap-4 md:gap-6",
+                        classNames?.cards
+                    )}
+                >
+                    <OrganizationMembersCard
+                        classNames={classNames?.card}
+                        localization={localization}
+                    />
+
+                    <OrganizationInvitationsCard
+                        classNames={classNames?.card}
+                        localization={localization}
+                    />
+                </div>
+            )}
         </div>
     )
 }

@@ -1,12 +1,21 @@
-import { useCallback, useContext, useEffect, useState, useTransition } from "react"
+import {
+    useCallback,
+    useContext,
+    useEffect,
+    useState,
+    useTransition
+} from "react"
 import { AuthUIContext } from "../lib/auth-ui-provider"
 import { getSearchParam } from "../lib/utils"
 
-export function useOnSuccessTransition({ redirectTo: redirectToProp }: { redirectTo?: string }) {
+export function useOnSuccessTransition({
+    redirectTo: redirectToProp
+}: { redirectTo?: string }) {
     const { redirectTo: contextRedirectTo } = useContext(AuthUIContext)
 
     const getRedirectTo = useCallback(
-        () => redirectToProp || getSearchParam("redirectTo") || contextRedirectTo,
+        () =>
+            redirectToProp || getSearchParam("redirectTo") || contextRedirectTo,
         [redirectToProp, contextRedirectTo]
     )
 

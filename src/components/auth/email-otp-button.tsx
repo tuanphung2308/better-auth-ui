@@ -1,10 +1,10 @@
 import { LockIcon, MailIcon } from "lucide-react"
 import { useContext } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { cn } from "../../lib/utils"
+import type { AuthLocalization } from "../../localization/auth-localization"
 import { Button } from "../ui/button"
 import type { AuthCardClassNames } from "./auth-card"
 
@@ -25,23 +25,29 @@ export function EmailOTPButton({
 
     return (
         <Button
-            className={cn("w-full", classNames?.form?.button, classNames?.form?.secondaryButton)}
+            className={cn(
+                "w-full",
+                classNames?.form?.button,
+                classNames?.form?.secondaryButton
+            )}
             disabled={isSubmitting}
             type="button"
             variant="secondary"
             onClick={() =>
                 navigate(
-                    `${basePath}/${view === "emailOTP" ? viewPaths.signIn : viewPaths.emailOTP}${window.location.search}`
+                    `${basePath}/${view === "EMAIL_OTP" ? viewPaths.SIGN_IN : viewPaths.EMAIL_OTP}${window.location.search}`
                 )
             }
         >
-            {view === "emailOTP" ? (
+            {view === "EMAIL_OTP" ? (
                 <LockIcon className={classNames?.form?.icon} />
             ) : (
                 <MailIcon className={classNames?.form?.icon} />
             )}
-            {localization.signInWith}{" "}
-            {view === "emailOTP" ? localization.password : localization.emailOTP}
+            {localization.SIGN_IN_WITH}{" "}
+            {view === "EMAIL_OTP"
+                ? localization.PASSWORD
+                : localization.EMAIL_OTP}
         </Button>
     )
 }

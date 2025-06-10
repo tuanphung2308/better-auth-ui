@@ -1,10 +1,9 @@
 import { useContext, useEffect, useMemo, useRef } from "react"
 
 import { useOnSuccessTransition } from "../../hooks/use-success-transition"
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { getLocalizedError } from "../../lib/utils"
-import type { AuthClient } from "../../types/auth-client"
+import type { AuthLocalization } from "../../localization/auth-localization"
 
 interface OneTapProps {
     localization: Partial<AuthLocalization>
@@ -12,7 +11,11 @@ interface OneTapProps {
 }
 
 export function OneTap({ localization, redirectTo }: OneTapProps) {
-    const { authClient, localization: contextLocalization, toast } = useContext(AuthUIContext)
+    const {
+        authClient,
+        localization: contextLocalization,
+        toast
+    } = useContext(AuthUIContext)
     const oneTapFetched = useRef(false)
 
     localization = useMemo(
@@ -27,7 +30,7 @@ export function OneTap({ localization, redirectTo }: OneTapProps) {
         oneTapFetched.current = true
 
         try {
-            ;(authClient as AuthClient).oneTap({
+            authClient.oneTap({
                 fetchOptions: {
                     throw: true,
                     onSuccess

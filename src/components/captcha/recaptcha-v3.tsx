@@ -1,5 +1,8 @@
-import { GoogleReCaptchaProvider, useGoogleReCaptcha } from "@wojtekmaj/react-recaptcha-v3"
-import { useContext, useEffect } from "react"
+import {
+    GoogleReCaptchaProvider,
+    useGoogleReCaptcha
+} from "@wojtekmaj/react-recaptcha-v3"
+import { type ReactNode, useContext, useEffect } from "react"
 
 import { useIsHydrated } from "../../hooks/use-hydrated"
 import { useLang } from "../../hooks/use-lang"
@@ -9,7 +12,7 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 export function RecaptchaV3({
     children
 }: {
-    children: React.ReactNode
+    children: ReactNode
 }) {
     const isHydrated = useIsHydrated()
     const { captcha } = useContext(AuthUIContext)
@@ -56,7 +59,9 @@ function RecaptchaV3Style() {
 
         const updateRecaptcha = async () => {
             // find iframe with title "reCAPTCHA"
-            const iframe = document.querySelector("iframe[title='reCAPTCHA']") as HTMLIFrameElement
+            const iframe = document.querySelector(
+                "iframe[title='reCAPTCHA']"
+            ) as HTMLIFrameElement
             if (iframe) {
                 const iframeSrcUrl = new URL(iframe.src)
                 iframeSrcUrl.searchParams.set("theme", theme)

@@ -11,6 +11,6 @@ import { useAuthenticate } from "../hooks/use-authenticate"
  * redirecting users to sign in from various parts of the application.
  */
 export function RedirectToSignIn(): ReactNode {
-    useAuthenticate({ authView: "signIn" })
+    useAuthenticate({ authView: "SIGN_IN" })
     return null
 }

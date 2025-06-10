@@ -28,13 +28,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
             onSessionChange={() => router.refresh()}
             Link={Link}
             viewPaths={{
-                signIn: "login",
-                signOut: "logout",
-                signUp: "register",
-                forgotPassword: "forgot",
-                resetPassword: "reset",
-                magicLink: "magic",
-                settings: "config"
+                SIGN_IN: "login",
+                SIGN_OUT: "logout",
+                SIGN_UP: "register",
+                FORGOT_PASSWORD: "forgot",
+                RESET_PASSWORD: "reset",
+                MAGIC_LINK: "magic",
+                SETTINGS: "config"
             }}
         >
             {children}
@@ -68,13 +68,13 @@ import { authViewPaths } from "@daveyplate/better-auth-ui/server"
 export function generateStaticParams() {
     return Object.values({
         ...authViewPaths,
-        signIn: "login",
-        signOut: "logout",
-        signUp: "register",
-        forgotPassword: "forgot",
-        resetPassword: "reset",
-        magicLink: "magic",
-        settings: "config"
+        SIGN_IN: "login",
+        SIGN_OUT: "logout",
+        SIGN_UP: "register",
+        FORGOT_PASSWORD: "forgot",
+        RESET_PASSWORD: "reset",
+        MAGIC_LINK: "magic",
+        SETTINGS: "config"
     }).map((pathname) => ({ pathname }))
 }
 

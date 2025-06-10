@@ -11,11 +11,11 @@ This component automatically leverages all the features you have enabled via the
 
 ## Default Settings Page Behavior
 
-By default, the built-in [`<AuthCard />`](/components/auth-card) component automatically displays `<SettingsCards />` when the `/auth/settings` route is accessed. If you prefer to handle user settings on a custom route or component, you can override this behavior using the `settingsURL` prop.
+By default, the built-in [`<AuthCard />`](/components/auth-card) component automatically displays `<SettingsCards />` when the `/auth/settings` route is accessed. If you prefer to handle user settings on a custom route or component, you can override this behavior using the `settings.url` prop.
 
-## Overriding Built-in SettingsURL 
+## Overriding Built-in Settings URL 
 
-To use your own custom settings route and avoid using the default included settings card, you can specify the `settingsURL` prop within your [`<AuthUIProvider>`](/components/auth-ui-provider) configuration:
+To use your own custom settings route and avoid using the default included settings card, you can specify the `settings.url` prop within your [`<AuthUIProvider>`](/components/auth-ui-provider) configuration:
 
 ```tsx title="app/providers.tsx"
 import { AuthUIProvider } from "@daveyplate/better-auth-ui"
@@ -32,7 +32,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
             navigate={router.push}
             replace={router.replace}
             onSessionChange={() => router.refresh()}
-            settingsURL="/dashboard/settings"  // Your custom settings page URL
+            settings={{
+                url: "/dashboard/settings"  // Your custom settings page URL
+            }}
             Link={Link}
         >
             {children}
@@ -41,7 +43,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
-By setting the `settingsURL` as shown above, the built-in `/auth/settings` page will also automatically redirect users to your specified `/dashboard/settings` page.
+By setting the `settings.url` as shown above, the built-in `/auth/settings` page will also automatically redirect users to your specified `/dashboard/settings` page.
 
 ---
 
@@ -71,7 +73,7 @@ You can customize the UI extensively by passing TailwindCSS classes or customizi
 
 ### Customizing Styles with classNames
 
-Using Tailwind utility classes, you can fully customize all card states. Here’s an example to illustrate significant styling customization:
+Using Tailwind utility classes, you can fully customize all card states. Here's an example to illustrate significant styling customization:
 
 ```tsx
 <SettingsCards
@@ -104,7 +106,7 @@ Using Tailwind utility classes, you can fully customize all card states. Here’
 
 #### Custom Additional Fields
 
-The `<SettingsCards />` also supports displaying any custom `additionalFields` you've provided via the `settingsFields` prop of the `<AuthUIProvider>`:
+The `<SettingsCards />` also supports displaying any custom `additionalFields` you've provided via the `settings.fields` prop of the `<AuthUIProvider>`:
 
 ```tsx title="app/providers.tsx"
 <AuthUIProvider
@@ -124,7 +126,9 @@ The `<SettingsCards />` also supports displaying any custom `additionalFields` y
       type: "boolean",
     }
   }}
-  settingsFields={["age", "newsletter"]}
+  settings={{
+    fields: ["age", "newsletter"]
+  }}
 >
   {children}
 </AuthUIProvider>

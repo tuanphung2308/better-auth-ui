@@ -1,22 +1,45 @@
 "use client"
 
 import type { SocialProvider } from "better-auth/social-providers"
-import { type ReactNode, createContext, useMemo } from "react"
+import {
+    type ReactNode,
+    createContext,
+    useContext,
+    useEffect,
+    useMemo,
+    useRef
+} from "react"
 import { toast } from "sonner"
 
 import { RecaptchaV3 } from "../components/captcha/recaptcha-v3"
 import { useAuthData } from "../hooks/use-auth-data"
+import {
+    type AuthLocalization,
+    authLocalization
+} from "../localization/auth-localization"
 import type { AdditionalFields } from "../types/additional-fields"
 import type { AnyAuthClient } from "../types/any-auth-client"
 import type { AuthClient } from "../types/auth-client"
 import type { AuthHooks } from "../types/auth-hooks"
 import type { AuthMutators } from "../types/auth-mutators"
-import type { CaptchaProvider } from "../types/captcha-provider"
+import type { AvatarOptions } from "../types/avatar-options"
+import type { CaptchaOptions } from "../types/captcha-options"
+import type { CredentialsOptions } from "../types/credentials-options"
+import type { DeleteUserOptions } from "../types/delete-user-options"
+import type { GenericOAuthOptions } from "../types/generic-oauth-options"
 import type { Link } from "../types/link"
+import type {
+    OrganizationOptions,
+    OrganizationOptionsContext
+} from "../types/organization-options"
+import type { PasswordValidation } from "../types/password-validation"
 import type { RenderToast } from "../types/render-toast"
-import { type AuthLocalization, authLocalization } from "./auth-localization"
+import type { SettingsOptions } from "../types/settings-options"
+import type { SignUpOptions } from "../types/sign-up-options"
+import type { SocialOptions } from "../types/social-options"
 import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
 import type { Provider } from "./social-providers"
+import { getLocalizedError, getSearchParam } from "./utils"
 
 const DefaultLink: Link = ({ href, className, children }) => (
     <a className={className} href={href}>
@@ -40,33 +63,16 @@ const defaultToast: RenderToast = ({ variant = "default", message }) => {
     }
 }
 
-export type PasswordValidation = {
-    /**
-     * Maximum password length
-     */
-    maxLength?: number
-
-    /**
-     * Minimum password length
-     */
-    minLength?: number
-
-    /**
-     * Password validation regex
-     */
-    regex?: RegExp
-}
-
 export type AuthUIContextType = {
-    authClient: AnyAuthClient
+    authClient: AuthClient
     /**
      * Additional fields for users
      */
     additionalFields?: AdditionalFields
     /**
-     * API Keys plugin configuration
+     * API Key plugin configuration
      */
-    apiKeys?:
+    apiKey?:
         | {
               /**
                * Prefix for API Keys
@@ -79,20 +85,10 @@ export type AuthUIContextType = {
           }
         | boolean
     /**
-     * Enable or disable Avatar support
-     * @default false
+     * Avatar configuration
+     * @default undefined
      */
-    avatar?: boolean
-    /**
-     * File extension for Avatar uploads
-     * @default "png"
-     */
-    avatarExtension: string
-    /**
-     * Avatars are resized to 128px unless uploadAvatar is provided, then 256px
-     * @default 128 | 256
-     */
-    avatarSize: number
+    avatar?: AvatarOptions
     /**
      * Base path for the auth views
      * @default "/auth"
@@ -105,70 +101,42 @@ export type AuthUIContextType = {
     /**
      * Captcha configuration
      */
-    captcha?: {
-        siteKey: string
-        provider: CaptchaProvider
-        hideBadge?: boolean
-        recaptchaNet?: boolean
-        enterprise?: boolean
-        /**
-         * Overrides the default array of paths where captcha validation is enforced
-         * @default ["/sign-up/email", "/sign-in/email", "/forget-password"]
-         */
-        endpoints?: string[]
-    }
+    captcha?: CaptchaOptions
     /**
-     * Force color icons for both light and dark themes
-     * @default false
+     * Enable or disable color icons for both light and dark themes
+     * The default is to use color icons for light mode and black & white icons for dark mode
+     * @default undefined
      */
-    colorIcons?: boolean
-    /**
-     * Enable or disable the Confirm Password input
-     * @default false
-     */
-    confirmPassword?: boolean
-    /**
-     * Enable or disable Credentials support
-     * @default true
-     */
-    credentials?: boolean
+    colorIcons?: boolean | undefined
+    credentials?: CredentialsOptions
     /**
      * Default redirect URL after authenticating
      * @default "/"
      */
     redirectTo: string
     /**
-     * Enable or disable email verification for account deletion
-     * @default false
-     */
-    deleteAccountVerification?: boolean
-    /**
      * Enable or disable user change email support
      * @default true
      */
     changeEmail?: boolean
     /**
-     * Enable or disable User Account deletion
-     * @default false
+     * User Account deletion configuration
+     * @default undefined
      */
-    deleteUser?: boolean
+    deleteUser?: DeleteUserOptions
     /**
      * Show Verify Email card for unverified emails
      */
     emailVerification?: boolean
-    /**
-     * Enable or disable Forgot Password flow
-     * @default true
-     */
-    forgotPassword?: boolean
     /**
      * Freshness age for Session data
      * @default 60 * 60 * 24
      */
     freshAge: number
     /**
-     * @internal
+     * Generic OAuth provider configuration
      */
+    genericOAuth?: GenericOAuthOptions
     hooks: AuthHooks
     localization: AuthLocalization
     /**
@@ -186,18 +154,12 @@ export type AuthUIContextType = {
      * @default false
      */
     multiSession?: boolean
-    /** @internal */
     mutators: AuthMutators
     /**
-     * Enable or disable name requirement for Sign Up
+     * Whether the name field should be required
      * @default true
      */
     nameRequired?: boolean
-    /**
-     * Force black & white icons for both light and dark themes
-     * @default false
-     */
-    noColorIcons?: boolean
     /**
      * Enable or disable One Tap support
      * @default false
@@ -208,6 +170,7 @@ export type AuthUIContextType = {
      * @default false
      */
     optimistic?: boolean
+    organization?: OrganizationOptionsContext
     /**
      * Enable or disable Passkey support
      * @default false
@@ -218,55 +181,21 @@ export type AuthUIContextType = {
      * @default false
      */
     persistClient?: boolean
+    settings?: SettingsOptions
     /**
-     * Array of Social Providers to enable
-     * @remarks `SocialProvider[]`
+     * Sign Up configuration
      */
-    providers?: SocialProvider[]
+    signUp?: SignUpOptions
     /**
-     * Custom OAuth Providers
-     * @default false
+     * Social provider configuration
      */
-    otherProviders?: Provider[]
-    /**
-     * Enable or disable Remember Me checkbox
-     * @default false
-     */
-    rememberMe?: boolean
-    /**
-     * Array of fields to show in `<SettingsCards />`
-     * @default ["name"]
-     */
-    settingsFields?: string[]
-    /**
-     * Custom Settings URL
-     */
-    settingsURL?: string
-    /**
-     * Enable or disable Sign Up form
-     * @default true
-     */
-    signUp?: boolean
-    /**
-     * Array of fields to show in Sign Up form
-     * @default ["name"]
-     */
-    signUpFields?: string[]
-    /**
-     * Custom social sign in function
-     */
-    signInSocial?: (params: Parameters<AuthClient["signIn"]["social"]>[0]) => Promise<unknown>
+    social?: SocialOptions
     toast: RenderToast
     /**
      * Enable or disable two-factor authentication support
      * @default undefined
      */
     twoFactor?: ("otp" | "totp")[]
-    /**
-     * Enable or disable Username support
-     * @default false
-     */
-    username?: boolean
     viewPaths: AuthViewPaths
     /**
      * Navigate to a new URL
@@ -283,19 +212,10 @@ export type AuthUIContextType = {
      */
     replace: typeof defaultReplace
     /**
-     * Upload an Avatar image and return the URL string
-     * @remarks `(file: File) => Promise<string>`
-     */
-    uploadAvatar?: (file: File) => Promise<string | undefined | null>
-    /**
      * Custom Link component for navigation
      * @default <a>
      */
     Link: Link
-    /**
-     * Customize the password validation
-     */
-    passwordValidation?: PasswordValidation
 }
 
 export type AuthUIProviderProps = {
@@ -307,9 +227,44 @@ export type AuthUIProviderProps = {
      */
     authClient: AnyAuthClient
     /**
+     * Avatar configuration
+     * @default undefined
+     */
+    avatar?: boolean | Partial<AvatarOptions>
+    /**
+     * @deprecated use avatar.extension instead
+     */
+    avatarExtension?: string
+    /**
+     * @deprecated use avatar.size instead
+     */
+    avatarSize?: number
+    /**
+     * @deprecated use deleteUser.verification instead
+     */
+    deleteAccountVerification?: boolean
+    /**
+     * User Account deletion configuration
+     * @default undefined
+     */
+    deleteUser?: DeleteUserOptions | boolean
+    /**
      * ADVANCED: Custom hooks for fetching auth data
      */
     hooks?: Partial<AuthHooks>
+    /**
+     * Settings configuration
+     * @default { fields: ["image", "name"] }
+     */
+    settings?: boolean | Partial<SettingsOptions>
+    /**
+     * @deprecated use settings.fields instead
+     */
+    settingsFields?: string[]
+    /**
+     * @deprecated use settings.url instead
+     */
+    settingsURL?: string
     /**
      * Customize the paths for the auth views
      * @default authViewPaths
@@ -331,30 +286,125 @@ export type AuthUIProviderProps = {
      * ADVANCED: Custom mutators for updating auth data
      */
     mutators?: Partial<AuthMutators>
-} & Partial<Omit<AuthUIContextType, "viewPaths" | "localization" | "mutators" | "toast" | "hooks">>
+    /**
+     * @deprecated use social.providers instead
+     */
+    providers?: SocialProvider[]
+    /**
+     * Organization plugin configuration
+     */
+    organization?: OrganizationOptions | boolean
+    /**
+     * @deprecated use genericOAuth.providers instead
+     */
+    otherProviders?: Provider[]
+    /**
+     * @deprecated use social.signIn instead
+     */
+    signInSocial?: (
+        params: Parameters<AuthClient["signIn"]["social"]>[0]
+    ) => Promise<unknown>
+    /**
+     * Enable or disable Credentials support
+     * @default { forgotPassword: true }
+     */
+    credentials?: boolean | CredentialsOptions
+    /**
+     * @deprecated use credentials.confirmPassword instead
+     */
+    confirmPassword?: boolean
+    /**
+     * @deprecated use credentials.forgotPassword instead
+     */
+    forgotPassword?: boolean
+    /**
+     * @deprecated use colorIcons instead
+     */
+    noColorIcons?: boolean
+    /**
+     * @deprecated use credentials.passwordValidation instead
+     */
+    passwordValidation?: PasswordValidation
+    /**
+     * @deprecated use credentials.rememberMe instead
+     */
+    rememberMe?: boolean
+    /**
+     * @deprecated use avatar.upload instead
+     */
+    uploadAvatar?: (file: File) => Promise<string | undefined | null>
+    /**
+     * @deprecated use credentials.username instead
+     */
+    username?: boolean
+    /**
+     * Enable or disable Sign Up form
+     * @default { fields: ["name"] }
+     */
+    signUp?: SignUpOptions | boolean
+    /**
+     * @deprecated use signUp.fields instead
+     */
+    signUpFields?: string[]
+} & Partial<
+    Omit<
+        AuthUIContextType,
+        | "authClient"
+        | "viewPaths"
+        | "localization"
+        | "mutators"
+        | "toast"
+        | "hooks"
+        | "avatar"
+        | "settings"
+        | "deleteUser"
+        | "credentials"
+        | "signUp"
+        | "organization"
+    >
+>
 
-export const AuthUIContext = createContext<AuthUIContextType>({} as unknown as AuthUIContextType)
+export const AuthUIContext = createContext<AuthUIContextType>(
+    {} as unknown as AuthUIContextType
+)
 
 export const AuthUIProvider = ({
     children,
-    authClient,
-    avatarExtension = "png",
+    authClient: authClientProp,
+    avatar: avatarProp,
+    settings: settingsProp,
+    settingsFields,
+    settingsURL,
+    avatarExtension,
     avatarSize,
+    deleteUser: deleteUserProp,
+    deleteAccountVerification,
+    social: socialProp,
+    genericOAuth: genericOAuthProp,
+    providers,
+    otherProviders,
+    signInSocial,
     basePath = "/auth",
     baseURL = "",
     captcha,
+    colorIcons,
     redirectTo = "/",
-    credentials = true,
+    credentials: credentialsProp,
+    confirmPassword,
+    forgotPassword,
+    passwordValidation,
+    rememberMe,
+    username,
     changeEmail = true,
-    forgotPassword = true,
     freshAge = 60 * 60 * 24,
     hooks: hooksProp,
     mutators: mutatorsProp,
     localization: localizationProp,
     nameRequired = true,
-    settingsFields = ["name"],
-    signUp = true,
-    signUpFields = ["name"],
+    noColorIcons,
+    organization: organizationProp,
+    signUp: signUpProp = true,
+    signUpFields,
     toast = defaultToast,
     viewPaths: viewPathsProp,
     navigate,
@@ -363,30 +413,302 @@ export const AuthUIProvider = ({
     Link = DefaultLink,
     ...props
 }: AuthUIProviderProps) => {
+    useEffect(() => {
+        if (noColorIcons !== undefined) {
+            console.warn(
+                "[Better Auth UI] noColorIcons is deprecated, use colorIcons instead"
+            )
+        }
+
+        if (uploadAvatar !== undefined) {
+            console.warn(
+                "[Better Auth UI] uploadAvatar is deprecated, use avatar.upload instead"
+            )
+        }
+
+        if (avatarExtension !== undefined) {
+            console.warn(
+                "[Better Auth UI] avatarExtension is deprecated, use avatar.extension instead"
+            )
+        }
+
+        if (avatarSize !== undefined) {
+            console.warn(
+                "[Better Auth UI] avatarSize is deprecated, use avatar.size instead"
+            )
+        }
+
+        if (settingsFields !== undefined) {
+            console.warn(
+                "[Better Auth UI] settingsFields is deprecated, use settings.fields instead"
+            )
+        }
+
+        if (settingsURL !== undefined) {
+            console.warn(
+                "[Better Auth UI] settingsURL is deprecated, use settings.url instead"
+            )
+        }
+
+        if (deleteAccountVerification !== undefined) {
+            console.warn(
+                "[Better Auth UI] deleteAccountVerification is deprecated, use deleteUser.verification instead"
+            )
+        }
+
+        if (providers !== undefined) {
+            console.warn(
+                "[Better Auth UI] providers is deprecated, use social.providers instead"
+            )
+        }
+
+        if (otherProviders !== undefined) {
+            console.warn(
+                "[Better Auth UI] otherProviders is deprecated, use genericOAuth.providers instead"
+            )
+        }
+
+        if (signInSocial !== undefined) {
+            console.warn(
+                "[Better Auth UI] signInSocial is deprecated, use social.signIn instead"
+            )
+        }
+
+        if (confirmPassword !== undefined) {
+            console.warn(
+                "[Better Auth UI] confirmPassword is deprecated, use credentials.confirmPassword instead"
+            )
+        }
+
+        if (forgotPassword !== undefined) {
+            console.warn(
+                "[Better Auth UI] forgotPassword is deprecated, use credentials.forgotPassword instead"
+            )
+        }
+
+        if (passwordValidation !== undefined) {
+            console.warn(
+                "[Better Auth UI] passwordValidation is deprecated, use credentials.passwordValidation instead"
+            )
+        }
+
+        if (rememberMe !== undefined) {
+            console.warn(
+                "[Better Auth UI] rememberMe is deprecated, use credentials.rememberMe instead"
+            )
+        }
+
+        if (username !== undefined) {
+            console.warn(
+                "[Better Auth UI] username is deprecated, use credentials.username instead"
+            )
+        }
+
+        if (signUpFields !== undefined) {
+            console.warn(
+                "[Better Auth UI] signUpFields is deprecated, use signUp.fields instead"
+            )
+        }
+    }, [
+        noColorIcons,
+        uploadAvatar,
+        avatarExtension,
+        avatarSize,
+        settingsFields,
+        settingsURL,
+        deleteAccountVerification,
+        providers,
+        otherProviders,
+        signInSocial,
+        confirmPassword,
+        forgotPassword,
+        passwordValidation,
+        rememberMe,
+        username,
+        signUpFields
+    ])
+
+    if (noColorIcons) {
+        colorIcons = false
+    }
+
+    const authClient = authClientProp as AuthClient
+
+    const avatar = useMemo<AvatarOptions | undefined>(() => {
+        if (!avatarProp) return
+
+        if (avatarProp === true) {
+            return {
+                extension: avatarExtension || "png",
+                size: avatarSize || (uploadAvatar ? 256 : 128),
+                upload: uploadAvatar
+            }
+        }
+
+        return {
+            upload: avatarProp.upload || uploadAvatar,
+            extension: avatarProp.extension || avatarExtension || "png",
+            size: avatarProp.size || (avatarProp.upload ? 256 : 128)
+        }
+    }, [avatarProp, avatarExtension, avatarSize, uploadAvatar])
+
+    const settings = useMemo<SettingsOptions | undefined>(() => {
+        if (settingsProp === false) return
+
+        if (settingsProp === true || settingsProp === undefined) {
+            return {
+                url: settingsURL,
+                fields: settingsFields || ["image", "name"]
+            }
+        }
+
+        return {
+            url: settingsProp.url,
+            fields: settingsProp.fields || ["image", "name"]
+        }
+    }, [settingsProp, settingsFields, settingsURL])
+
+    const deleteUser = useMemo<DeleteUserOptions | undefined>(() => {
+        if (!deleteUserProp) return
+
+        if (deleteUserProp === true) {
+            return {
+                verification: deleteAccountVerification
+            }
+        }
+
+        return deleteUserProp
+    }, [deleteUserProp, deleteAccountVerification])
+
+    const social = useMemo<SocialOptions | undefined>(() => {
+        if (!socialProp && !providers) return
+
+        if (providers) {
+            return {
+                providers: providers,
+                signIn: signInSocial
+            }
+        }
+
+        return socialProp
+    }, [socialProp, providers, signInSocial])
+
+    const genericOAuth = useMemo<GenericOAuthOptions | undefined>(() => {
+        if (!genericOAuthProp && !otherProviders) return
+
+        if (otherProviders) {
+            return {
+                providers: otherProviders
+            }
+        }
+
+        return genericOAuthProp
+    }, [genericOAuthProp, otherProviders])
+
+    const credentials = useMemo<CredentialsOptions | undefined>(() => {
+        if (credentialsProp === false) return
+
+        if (credentialsProp === true) {
+            return {
+                confirmPassword,
+                forgotPassword: forgotPassword ?? true,
+                passwordValidation,
+                rememberMe,
+                username
+            }
+        }
+
+        return {
+            confirmPassword:
+                credentialsProp?.confirmPassword || confirmPassword,
+            forgotPassword:
+                (credentialsProp?.forgotPassword || forgotPassword) ?? true,
+            passwordValidation:
+                credentialsProp?.passwordValidation || passwordValidation,
+            rememberMe: credentialsProp?.rememberMe || rememberMe,
+            username: credentialsProp?.username || username
+        }
+    }, [
+        credentialsProp,
+        confirmPassword,
+        forgotPassword,
+        passwordValidation,
+        rememberMe,
+        username
+    ])
+
+    const signUp = useMemo<SignUpOptions | undefined>(() => {
+        if (signUpProp === false) return
+
+        if (signUpProp === true || signUpProp === undefined) {
+            return {
+                fields: signUpFields || ["name"]
+            }
+        }
+
+        return {
+            fields: signUpProp.fields || signUpFields || ["name"]
+        }
+    }, [signUpProp, signUpFields])
+
+    const organization = useMemo<OrganizationOptionsContext | undefined>(() => {
+        if (!organizationProp) return
+
+        if (organizationProp === true) {
+            return {
+                customRoles: []
+            }
+        }
+
+        let logo: OrganizationOptionsContext["logo"] | undefined
+
+        if (organizationProp.logo === true) {
+            logo = {
+                extension: "png",
+                size: 128
+            }
+        } else if (organizationProp.logo) {
+            logo = {
+                upload: organizationProp.logo.upload,
+                extension: organizationProp.logo.extension || "png",
+                size:
+                    organizationProp.logo.size || organizationProp.logo.upload
+                        ? 256
+                        : 128
+            }
+        }
+
+        return {
+            ...organizationProp,
+            logo,
+            customRoles: organizationProp.customRoles || []
+        }
+    }, [organizationProp])
+
     const defaultMutators = useMemo(() => {
         return {
             deleteApiKey: (params) =>
-                (authClient as AuthClient).apiKey.delete({
+                authClient.apiKey.delete({
                     ...params,
                     fetchOptions: { throw: true }
                 }),
             deletePasskey: (params) =>
-                (authClient as AuthClient).passkey.deletePasskey({
+                authClient.passkey.deletePasskey({
                     ...params,
                     fetchOptions: { throw: true }
                 }),
             revokeDeviceSession: (params) =>
-                (authClient as AuthClient).multiSession.revoke({
+                authClient.multiSession.revoke({
                     ...params,
                     fetchOptions: { throw: true }
                 }),
             revokeSession: (params) =>
-                (authClient as AuthClient).revokeSession({
+                authClient.revokeSession({
                     ...params,
                     fetchOptions: { throw: true }
                 }),
             setActiveSession: (params) =>
-                (authClient as AuthClient).multiSession.setActive({
+                authClient.multiSession.setActive({
                     ...params,
                     fetchOptions: { throw: true }
                 }),
@@ -405,15 +727,42 @@ export const AuthUIProvider = ({
 
     const defaultHooks = useMemo(() => {
         return {
-            useSession: (authClient as AuthClient).useSession,
-            useListAccounts: () => useAuthData({ queryFn: authClient.listAccounts }),
+            useSession: authClient.useSession,
+            useListAccounts: () =>
+                useAuthData({
+                    queryFn: authClient.listAccounts,
+                    cacheKey: "listAccounts"
+                }),
             useListDeviceSessions: () =>
                 useAuthData({
-                    queryFn: (authClient as AuthClient).multiSession.listDeviceSessions
+                    queryFn: authClient.multiSession.listDeviceSessions,
+                    cacheKey: "listDeviceSessions"
                 }),
-            useListSessions: () => useAuthData({ queryFn: authClient.listSessions }),
-            useListPasskeys: (authClient as AuthClient).useListPasskeys,
-            useListApiKeys: () => useAuthData({ queryFn: (authClient as AuthClient).apiKey.list })
+            useListSessions: () =>
+                useAuthData({
+                    queryFn: authClient.listSessions,
+                    cacheKey: "listSessions"
+                }),
+            useListPasskeys: authClient.useListPasskeys,
+            useListApiKeys: () =>
+                useAuthData({
+                    queryFn: authClient.apiKey.list,
+                    cacheKey: "listApiKeys"
+                }),
+            useActiveOrganization: authClient.useActiveOrganization,
+            useListOrganizations: authClient.useListOrganizations,
+            useHasPermission: (params) =>
+                useAuthData({
+                    queryFn: () =>
+                        authClient.organization.hasPermission(params),
+                    cacheKey: `hasPermission:${JSON.stringify(params)}`
+                }),
+            useInvitation: (params) =>
+                useAuthData({
+                    queryFn: () =>
+                        authClient.organization.getInvitation(params),
+                    cacheKey: `invitation:${JSON.stringify(params)}`
+                })
         } as AuthHooks
     }, [authClient])
 
@@ -439,36 +788,61 @@ export const AuthUIProvider = ({
     // Remove trailing slash from basePath
     basePath = basePath.endsWith("/") ? basePath.slice(0, -1) : basePath
 
+    const { data: sessionData } = hooks.useSession()
+
+    const errorShown = useRef(false)
+    useEffect(() => {
+        if (errorShown.current) return
+
+        const error = getSearchParam("error")
+        if (error) {
+            errorShown.current = true
+            console.log({ error })
+            toast({
+                variant: "error",
+                message: getLocalizedError({ error, localization })
+            })
+        }
+    }, [localization, toast])
+
     return (
         <AuthUIContext.Provider
             value={{
                 authClient,
-                avatarExtension,
-                avatarSize: avatarSize || (uploadAvatar ? 256 : 128),
+                avatar,
                 basePath: basePath === "/" ? "" : basePath,
                 baseURL,
                 captcha,
+                colorIcons,
                 redirectTo,
                 changeEmail,
                 credentials,
-                forgotPassword,
+                deleteUser,
                 freshAge,
+                genericOAuth,
                 hooks,
                 mutators,
                 localization,
                 nameRequired,
-                settingsFields,
+                organization,
+                settings,
                 signUp,
-                signUpFields,
+                social,
                 toast,
                 navigate: navigate || defaultNavigate,
                 replace: replace || navigate || defaultReplace,
                 viewPaths,
-                uploadAvatar,
                 Link,
                 ...props
             }}
         >
+            {sessionData &&
+                (hooks.useActiveOrganization ===
+                    authClient.useActiveOrganization ||
+                    hooks.useListOrganizations ===
+                        authClient.useListOrganizations) && (
+                    <OrganizationRefetcher />
+                )}
             {captcha?.provider === "google-recaptcha-v3" ? (
                 <RecaptchaV3>{children}</RecaptchaV3>
             ) : (
@@ -476,4 +850,26 @@ export const AuthUIProvider = ({
             )}
         </AuthUIContext.Provider>
     )
+}
+
+const OrganizationRefetcher = () => {
+    const { hooks } = useContext(AuthUIContext)
+    const { data: sessionData } = hooks.useSession()
+    const { data: activeOrganization, refetch: refetchActiveOrganization } =
+        hooks.useActiveOrganization()
+    const { data: organizations, refetch: refetchListOrganizations } =
+        hooks.useListOrganizations()
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: Refetch fix
+    useEffect(() => {
+        if (!sessionData?.user.id) return
+        if (activeOrganization) refetchActiveOrganization?.()
+        if (organizations) refetchListOrganizations?.()
+    }, [
+        sessionData?.user.id,
+        refetchActiveOrganization,
+        refetchListOrganizations
+    ])
+
+    return null
 }

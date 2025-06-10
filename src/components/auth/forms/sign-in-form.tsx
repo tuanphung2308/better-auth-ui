@@ -10,15 +10,27 @@ import * as z from "zod"
 import { useCaptcha } from "../../../hooks/use-captcha"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
-import type { AuthLocalization } from "../../../lib/auth-localization"
-import { AuthUIContext, type PasswordValidation } from "../../../lib/auth-ui-provider"
-import { cn, getLocalizedError, getPasswordSchema, isValidEmail } from "../../../lib/utils"
-import type { AuthClient } from "../../../types/auth-client"
+import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import {
+    cn,
+    getLocalizedError,
+    getPasswordSchema,
+    isValidEmail
+} from "../../../lib/utils"
+import type { AuthLocalization } from "../../../localization/auth-localization"
+import type { PasswordValidation } from "../../../types/password-validation"
 import { Captcha } from "../../captcha/captcha"
 import { PasswordInput } from "../../password-input"
 import { Button } from "../../ui/button"
 import { Checkbox } from "../../ui/checkbox"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "../../ui/form"
 import { Input } from "../../ui/input"
 import type { AuthFormClassNames } from "../auth-form"
 
@@ -47,34 +59,37 @@ export function SignInForm({
     const {
         authClient,
         basePath,
-        forgotPassword,
+        credentials,
         localization: contextLocalization,
-        rememberMe: rememberMeEnabled,
-        username: usernameEnabled,
         viewPaths,
         navigate,
         toast,
-        Link,
-        passwordValidation: contextPasswordValidation
+        Link
     } = useContext(AuthUIContext)
+
+    const rememberMeEnabled = credentials?.rememberMe
+    const usernameEnabled = credentials?.username
+    const contextPasswordValidation = credentials?.passwordValidation
 
     localization = { ...contextLocalization, ...localization }
     passwordValidation = { ...contextPasswordValidation, ...passwordValidation }
 
-    const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({ redirectTo })
+    const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({
+        redirectTo
+    })
 
     const formSchema = z.object({
         email: usernameEnabled
             ? z.string().min(1, {
-                  message: `${localization.username} ${localization.isRequired}`
+                  message: `${localization.USERNAME} ${localization.IS_REQUIRED}`
               })
             : z
                   .string()
                   .min(1, {
-                      message: `${localization.email} ${localization.isRequired}`
+                      message: `${localization.EMAIL} ${localization.IS_REQUIRED}`
                   })
                   .email({
-                      message: `${localization.email} ${localization.isInvalid}`
+                      message: `${localization.EMAIL} ${localization.IS_INVALID}`
                   }),
         password: getPasswordSchema(passwordValidation, localization),
         rememberMe: z.boolean().optional()
@@ -89,13 +104,18 @@ export function SignInForm({
         }
     })
 
-    isSubmitting = isSubmitting || form.formState.isSubmitting || transitionPending
+    isSubmitting =
+        isSubmitting || form.formState.isSubmitting || transitionPending
 
     useEffect(() => {
         setIsSubmitting?.(form.formState.isSubmitting || transitionPending)
     }, [form.formState.isSubmitting, transitionPending, setIsSubmitting])
 
-    async function signIn({ email, password, rememberMe }: z.infer<typeof formSchema>) {
+    async function signIn({
+        email,
+        password,
+        rememberMe
+    }: z.infer<typeof formSchema>) {
         try {
             let response: Record<string, unknown> = {}
 
@@ -105,7 +125,7 @@ export function SignInForm({
                     headers: await getCaptchaHeaders("/sign-in/username")
                 }
 
-                response = await (authClient as AuthClient).signIn.username({
+                response = await authClient.signIn.username({
                     username: email,
                     password,
                     rememberMe,
@@ -126,7 +146,9 @@ export function SignInForm({
             }
 
             if (response.twoFactorRedirect) {
-                navigate(`${basePath}/${viewPaths.twoFactor}${window.location.search}`)
+                navigate(
+                    `${basePath}/${viewPaths.TWO_FACTOR}${window.location.search}`
+                )
             } else {
                 await onSuccess()
             }
@@ -153,7 +175,9 @@ export function SignInForm({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className={classNames?.label}>
-                                {usernameEnabled ? localization.username : localization.email}
+                                {usernameEnabled
+                                    ? localization.USERNAME
+                                    : localization.EMAIL}
                             </FormLabel>
 
                             <FormControl>
@@ -162,8 +186,8 @@ export function SignInForm({
                                     type={usernameEnabled ? "text" : "email"}
                                     placeholder={
                                         usernameEnabled
-                                            ? localization.signInUsernamePlaceholder
-                                            : localization.emailPlaceholder
+                                            ? localization.SIGN_IN_USERNAME_PLACEHOLDER
+                                            : localization.EMAIL_PLACEHOLDER
                                     }
                                     disabled={isSubmitting}
                                     {...field}
@@ -182,18 +206,18 @@ export function SignInForm({
                         <FormItem>
                             <div className="flex items-center justify-between">
                                 <FormLabel className={classNames?.label}>
-                                    {localization.password}
+                                    {localization.PASSWORD}
                                 </FormLabel>
 
-                                {forgotPassword && (
+                                {credentials?.forgotPassword && (
                                     <Link
                                         className={cn(
                                             "text-sm hover:underline",
                                             classNames?.forgotPasswordLink
                                         )}
-                                        href={`${basePath}/${viewPaths.forgotPassword}${isHydrated ? window.location.search : ""}`}
+                                        href={`${basePath}/${viewPaths.FORGOT_PASSWORD}${isHydrated ? window.location.search : ""}`}
                                     >
-                                        {localization.forgotPasswordLink}
+                                        {localization.FORGOT_PASSWORD_LINK}
                                     </Link>
                                 )}
                             </div>
@@ -202,7 +226,9 @@ export function SignInForm({
                                 <PasswordInput
                                     autoComplete="current-password"
                                     className={classNames?.input}
-                                    placeholder={localization.passwordPlaceholder}
+                                    placeholder={
+                                        localization.PASSWORD_PLACEHOLDER
+                                    }
                                     disabled={isSubmitting}
                                     {...field}
                                 />
@@ -227,23 +253,33 @@ export function SignInForm({
                                     />
                                 </FormControl>
 
-                                <FormLabel>{localization.rememberMe}</FormLabel>
+                                <FormLabel>
+                                    {localization.REMEMBER_ME}
+                                </FormLabel>
                             </FormItem>
                         )}
                     />
                 )}
 
-                <Captcha ref={captchaRef} localization={localization} action="/sign-in/email" />
+                <Captcha
+                    ref={captchaRef}
+                    localization={localization}
+                    action="/sign-in/email"
+                />
 
                 <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className={cn("w-full", classNames?.button, classNames?.primaryButton)}
+                    className={cn(
+                        "w-full",
+                        classNames?.button,
+                        classNames?.primaryButton
+                    )}
                 >
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />
                     ) : (
-                        localization.signInAction
+                        localization.SIGN_IN_ACTION
                     )}
                 </Button>
             </form>

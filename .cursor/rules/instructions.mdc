@@ -6,3 +6,7 @@ alwaysApply: true
 Always search the codebase for relevant files and do research before you begin a task.
 
 Never hard code strings, always check AuthLocalization and add it as needed.
+
+Icons in Buttons don't need size or Margin it's handled automatically by our shadcn Button component.
+
+Don't run type checks in terminal or create temporary test files.

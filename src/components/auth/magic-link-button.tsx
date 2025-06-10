@@ -1,10 +1,10 @@
 import { LockIcon, MailIcon } from "lucide-react"
 import { useContext } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { cn } from "../../lib/utils"
+import type { AuthLocalization } from "../../localization/auth-localization"
 import { Button } from "../ui/button"
 import type { AuthCardClassNames } from "./auth-card"
 
@@ -21,27 +21,34 @@ export function MagicLinkButton({
     localization,
     view
 }: MagicLinkButtonProps) {
-    const { viewPaths, navigate, basePath, credentials } = useContext(AuthUIContext)
+    const { viewPaths, navigate, basePath, credentials } =
+        useContext(AuthUIContext)
 
     return (
         <Button
-            className={cn("w-full", classNames?.form?.button, classNames?.form?.secondaryButton)}
+            className={cn(
+                "w-full",
+                classNames?.form?.button,
+                classNames?.form?.secondaryButton
+            )}
             disabled={isSubmitting}
             type="button"
             variant="secondary"
             onClick={() =>
                 navigate(
-                    `${basePath}/${view === "magicLink" || !credentials ? viewPaths.signIn : viewPaths.magicLink}${window.location.search}`
+                    `${basePath}/${view === "MAGIC_LINK" || !credentials ? viewPaths.SIGN_IN : viewPaths.MAGIC_LINK}${window.location.search}`
                 )
             }
         >
-            {view === "magicLink" ? (
+            {view === "MAGIC_LINK" ? (
                 <LockIcon className={classNames?.form?.icon} />
             ) : (
                 <MailIcon className={classNames?.form?.icon} />
             )}
-            {localization.signInWith}{" "}
-            {view === "magicLink" ? localization.password : localization.magicLink}
+            {localization.SIGN_IN_WITH}{" "}
+            {view === "MAGIC_LINK"
+                ? localization.PASSWORD
+                : localization.MAGIC_LINK}
         </Button>
     )
 }

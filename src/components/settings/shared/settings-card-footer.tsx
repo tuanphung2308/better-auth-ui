@@ -38,8 +38,8 @@ export function SettingsCardFooter({
                 "flex flex-col justify-between gap-4 rounded-b-xl md:flex-row",
                 (actionLabel || instructions) && "!py-4 border-t",
                 variant === "destructive"
-                    ? "border-destructive/30 bg-destructive/10"
-                    : "bg-muted dark:bg-transparent",
+                    ? "border-destructive/30 bg-destructive/15"
+                    : "bg-sidebar",
                 className,
                 classNames?.footer
             )}
@@ -56,7 +56,12 @@ export function SettingsCardFooter({
                     )}
 
                     {actionLabel && (
-                        <Skeleton className={cn("h-8 w-14 md:ms-auto", classNames?.skeleton)} />
+                        <Skeleton
+                            className={cn(
+                                "h-8 w-14 md:ms-auto",
+                                classNames?.skeleton
+                            )}
+                        />
                     )}
                 </>
             ) : (

@@ -1,11 +1,10 @@
 import type { SocialProvider } from "better-auth/social-providers"
 import { useCallback, useContext } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { Provider } from "../../lib/social-providers"
 import { cn, getLocalizedError, getSearchParam } from "../../lib/utils"
-import type { AuthClient } from "../../types/auth-client"
+import type { AuthLocalization } from "../../localization/auth-localization"
 import { Button } from "../ui/button"
 import type { AuthCardClassNames } from "./auth-card"
 
@@ -39,16 +38,17 @@ export function ProviderButton({
         basePath,
         baseURL,
         colorIcons,
-        noColorIcons,
         persistClient,
         redirectTo: contextRedirectTo,
         viewPaths,
-        signInSocial,
+        social,
+        genericOAuth,
         toast
     } = useContext(AuthUIContext)
 
     const getRedirectTo = useCallback(
-        () => redirectToProp || getSearchParam("redirectTo") || contextRedirectTo,
+        () =>
+            redirectToProp || getSearchParam("redirectTo") || contextRedirectTo,
         [redirectToProp, contextRedirectTo]
     )
 
@@ -57,10 +57,17 @@ export function ProviderButton({
             `${baseURL}${
                 callbackURLProp ||
                 (persistClient
-                    ? `${basePath}/${viewPaths.callback}?redirectTo=${getRedirectTo()}`
+                    ? `${basePath}/${viewPaths.CALLBACK}?redirectTo=${getRedirectTo()}`
                     : getRedirectTo())
             }`,
-        [callbackURLProp, persistClient, basePath, viewPaths, baseURL, getRedirectTo]
+        [
+            callbackURLProp,
+            persistClient,
+            basePath,
+            viewPaths,
+            baseURL,
+            getRedirectTo
+        ]
     )
 
     const doSignInSocial = async () => {
@@ -68,11 +75,21 @@ export function ProviderButton({
 
         try {
             if (other) {
-                await (authClient as AuthClient).signIn.oauth2({
+                const oauth2Params = {
                     providerId: provider.provider,
                     callbackURL: getCallbackURL(),
                     fetchOptions: { throw: true }
-                })
+                }
+
+                if (genericOAuth?.signIn) {
+                    await genericOAuth.signIn(oauth2Params)
+
+                    setTimeout(() => {
+                        setIsSubmitting(false)
+                    }, 10000)
+                } else {
+                    await authClient.signIn.oauth2(oauth2Params)
+                }
             } else {
                 const socialParams = {
                     provider: provider.provider as SocialProvider,
@@ -80,8 +97,8 @@ export function ProviderButton({
                     fetchOptions: { throw: true }
                 }
 
-                if (signInSocial) {
-                    await signInSocial(socialParams)
+                if (social?.signIn) {
+                    await social.signIn(socialParams)
 
                     setTimeout(() => {
                         setIsSubmitting(false)
@@ -114,24 +131,34 @@ export function ProviderButton({
             onClick={doSignInSocial}
         >
             {provider.icon &&
-                (colorIcons ? (
-                    <provider.icon variant="color" className={classNames?.form?.icon} />
-                ) : noColorIcons ? (
+                (colorIcons === true ? (
+                    <provider.icon
+                        variant="color"
+                        className={classNames?.form?.icon}
+                    />
+                ) : colorIcons === false ? (
                     <provider.icon className={classNames?.form?.icon} />
                 ) : (
                     <>
                         <provider.icon
-                            className={cn("dark:hidden", classNames?.form?.icon)}
+                            className={cn(
+                                "dark:hidden",
+                                classNames?.form?.icon
+                            )}
                             variant="color"
                         />
                         <provider.icon
-                            className={cn("hidden dark:block", classNames?.form?.icon)}
+                            className={cn(
+                                "hidden dark:block",
+                                classNames?.form?.icon
+                            )}
                         />
                     </>
                 ))}
 
             {socialLayout === "grid" && provider.name}
-            {socialLayout === "vertical" && `${localization.signInWith} ${provider.name}`}
+            {socialLayout === "vertical" &&
+                `${localization.SIGN_IN_WITH} ${provider.name}`}
         </Button>
     )
 }

@@ -1,3 +1,4 @@
+import type { BetterFetchError } from "better-auth/react"
 import { useMemo } from "react"
 import type { User } from "../../types/auth-client"
 import type { AuthHooks } from "../../types/auth-hooks"
@@ -21,7 +22,9 @@ export function useSession({
     })
 
     const { data } = db.useQuery(
-        authUser ? { [modelName]: { $: { where: { id: authUser?.id } } } } : null
+        authUser
+            ? { [modelName]: { $: { where: { id: authUser?.id } } } }
+            : null
     )
 
     const user = useMemo(() => {
@@ -40,11 +43,13 @@ export function useSession({
         data: sessionData
             ? {
                   session: sessionData.session,
-                  user: (sessionData?.user.id === user?.id ? user : sessionData.user) as User
+                  user: (sessionData?.user.id === user?.id
+                      ? user
+                      : sessionData.user) as User
               }
-            : undefined,
+            : null,
         isPending,
-        refetch,
-        error
+        refetch: refetch || (() => {}),
+        error: (error as BetterFetchError) || null
     }
 }

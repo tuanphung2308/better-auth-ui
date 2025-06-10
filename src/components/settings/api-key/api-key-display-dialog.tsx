@@ -3,9 +3,9 @@
 import { CheckIcon, CopyIcon } from "lucide-react"
 import { type ComponentProps, useContext, useState } from "react"
 
-import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn } from "../../../lib/utils"
+import type { AuthLocalization } from "../../../localization/auth-localization"
 import { Button } from "../../ui/button"
 import {
     Dialog,
@@ -17,19 +17,19 @@ import {
 } from "../../ui/dialog"
 import type { SettingsCardClassNames } from "../shared/settings-card"
 
-interface ApiKeyDisplayDialogProps extends ComponentProps<typeof Dialog> {
+interface APIKeyDisplayDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
     apiKey: string
 }
 
-export function ApiKeyDisplayDialog({
+export function APIKeyDisplayDialog({
     classNames,
     apiKey,
     localization,
     onOpenChange,
     ...props
-}: ApiKeyDisplayDialogProps) {
+}: APIKeyDisplayDialogProps) {
     const { localization: contextLocalization } = useContext(AuthUIContext)
     localization = { ...contextLocalization, ...localization }
 
@@ -48,18 +48,25 @@ export function ApiKeyDisplayDialog({
                 className={classNames?.dialog?.content}
             >
                 <DialogHeader className={classNames?.dialog?.header}>
-                    <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {localization.apiKeyCreated}
+                    <DialogTitle
+                        className={cn("text-lg md:text-xl", classNames?.title)}
+                    >
+                        {localization.API_KEY_CREATED}
                     </DialogTitle>
 
                     <DialogDescription
-                        className={cn("text-xs md:text-sm", classNames?.description)}
+                        className={cn(
+                            "text-xs md:text-sm",
+                            classNames?.description
+                        )}
                     >
-                        {localization.apiKeyCreatedDescription}
+                        {localization.CREATE_API_KEY_SUCCESS}
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="break-all rounded-md bg-muted p-4 font-mono text-sm">{apiKey}</div>
+                <div className="break-all rounded-md bg-muted p-4 font-mono text-sm">
+                    {apiKey}
+                </div>
 
                 <DialogFooter className={classNames?.dialog?.footer}>
                     <Button
@@ -67,17 +74,20 @@ export function ApiKeyDisplayDialog({
                         variant="outline"
                         onClick={handleCopy}
                         disabled={copied}
-                        className={cn(classNames?.button, classNames?.outlineButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.outlineButton
+                        )}
                     >
                         {copied ? (
                             <>
                                 <CheckIcon className={classNames?.icon} />
-                                {localization.copiedToClipboard}
+                                {localization.COPIED_TO_CLIPBOARD}
                             </>
                         ) : (
                             <>
                                 <CopyIcon className={classNames?.icon} />
-                                {localization.copyToClipboard}
+                                {localization.COPY_TO_CLIPBOARD}
                             </>
                         )}
                     </Button>
@@ -86,9 +96,12 @@ export function ApiKeyDisplayDialog({
                         type="button"
                         variant="default"
                         onClick={() => onOpenChange?.(false)}
-                        className={cn(classNames?.button, classNames?.primaryButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.primaryButton
+                        )}
                     >
-                        {localization.done}
+                        {localization.DONE}
                     </Button>
                 </DialogFooter>
             </DialogContent>

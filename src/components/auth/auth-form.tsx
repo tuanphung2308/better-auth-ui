@@ -2,10 +2,10 @@
 
 import { useContext, useEffect } from "react"
 
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { AuthView } from "../../lib/auth-view-paths"
 import { getAuthViewByPath } from "../../lib/utils"
+import type { AuthLocalization } from "../../localization/auth-localization"
 import { AuthCallback } from "./auth-callback"
 import { EmailOTPForm } from "./forms/email-otp-form"
 import { ForgotPasswordForm } from "./forms/forgot-password-form"
@@ -67,11 +67,13 @@ export function AuthForm({
         localization: contextLocalization,
         magicLink,
         emailOTP,
-        signUp: signUpEnabled,
+        signUp,
         twoFactor: twoFactorEnabled,
         viewPaths,
         replace
     } = useContext(AuthUIContext)
+
+    const signUpEnabled = !!signUp
 
     localization = { ...contextLocalization, ...localization }
 
@@ -80,43 +82,56 @@ export function AuthForm({
     useEffect(() => {
         if (path && !getAuthViewByPath(viewPaths, path)) {
             console.error(`Invalid auth view: ${path}`)
-            replace(`${basePath}/${viewPaths.signIn}${window.location.search}`)
+            replace(`${basePath}/${viewPaths.SIGN_IN}${window.location.search}`)
         }
     }, [path, viewPaths, basePath, replace])
 
-    view = view || getAuthViewByPath(viewPaths, path) || "signIn"
+    view = view || getAuthViewByPath(viewPaths, path) || "SIGN_IN"
 
     // Redirect to appropriate view based on enabled features
     useEffect(() => {
         let isInvalidView = false
 
-        if (view === "magicLink" && (!magicLink || (!credentials && !emailOTP))) {
+        if (
+            view === "MAGIC_LINK" &&
+            (!magicLink || (!credentials && !emailOTP))
+        ) {
             isInvalidView = true
         }
 
-        if (view === "emailOTP" && (!emailOTP || (!credentials && !magicLink))) {
+        if (
+            view === "EMAIL_OTP" &&
+            (!emailOTP || (!credentials && !magicLink))
+        ) {
             isInvalidView = true
         }
 
-        if (view === "signUp" && !signUpEnabled) {
+        if (view === "SIGN_UP" && !signUpEnabled) {
             isInvalidView = true
         }
 
         if (
             !credentials &&
-            ["signUp", "forgotPassword", "resetPassword", "twoFactor", "recoverAccount"].includes(
-                view
-            )
+            [
+                "SIGN_UP",
+                "FORGOT_PASSWORD",
+                "RESET_PASSWORD",
+                "TWO_FACTOR",
+                "RECOVER_ACCOUNT"
+            ].includes(view)
         ) {
             isInvalidView = true
         }
 
-        if (["twoFactor", "recoverAccount"].includes(view) && !twoFactorEnabled) {
+        if (
+            ["TWO_FACTOR", "RECOVER_ACCOUNT"].includes(view) &&
+            !twoFactorEnabled
+        ) {
             isInvalidView = true
         }
 
         if (isInvalidView) {
-            replace(`${basePath}/${viewPaths.signIn}${window.location.search}`)
+            replace(`${basePath}/${viewPaths.SIGN_IN}${window.location.search}`)
         }
     }, [
         basePath,
@@ -130,10 +145,10 @@ export function AuthForm({
         twoFactorEnabled
     ])
 
-    if (view === "signOut") return <SignOut />
-    if (view === "callback") return <AuthCallback redirectTo={redirectTo} />
+    if (view === "SIGN_OUT") return <SignOut />
+    if (view === "CALLBACK") return <AuthCallback redirectTo={redirectTo} />
 
-    if (view === "signIn") {
+    if (view === "SIGN_IN") {
         return credentials ? (
             <SignInForm
                 className={className}
@@ -166,7 +181,7 @@ export function AuthForm({
         ) : null
     }
 
-    if (view === "twoFactor") {
+    if (view === "TWO_FACTOR") {
         return (
             <TwoFactorForm
                 className={className}
@@ -180,7 +195,7 @@ export function AuthForm({
         )
     }
 
-    if (view === "recoverAccount") {
+    if (view === "RECOVER_ACCOUNT") {
         return (
             <RecoverAccountForm
                 className={className}
@@ -193,7 +208,7 @@ export function AuthForm({
         )
     }
 
-    if (view === "magicLink") {
+    if (view === "MAGIC_LINK") {
         return (
             <MagicLinkForm
                 className={className}
@@ -207,7 +222,7 @@ export function AuthForm({
         )
     }
 
-    if (view === "emailOTP") {
+    if (view === "EMAIL_OTP") {
         return (
             <EmailOTPForm
                 className={className}
@@ -221,7 +236,7 @@ export function AuthForm({
         )
     }
 
-    if (view === "forgotPassword") {
+    if (view === "FORGOT_PASSWORD") {
         return (
             <ForgotPasswordForm
                 className={className}
@@ -233,7 +248,7 @@ export function AuthForm({
         )
     }
 
-    if (view === "resetPassword") {
+    if (view === "RESET_PASSWORD") {
         return (
             <ResetPasswordForm
                 className={className}
@@ -243,7 +258,7 @@ export function AuthForm({
         )
     }
 
-    if (view === "signUp") {
+    if (view === "SIGN_UP") {
         return (
             signUpEnabled && (
                 <SignUpForm

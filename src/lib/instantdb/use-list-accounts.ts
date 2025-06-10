@@ -1,3 +1,4 @@
+import type { BetterFetchError } from "@better-fetch/fetch"
 import { useMemo } from "react"
 import type { AuthHooks } from "../../types/auth-hooks"
 import { getModelName } from "./model-names"
@@ -18,7 +19,9 @@ export function useListAccounts({
     })
 
     const { data, isLoading, error } = db.useQuery(
-        authUser ? { [modelName]: { $: { where: { userId: authUser?.id } } } } : null
+        authUser
+            ? { [modelName]: { $: { where: { userId: authUser?.id } } } }
+            : null
     )
 
     const accounts = useMemo(() => {
@@ -33,6 +36,6 @@ export function useListAccounts({
     return {
         data: accounts,
         isPending: !accounts && (isPending || authLoading || isLoading),
-        error
+        error: (error as BetterFetchError) || null
     }
 }

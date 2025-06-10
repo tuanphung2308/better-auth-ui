@@ -60,25 +60,30 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           navigate={router.push}
           replace={router.replace}
           onSessionChange={() => router.refresh()}
-          providers={["github", "google", "facebook", "apple"]}
+          social={{
+            providers: ["github", "google", "facebook", "apple"]
+          }}
           multiSession
           magicLink
           passkey
-          avatar
+          avatar={{
+            upload: async (file) => {
+              const formData = new FormData()
+              formData.append("avatar", file)
+
+              const res = await fetch("/api/uploadAvatar", { method: "POST", body: formData })
+              const { data } = await res.json()
+
+              return data.url
+            }
+          }}
           captcha={{
             provider: "google-recaptcha-v3",
             siteKey: "your-site-key",
           }}
-          uploadAvatar={(file) => {
-            const formData = new FormData()
-            formData.append("avatar", file)
-
-            const res = await fetch("/api/uploadAvatar", { method: "POST", body: formData })
-            const { data } = await res.json()
-
-            return data.url
+          settings={{
+            url: "/dashboard/settings"
           }}
-          settingsURL="/dashboard/settings"
           twoFactor={["otp", "totp"]}
           Link={Link}
         >

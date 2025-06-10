@@ -6,12 +6,18 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
-import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
-import type { AuthClient } from "../../../types/auth-client"
+import type { AuthLocalization } from "../../../localization/auth-localization"
 import { Button } from "../../ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "../../ui/form"
 import { Input } from "../../ui/input"
 import type { AuthFormClassNames } from "../auth-form"
 
@@ -32,14 +38,20 @@ export function RecoverAccountForm({
     redirectTo,
     setIsSubmitting
 }: RecoverAccountFormProps) {
-    const { authClient, localization: contextLocalization, toast } = useContext(AuthUIContext)
+    const {
+        authClient,
+        localization: contextLocalization,
+        toast
+    } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
 
-    const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({ redirectTo })
+    const { onSuccess, isPending: transitionPending } = useOnSuccessTransition({
+        redirectTo
+    })
 
     const formSchema = z.object({
-        code: z.string().min(1, { message: localization.backupCodeRequired })
+        code: z.string().min(1, { message: localization.BACKUP_CODE_REQUIRED })
     })
 
     const form = useForm({
@@ -49,7 +61,8 @@ export function RecoverAccountForm({
         }
     })
 
-    isSubmitting = isSubmitting || form.formState.isSubmitting || transitionPending
+    isSubmitting =
+        isSubmitting || form.formState.isSubmitting || transitionPending
 
     useEffect(() => {
         setIsSubmitting?.(form.formState.isSubmitting || transitionPending)
@@ -57,14 +70,17 @@ export function RecoverAccountForm({
 
     async function verifyBackupCode({ code }: z.infer<typeof formSchema>) {
         try {
-            await (authClient as AuthClient).twoFactor.verifyBackupCode({
+            await authClient.twoFactor.verifyBackupCode({
                 code,
                 fetchOptions: { throw: true }
             })
 
             await onSuccess()
         } catch (error) {
-            toast({ variant: "error", message: getLocalizedError({ error, localization }) })
+            toast({
+                variant: "error",
+                message: getLocalizedError({ error, localization })
+            })
 
             form.reset()
         }
@@ -82,12 +98,14 @@ export function RecoverAccountForm({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className={classNames?.label}>
-                                {localization.backupCode}
+                                {localization.BACKUP_CODE}
                             </FormLabel>
 
                             <FormControl>
                                 <Input
-                                    placeholder={localization.backupCodePlaceholder}
+                                    placeholder={
+                                        localization.BACKUP_CODE_PLACEHOLDER
+                                    }
                                     autoComplete="off"
                                     className={classNames?.input}
                                     disabled={isSubmitting}
@@ -103,12 +121,15 @@ export function RecoverAccountForm({
                 <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className={cn(classNames?.button, classNames?.primaryButton)}
+                    className={cn(
+                        classNames?.button,
+                        classNames?.primaryButton
+                    )}
                 >
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />
                     ) : (
-                        localization.recoverAccountAction
+                        localization.RECOVER_ACCOUNT_ACTION
                     )}
                 </Button>
             </form>

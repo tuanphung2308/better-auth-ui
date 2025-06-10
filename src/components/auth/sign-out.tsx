@@ -10,7 +10,9 @@ export function SignOut() {
     const signingOut = useRef(false)
 
     const { authClient, basePath, viewPaths } = useContext(AuthUIContext)
-    const { onSuccess } = useOnSuccessTransition({ redirectTo: `${basePath}/${viewPaths.signIn}` })
+    const { onSuccess } = useOnSuccessTransition({
+        redirectTo: `${basePath}/${viewPaths.SIGN_IN}`
+    })
 
     useEffect(() => {
         if (signingOut.current) return

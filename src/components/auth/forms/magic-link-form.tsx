@@ -9,13 +9,19 @@ import * as z from "zod"
 
 import { useCaptcha } from "../../../hooks/use-captcha"
 import { useIsHydrated } from "../../../hooks/use-hydrated"
-import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError, getSearchParam } from "../../../lib/utils"
-import type { AuthClient } from "../../../types/auth-client"
+import type { AuthLocalization } from "../../../localization/auth-localization"
 import { Captcha } from "../../captcha/captcha"
 import { Button } from "../../ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "../../ui/form"
 import { Input } from "../../ui/input"
 import type { AuthFormClassNames } from "../auth-form"
 
@@ -55,7 +61,8 @@ export function MagicLinkForm({
     localization = { ...contextLocalization, ...localization }
 
     const getRedirectTo = useCallback(
-        () => redirectToProp || getSearchParam("redirectTo") || contextRedirectTo,
+        () =>
+            redirectToProp || getSearchParam("redirectTo") || contextRedirectTo,
         [redirectToProp, contextRedirectTo]
     )
 
@@ -64,17 +71,28 @@ export function MagicLinkForm({
             `${baseURL}${
                 callbackURLProp ||
                 (persistClient
-                    ? `${basePath}/${viewPaths.callback}?redirectTo=${getRedirectTo()}`
+                    ? `${basePath}/${viewPaths.CALLBACK}?redirectTo=${getRedirectTo()}`
                     : getRedirectTo())
             }`,
-        [callbackURLProp, persistClient, basePath, viewPaths, baseURL, getRedirectTo]
+        [
+            callbackURLProp,
+            persistClient,
+            basePath,
+            viewPaths,
+            baseURL,
+            getRedirectTo
+        ]
     )
 
     const formSchema = z.object({
         email: z
             .string()
-            .min(1, { message: `${localization.email} ${localization.isRequired}` })
-            .email({ message: `${localization.email} ${localization.isInvalid}` })
+            .min(1, {
+                message: `${localization.EMAIL} ${localization.IS_REQUIRED}`
+            })
+            .email({
+                message: `${localization.EMAIL} ${localization.IS_INVALID}`
+            })
     })
 
     const form = useForm({
@@ -97,7 +115,7 @@ export function MagicLinkForm({
                 headers: await getCaptchaHeaders("/sign-in/magic-link")
             }
 
-            await (authClient as AuthClient).signIn.magicLink({
+            await authClient.signIn.magicLink({
                 email,
                 callbackURL: getCallbackURL(),
                 fetchOptions
@@ -105,7 +123,7 @@ export function MagicLinkForm({
 
             toast({
                 variant: "success",
-                message: localization.magicLinkEmail
+                message: localization.MAGIC_LINK_EMAIL
             })
 
             form.reset()
@@ -130,14 +148,14 @@ export function MagicLinkForm({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className={classNames?.label}>
-                                {localization.email}
+                                {localization.EMAIL}
                             </FormLabel>
 
                             <FormControl>
                                 <Input
                                     className={classNames?.input}
                                     type="email"
-                                    placeholder={localization.emailPlaceholder}
+                                    placeholder={localization.EMAIL_PLACEHOLDER}
                                     disabled={isSubmitting}
                                     {...field}
                                 />
@@ -157,12 +175,16 @@ export function MagicLinkForm({
                 <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className={cn("w-full", classNames?.button, classNames?.primaryButton)}
+                    className={cn(
+                        "w-full",
+                        classNames?.button,
+                        classNames?.primaryButton
+                    )}
                 >
                     {isSubmitting ? (
                         <Loader2 className="animate-spin" />
                     ) : (
-                        localization.magicLinkAction
+                        localization.MAGIC_LINK_ACTION
                     )}
                 </Button>
             </form>

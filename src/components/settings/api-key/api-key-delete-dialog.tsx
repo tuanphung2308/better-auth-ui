@@ -1,13 +1,16 @@
 "use client"
 
-import { Loader2 } from "lucide-react"
+import { KeyRoundIcon, Loader2 } from "lucide-react"
 import { type ComponentProps, useContext, useState } from "react"
 
-import type { AuthLocalization } from "../../../lib/auth-localization"
+import { useLang } from "../../../hooks/use-lang"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
+import type { AuthLocalization } from "../../../localization/auth-localization"
 import type { ApiKey } from "../../../types/api-key"
+import type { Refetch } from "../../../types/refetch"
 import { Button } from "../../ui/button"
+import { Card } from "../../ui/card"
 import {
     Dialog,
     DialogContent,
@@ -22,7 +25,7 @@ interface ApiKeyDeleteDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     apiKey: ApiKey
     localization?: AuthLocalization
-    refetch?: () => Promise<void>
+    refetch?: Refetch
 }
 
 export function ApiKeyDeleteDialog({
@@ -41,6 +44,7 @@ export function ApiKeyDeleteDialog({
 
     localization = { ...contextLocalization, ...localization }
 
+    const { lang } = useLang()
     const [isLoading, setIsLoading] = useState(false)
 
     const handleDelete = async () => {
@@ -60,6 +64,21 @@ export function ApiKeyDeleteDialog({
         setIsLoading(false)
     }
 
+    // Format expiration date or show "Never expires"
+    const formatExpiration = () => {
+        if (!apiKey.expiresAt) return localization.NEVER_EXPIRES
+
+        const expiresDate = new Date(apiKey.expiresAt)
+        return `${localization.EXPIRES} ${expiresDate.toLocaleDateString(
+            lang ?? "en",
+            {
+                month: "short",
+                day: "numeric",
+                year: "numeric"
+            }
+        )}`
+    }
+
     return (
         <Dialog onOpenChange={onOpenChange} {...props}>
             <DialogContent
@@ -67,26 +86,60 @@ export function ApiKeyDeleteDialog({
                 className={classNames?.dialog?.content}
             >
                 <DialogHeader className={classNames?.dialog?.header}>
-                    <DialogTitle className={cn("text-lg md:text-xl", classNames?.title)}>
-                        {localization.delete} {localization.apiKey}
+                    <DialogTitle
+                        className={cn("text-lg md:text-xl", classNames?.title)}
+                    >
+                        {localization.DELETE} {localization.API_KEY}
                     </DialogTitle>
 
                     <DialogDescription
-                        className={cn("text-xs md:text-sm", classNames?.description)}
+                        className={cn(
+                            "text-xs md:text-sm",
+                            classNames?.description
+                        )}
                     >
-                        {localization.deleteApiKeyConfirmation}
+                        {localization.DELETE_API_KEY_CONFIRM}
                     </DialogDescription>
                 </DialogHeader>
+
+                <Card
+                    className={cn(
+                        "my-2 flex-row items-center gap-3 px-4 py-3",
+                        classNames?.cell
+                    )}
+                >
+                    <KeyRoundIcon className={cn("size-4", classNames?.icon)} />
+
+                    <div className="flex flex-col">
+                        <div className="flex items-center gap-2">
+                            <span className="font-semibold text-sm">
+                                {apiKey.name}
+                            </span>
+
+                            <span className="text-muted-foreground text-sm">
+                                {apiKey.start}
+                                {"******"}
+                            </span>
+                        </div>
+
+                        <div className="text-muted-foreground text-xs">
+                            {formatExpiration()}
+                        </div>
+                    </div>
+                </Card>
 
                 <DialogFooter className={classNames?.dialog?.footer}>
                     <Button
                         type="button"
-                        variant="outline"
+                        variant="secondary"
                         onClick={() => onOpenChange?.(false)}
                         disabled={isLoading}
-                        className={cn(classNames?.button, classNames?.outlineButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.secondaryButton
+                        )}
                     >
-                        {localization.cancel}
+                        {localization.CANCEL}
                     </Button>
 
                     <Button
@@ -94,10 +147,13 @@ export function ApiKeyDeleteDialog({
                         variant="destructive"
                         onClick={handleDelete}
                         disabled={isLoading}
-                        className={cn(classNames?.button, classNames?.destructiveButton)}
+                        className={cn(
+                            classNames?.button,
+                            classNames?.destructiveButton
+                        )}
                     >
                         {isLoading && <Loader2 className="animate-spin" />}
-                        {localization.delete}
+                        {localization.DELETE}
                     </Button>
                 </DialogFooter>
             </DialogContent>

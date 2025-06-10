@@ -1,11 +1,10 @@
-import { KeyIcon } from "lucide-react"
+import { FingerprintIcon } from "lucide-react"
 import { useContext } from "react"
 
 import { useOnSuccessTransition } from "../../hooks/use-success-transition"
-import type { AuthLocalization } from "../../lib/auth-localization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
-import type { AuthClient } from "../../types/auth-client"
+import type { AuthLocalization } from "../../localization/auth-localization"
 import { Button } from "../ui/button"
 import type { AuthCardClassNames } from "./auth-card"
 
@@ -24,7 +23,11 @@ export function PasskeyButton({
     redirectTo,
     setIsSubmitting
 }: PasskeyButtonProps) {
-    const { authClient, localization: contextLocalization, toast } = useContext(AuthUIContext)
+    const {
+        authClient,
+        localization: contextLocalization,
+        toast
+    } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
 
@@ -34,14 +37,17 @@ export function PasskeyButton({
         setIsSubmitting?.(true)
 
         try {
-            const response = await (authClient as AuthClient).signIn.passkey({
+            const response = await authClient.signIn.passkey({
                 fetchOptions: { throw: true }
             })
 
             if (response?.error) {
                 toast({
                     variant: "error",
-                    message: getLocalizedError({ error: response.error, localization })
+                    message: getLocalizedError({
+                        error: response.error,
+                        localization
+                    })
                 })
 
                 setIsSubmitting?.(false)
@@ -60,7 +66,11 @@ export function PasskeyButton({
 
     return (
         <Button
-            className={cn("w-full", classNames?.form?.button, classNames?.form?.secondaryButton)}
+            className={cn(
+                "w-full",
+                classNames?.form?.button,
+                classNames?.form?.secondaryButton
+            )}
             disabled={isSubmitting}
             formNoValidate
             name="passkey"
@@ -68,8 +78,8 @@ export function PasskeyButton({
             variant="secondary"
             onClick={signInPassKey}
         >
-            <KeyIcon />
-            {localization.signInWith} {localization.passkey}
+            <FingerprintIcon />
+            {localization.SIGN_IN_WITH} {localization.PASSKEY}
         </Button>
     )
 }

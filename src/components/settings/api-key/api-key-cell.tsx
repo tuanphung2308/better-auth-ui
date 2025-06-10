@@ -1,13 +1,14 @@
 "use client"
 
-import { KeyIcon } from "lucide-react"
+import { KeyRoundIcon } from "lucide-react"
 import { useContext, useState } from "react"
 
 import { useLang } from "../../../hooks/use-lang"
-import type { AuthLocalization } from "../../../lib/auth-localization"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn } from "../../../lib/utils"
+import type { AuthLocalization } from "../../../localization/auth-localization"
 import type { ApiKey } from "../../../types/api-key"
+import type { Refetch } from "../../../types/refetch"
 import { Button } from "../../ui/button"
 import { Card } from "../../ui/card"
 import type { SettingsCardClassNames } from "../shared/settings-card"
@@ -18,7 +19,7 @@ export interface APIKeyCellProps {
     classNames?: SettingsCardClassNames
     apiKey: ApiKey
     localization?: Partial<AuthLocalization>
-    refetch?: () => Promise<void>
+    refetch?: Refetch
 }
 
 export function APIKeyCell({
@@ -37,34 +38,47 @@ export function APIKeyCell({
 
     // Format expiration date or show "Never expires"
     const formatExpiration = () => {
-        if (!apiKey.expiresAt) return localization.neverExpires
+        if (!apiKey.expiresAt) return localization.NEVER_EXPIRES
 
         const expiresDate = new Date(apiKey.expiresAt)
-        return `${localization.expires} ${expiresDate.toLocaleDateString(lang ?? "en", {
-            month: "short",
-            day: "numeric",
-            year: "numeric"
-        })}`
+        return `${localization.EXPIRES} ${expiresDate.toLocaleDateString(
+            lang ?? "en",
+            {
+                month: "short",
+                day: "numeric",
+                year: "numeric"
+            }
+        )}`
     }
 
     return (
         <>
             <Card
-                className={cn("flex-row items-center gap-3 px-4 py-3", className, classNames?.cell)}
+                className={cn(
+                    "flex-row items-center gap-3 truncate px-4 py-3",
+                    className,
+                    classNames?.cell
+                )}
             >
-                <KeyIcon className={cn("size-4", classNames?.icon)} />
+                <KeyRoundIcon
+                    className={cn("size-4 flex-shrink-0", classNames?.icon)}
+                />
 
-                <div className="flex flex-col">
+                <div className="flex flex-col truncate">
                     <div className="flex items-center gap-2">
-                        <span className="font-semibold text-sm">{apiKey.name}</span>
+                        <span className="truncate font-semibold text-sm">
+                            {apiKey.name}
+                        </span>
 
-                        <span className="text-muted-foreground text-sm">
+                        <span className="flex-1 truncate text-muted-foreground text-sm">
                             {apiKey.start}
                             {"******"}
                         </span>
                     </div>
 
-                    <div className="text-muted-foreground text-xs">{formatExpiration()}</div>
+                    <div className="truncate text-muted-foreground text-xs">
+                        {formatExpiration()}
+                    </div>
                 </div>
 
                 <Button
@@ -77,7 +91,7 @@ export function APIKeyCell({
                     variant="outline"
                     onClick={() => setShowDeleteDialog(true)}
                 >
-                    {localization.delete}
+                    {localization.DELETE}
                 </Button>
             </Card>
 

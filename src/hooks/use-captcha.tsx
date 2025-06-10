@@ -4,11 +4,15 @@ import { useGoogleReCaptcha } from "@wojtekmaj/react-recaptcha-v3"
 import { type RefObject, useContext, useRef } from "react"
 import type ReCAPTCHA from "react-google-recaptcha"
 
-import type { AuthLocalization } from "../lib/auth-localization"
 import { AuthUIContext } from "../lib/auth-ui-provider"
+import type { AuthLocalization } from "../localization/auth-localization"
 
 // Default captcha endpoints
-const DEFAULT_CAPTCHA_ENDPOINTS = ["/sign-up/email", "/sign-in/email", "/forget-password"]
+const DEFAULT_CAPTCHA_ENDPOINTS = [
+    "/sign-up/email",
+    "/sign-in/email",
+    "/forget-password"
+]
 
 // Sanitize action name for reCAPTCHA
 // Google reCAPTCHA only allows A-Za-z/_ in action names
@@ -32,7 +36,8 @@ export function useCaptcha({
 }: {
     localization: Partial<AuthLocalization>
 }) {
-    const { captcha, localization: contextLocalization } = useContext(AuthUIContext)
+    const { captcha, localization: contextLocalization } =
+        useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
 
@@ -41,7 +46,7 @@ export function useCaptcha({
     const { executeRecaptcha } = useGoogleReCaptcha()
 
     const executeCaptcha = async (action: string) => {
-        if (!captcha) throw new Error(localization.missingCaptchaResponse)
+        if (!captcha) throw new Error(localization.MISSING_RESPONSE)
 
         // Sanitize the action name for reCAPTCHA
         let response: string | undefined | null
@@ -75,7 +80,7 @@ export function useCaptcha({
         }
 
         if (!response) {
-            throw new Error(localization.missingCaptchaResponse)
+            throw new Error(localization.MISSING_RESPONSE)
         }
 
         return response

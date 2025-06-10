@@ -9,7 +9,7 @@ The `<UpdateAvatarCard />` component is a pre-built UI element for users to easi
 
 ## Usage
 
-Here's how to include the `<UpdateAvatarCard />` component within your custom settings page. If you don't provide an `uploadAvatar` function, the component will store the avatar image as a base64 string in database.
+Here's how to include the `<UpdateAvatarCard />` component within your custom settings page. If you don't provide an `avatar.upload` function, the component will store the avatar image as a base64 string in database.
 
 ```tsx
 import { UpdateAvatarCard } from "@daveyplate/better-auth-ui"
@@ -23,7 +23,7 @@ export default function CustomSettings() {
 }
 ```
 
-You can optionally provide `uploadAvatar` prop within your [`AuthUIProvider`](../components/auth-ui-provider):
+You can optionally provide `avatar.upload` prop within your [`AuthUIProvider`](../components/auth-ui-provider):
 
 ```tsx title="providers.tsx"
 "use client"
@@ -42,18 +42,19 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
             navigate={router.push}
             replace={router.replace}
             onSessionChange={() => router.refresh()}
-            avatar
-            uploadAvatar={async (file: File) => {
-                const formData = new FormData()
-                formData.append("avatar", file)
+            avatar={{
+                upload: async (file: File) => {
+                    const formData = new FormData()
+                    formData.append("avatar", file)
 
-                const res = await fetch("/api/uploadAvatar", {
-                    method: "POST",
-                    body: formData,
-                })
+                    const res = await fetch("/api/uploadAvatar", {
+                        method: "POST",
+                        body: formData,
+                    })
 
-                const { data } = await res.json()
-                return data.url
+                    const { data } = await res.json()
+                    return data.url
+                }
             }}
             Link={Link}
         >
@@ -91,7 +92,7 @@ The `classNames` prop is useful for customizing inner elements using Tailwind cl
 Avatars are auto-cropped, optimized, and resized before uploading:
 
 - **Cropping**: The image is automatically center-cropped into a square.
-- **Sizing**: Default `avatarSize` is set to:
+- **Sizing**: Default `avatar.size` is set to:
   - `128px` (when using built-in storage - base64)
-  - `256px` (when using custom `uploadAvatar`)
-- **File Format**: You can customize the uploaded image file format via `avatarExtension` prop in [`AuthUIProvider`](../components/auth-ui-provider). It defaults to `"png"`.
+  - `256px` (when using custom `avatar.upload`)
+- **File Format**: You can customize the uploaded image file format via `avatar.extension` prop in [`AuthUIProvider`](../components/auth-ui-provider). It defaults to `"png"`.

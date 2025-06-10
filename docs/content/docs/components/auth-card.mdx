@@ -26,7 +26,7 @@ Below are practical usage examples demonstrating common scenarios:
 You can specify the current view manually using the `view` prop:
 
 ```tsx
-<AuthCard view="signIn" />
+<AuthCard view="SIGN_IN" />
 ```
 
 ### Custom Redirect After Authentication
@@ -44,9 +44,9 @@ You can pass custom localization texts to fit different languages or contexts:
 ```tsx
 <AuthCard
     localization={{
-        signIn: "Log in",
-        signUp: "Register",
-        magicLink: "Sign in with Email",
+        SIGN_IN: "Log in",
+        SIGN_UP: "Register",
+        MAGIC_LINK: "Sign in with Email",
     }}
 />
 ```

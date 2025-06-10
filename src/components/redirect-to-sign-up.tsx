@@ -11,6 +11,6 @@ import { useAuthenticate } from "../hooks/use-authenticate"
  * for redirecting from marketing pages to the registration flow.
  */
 export function RedirectToSignUp(): ReactNode {
-    useAuthenticate({ authView: "signUp" })
+    useAuthenticate({ authView: "SIGN_UP" })
     return null
 }
