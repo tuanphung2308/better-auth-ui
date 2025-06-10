@@ -30,8 +30,12 @@ You may use `additionalFields` to define extra fields required during signup or 
       validate: (value: string) => parseInt(value) >= 18
     }
   }}
-  settingsFields={["company", "age"]}
-  signUpFields={["company", "age"]}
+  settings={{
+    fields: ["company", "age"]
+  }}
+  signUp={{
+    fields: ["company", "age"]
+  }}
 >
   {children}
 </AuthUIProvider>

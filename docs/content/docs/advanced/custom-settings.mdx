@@ -14,13 +14,13 @@ You have two primary ways to create a custom settings page experience:
 1. Use the built-in plug-and-play `<SettingsCards />` component on your custom route.
 2. Selectively import and use individual components to build your own specific settings page layout.
 
-## Step 1: Setting `settingsURL`
+## Step 1: Setting `settings.url`
 
 To override the default built-in settings page URL (`/auth/settings`) with your custom URL (example: `/dashboard/settings`):
 
 ### With AuthUIProvider:
 
-Set the `settingsURL` prop within your main application provider:
+Set the `settings.url` prop within your main application provider:
 
 ```tsx title="app/providers.tsx"
 "use client"
@@ -39,7 +39,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
             navigate={router.push}
             replace={router.replace}
             onSessionChange={() => router.refresh()}
-            settingsURL="/dashboard/settings" // Your custom settings route
+            settings={{
+                url: "/dashboard/settings" // Your custom settings route
+            }}
             Link={Link}
         >
             {children}
@@ -48,7 +50,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
-> **Important**: Once `settingsURL` is set, the built-in `/auth/settings` route will automatically redirect users visiting `/auth/settings` to your custom path, providing a seamless replacement of the default option.
+> **Important**: Once `settings.url` is set, the built-in `/auth/settings` route will automatically redirect users visiting `/auth/settings` to your custom path, providing a seamless replacement of the default option.
 
 ## Step 2: Implementing Custom Settings UI
 
@@ -162,8 +164,10 @@ This example assumes `additionalFields` are configured via your `<AuthUIProvider
             type: "number"
         }
     }}
-    settingsFields={["age"]}
-    settingsURL="/dashboard/settings"
+    settings={{
+        fields: ["age"],
+        url: "/dashboard/settings"
+    }}
 >
     {children}
 </AuthUIProvider>
