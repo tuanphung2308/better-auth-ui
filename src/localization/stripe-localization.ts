@@ -9,4 +9,4 @@ export const STRIPE_ERROR_CODES = {
     SUBSCRIPTION_NOT_ACTIVE: "Subscription is not active",
     SUBSCRIPTION_NOT_SCHEDULED_FOR_CANCELLATION:
         "Subscription is not scheduled for cancellation"
-} as const
+};

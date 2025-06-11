@@ -7,4 +7,4 @@ export const PASSKEY_ERROR_CODES = {
     AUTHENTICATION_FAILED: "Authentication failed",
     UNABLE_TO_CREATE_SESSION: "Unable to create session",
     FAILED_TO_UPDATE_PASSKEY: "Failed to update passkey"
-} as const
+};

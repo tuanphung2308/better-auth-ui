@@ -7,4 +7,4 @@ export const PHONE_NUMBER_ERROR_CODES = {
     OTP_EXPIRED: "OTP expired",
     INVALID_OTP: "Invalid OTP",
     PHONE_NUMBER_NOT_VERIFIED: "Phone number not verified"
-} as const
+};
