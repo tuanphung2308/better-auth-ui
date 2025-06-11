@@ -24,4 +24,4 @@ export const BASE_ERROR_CODES = {
     ACCOUNT_NOT_FOUND: "Account not found",
     USER_ALREADY_HAS_PASSWORD:
         "User already has a password. Provide that to delete the account."
-} as const
+};

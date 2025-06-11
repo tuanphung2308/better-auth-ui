@@ -4,4 +4,4 @@ export const EMAIL_OTP_ERROR_CODES = {
     INVALID_EMAIL: "Invalid email",
     USER_NOT_FOUND: "User not found",
     TOO_MANY_ATTEMPTS: "Too many attempts"
-} as const
+};

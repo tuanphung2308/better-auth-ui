@@ -9,4 +9,4 @@ export const TWO_FACTOR_ERROR_CODES = {
     TOO_MANY_ATTEMPTS_REQUEST_NEW_CODE:
         "Too many attempts. Please request a new code.",
     INVALID_TWO_FACTOR_COOKIE: "Invalid two factor cookie"
-} as const
+};
