@@ -29,7 +29,7 @@ export function TwoFactorCard({
     localization = { ...contextLocalization, ...localization }
 
     const { data: sessionData, isPending } = useSession()
-    const isTwoFactorEnabled = (sessionData?.user as User).twoFactorEnabled
+    const isTwoFactorEnabled = (sessionData?.user as User)?.twoFactorEnabled
 
     return (
         <div>

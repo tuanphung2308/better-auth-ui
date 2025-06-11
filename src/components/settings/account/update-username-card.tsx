@@ -21,8 +21,8 @@ export function UpdateUsernameCard({
 
     const { data: sessionData } = useSession()
     const value =
-        (sessionData?.user as User).displayUsername ||
-        (sessionData?.user as User).username
+        (sessionData?.user as User)?.displayUsername ||
+        (sessionData?.user as User)?.username
 
     return (
         <UpdateFieldCard

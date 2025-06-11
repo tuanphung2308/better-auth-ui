@@ -70,7 +70,7 @@ export function TwoFactorForm({
     })
 
     const { data: sessionData } = useSession()
-    const isTwoFactorEnabled = (sessionData?.user as User).twoFactorEnabled
+    const isTwoFactorEnabled = (sessionData?.user as User)?.twoFactorEnabled
 
     const [method, setMethod] = useState<"totp" | "otp" | null>(
         twoFactor?.length === 1 ? twoFactor[0] : null
