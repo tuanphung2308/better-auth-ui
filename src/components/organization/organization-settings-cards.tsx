@@ -10,11 +10,13 @@ import { OrganizationLogoCard } from "./organization-logo-card"
 import { OrganizationNameCard } from "./organization-name-card"
 import { OrganizationSlugCard } from "./organization-slug-card"
 
+export type OrganizationSettingsCardsProps = Omit<SettingsCardsProps, "view">
+
 export function OrganizationSettingsCards({
     className,
     classNames,
     localization
-}: Omit<SettingsCardsProps, "view">) {
+}: OrganizationSettingsCardsProps) {
     const {
         basePath,
         hooks: { useActiveOrganization },
