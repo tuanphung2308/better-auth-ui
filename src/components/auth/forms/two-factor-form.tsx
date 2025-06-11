@@ -13,6 +13,7 @@ import { useOnSuccessTransition } from "../../../hooks/use-success-transition"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError, getSearchParam } from "../../../lib/utils"
 import type { AuthLocalization } from "../../../localization/auth-localization"
+import type { User } from "../../../types/auth-client"
 import { Button } from "../../ui/button"
 import { Checkbox } from "../../ui/checkbox"
 import {
@@ -69,7 +70,7 @@ export function TwoFactorForm({
     })
 
     const { data: sessionData } = useSession()
-    const isTwoFactorEnabled = sessionData?.user.twoFactorEnabled
+    const isTwoFactorEnabled = (sessionData?.user as User).twoFactorEnabled
 
     const [method, setMethod] = useState<"totp" | "otp" | null>(
         twoFactor?.length === 1 ? twoFactor[0] : null

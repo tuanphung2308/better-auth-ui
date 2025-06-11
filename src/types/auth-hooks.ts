@@ -1,8 +1,11 @@
 import type { BetterFetchError } from "@better-fetch/fetch"
 import type { Invitation } from "better-auth/plugins/organization"
+import type { AnyAuthClient } from "./any-auth-client"
 import type { ApiKey } from "./api-key"
-import type { AuthClient, Session, User } from "./auth-client"
+import type { AuthClient } from "./auth-client"
 import type { Refetch } from "./refetch"
+
+type AnyAuthSession = AnyAuthClient["$Infer"]["Session"]
 
 type AuthHook<T> = {
     isPending: boolean
@@ -12,10 +15,10 @@ type AuthHook<T> = {
 }
 
 export type AuthHooks = {
-    useSession: () => ReturnType<AuthClient["useSession"]>
+    useSession: () => ReturnType<AnyAuthClient["useSession"]>
     useListAccounts: () => AuthHook<{ accountId: string; provider: string }[]>
-    useListDeviceSessions: () => AuthHook<{ session: Session; user: User }[]>
-    useListSessions: () => AuthHook<Session[]>
+    useListDeviceSessions: () => AuthHook<AnyAuthClient["$Infer"]["Session"][]>
+    useListSessions: () => AuthHook<AnyAuthSession["session"][]>
     useListPasskeys: () => Partial<ReturnType<AuthClient["useListPasskeys"]>>
     useListApiKeys: () => AuthHook<ApiKey[]>
     useActiveOrganization: () => Partial<

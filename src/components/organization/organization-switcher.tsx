@@ -20,6 +20,7 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { getLocalizedError } from "../../lib/utils"
 import { cn } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
+import type { User } from "../../types/auth-client"
 import { Button } from "../ui/button"
 import {
     DropdownMenu,
@@ -179,7 +180,7 @@ export function OrganizationSwitcher({
                                 {(!sessionData && !isPending) ||
                                 activeOrganizationPending ||
                                 activeOrganization ||
-                                user?.isAnonymous ? (
+                                (user as User)?.isAnonymous ? (
                                     <OrganizationLogo
                                         key={activeOrganization?.logo}
                                         className={cn(
@@ -223,7 +224,7 @@ export function OrganizationSwitcher({
                                 {(!sessionData && !isPending) ||
                                 activeOrganizationPending ||
                                 activeOrganization ||
-                                user?.isAnonymous ? (
+                                (user as User)?.isAnonymous ? (
                                     <OrganizationView
                                         classNames={
                                             classNames?.trigger?.organization
@@ -265,7 +266,7 @@ export function OrganizationSwitcher({
                             classNames?.content?.menuItem
                         )}
                     >
-                        {(user && !user.isAnonymous) || isPending ? (
+                        {(user && !(user as User).isAnonymous) || isPending ? (
                             <>
                                 {activeOrganizationPending ||
                                 activeOrganization ? (
@@ -361,7 +362,9 @@ export function OrganizationSwitcher({
                         />
                     )}
 
-                    {!isPending && sessionData && !user?.isAnonymous ? (
+                    {!isPending &&
+                    sessionData &&
+                    !(user as User).isAnonymous ? (
                         <DropdownMenuItem
                             className={cn(classNames?.content?.menuItem)}
                             onClick={() => setIsCreateOrgDialogOpen(true)}

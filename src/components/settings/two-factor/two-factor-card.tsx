@@ -3,6 +3,7 @@
 import { useContext, useState } from "react"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import type { AuthLocalization } from "../../../localization/auth-localization"
+import type { User } from "../../../types/auth-client"
 import { SettingsCard } from "../shared/settings-card"
 import type { SettingsCardClassNames } from "../shared/settings-card"
 import { TwoFactorPasswordDialog } from "./two-factor-password-dialog"
@@ -28,7 +29,7 @@ export function TwoFactorCard({
     localization = { ...contextLocalization, ...localization }
 
     const { data: sessionData, isPending } = useSession()
-    const isTwoFactorEnabled = sessionData?.user.twoFactorEnabled
+    const isTwoFactorEnabled = (sessionData?.user as User).twoFactorEnabled
 
     return (
         <div>

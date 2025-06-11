@@ -1,6 +1,4 @@
 "use client"
-
-import type { Session, User } from "better-auth"
 import {
     ChevronsUpDown,
     LogInIcon,
@@ -26,6 +24,8 @@ import { AuthUIContext } from "../lib/auth-ui-provider"
 import { getLocalizedError } from "../lib/utils"
 import { cn } from "../lib/utils"
 import type { AuthLocalization } from "../localization/auth-localization"
+import type { AnyAuthClient } from "../types/any-auth-client"
+import type { User } from "../types/auth-client"
 import { Button } from "./ui/button"
 import {
     DropdownMenu,
@@ -74,11 +74,6 @@ export interface UserButtonProps {
     localization?: AuthLocalization
 }
 
-type DeviceSession = {
-    session: Session
-    user: User
-}
-
 /**
  * Displays an interactive user button with dropdown menu functionality
  *
@@ -119,7 +114,10 @@ export function UserButton({
         [contextLocalization, propLocalization]
     )
 
-    let deviceSessions: DeviceSession[] | undefined | null = null
+    let deviceSessions:
+        | AnyAuthClient["$Infer"]["Session"][]
+        | undefined
+        | null = null
     let deviceSessionsPending = false
 
     if (multiSession) {
@@ -210,7 +208,9 @@ export function UserButton({
                         >
                             <UserView
                                 size={size}
-                                user={!user?.isAnonymous ? user : null}
+                                user={
+                                    !(user as User)?.isAnonymous ? user : null
+                                }
                                 isPending={isPending}
                                 classNames={classNames?.trigger?.user}
                                 localization={localization}
@@ -230,7 +230,7 @@ export function UserButton({
                 onCloseAutoFocus={(e) => e.preventDefault()}
             >
                 <div className={cn("p-2", classNames?.content?.menuItem)}>
-                    {(user && !user.isAnonymous) || isPending ? (
+                    {(user && !(user as User).isAnonymous) || isPending ? (
                         <UserView
                             user={user}
                             isPending={isPending}
@@ -266,7 +266,7 @@ export function UserButton({
                         )
                 )}
 
-                {!user || user.isAnonymous ? (
+                {!user || (user as User).isAnonymous ? (
                     <>
                         <Link href={`${basePath}/${viewPaths.SIGN_IN}`}>
                             <DropdownMenuItem

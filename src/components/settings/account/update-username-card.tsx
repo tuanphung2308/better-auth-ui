@@ -2,6 +2,7 @@
 
 import { useContext } from "react"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
+import type { User } from "../../../types/auth-client"
 import type { SettingsCardProps } from "../shared/settings-card"
 import { UpdateFieldCard } from "./update-field-card"
 
@@ -20,7 +21,8 @@ export function UpdateUsernameCard({
 
     const { data: sessionData } = useSession()
     const value =
-        sessionData?.user.displayUsername || sessionData?.user.username
+        (sessionData?.user as User).displayUsername ||
+        (sessionData?.user as User).username
 
     return (
         <UpdateFieldCard

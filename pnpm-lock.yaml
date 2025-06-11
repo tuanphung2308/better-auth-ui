@@ -158,10 +158,10 @@ importers:
         version: 7.1.1(typescript@5.8.3)
       tsup:
         specifier: ^8.5.0
-        version: 8.5.0(postcss@8.4.31)(tsx@4.19.4)(typescript@5.8.3)
+        version: 8.5.0(postcss@8.4.31)(tsx@4.20.0)(typescript@5.8.3)
       tsx:
-        specifier: ^4.19.4
-        version: 4.19.4
+        specifier: ^4.20.0
+        version: 4.20.0
       turbo:
         specifier: ^2.5.4
         version: 2.5.4
@@ -2060,8 +2060,8 @@ packages:
       typescript:
         optional: true
 
-  tsx@4.19.4:
-    resolution: {integrity: sha512-gK5GVzDkJK1SI1zwHf32Mqxf2tSJkNx+eYcNly5+nHvWqXUJYUkWBQtKauoESz3ymezAI++ZwT855x5p5eop+Q==}
+  tsx@4.20.0:
+    resolution: {integrity: sha512-TsmdeXxcZYiJ2MKV7fdq38na0CKyLRtCeMqTeHMmrVXQ/gf5yTeJohh+sgr7MnMGsjeKXzHzy+TwOOTR1arl+Q==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -2189,8 +2189,8 @@ packages:
   zod@3.24.4:
     resolution: {integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==}
 
-  zod@3.25.57:
-    resolution: {integrity: sha512-6tgzLuwVST5oLUxXTmBqoinKMd3JeesgbgseXeFasKKj8Q1FCZrHnbqJOyiEvr4cVAlbug+CgIsmJ8cl/pU5FA==}
+  zod@3.25.58:
+    resolution: {integrity: sha512-DVLmMQzSZwNYzQoMaM3MQWnxr2eq+AtM9Hx3w1/Yl0pH8sLTSjN4jGP7w6f7uand6Hw44tsnSu1hz1AOA6qI2Q==}
 
 snapshots:
 
@@ -3310,7 +3310,7 @@ snapshots:
       jose: 5.10.0
       kysely: 0.28.2
       nanostores: 0.11.4
-      zod: 3.25.57
+      zod: 3.25.58
 
   better-call@1.0.9:
     dependencies:
@@ -3722,12 +3722,12 @@ snapshots:
       mlly: 1.7.4
       pathe: 2.0.3
 
-  postcss-load-config@6.0.1(postcss@8.4.31)(tsx@4.19.4):
+  postcss-load-config@6.0.1(postcss@8.4.31)(tsx@4.20.0):
     dependencies:
       lilconfig: 3.1.3
     optionalDependencies:
       postcss: 8.4.31
-      tsx: 4.19.4
+      tsx: 4.20.0
 
   postcss@8.4.31:
     dependencies:
@@ -4008,7 +4008,7 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsup@8.5.0(postcss@8.4.31)(tsx@4.19.4)(typescript@5.8.3):
+  tsup@8.5.0(postcss@8.4.31)(tsx@4.20.0)(typescript@5.8.3):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.25.5)
       cac: 6.7.14
@@ -4019,7 +4019,7 @@ snapshots:
       fix-dts-default-cjs-exports: 1.0.1
       joycon: 3.1.1
       picocolors: 1.1.1
-      postcss-load-config: 6.0.1(postcss@8.4.31)(tsx@4.19.4)
+      postcss-load-config: 6.0.1(postcss@8.4.31)(tsx@4.20.0)
       resolve-from: 5.0.0
       rollup: 4.42.0
       source-map: 0.8.0-beta.0
@@ -4036,7 +4036,7 @@ snapshots:
       - tsx
       - yaml
 
-  tsx@4.19.4:
+  tsx@4.20.0:
     dependencies:
       esbuild: 0.25.5
       get-tsconfig: 4.10.1
@@ -4174,4 +4174,4 @@ snapshots:
 
   zod@3.24.4: {}
 
-  zod@3.25.57: {}
+  zod@3.25.58: {}
