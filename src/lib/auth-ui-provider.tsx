@@ -27,6 +27,7 @@ import type { CaptchaOptions } from "../types/captcha-options"
 import type { CredentialsOptions } from "../types/credentials-options"
 import type { DeleteUserOptions } from "../types/delete-user-options"
 import type { GenericOAuthOptions } from "../types/generic-oauth-options"
+import type { GravatarOptions } from "../types/gravatar-options"
 import type { Link } from "../types/link"
 import type {
     OrganizationOptions,
@@ -137,6 +138,10 @@ export type AuthUIContextType = {
      * Generic OAuth provider configuration
      */
     genericOAuth?: GenericOAuthOptions
+    /**
+     * Gravatar configuration
+     */
+    gravatar?: boolean | GravatarOptions
     hooks: AuthHooks
     localization: AuthLocalization
     /**

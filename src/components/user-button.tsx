@@ -11,7 +11,6 @@ import {
     type ComponentProps,
     Fragment,
     type ReactNode,
-    type ReactPortal,
     useCallback,
     useContext,
     useEffect,
@@ -65,7 +64,7 @@ export interface UserButtonProps {
         label: ReactNode
         signedIn?: boolean
     }[]
-    trigger?: ReactPortal
+    trigger?: ReactNode
     disableDefaultLinks?: boolean
     /**
      * @default authLocalization
