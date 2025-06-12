@@ -1,9 +1,11 @@
 "use client"
+
 import { UserRoundIcon } from "lucide-react"
 import type { ComponentProps } from "react"
 import { useContext } from "react"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
+import { getGravatarUrl } from "../lib/gravatar-utils"
 import { cn } from "../lib/utils"
 import type { AuthLocalization } from "../localization/auth-localization"
 import type { Profile } from "../types/profile"
@@ -47,7 +49,8 @@ export function UserAvatar({
     localization: propLocalization,
     ...props
 }: UserAvatarProps & ComponentProps<typeof Avatar>) {
-    const { localization: contextLocalization } = useContext(AuthUIContext)
+    const { localization: contextLocalization, gravatar } =
+        useContext(AuthUIContext)
 
     const localization = { ...contextLocalization, ...propLocalization }
 
@@ -59,7 +62,18 @@ export function UserAvatar({
         user?.name ||
         user?.fullName ||
         user?.email
-    const src = user?.image || user?.avatar || user?.avatarUrl
+    const userImage = user?.image || user?.avatar || user?.avatarUrl
+
+    // Calculate gravatar URL synchronously
+    const gravatarUrl =
+        gravatar && user?.email
+            ? getGravatarUrl(
+                  user.email,
+                  gravatar === true ? undefined : gravatar
+              )
+            : null
+
+    const src = gravatar ? gravatarUrl : userImage
 
     if (isPending) {
         return (

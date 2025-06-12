@@ -63,17 +63,8 @@
             }
         }
     },
-    "files": [
-        "src",
-        "dist"
-    ],
-    "keywords": [
-        "typescript",
-        "react",
-        "better-auth",
-        "shadcn",
-        "nextjs"
-    ],
+    "files": ["src", "dist"],
+    "keywords": ["typescript", "react", "better-auth", "shadcn", "nextjs"],
     "author": "daveycodez",
     "license": "MIT",
     "devDependencies": {
@@ -146,6 +137,7 @@
         "@hcaptcha/react-hcaptcha": "^1.12.0",
         "@react-email/components": "^0.0.42",
         "@wojtekmaj/react-recaptcha-v3": "^0.1.4",
+        "js-sha256": ">=0.11.1",
         "react-google-recaptcha": "^3.1.0",
         "react-qr-code": "^2.0.15",
         "ua-parser-js": "^2.0.3",
