@@ -22,7 +22,6 @@ export function AccountSettingsCards({
         credentials,
         hooks: { useSession },
         multiSession,
-        nameRequired,
         settings
     } = useContext(AuthUIContext)
 
@@ -50,7 +49,7 @@ export function AccountSettingsCards({
                 />
             )}
 
-            {(settings?.fields?.includes("name") || nameRequired) && (
+            {settings?.fields?.includes("name") && (
                 <UpdateNameCard
                     classNames={classNames}
                     localization={localization}

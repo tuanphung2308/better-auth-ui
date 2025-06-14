@@ -149,7 +149,7 @@ export function SignUpForm({
     }
 
     // Add name field if required or included in signUpFields
-    if (nameRequired || signUpFields?.includes("name")) {
+    if (signUpFields?.includes("name")) {
         schemaFields.name = nameRequired
             ? z.string().min(1, {
                   message: `${localization.NAME} ${localization.IS_REQUIRED}`
@@ -242,7 +242,7 @@ export function SignUpForm({
         email: "",
         password: "",
         ...(confirmPasswordEnabled && { confirmPassword: "" }),
-        ...(nameRequired || signUpFields?.includes("name") ? { name: "" } : {}),
+        ...(signUpFields?.includes("name") ? { name: "" } : {}),
         ...(usernameEnabled ? { username: "" } : {}),
         ...(signUpFields?.includes("image") && avatar ? { image: "" } : {})
     }
@@ -504,7 +504,7 @@ export function SignUpForm({
                     </>
                 )}
 
-                {(nameRequired || signUpFields?.includes("name")) && (
+                {signUpFields?.includes("name") && (
                     <FormField
                         control={form.control}
                         name="name"
