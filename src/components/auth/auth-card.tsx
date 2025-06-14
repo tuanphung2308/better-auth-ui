@@ -41,6 +41,7 @@ export interface AuthCardClassNames {
     description?: string
     footer?: string
     footerLink?: string
+    continueWith?: string
     form?: AuthFormClassNames
     header?: string
     separator?: string
@@ -265,10 +266,15 @@ export function AuthCard({
                 {view !== "RESET_PASSWORD" &&
                     (social?.providers?.length ||
                         genericOAuth?.providers?.length ||
-                        passkey) && (
+                        (view === "SIGN_IN" && passkey)) && (
                         <>
                             {(credentials || magicLink || emailOTP) && (
-                                <div className="flex items-center gap-2">
+                                <div
+                                    className={cn(
+                                        "flex items-center gap-2",
+                                        classNames?.continueWith
+                                    )}
+                                >
                                     <Separator
                                         className={cn(
                                             "!w-auto grow",
