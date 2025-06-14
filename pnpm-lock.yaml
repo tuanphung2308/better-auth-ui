@@ -145,8 +145,8 @@ importers:
         specifier: ^0.0.11
         version: 0.0.11(esbuild@0.25.5)
       lucide-react:
-        specifier: ^0.514.0
-        version: 0.514.0(react@19.1.0)
+        specifier: ^0.515.0
+        version: 0.515.0(react@19.1.0)
       react-router:
         specifier: ^7.6.2
         version: 7.6.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -161,10 +161,10 @@ importers:
         version: 7.1.1(typescript@5.8.3)
       tsup:
         specifier: ^8.5.0
-        version: 8.5.0(postcss@8.4.31)(tsx@4.20.2)(typescript@5.8.3)
+        version: 8.5.0(postcss@8.4.31)(tsx@4.20.3)(typescript@5.8.3)
       tsx:
-        specifier: ^4.20.2
-        version: 4.20.2
+        specifier: ^4.20.3
+        version: 4.20.3
       turbo:
         specifier: ^2.5.4
         version: 2.5.4
@@ -1639,8 +1639,8 @@ packages:
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
-  lucide-react@0.514.0:
-    resolution: {integrity: sha512-HXD0OAMd+JM2xCjlwG1EGW9Nuab64dhjO3+MvdyD+pSUeOTBaVAPhQblKIYmmX4RyBYbdzW0VWnJpjJmxWGr6w==}
+  lucide-react@0.515.0:
+    resolution: {integrity: sha512-Sy7bY0MeicRm2pzrnoHm2h6C1iVoeHyBU2fjdQDsXGP51fhkhau1/ZV/dzrcxEmAKsxYb6bGaIsMnGHuQ5s0dw==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -2061,8 +2061,8 @@ packages:
       typescript:
         optional: true
 
-  tsx@4.20.2:
-    resolution: {integrity: sha512-He0ZWr41gLa4vD30Au3yuwpe0HXaCZbclvl8RBieUiJ9aFnPMWUPIyvw3RU8+1Crjfcrauvitae2a4tUzRAGsw==}
+  tsx@4.20.3:
+    resolution: {integrity: sha512-qjbnuR9Tr+FJOMBqJCW5ehvIo/buZq7vH7qD7JziU98h6l3qGy0a/yPFjwO+y0/T7GFpNgNAvEcPPVfyT8rrPQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -2190,8 +2190,8 @@ packages:
   zod@3.24.4:
     resolution: {integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==}
 
-  zod@3.25.63:
-    resolution: {integrity: sha512-3ttCkqhtpncYXfP0f6dsyabbYV/nEUW+Xlu89jiXbTBifUfjaSqXOG6JnQPLtqt87n7KAmnMqcjay6c0Wq0Vbw==}
+  zod@3.25.64:
+    resolution: {integrity: sha512-hbP9FpSZf7pkS7hRVUrOjhwKJNyampPgtXKc3AN6DsWtoHsg2Sb4SQaS4Tcay380zSwd2VPo9G9180emBACp5g==}
 
 snapshots:
 
@@ -3311,7 +3311,7 @@ snapshots:
       jose: 5.10.0
       kysely: 0.28.2
       nanostores: 0.11.4
-      zod: 3.25.63
+      zod: 3.25.64
 
   better-call@1.0.9:
     dependencies:
@@ -3628,7 +3628,7 @@ snapshots:
 
   lru-cache@10.4.3: {}
 
-  lucide-react@0.514.0(react@19.1.0):
+  lucide-react@0.515.0(react@19.1.0):
     dependencies:
       react: 19.1.0
 
@@ -3725,12 +3725,12 @@ snapshots:
       mlly: 1.7.4
       pathe: 2.0.3
 
-  postcss-load-config@6.0.1(postcss@8.4.31)(tsx@4.20.2):
+  postcss-load-config@6.0.1(postcss@8.4.31)(tsx@4.20.3):
     dependencies:
       lilconfig: 3.1.3
     optionalDependencies:
       postcss: 8.4.31
-      tsx: 4.20.2
+      tsx: 4.20.3
 
   postcss@8.4.31:
     dependencies:
@@ -4011,7 +4011,7 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsup@8.5.0(postcss@8.4.31)(tsx@4.20.2)(typescript@5.8.3):
+  tsup@8.5.0(postcss@8.4.31)(tsx@4.20.3)(typescript@5.8.3):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.25.5)
       cac: 6.7.14
@@ -4022,7 +4022,7 @@ snapshots:
       fix-dts-default-cjs-exports: 1.0.1
       joycon: 3.1.1
       picocolors: 1.1.1
-      postcss-load-config: 6.0.1(postcss@8.4.31)(tsx@4.20.2)
+      postcss-load-config: 6.0.1(postcss@8.4.31)(tsx@4.20.3)
       resolve-from: 5.0.0
       rollup: 4.43.0
       source-map: 0.8.0-beta.0
@@ -4039,7 +4039,7 @@ snapshots:
       - tsx
       - yaml
 
-  tsx@4.20.2:
+  tsx@4.20.3:
     dependencies:
       esbuild: 0.25.5
       get-tsconfig: 4.10.1
@@ -4177,4 +4177,4 @@ snapshots:
 
   zod@3.24.4: {}
 
-  zod@3.25.63: {}
+  zod@3.25.64: {}
