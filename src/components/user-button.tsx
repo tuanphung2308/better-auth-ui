@@ -295,7 +295,7 @@ export function UserButton({
                             <Link
                                 href={
                                     settings.url ||
-                                    `${basePath}/${viewPaths.SETTINGS}`
+                                    `${settings.basePath || basePath}/${viewPaths.SETTINGS}`
                                 }
                             >
                                 <DropdownMenuItem

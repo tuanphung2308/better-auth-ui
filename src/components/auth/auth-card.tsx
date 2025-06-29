@@ -137,7 +137,18 @@ export function AuthCard({
     useEffect(() => {
         if (view === "SETTINGS" && settings?.url) replace(settings.url)
         if (view === "SETTINGS" && !settings) replace(redirectTo || "/")
-    }, [replace, settings, view, redirectTo])
+
+        // Handle basePath redirects for settings views
+        if (
+            settings?.basePath &&
+            settingsViews.includes(view as SettingsView)
+        ) {
+            const viewPath = viewPaths[view as keyof typeof viewPaths]
+            const redirectPath = `${settings.basePath}/${viewPath}`
+
+            replace(redirectPath)
+        }
+    }, [replace, settings, view, redirectTo, viewPaths])
 
     if (view === "CALLBACK") return <AuthCallback redirectTo={redirectTo} />
     if (view === "SIGN_OUT") return <SignOut />

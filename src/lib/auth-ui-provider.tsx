@@ -545,8 +545,14 @@ export const AuthUIProvider = ({
             }
         }
 
+        // Remove trailing slash from basePath
+        const basePath = settingsProp.basePath?.endsWith("/")
+            ? settingsProp.basePath.slice(0, -1)
+            : settingsProp.basePath
+
         return {
             url: settingsProp.url,
+            basePath,
             fields: settingsProp.fields || ["image", "name"]
         }
     }, [settingsProp, settingsFields, settingsURL])

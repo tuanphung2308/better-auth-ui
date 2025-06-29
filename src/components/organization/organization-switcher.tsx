@@ -93,6 +93,7 @@ export function OrganizationSwitcher({
         basePath,
         hooks: { useActiveOrganization, useSession, useListOrganizations },
         localization: contextLocalization,
+        settings,
         toast,
         viewPaths,
         Link
@@ -292,7 +293,7 @@ export function OrganizationSwitcher({
 
                                 {!isPending && (
                                     <Link
-                                        href={`${basePath}/${
+                                        href={`${settings?.basePath || basePath}/${
                                             activeOrganization
                                                 ? viewPaths.ORGANIZATION
                                                 : viewPaths.SETTINGS
