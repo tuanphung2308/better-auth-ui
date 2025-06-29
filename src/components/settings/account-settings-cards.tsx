@@ -37,28 +37,28 @@ export function AccountSettingsCards({
         >
             {settings?.fields?.includes("image") && avatar && (
                 <UpdateAvatarCard
-                    classNames={classNames}
+                    classNames={classNames?.card}
                     localization={localization}
                 />
             )}
 
             {credentials?.username && (
                 <UpdateUsernameCard
-                    classNames={classNames}
+                    classNames={classNames?.card}
                     localization={localization}
                 />
             )}
 
             {settings?.fields?.includes("name") && (
                 <UpdateNameCard
-                    classNames={classNames}
+                    classNames={classNames?.card}
                     localization={localization}
                 />
             )}
 
             {changeEmail && (
                 <ChangeEmailCard
-                    classNames={classNames}
+                    classNames={classNames?.card}
                     localization={localization}
                 />
             )}
@@ -85,7 +85,7 @@ export function AccountSettingsCards({
                 return (
                     <UpdateFieldCard
                         key={field}
-                        classNames={classNames}
+                        classNames={classNames?.card}
                         value={defaultValue}
                         description={description}
                         name={field}
@@ -102,7 +102,7 @@ export function AccountSettingsCards({
 
             {multiSession && (
                 <AccountsCard
-                    classNames={classNames}
+                    classNames={classNames?.card}
                     localization={localization}
                 />
             )}
