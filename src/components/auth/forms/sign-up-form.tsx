@@ -358,8 +358,7 @@ export function SignUpForm({
                 ...(username !== undefined && { username }),
                 ...(image !== undefined && { image }),
                 ...additionalFieldValues,
-                ...(emailVerification &&
-                    persistClient && { callbackURL: getCallbackURL() }),
+                callbackURL: getCallbackURL(),
                 fetchOptions
             })
 
