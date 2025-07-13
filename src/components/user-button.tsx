@@ -323,7 +323,6 @@ export function UserButton({
                         <Link href={`${basePath}/${viewPaths.SIGN_OUT}`}>
                             <DropdownMenuItem
                                 className={classNames?.content?.menuItem}
-                                variant="destructive"
                             >
                                 <LogOutIcon />
 
