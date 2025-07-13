@@ -63,6 +63,7 @@ export interface UserButtonProps {
         icon?: ReactNode
         label: ReactNode
         signedIn?: boolean
+        separator?: boolean
     }[]
     trigger?: ReactNode
     disableDefaultLinks?: boolean
@@ -248,20 +249,31 @@ export function UserButton({
                 />
 
                 {additionalLinks?.map(
-                    ({ href, icon, label, signedIn }, index) =>
+                    ({ href, icon, label, signedIn, separator }, index) =>
                         (signedIn === undefined ||
                             (signedIn && !!sessionData) ||
                             (!signedIn && !sessionData)) && (
-                            <Link key={index} href={href}>
-                                <DropdownMenuItem
-                                    className={classNames?.content?.menuItem}
-                                >
-                                    <>
-                                        {icon}
-                                        {label}
-                                    </>
-                                </DropdownMenuItem>
-                            </Link>
+                            <Fragment key={index}>
+                                <Link href={href}>
+                                    <DropdownMenuItem
+                                        className={
+                                            classNames?.content?.menuItem
+                                        }
+                                    >
+                                        <>
+                                            {icon}
+                                            {label}
+                                        </>
+                                    </DropdownMenuItem>
+                                </Link>
+                                {separator && (
+                                    <DropdownMenuSeparator
+                                        className={
+                                            classNames?.content?.separator
+                                        }
+                                    />
+                                )}
+                            </Fragment>
                         )
                 )}
 
@@ -311,6 +323,7 @@ export function UserButton({
                         <Link href={`${basePath}/${viewPaths.SIGN_OUT}`}>
                             <DropdownMenuItem
                                 className={classNames?.content?.menuItem}
+                                variant="destructive"
                             >
                                 <LogOutIcon />
 
