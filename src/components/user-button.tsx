@@ -19,6 +19,7 @@ import {
     useState
 } from "react"
 
+import { useIsHydrated } from "../hooks/use-hydrated"
 import { AuthUIContext } from "../lib/auth-ui-provider"
 import { getLocalizedError } from "../lib/utils"
 import { cn } from "../lib/utils"
@@ -130,7 +131,8 @@ export function UserButton({
     const user = sessionData?.user
     const [activeSessionPending, setActiveSessionPending] = useState(false)
 
-    const isPending = sessionPending || activeSessionPending
+    const isHydrated = useIsHydrated()
+    const isPending = sessionPending || activeSessionPending || !isHydrated
 
     const switchAccount = useCallback(
         async (sessionToken: string) => {
