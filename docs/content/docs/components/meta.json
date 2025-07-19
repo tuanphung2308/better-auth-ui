@@ -13,6 +13,8 @@
         "accept-invitation-card",
         "--- Settings ---",
         "settings-cards",
+        "account-settings-cards",
+        "security-settings-cards",
         "change-email-card",
         "change-password-card",
         "delete-account-card",
