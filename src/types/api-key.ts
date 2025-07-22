@@ -5,4 +5,5 @@ export type ApiKey = {
     expiresAt?: Date
     createdAt: Date
     updatedAt: Date
+    metadata?: Record<string, unknown>
 }
