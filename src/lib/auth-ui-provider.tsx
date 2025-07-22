@@ -611,7 +611,7 @@ export const AuthUIProvider = ({
             confirmPassword:
                 credentialsProp?.confirmPassword || confirmPassword,
             forgotPassword:
-                (credentialsProp?.forgotPassword || forgotPassword) ?? true,
+                credentialsProp?.forgotPassword ?? forgotPassword ?? true,
             passwordValidation:
                 credentialsProp?.passwordValidation || passwordValidation,
             rememberMe: credentialsProp?.rememberMe || rememberMe,
