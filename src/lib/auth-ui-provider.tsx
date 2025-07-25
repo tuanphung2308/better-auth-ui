@@ -825,6 +825,7 @@ export const AuthUIProvider = ({
             }}
         >
             {sessionData &&
+                organization &&
                 (hooks.useActiveOrganization ===
                     authClient.useActiveOrganization ||
                     hooks.useListOrganizations ===

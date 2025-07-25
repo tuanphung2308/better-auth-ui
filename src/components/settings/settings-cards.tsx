@@ -3,6 +3,7 @@
 import { MenuIcon } from "lucide-react"
 import { useContext, useEffect } from "react"
 
+import type { Organization } from "better-auth/plugins/organization"
 import { useAuthenticate } from "../../hooks/use-authenticate"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getAuthViewByPath } from "../../lib/utils"
@@ -91,8 +92,14 @@ export function SettingsCards({
 
     localization = { ...contextLocalization, ...localization }
 
-    const { data: activeOrganization, isPending: organizationPending } =
-        useActiveOrganization()
+    let activeOrganization: Organization | null | undefined = null
+    let organizationPending = false
+
+    if (organization) {
+        const { data, isPending } = useActiveOrganization()
+        activeOrganization = data
+        organizationPending = isPending || false
+    }
 
     // Determine view from pathname if provided
     const path = pathname?.split("/").pop()
@@ -109,7 +116,10 @@ export function SettingsCards({
             "ORGANIZATION_API_KEYS",
             "MEMBERS"
         ]
-        if (organizationOnlyViews.includes(view) && !activeOrganization) {
+        if (
+            organizationOnlyViews.includes(view) &&
+            (!organization || !activeOrganization)
+        ) {
             replace(`${settings?.basePath || basePath}/${viewPaths.SETTINGS}`)
         }
     }, [
@@ -117,6 +127,7 @@ export function SettingsCards({
         organizationPending,
         view,
         basePath,
+        organization,
         settings?.basePath,
         replace,
         viewPaths
