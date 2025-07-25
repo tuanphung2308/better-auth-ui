@@ -6,6 +6,7 @@ import { type ComponentProps, useContext } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
+import type { Organization } from "better-auth/plugins/organization"
 import { useLang } from "../../../hooks/use-lang"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
@@ -70,7 +71,12 @@ export function CreateAPIKeyDialog({
 
     const { lang } = useLang()
 
-    const { data: organizations } = useListOrganizations()
+    let organizations: Organization[] | null | undefined
+    if (contextOrganization) {
+        const { data } = useListOrganizations()
+        organizations = data
+    }
+
     const { data: sessionData } = useSession()
     const user = sessionData?.user
 
