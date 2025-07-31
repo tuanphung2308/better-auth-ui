@@ -88,7 +88,7 @@ export function PasskeyCell({
                         className={cn("size-4", classNames?.icon)}
                     />
                     <span className="text-sm">
-                        {passkey.createdAt.toLocaleString()}
+                        {new Date(passkey.createdAt).toLocaleString()}
                     </span>
                 </div>
 
