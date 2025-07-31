@@ -39,7 +39,7 @@ export function PasskeysCard({
     const { data: sessionData } = useSession()
     const session = sessionData?.session
     const isFresh = session
-        ? Date.now() - session?.createdAt.getTime() < freshAge * 1000
+        ? Date.now() - new Date(session?.createdAt).getTime() < freshAge * 1000
         : false
 
     const [showFreshnessDialog, setShowFreshnessDialog] = useState(false)

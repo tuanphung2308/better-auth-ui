@@ -39,7 +39,7 @@ export function PasskeyCell({
     const { data: sessionData } = useSession()
     const session = sessionData?.session
     const isFresh = session
-        ? Date.now() - session?.createdAt.getTime() < freshAge * 1000
+        ? Date.now() - new Date(session?.createdAt).getTime() < freshAge * 1000
         : false
 
     const [showFreshnessDialog, setShowFreshnessDialog] = useState(false)
@@ -88,7 +88,7 @@ export function PasskeyCell({
                         className={cn("size-4", classNames?.icon)}
                     />
                     <span className="text-sm">
-                        {passkey.createdAt.toLocaleString()}
+                        {new Date(passkey.createdAt).toLocaleString()}
                     </span>
                 </div>
 

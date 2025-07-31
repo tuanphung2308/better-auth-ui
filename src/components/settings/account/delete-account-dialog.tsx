@@ -62,7 +62,7 @@ export function DeleteAccountDialog({
     const user = sessionData?.user
 
     const isFresh = session
-        ? Date.now() - session?.createdAt.getTime() < freshAge * 1000
+        ? Date.now() - new Date(session?.createdAt).getTime() < freshAge * 1000
         : false
     const credentialsLinked = accounts?.some(
         (acc) => acc.provider === "credential"
