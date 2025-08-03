@@ -19,16 +19,7 @@ export type AuthHooks = {
     useListAccounts: () => AuthHook<{ accountId: string; provider: string }[]>
     useAccountInfo: (
         params: Parameters<AuthClient["accountInfo"]>[0] | null
-    ) => AuthHook<{
-        user: {
-            id: string
-            name?: string
-            email?: string | null
-            image?: string
-            emailVerified: boolean
-        }
-        data: Record<string, any>
-    }>
+    ) => AuthHook<ReturnType<AuthClient["accountInfo"]>>
     useListDeviceSessions: () => AuthHook<AnyAuthClient["$Infer"]["Session"][]>
     useListSessions: () => AuthHook<AnyAuthSession["session"][]>
     useListPasskeys: () => Partial<ReturnType<AuthClient["useListPasskeys"]>>
