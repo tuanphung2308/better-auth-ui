@@ -12,11 +12,15 @@ import type { Refetch } from "../../../types/refetch"
 import { Button } from "../../ui/button"
 import { Card } from "../../ui/card"
 import type { SettingsCardClassNames } from "../shared/settings-card"
+import { SettingsCellSkeleton } from "../skeletons/settings-cell-skeleton"
 
 export interface ProviderCellProps {
     className?: string
     classNames?: SettingsCardClassNames
-    account?: { accountId: string; provider: string } | null
+    account?: {
+        accountId: string
+        provider: string
+    } | null
     isPending?: boolean
     localization?: Partial<AuthLocalization>
     other?: boolean
@@ -39,13 +43,25 @@ export function ProviderCell({
         baseURL,
         localization: contextLocalization,
         mutators: { unlinkAccount },
+        hooks: { useAccountInfo },
         viewPaths,
         toast
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
 
+    const { data: accountInfo, isPending } = useAccountInfo(
+        account
+            ? {
+                  accountId: account.accountId
+              }
+            : null
+    )
     const [isLoading, setIsLoading] = useState(false)
+
+    if (isPending) {
+        return <SettingsCellSkeleton classNames={classNames} />
+    }
 
     const handleLink = async () => {
         setIsLoading(true)
@@ -108,6 +124,10 @@ export function ProviderCell({
             )}
 
             <span className="text-sm">{provider.name}</span>
+
+            {accountInfo?.user?.email && (
+                <span className="text-sm">{accountInfo.user.email}</span>
+            )}
 
             <Button
                 className={cn("relative ms-auto", classNames?.button)}

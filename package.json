@@ -153,7 +153,11 @@
         "vaul": "^1.1.2"
     },
     "pnpm": {
-        "overrides": {}
+        "overrides": {},
+        "onlyBuiltDependencies": [
+            "core-js",
+            "esbuild"
+        ]
     },
     "packageManager": "pnpm@10.12.1"
 }
