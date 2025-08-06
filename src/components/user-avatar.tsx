@@ -1,8 +1,7 @@
 "use client"
 
 import { UserRoundIcon } from "lucide-react"
-import type { ComponentProps } from "react"
-import { useContext } from "react"
+import { type ComponentProps, useContext } from "react"
 
 import { AuthUIContext } from "../lib/auth-ui-provider"
 import { getGravatarUrl } from "../lib/gravatar-utils"
@@ -49,8 +48,11 @@ export function UserAvatar({
     localization: propLocalization,
     ...props
 }: UserAvatarProps & ComponentProps<typeof Avatar>) {
-    const { localization: contextLocalization, gravatar } =
-        useContext(AuthUIContext)
+    const {
+        localization: contextLocalization,
+        gravatar,
+        avatar
+    } = useContext(AuthUIContext)
 
     const localization = { ...contextLocalization, ...propLocalization }
 
@@ -111,11 +113,19 @@ export function UserAvatar({
             )}
             {...props}
         >
-            <AvatarImage
-                alt={name || localization?.USER}
-                className={classNames?.image}
-                src={src || undefined}
-            />
+            {avatar?.Image ? (
+                <avatar.Image
+                    alt={name || localization?.USER!}
+                    className={classNames?.image}
+                    src={src || ""}
+                />
+            ) : (
+                <AvatarImage
+                    alt={name || localization?.USER}
+                    className={classNames?.image}
+                    src={src || undefined}
+                />
+            )}
 
             <AvatarFallback
                 className={cn(

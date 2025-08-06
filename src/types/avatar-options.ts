@@ -1,3 +1,5 @@
+import type { Image } from "./image"
+
 export type AvatarOptions = {
     /**
      * Upload an avatar image and return the URL string
@@ -14,4 +16,9 @@ export type AvatarOptions = {
      * @default "png"
      */
     extension: string
+    /**
+     * Custom Image component for rendering avatar images
+     * @default AvatarImage from Radix UI
+     */
+    Image?: Image
 }

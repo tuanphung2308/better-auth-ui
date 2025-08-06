@@ -48,6 +48,7 @@ import { AuthUIProvider } from "@daveyplate/better-auth-ui"
 import { authClient } from "@/lib/auth-client"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
@@ -75,7 +76,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               const { data } = await res.json()
 
               return data.url
-            }
+            },
+            // Custom Image component for rendering avatar images
+            // Useful for CDN optimization (Cloudinary, Imgix, ImgProxy, etc.)
+            Image: Image // Use Next.js Image component for avatars
           }}
           captcha={{
             provider: "google-recaptcha-v3",

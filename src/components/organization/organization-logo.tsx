@@ -2,8 +2,7 @@
 
 import type { Organization } from "better-auth/plugins/organization"
 import { BuildingIcon } from "lucide-react"
-import type { ComponentProps } from "react"
-import { useContext } from "react"
+import { type ComponentProps, useContext } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
@@ -47,7 +46,8 @@ export function OrganizationLogo({
     localization: propLocalization,
     ...props
 }: OrganizationLogoProps & ComponentProps<typeof Avatar>) {
-    const { localization: contextLocalization } = useContext(AuthUIContext)
+    const { localization: contextLocalization, avatar } =
+        useContext(AuthUIContext)
 
     const localization = { ...contextLocalization, ...propLocalization }
 
@@ -90,11 +90,19 @@ export function OrganizationLogo({
             )}
             {...props}
         >
-            <AvatarImage
-                alt={name || localization?.ORGANIZATION}
-                className={classNames?.image}
-                src={src || undefined}
-            />
+            {avatar?.Image ? (
+                <avatar.Image
+                    alt={name || localization?.ORGANIZATION!}
+                    className={classNames?.image}
+                    src={src || ""}
+                />
+            ) : (
+                <AvatarImage
+                    alt={name || localization?.ORGANIZATION!}
+                    className={classNames?.image}
+                    src={src || undefined}
+                />
+            )}
 
             <AvatarFallback
                 className={cn("text-foreground", classNames?.fallback)}
