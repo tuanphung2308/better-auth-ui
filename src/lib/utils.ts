@@ -31,7 +31,7 @@ export function getLocalizedError({
     error,
     localization
 }: {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    // biome-ignore lint/suspicious/noExplicitAny: ignore
     error: any
     localization?: Partial<AuthLocalization>
 }) {

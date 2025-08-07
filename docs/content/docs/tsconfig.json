@@ -2,5 +2,8 @@
     "compilerOptions": {
         "noCheck": true
     },
-    "include": ["**/*.ts", "**/*.tsx"]
+    "include": [
+        "**/*.ts",
+        "**/*.tsx"
+    ]
 }

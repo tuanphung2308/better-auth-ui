@@ -16,8 +16,8 @@ import {
 } from "../../ui/form"
 import { Input } from "../../ui/input"
 import { Skeleton } from "../../ui/skeleton"
-import { SettingsCard } from "../shared/settings-card"
 import type { SettingsCardProps } from "../shared/settings-card"
+import { SettingsCard } from "../shared/settings-card"
 
 export function ChangeEmailCard({
     className,

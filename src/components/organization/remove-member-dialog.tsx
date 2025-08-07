@@ -1,10 +1,9 @@
 "use client"
 
 import type { User } from "better-auth"
+import type { Member } from "better-auth/plugins/organization"
 import { Loader2 } from "lucide-react"
 import { type ComponentProps, useContext, useState } from "react"
-
-import type { Member } from "better-auth/plugins/organization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
@@ -37,22 +36,12 @@ export function RemoveMemberDialog({
         authClient,
         hooks: { useActiveOrganization },
         localization: contextLocalization,
-        toast,
-        organization
+        toast
     } = useContext(AuthUIContext)
 
     const localization = { ...contextLocalization, ...localizationProp }
 
     const { refetch } = useActiveOrganization()
-
-    const builtInRoles = [
-        { role: "owner", label: localization.OWNER },
-        { role: "admin", label: localization.ADMIN },
-        { role: "member", label: localization.MEMBER }
-    ]
-
-    const roles = [...builtInRoles, ...(organization?.customRoles || [])]
-    const role = roles.find((r) => r.role === member.role)
 
     const [isRemoving, setIsRemoving] = useState(false)
 

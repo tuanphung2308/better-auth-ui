@@ -17,8 +17,7 @@ import {
 } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { getLocalizedError } from "../../lib/utils"
-import { cn } from "../../lib/utils"
+import { cn, getLocalizedError } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
 import type { User } from "../../types/auth-client"
 import { Button } from "../ui/button"
@@ -131,7 +130,7 @@ export function OrganizationSwitcher({
     const isPending =
         sessionPending || activeOrganizationPending || organizationPending
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies:
+    // biome-ignore lint/correctness/useExhaustiveDependencies: ignore
     useEffect(() => {
         if (isRefetching) return
 
@@ -174,10 +173,6 @@ export function OrganizationSwitcher({
             hidePersonal
         ]
     )
-
-    // Determine whether to show personal view based on hidePersonal prop
-    const shouldShowPersonal =
-        !hidePersonal && !activeOrganization && !activeOrganizationPending
 
     // Auto-select first organization when hidePersonal is true
     useEffect(() => {

@@ -9,11 +9,7 @@ import { useLang } from "../../hooks/use-lang"
 import { useTheme } from "../../hooks/use-theme"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 
-export function RecaptchaV3({
-    children
-}: {
-    children: ReactNode
-}) {
+export function RecaptchaV3({ children }: { children: ReactNode }) {
     const isHydrated = useIsHydrated()
     const { captcha } = useContext(AuthUIContext)
 

@@ -41,7 +41,7 @@ export function useCaptcha({
 
     localization = { ...contextLocalization, ...localization }
 
-    // biome-ignore lint/suspicious/noExplicitAny:
+    // biome-ignore lint/suspicious/noExplicitAny: ignore
     const captchaRef = useRef<any>(null)
     const { executeRecaptcha } = useGoogleReCaptcha()
 

@@ -12,6 +12,7 @@ import {
 import { notFound } from "next/navigation"
 
 import { source } from "@/lib/source"
+
 const generator = createGenerator()
 
 export default async function Page(props: {

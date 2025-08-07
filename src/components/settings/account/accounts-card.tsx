@@ -5,8 +5,8 @@ import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn } from "../../../lib/utils"
 import type { AuthLocalization } from "../../../localization/auth-localization"
 import { CardContent } from "../../ui/card"
-import { SettingsCard } from "../shared/settings-card"
 import type { SettingsCardClassNames } from "../shared/settings-card"
+import { SettingsCard } from "../shared/settings-card"
 import { AccountCell } from "./account-cell"
 
 export interface AccountsCardProps {

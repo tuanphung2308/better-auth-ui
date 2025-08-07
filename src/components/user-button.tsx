@@ -21,8 +21,7 @@ import {
 
 import { useIsHydrated } from "../hooks/use-hydrated"
 import { AuthUIContext } from "../lib/auth-ui-provider"
-import { getLocalizedError } from "../lib/utils"
-import { cn } from "../lib/utils"
+import { cn, getLocalizedError } from "../lib/utils"
 import type { AuthLocalization } from "../localization/auth-localization"
 import type { AnyAuthClient } from "../types/any-auth-client"
 import type { User } from "../types/auth-client"
@@ -153,7 +152,7 @@ export function UserButton({
         [setActiveSession, onSessionChange, toast, localization]
     )
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies:
+    // biome-ignore lint/correctness/useExhaustiveDependencies: ignore
     useEffect(() => {
         if (!multiSession) return
 
@@ -262,10 +261,8 @@ export function UserButton({
                                             classNames?.content?.menuItem
                                         }
                                     >
-                                        <>
-                                            {icon}
-                                            {label}
-                                        </>
+                                        {icon}
+                                        {label}
                                     </DropdownMenuItem>
                                 </Link>
                                 {separator && (

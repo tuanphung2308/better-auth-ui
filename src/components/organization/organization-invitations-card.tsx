@@ -4,8 +4,8 @@ import { useContext } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
-import { SettingsCard } from "../settings/shared/settings-card"
 import type { SettingsCardProps } from "../settings/shared/settings-card"
+import { SettingsCard } from "../settings/shared/settings-card"
 import { CardContent } from "../ui/card"
 import { InvitationCell } from "./invitation-cell"
 

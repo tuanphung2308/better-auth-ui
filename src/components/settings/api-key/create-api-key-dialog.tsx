@@ -1,12 +1,11 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import type { Organization } from "better-auth/plugins/organization"
 import { Loader2 } from "lucide-react"
 import { type ComponentProps, useContext } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-
-import type { Organization } from "better-auth/plugins/organization"
 import { useLang } from "../../../hooks/use-lang"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"

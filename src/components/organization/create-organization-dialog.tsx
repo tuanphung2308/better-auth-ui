@@ -1,8 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2 } from "lucide-react"
-import { Trash2Icon, UploadCloudIcon } from "lucide-react"
+import { Loader2, Trash2Icon, UploadCloudIcon } from "lucide-react"
 import { type ComponentProps, useContext, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"

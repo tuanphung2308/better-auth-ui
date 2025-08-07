@@ -3,8 +3,8 @@
 import { useContext, useState } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { SettingsCard } from "../settings/shared/settings-card"
 import type { SettingsCardProps } from "../settings/shared/settings-card"
+import { SettingsCard } from "../settings/shared/settings-card"
 import { DeleteOrganizationDialog } from "./delete-organization-dialog"
 
 export function DeleteOrganizationCard({

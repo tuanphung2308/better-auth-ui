@@ -1,9 +1,8 @@
 "use client"
 
+import type { Organization } from "better-auth/plugins/organization"
 import { MenuIcon } from "lucide-react"
 import { useContext, useEffect } from "react"
-
-import type { Organization } from "better-auth/plugins/organization"
 import { useAuthenticate } from "../../hooks/use-authenticate"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getAuthViewByPath } from "../../lib/utils"
@@ -183,7 +182,6 @@ export function SettingsCards({
     }
 
     // Determine which group the current view belongs to
-    const isPersonalView = personalGroup.some((item) => item.view === view)
     const isOrganizationView =
         organizationGroup.some((item) => item.view === view) ||
         view === "MEMBERS"

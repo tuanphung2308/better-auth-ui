@@ -7,7 +7,9 @@ import type { SettingsCardClassNames } from "../shared/settings-card"
 
 export function SettingsCellSkeleton({
     classNames
-}: { classNames?: SettingsCardClassNames }) {
+}: {
+    classNames?: SettingsCardClassNames
+}) {
     return (
         <Card
             className={cn(

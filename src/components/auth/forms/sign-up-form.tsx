@@ -2,8 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { BetterFetchOption } from "better-auth/react"
-import { Loader2 } from "lucide-react"
-import { Trash2Icon, UploadCloudIcon } from "lucide-react"
+import { Loader2, Trash2Icon, UploadCloudIcon } from "lucide-react"
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -73,7 +72,6 @@ export function SignUpForm({
         basePath,
         baseURL,
         credentials,
-        emailVerification,
         localization: contextLocalization,
         nameRequired,
         persistClient,
