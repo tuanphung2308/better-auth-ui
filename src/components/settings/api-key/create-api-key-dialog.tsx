@@ -197,7 +197,7 @@ export function CreateAPIKeyDialog({
                                             <FormControl>
                                                 <SelectTrigger
                                                     className={cn(
-                                                        "w-full",
+                                                        "w-full p-2",
                                                         classNames?.input
                                                     )}
                                                 >
@@ -213,9 +213,6 @@ export function CreateAPIKeyDialog({
                                                 <SelectItem
                                                     value="personal"
                                                     className="p-2"
-                                                    textValue={
-                                                        localization.PERSONAL_ACCOUNT
-                                                    }
                                                 >
                                                     <PersonalAccountView
                                                         user={user}
@@ -231,7 +228,6 @@ export function CreateAPIKeyDialog({
                                                         key={org.id}
                                                         value={org.id}
                                                         className="p-2"
-                                                        textValue={org.name}
                                                     >
                                                         <OrganizationView
                                                             organization={org}
