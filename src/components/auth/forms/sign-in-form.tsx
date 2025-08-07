@@ -54,7 +54,7 @@ export function SignInForm({
     passwordValidation
 }: SignInFormProps) {
     const isHydrated = useIsHydrated()
-    const { captchaRef, getCaptchaHeaders } = useCaptcha({ localization })
+    const { captchaRef, getCaptchaHeaders, resetCaptcha } = useCaptcha({ localization })
 
     const {
         authClient,
@@ -154,6 +154,7 @@ export function SignInForm({
             }
         } catch (error) {
             form.resetField("password")
+            resetCaptcha()
 
             toast({
                 variant: "error",

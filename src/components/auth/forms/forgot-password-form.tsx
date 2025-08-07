@@ -40,7 +40,7 @@ export function ForgotPasswordForm({
     setIsSubmitting
 }: ForgotPasswordFormProps) {
     const isHydrated = useIsHydrated()
-    const { captchaRef, getCaptchaHeaders } = useCaptcha({ localization })
+    const { captchaRef, getCaptchaHeaders, resetCaptcha } = useCaptcha({ localization })
 
     const {
         authClient,
@@ -104,6 +104,7 @@ export function ForgotPasswordForm({
                 variant: "error",
                 message: getLocalizedError({ error, localization })
             })
+            resetCaptcha()
         }
     }
 

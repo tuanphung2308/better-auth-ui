@@ -64,7 +64,7 @@ export function SignUpForm({
     passwordValidation
 }: SignUpFormProps) {
     const isHydrated = useIsHydrated()
-    const { captchaRef, getCaptchaHeaders } = useCaptcha({ localization })
+    const { captchaRef, getCaptchaHeaders, resetCaptcha } = useCaptcha({ localization })
 
     const {
         additionalFields,
@@ -379,6 +379,7 @@ export function SignUpForm({
 
             form.resetField("password")
             form.resetField("confirmPassword")
+            resetCaptcha()
         }
     }
 
