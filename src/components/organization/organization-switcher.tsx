@@ -252,7 +252,7 @@ export function OrganizationSwitcher({
                         ) : (
                             <Button
                                 className={cn(
-                                    "!p-2",
+                                    "!p-2 h-fit",
                                     className,
                                     classNames?.trigger?.base
                                 )}
