@@ -1,7 +1,7 @@
 "use client"
 
 import { CheckIcon, Loader2, XIcon } from "lucide-react"
-import { useContext, useEffect, useMemo, useState } from "react"
+import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 
 import { useAuthenticate } from "../../hooks/use-authenticate"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
@@ -115,6 +115,11 @@ function AcceptInvitationContent({
         }
     })
 
+    const getRedirectTo = useCallback(
+        () => getSearchParam("redirectTo") || redirectTo,
+        [redirectTo]
+    )
+
     useEffect(() => {
         if (isPending || !invitationId) return
 
@@ -169,7 +174,7 @@ function AcceptInvitationContent({
                     localization.INVITATION_ACCEPTED || "Invitation accepted"
             })
 
-            replace(redirectTo)
+            replace(getRedirectTo())
         } catch (error) {
             toast({
                 variant: "error",
