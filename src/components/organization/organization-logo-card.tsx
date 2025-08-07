@@ -189,6 +189,10 @@ function OrganizationLogoForm({
         setLoading(true)
 
         try {
+            if (activeOrganization.logo && organization?.logo?.delete) {
+                await organization.logo.delete(activeOrganization.logo)
+            }
+            
             await authClient.organization.update({
                 organizationId: activeOrganization.id,
                 data: { logo: "" },

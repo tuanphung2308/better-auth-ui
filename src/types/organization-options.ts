@@ -5,6 +5,11 @@ export type OrganizationLogoOptions = {
      */
     upload?: (file: File) => Promise<string | undefined | null>
     /**
+     * Delete a previously uploaded logo image from your storage/CDN
+     * @remarks `(url: string) => Promise<void>`
+     */
+    delete?: (url: string) => Promise<void>
+    /**
      * Logo size for resizing
      * @default 256 if upload is provided, 128 otherwise
      */

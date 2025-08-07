@@ -530,6 +530,7 @@ export const AuthUIProvider = ({
 
         return {
             upload: avatarProp.upload || uploadAvatar,
+            delete: avatarProp.delete,
             extension: avatarProp.extension || avatarExtension || "png",
             size: avatarProp.size || (avatarProp.upload ? 256 : 128)
         }
@@ -659,6 +660,7 @@ export const AuthUIProvider = ({
         } else if (organizationProp.logo) {
             logo = {
                 upload: organizationProp.logo.upload,
+                delete: organizationProp.logo.delete,
                 extension: organizationProp.logo.extension || "png",
                 size:
                     organizationProp.logo.size || organizationProp.logo.upload

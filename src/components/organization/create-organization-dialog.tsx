@@ -62,7 +62,7 @@ export function CreateOrganizationDialog({
     const localization = { ...contextLocalization, ...localizationProp }
 
     const [logo, setLogo] = useState<string | null>(null)
-    const [uploadingLogo, setUploadingLogo] = useState(false)
+    const [logoPending, setLogoPending] = useState(false)
 
     const fileInputRef = useRef<HTMLInputElement>(null)
     const openFileDialog = () => fileInputRef.current?.click()
@@ -99,7 +99,7 @@ export function CreateOrganizationDialog({
     const handleLogoChange = async (file: File) => {
         if (!organization?.logo) return
 
-        setUploadingLogo(true)
+        setLogoPending(true)
 
         try {
             const resizedFile = await resizeAndCropImage(
@@ -126,12 +126,19 @@ export function CreateOrganizationDialog({
             })
         }
 
-        setUploadingLogo(false)
+        setLogoPending(false)
     }
 
-    const deleteLogo = () => {
+    const deleteLogo = async () => {
+        setLogoPending(true)
+        const currentUrl = logo || undefined
+        if (currentUrl && organization?.logo?.delete) {
+            await organization.logo.delete(currentUrl)
+        }
+
         setLogo(null)
         form.setValue("logo", "")
+        setLogoPending(false)
     }
 
     async function onSubmit({ name, slug, logo }: z.infer<typeof formSchema>) {
@@ -199,7 +206,7 @@ export function CreateOrganizationDialog({
                                         <input
                                             ref={fileInputRef}
                                             accept="image/*"
-                                            disabled={uploadingLogo}
+                                            disabled={logoPending}
                                             hidden
                                             type="file"
                                             onChange={(e) => {
@@ -225,9 +232,7 @@ export function CreateOrganizationDialog({
                                                     >
                                                         <OrganizationLogo
                                                             className="size-16"
-                                                            isPending={
-                                                                uploadingLogo
-                                                            }
+                                                            isPending={logoPending}
                                                             localization={
                                                                 localization
                                                             }
@@ -253,7 +258,7 @@ export function CreateOrganizationDialog({
                                                 >
                                                     <DropdownMenuItem
                                                         onClick={openFileDialog}
-                                                        disabled={uploadingLogo}
+                                                        disabled={logoPending}
                                                     >
                                                         <UploadCloudIcon />
                                                         {
@@ -264,9 +269,7 @@ export function CreateOrganizationDialog({
                                                     {logo && (
                                                         <DropdownMenuItem
                                                             onClick={deleteLogo}
-                                                            disabled={
-                                                                uploadingLogo
-                                                            }
+                                                            disabled={logoPending}
                                                             variant="destructive"
                                                         >
                                                             <Trash2Icon />
@@ -279,12 +282,12 @@ export function CreateOrganizationDialog({
                                             </DropdownMenu>
 
                                             <Button
-                                                disabled={uploadingLogo}
+                                                disabled={logoPending}
                                                 variant="outline"
                                                 onClick={openFileDialog}
                                                 type="button"
                                             >
-                                                {uploadingLogo && (
+                                                {logoPending && (
                                                     <Loader2 className="animate-spin" />
                                                 )}
 
