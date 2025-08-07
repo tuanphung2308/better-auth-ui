@@ -21,6 +21,7 @@ import {
 } from "../../ui/form"
 import { Input } from "../../ui/input"
 import { Skeleton } from "../../ui/skeleton"
+import { Textarea } from "../../ui/textarea"
 import {
     SettingsCard,
     type SettingsCardClassNames
@@ -37,6 +38,7 @@ export interface UpdateFieldCardProps {
     required?: boolean
     label?: ReactNode
     type?: FieldType
+    multiline?: boolean
     value?: unknown
     validate?: (value: string) => boolean | Promise<boolean>
 }
@@ -52,6 +54,7 @@ export function UpdateFieldCard({
     required,
     label,
     type,
+    multiline,
     value,
     validate
 }: UpdateFieldCardProps) {
@@ -205,19 +208,63 @@ export function UpdateFieldCard({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormControl>
-                                            <Input
-                                                className={classNames?.input}
-                                                placeholder={
-                                                    placeholder ||
-                                                    (typeof label === "string"
-                                                        ? label
-                                                        : "")
-                                                }
-                                                type={type}
-                                                disabled={isSubmitting}
-                                                {...field}
-                                                value={field.value as string}
-                                            />
+                                            {type === "number" ? (
+                                                <Input
+                                                    className={
+                                                        classNames?.input
+                                                    }
+                                                    type="number"
+                                                    placeholder={
+                                                        placeholder ||
+                                                        (typeof label ===
+                                                        "string"
+                                                            ? label
+                                                            : "")
+                                                    }
+                                                    disabled={isSubmitting}
+                                                    {...field}
+                                                    value={
+                                                        field.value as string
+                                                    }
+                                                />
+                                            ) : multiline ? (
+                                                <Textarea
+                                                    className={
+                                                        classNames?.input
+                                                    }
+                                                    placeholder={
+                                                        placeholder ||
+                                                        (typeof label ===
+                                                        "string"
+                                                            ? label
+                                                            : "")
+                                                    }
+                                                    disabled={isSubmitting}
+                                                    {...field}
+                                                    value={
+                                                        field.value as string
+                                                    }
+                                                />
+                                            ) : (
+                                                <Input
+                                                    className={
+                                                        classNames?.input
+                                                    }
+                                                    type="text"
+                                                    placeholder={
+                                                        placeholder ||
+                                                        (typeof label ===
+                                                        "string"
+                                                            ? label
+                                                            : "")
+                                                    }
+                                                    disabled={isSubmitting}
+                                                    {...field}
+                                                    value={
+                                                        field.value as string
+                                                    }
+                                                />
+                                            )}
                                         </FormControl>
 
                                         <FormMessage

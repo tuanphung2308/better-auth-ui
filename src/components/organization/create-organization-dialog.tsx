@@ -232,7 +232,9 @@ export function CreateOrganizationDialog({
                                                     >
                                                         <OrganizationLogo
                                                             className="size-16"
-                                                            isPending={logoPending}
+                                                            isPending={
+                                                                logoPending
+                                                            }
                                                             localization={
                                                                 localization
                                                             }
@@ -269,7 +271,9 @@ export function CreateOrganizationDialog({
                                                     {logo && (
                                                         <DropdownMenuItem
                                                             onClick={deleteLogo}
-                                                            disabled={logoPending}
+                                                            disabled={
+                                                                logoPending
+                                                            }
                                                             variant="destructive"
                                                         >
                                                             <Trash2Icon />

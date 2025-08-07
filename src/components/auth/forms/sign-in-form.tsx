@@ -54,7 +54,9 @@ export function SignInForm({
     passwordValidation
 }: SignInFormProps) {
     const isHydrated = useIsHydrated()
-    const { captchaRef, getCaptchaHeaders, resetCaptcha } = useCaptcha({ localization })
+    const { captchaRef, getCaptchaHeaders, resetCaptcha } = useCaptcha({
+        localization
+    })
 
     const {
         authClient,

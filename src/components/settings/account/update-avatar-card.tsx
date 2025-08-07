@@ -96,7 +96,7 @@ export function UpdateAvatarCard({
             if (sessionData.user.image && avatar?.delete) {
                 await avatar.delete(sessionData.user.image)
             }
-            
+
             await updateUser({ image: null })
             await refetch?.()
         } catch (error) {

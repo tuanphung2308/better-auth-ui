@@ -9,6 +9,10 @@ export interface AdditionalField {
     placeholder?: string
     required?: boolean
     type: FieldType
+    /**
+     * Render a multi-line textarea for string fields
+     */
+    multiline?: boolean
     validate?: (value: string) => Promise<boolean>
 }
 

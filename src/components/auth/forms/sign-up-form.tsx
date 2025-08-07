@@ -39,6 +39,7 @@ import {
     FormMessage
 } from "../../ui/form"
 import { Input } from "../../ui/input"
+import { Textarea } from "../../ui/textarea"
 import { UserAvatar } from "../../user-avatar"
 import type { AuthFormClassNames } from "../auth-form"
 
@@ -64,7 +65,9 @@ export function SignUpForm({
     passwordValidation
 }: SignUpFormProps) {
     const isHydrated = useIsHydrated()
-    const { captchaRef, getCaptchaHeaders, resetCaptcha } = useCaptcha({ localization })
+    const { captchaRef, getCaptchaHeaders, resetCaptcha } = useCaptcha({
+        localization
+    })
 
     const {
         additionalFields,
@@ -690,24 +693,55 @@ export function SignUpForm({
                                         </FormLabel>
 
                                         <FormControl>
-                                            <Input
-                                                className={classNames?.input}
-                                                type={
-                                                    additionalField.type ===
-                                                    "number"
-                                                        ? "number"
-                                                        : "text"
-                                                }
-                                                placeholder={
-                                                    additionalField.placeholder ||
-                                                    (typeof additionalField.label ===
-                                                    "string"
-                                                        ? additionalField.label
-                                                        : "")
-                                                }
-                                                disabled={isSubmitting}
-                                                {...formField}
-                                            />
+                                            {additionalField.type ===
+                                            "number" ? (
+                                                <Input
+                                                    className={
+                                                        classNames?.input
+                                                    }
+                                                    type="number"
+                                                    placeholder={
+                                                        additionalField.placeholder ||
+                                                        (typeof additionalField.label ===
+                                                        "string"
+                                                            ? additionalField.label
+                                                            : "")
+                                                    }
+                                                    disabled={isSubmitting}
+                                                    {...formField}
+                                                />
+                                            ) : additionalField.multiline ? (
+                                                <Textarea
+                                                    className={
+                                                        classNames?.input
+                                                    }
+                                                    placeholder={
+                                                        additionalField.placeholder ||
+                                                        (typeof additionalField.label ===
+                                                        "string"
+                                                            ? additionalField.label
+                                                            : "")
+                                                    }
+                                                    disabled={isSubmitting}
+                                                    {...formField}
+                                                />
+                                            ) : (
+                                                <Input
+                                                    className={
+                                                        classNames?.input
+                                                    }
+                                                    type="text"
+                                                    placeholder={
+                                                        additionalField.placeholder ||
+                                                        (typeof additionalField.label ===
+                                                        "string"
+                                                            ? additionalField.label
+                                                            : "")
+                                                    }
+                                                    disabled={isSubmitting}
+                                                    {...formField}
+                                                />
+                                            )}
                                         </FormControl>
 
                                         <FormMessage

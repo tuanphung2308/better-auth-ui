@@ -76,6 +76,7 @@ export function AccountSettingsCards({
                     placeholder,
                     required,
                     type,
+                    multiline,
                     validate
                 } = additionalField
 
@@ -95,6 +96,7 @@ export function AccountSettingsCards({
                         placeholder={placeholder}
                         required={required}
                         type={type}
+                        multiline={multiline}
                         validate={validate}
                     />
                 )
