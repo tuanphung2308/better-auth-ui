@@ -722,6 +722,11 @@ export const AuthUIProvider = ({
                     queryFn: authClient.listAccounts,
                     cacheKey: "listAccounts"
                 }),
+            useAccountInfo: (params) =>
+                useAuthData({
+                    queryFn: () => authClient.accountInfo(params),
+                    cacheKey: `accountInfo:${JSON.stringify(params)}`
+                }),
             useListDeviceSessions: () =>
                 useAuthData({
                     queryFn: authClient.multiSession.listDeviceSessions,

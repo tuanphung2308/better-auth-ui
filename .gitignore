@@ -132,3 +132,6 @@ dist
 .DS_Store
 .source
 .vscode
+
+# Webstorm project files
+.idea
