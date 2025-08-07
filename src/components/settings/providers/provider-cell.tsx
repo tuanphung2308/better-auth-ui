@@ -11,8 +11,8 @@ import type { AuthLocalization } from "../../../localization/auth-localization"
 import type { Refetch } from "../../../types/refetch"
 import { Button } from "../../ui/button"
 import { Card } from "../../ui/card"
+import { Skeleton } from "../../ui/skeleton"
 import type { SettingsCardClassNames } from "../shared/settings-card"
-import { SettingsCellSkeleton } from "../skeletons/settings-cell-skeleton"
 
 export interface ProviderCellProps {
     className?: string
@@ -43,25 +43,13 @@ export function ProviderCell({
         baseURL,
         localization: contextLocalization,
         mutators: { unlinkAccount },
-        hooks: { useAccountInfo },
         viewPaths,
         toast
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
 
-    const { data: accountInfo, isPending } = useAccountInfo(
-        account
-            ? {
-                  accountId: account.accountId
-              }
-            : null
-    )
     const [isLoading, setIsLoading] = useState(false)
-
-    if (isPending) {
-        return <SettingsCellSkeleton classNames={classNames} />
-    }
 
     const handleLink = async () => {
         setIsLoading(true)
@@ -123,11 +111,11 @@ export function ProviderCell({
                 <provider.icon className={cn("size-4", classNames?.icon)} />
             )}
 
-            <span className="text-sm">{provider.name}</span>
+            <div className="flex-col">
+                <div className="text-sm">{provider.name}</div>
 
-            {accountInfo?.user?.email && (
-                <span className="text-sm">{accountInfo.user.email}</span>
-            )}
+                {account && <AccountInfo account={account} />}
+            </div>
 
             <Button
                 className={cn("relative ms-auto", classNames?.button)}
@@ -141,5 +129,27 @@ export function ProviderCell({
                 {account ? localization.UNLINK : localization.LINK}
             </Button>
         </Card>
+    )
+}
+
+function AccountInfo({ account }: { account: { accountId: string } }) {
+    const {
+        hooks: { useAccountInfo }
+    } = useContext(AuthUIContext)
+
+    const { data: accountInfo, isPending } = useAccountInfo({
+        accountId: account.accountId
+    })
+
+    if (isPending) {
+        return <Skeleton className="my-0.5 h-3 w-28" />
+    }
+
+    if (!accountInfo) return null
+
+    return (
+        <div className="text-muted-foreground text-xs">
+            {accountInfo?.user.email}
+        </div>
     )
 }
