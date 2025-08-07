@@ -337,11 +337,12 @@ export function OrganizationSwitcher({
 
                                 {!isPending && (
                                     <Link
-                                        href={`${settings?.basePath || basePath}/${
+                                        href={
                                             activeOrganization
-                                                ? viewPaths.ORGANIZATION
-                                                : viewPaths.SETTINGS
-                                        }`}
+                                                ? `${settings?.basePath || basePath}/${viewPaths.ORGANIZATION}`
+                                                : settings?.url ||
+                                                  `${settings?.basePath || basePath}/${viewPaths.SETTINGS}`
+                                        }
                                     >
                                         <Button
                                             size="icon"
