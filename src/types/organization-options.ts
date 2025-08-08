@@ -75,7 +75,7 @@ export type OrganizationOptionsContext = {
     /**
      * Base path for organization-scoped views
      */
-    basePath?: string
+    basePath: string
     /**
      * Use slug-based URLs
      */
@@ -83,5 +83,5 @@ export type OrganizationOptionsContext = {
     /**
      * Customize organization view paths
      */
-    viewPaths?: Partial<OrganizationViewPaths>
+    viewPaths: OrganizationViewPaths
 }

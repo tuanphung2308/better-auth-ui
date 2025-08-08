@@ -51,3 +51,5 @@ export const organizationViewPaths = {
 
 export type OrganizationViewPaths = typeof organizationViewPaths
 export type AuthViewPath = keyof AuthViewPaths
+export type AccountViewPath = keyof AccountViewPaths
+export type OrganizationViewPath = keyof OrganizationViewPaths

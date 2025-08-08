@@ -2,10 +2,11 @@
 
 import { MenuIcon } from "lucide-react"
 import { useContext } from "react"
+
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getViewByPath } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
-import type { AccountViewPaths } from "../../server"
+import type { AccountViewPath } from "../../server"
 import { OrganizationsCard } from "../organization/organizations-card"
 import { AccountSettingsCards } from "../settings/account-settings-cards"
 import { APIKeysCard } from "../settings/api-key/api-keys-card"
@@ -21,14 +22,7 @@ import {
 } from "../ui/drawer"
 import { Label } from "../ui/label"
 
-export function AccountView({
-    className,
-    classNames,
-    localization: localizationProp,
-    pathname,
-    view: viewProp,
-    hideNav
-}: {
+export interface AccountViewProps {
     className?: string
     classNames?: {
         base?: string
@@ -39,9 +33,18 @@ export function AccountView({
     }
     localization?: AuthLocalization
     pathname?: string
-    view?: keyof AccountViewPaths
+    view?: AccountViewPath
     hideNav?: boolean
-}) {
+}
+
+export function AccountView({
+    className,
+    classNames,
+    localization: localizationProp,
+    pathname,
+    view: viewProp,
+    hideNav
+}: AccountViewProps) {
     const {
         apiKey,
         localization: contextLocalization,
@@ -50,32 +53,36 @@ export function AccountView({
         Link
     } = useContext(AuthUIContext)
 
+    if (!accountOptions) {
+        return null
+    }
+
     const localization = { ...contextLocalization, ...localizationProp }
 
     const view =
         viewProp ||
-        getViewByPath(accountOptions?.viewPaths || {}, pathname) ||
+        getViewByPath(accountOptions.viewPaths, pathname) ||
         "SETTINGS"
 
     const navItems: {
-        view: keyof AccountViewPaths
+        view: AccountViewPath
         label: string
     }[] = [
-        { view: "SETTINGS", label: localization.ACCOUNT || "Account" },
-        { view: "SECURITY", label: localization.SECURITY || "Security" }
+        { view: "SETTINGS", label: localization.ACCOUNT },
+        { view: "SECURITY", label: localization.SECURITY }
     ]
 
     if (apiKey) {
         navItems.push({
             view: "API_KEYS",
-            label: localization.API_KEYS || "API Keys"
+            label: localization.API_KEYS
         })
     }
 
     if (organization) {
         navItems.push({
             view: "ORGANIZATIONS",
-            label: localization.ORGANIZATIONS || "Organizations"
+            label: localization.ORGANIZATIONS
         })
     }
 
@@ -109,15 +116,17 @@ export function AccountView({
                                 {navItems.map((item) => (
                                     <Link
                                         key={item.view}
-                                        href={`${accountOptions?.basePath}/${accountOptions?.viewPaths?.[item.view]}`}
+                                        href={`${accountOptions?.basePath}/${accountOptions?.viewPaths[item.view]}`}
                                     >
                                         <Button
                                             size="lg"
-                                            className={`w-full justify-start px-4 transition-none ${classNames?.drawer?.menuItem || ""} ${
+                                            className={cn(
+                                                "w-full justify-start px-4 transition-none",
+                                                classNames?.drawer?.menuItem,
                                                 view === item.view
                                                     ? "font-semibold"
                                                     : "text-foreground/70"
-                                            }`}
+                                            )}
                                             variant="ghost"
                                         >
                                             {item.label}
@@ -133,20 +142,27 @@ export function AccountView({
             {!hideNav && (
                 <div className="hidden md:block">
                     <div
-                        className={`flex w-60 flex-col gap-1 ${classNames?.sidebar?.base || ""}`}
+                        className={cn(
+                            "flex w-60 flex-col gap-1",
+                            classNames?.sidebar?.base
+                        )}
                     >
                         {navItems.map((item) => (
                             <Link
                                 key={item.view}
-                                href={`${accountOptions?.basePath}/${accountOptions?.viewPaths?.[item.view]}`}
+                                href={`${accountOptions?.basePath}/${accountOptions?.viewPaths[item.view]}`}
                             >
                                 <Button
                                     size="lg"
-                                    className={`w-full justify-start px-4 transition-none ${classNames?.sidebar?.button || ""} ${
+                                    className={cn(
+                                        "w-full justify-start px-4 transition-none",
+                                        classNames?.sidebar?.button,
                                         view === item.view
                                             ? "font-semibold"
-                                            : "text-foreground/70"
-                                    } ${view === item.view ? classNames?.sidebar?.buttonActive || "" : ""}`}
+                                            : "text-foreground/70",
+                                        view === item.view &&
+                                            classNames?.sidebar?.buttonActive
+                                    )}
                                     variant="ghost"
                                 >
                                     {item.label}
@@ -163,6 +179,7 @@ export function AccountView({
                     localization={localization}
                 />
             )}
+
             {view === "SECURITY" && (
                 <SecuritySettingsCards
                     classNames={classNames}
@@ -171,25 +188,17 @@ export function AccountView({
             )}
 
             {view === "API_KEYS" && (
-                <div
-                    className={`flex w-full flex-col ${classNames?.cards || ""}`}
-                >
-                    <APIKeysCard
-                        classNames={classNames?.card}
-                        localization={localization}
-                    />
-                </div>
+                <APIKeysCard
+                    classNames={classNames?.card}
+                    localization={localization}
+                />
             )}
 
             {view === "ORGANIZATIONS" && organization && (
-                <div
-                    className={`flex w-full flex-col ${classNames?.cards || ""}`}
-                >
-                    <OrganizationsCard
-                        classNames={classNames?.card}
-                        localization={localization}
-                    />
-                </div>
+                <OrganizationsCard
+                    classNames={classNames?.card}
+                    localization={localization}
+                />
             )}
         </div>
     )

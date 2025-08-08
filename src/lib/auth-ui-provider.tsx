@@ -14,7 +14,10 @@ import {
     type AuthLocalization,
     authLocalization
 } from "../localization/auth-localization"
-import type { AccountOptions } from "../types/account-options"
+import type {
+    AccountOptions,
+    AccountOptionsContext
+} from "../types/account-options"
 import type { AdditionalFields } from "../types/additional-fields"
 import type { AnyAuthClient } from "../types/any-auth-client"
 import type { AuthClient } from "../types/auth-client"
@@ -136,7 +139,7 @@ export type AuthUIContextType = {
      */
     gravatar?: boolean | GravatarOptions
     hooks: AuthHooks
-    localization: AuthLocalization
+    localization: typeof authLocalization
     /**
      * Enable or disable Magic Link support
      * @default false
@@ -168,6 +171,9 @@ export type AuthUIContextType = {
      * @default false
      */
     optimistic?: boolean
+    /**
+     * Organization configuration
+     */
     organization?: OrganizationOptionsContext
     /**
      * Enable or disable Passkey support
@@ -182,7 +188,7 @@ export type AuthUIContextType = {
     /**
      * Account configuration
      */
-    account?: AccountOptions
+    account?: AccountOptionsContext
     /**
      * Sign Up configuration
      */
@@ -351,7 +357,7 @@ export const AuthUIProvider = ({
         }
     }, [avatarProp])
 
-    const account = useMemo<AccountOptions | undefined>(() => {
+    const account = useMemo<AccountOptionsContext | undefined>(() => {
         if (accountProp === false) return
 
         if (accountProp === true || accountProp === undefined) {
