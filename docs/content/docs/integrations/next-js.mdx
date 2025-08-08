@@ -1,8 +1,3 @@
----
-title: Next.js
-icon: NextJs
----
-import { Step, Steps } from "fumadocs-ui/components/steps";
 
 This guide covers integrating `@daveyplate/better-auth-ui` into your Next.js project.
 
@@ -101,12 +96,12 @@ export default async function AuthPage({ params }: { params: Promise<{ pathname:
 ```tsx title="app/auth/[pathname]/view.tsx"
 "use client"
 
-import { AuthCard } from "@daveyplate/better-auth-ui"
+import { AuthView as BetterAuthView } from "@daveyplate/better-auth-ui"
 
 export function AuthView({ pathname }: { pathname: string }) {
     return (
         <main className="container flex grow flex-col items-center justify-center gap-3 self-center p-4 md:p-6">
-            <AuthCard pathname={pathname} />
+            <BetterAuthView pathname={pathname} />
         </main>
     )
 }
@@ -122,10 +117,9 @@ The newly created dynamic route covers the following paths by default:
 - `/auth/recover-account` – Recover account via backup code
 - `/auth/reset-password` – Set new password after receiving reset link
 - `/auth/sign-out` – Log the user out of the application
-- `/auth/settings` – User account management page (requires authentication)
 - `/auth/callback` – Internal route to handle Auth callbacks
 
-Ensure that any links to the authentication process utilize these routes accordingly. All routes will render the `<AuthCard />` component and automatically handle navigation and authentication flow.
+Ensure that any links to the authentication process utilize these routes accordingly. All routes will render the `<AuthView />` component and automatically handle navigation and authentication flow.
 </Step>
 </Steps>
 
@@ -172,13 +166,13 @@ Now the authentication context is available across your entire application.
 Create a page with a dynamic segment in your Pages directory in `pages/auth/[pathname].tsx`
 
 ```tsx title="pages/auth/[pathname].tsx"
-import { AuthCard } from "@daveyplate/better-auth-ui"
+import { AuthView } from "@daveyplate/better-auth-ui"
 import { authViewPaths } from "@daveyplate/better-auth-ui/server"
 
 export default function AuthPage({ pathname }: { pathname: string }) {
     return (
         <main className="container flex grow flex-col items-center justify-center gap-3 self-center p-4 md:p-6">
-            <AuthCard pathname={pathname} />
+            <AuthView pathname={pathname} />
         </main>
     )
 }
@@ -206,3 +200,49 @@ With this setup, the following routes will automatically handle their associated
 - `/auth/callback` – Internal route to handle OAuth callbacks (do not navigate to this route directly)
 </Step>
 </Steps>
+
+## Account and Organization Pages (App Router)
+
+Add dedicated routes for account and organization views.
+
+### Account pages
+
+```tsx title="app/account/[pathname]/page.tsx"
+import { accountViewPaths } from "@daveyplate/better-auth-ui/server"
+import { AccountView } from "@daveyplate/better-auth-ui"
+
+export function generateStaticParams() {
+    return Object.values(accountViewPaths).map((pathname) => ({ pathname }))
+}
+
+export default async function AccountPage({ params }: { params: Promise<{ pathname: string }> }) {
+    const { pathname } = await params
+    return (
+        <main className="container p-4 md:p-6">
+            <AccountView pathname={pathname} />
+        </main>
+    )
+}
+```
+
+### Organization pages
+
+```tsx title="app/organization/[pathname]/page.tsx"
+import { organizationViewPaths } from "@daveyplate/better-auth-ui/server"
+import { OrganizationView } from "@daveyplate/better-auth-ui"
+
+export function generateStaticParams() {
+    return Object.values(organizationViewPaths).map((pathname) => ({ pathname }))
+}
+
+export default async function OrganizationPage({ params }: { params: Promise<{ pathname: string }> }) {
+    const { pathname } = await params
+    return (
+        <main className="container p-4 md:p-6">
+            <OrganizationView pathname={pathname} />
+        </main>
+    )
+}
+```
+
+If you prefer slug-based org URLs, set `organization={{ slugPaths: true, basePath: "/organization" }}` in the provider and structure your routes accordingly (e.g. `app/organization/[slug]/[pathname]/page.tsx`).

@@ -3,6 +3,7 @@
     "defaultOpen": true,
     "pages": [
         "requirements",
-        "installation"
+        "installation",
+        "migrating-to-v3"
     ]
 }

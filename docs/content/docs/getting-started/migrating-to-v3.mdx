@@ -1,0 +1,73 @@
+---
+title: Migrating to v3
+icon: Shuffle
+---
+
+This guide walks you through upgrading from v2 to v3.
+
+## What changed
+
+- AuthCard removed → use AuthView
+- SettingsCards removed → use AccountView
+- OrganizationView (presentational) was renamed to OrganizationCellView
+- Provider changes:
+  - settings → account
+  - Split paths: authViewPaths, accountViewPaths, organizationViewPaths
+
+## Provider before
+
+```tsx
+<AuthUIProvider
+  basePath="/auth"
+  settings={{ basePath: "/dashboard", fields: ["image", "name"] }}
+  viewPaths={{ SIGN_IN: "login" }}
+/>
+```
+
+## Provider after
+
+```tsx
+<AuthUIProvider
+  basePath="/auth"
+  account={{ basePath: "/dashboard", fields: ["image", "name"] }}
+  authViewPaths={{ SIGN_IN: "login" }}
+  organization={{ basePath: "/organization", slugPaths: false }}
+/>
+```
+
+## Routing examples
+
+- Auth (signed-out):
+
+```tsx
+<AuthView pathname={pathname} />
+```
+
+- Account:
+
+```tsx
+<AccountView pathname={pathname} />
+```
+
+- Organization:
+
+```tsx
+<OrganizationView pathname={pathname} />
+```
+
+## Type and API changes
+
+- Replace AuthCardClassNames with AuthViewClassNames
+- viewPaths is now auth-only; use accountViewPaths/organizationViewPaths for others
+
+## Accept invitation
+
+- Moved under account flow; use accountViewPaths.ACCEPT_INVITATION in your routes and render <AccountView />
+
+## Checklist
+
+- [ ] Remove AuthCard imports
+- [ ] Replace SettingsCards with AccountView
+- [ ] Rename OrganizationView (presentational) usages to OrganizationCellView
+- [ ] Provider: settings → account
+- [ ] Update links to use split view paths
