@@ -2,8 +2,14 @@
 
 import type { Organization } from "better-auth/plugins/organization"
 import { Trash2Icon, UploadCloudIcon } from "lucide-react"
-import { type ComponentProps, useContext, useRef, useState } from "react"
-
+import {
+    type ComponentProps,
+    useContext,
+    useMemo,
+    useRef,
+    useState
+} from "react"
+import { useCurrentOrganization } from "../../hooks/use-current-organization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { fileToBase64, resizeAndCropImage } from "../../lib/image-utils"
 import { cn, getLocalizedError } from "../../lib/utils"
@@ -31,40 +37,20 @@ export interface OrganizationLogoCardProps extends ComponentProps<typeof Card> {
 export function OrganizationLogoCard({
     className,
     classNames,
-    localization,
-    slug: slugProp,
+    localization: localizationProp,
+    slug,
     ...props
 }: OrganizationLogoCardProps) {
-    const {
-        hooks: { useActiveOrganization, useListOrganizations },
-        localization: authLocalization,
-        organization: organizationOptions
-    } = useContext(AuthUIContext)
+    const { localization: contextLocalization } = useContext(AuthUIContext)
 
-    if (!organizationOptions) {
-        return null
-    }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
-    const { slugPaths, slug: contextSlug } = organizationOptions
+    const { data: organization } = useCurrentOrganization({ slug })
 
-    localization = { ...authLocalization, ...localization }
-
-    const slug = slugProp || contextSlug
-
-    let activeOrganization: Organization | undefined | null
-
-    if (slugPaths) {
-        const { data: organizations } = useListOrganizations()
-        activeOrganization = organizations?.find(
-            (organization) => organization.slug === slug
-        )
-    } else {
-        const { data } = useActiveOrganization()
-
-        activeOrganization = data
-    }
-
-    if (!activeOrganization) {
+    if (!organization) {
         return (
             <Card
                 className={cn(
@@ -115,6 +101,7 @@ export function OrganizationLogoCard({
             className={className}
             classNames={classNames}
             localization={localization}
+            organization={organization}
             {...props}
         />
     )
@@ -123,66 +110,41 @@ export function OrganizationLogoCard({
 function OrganizationLogoForm({
     className,
     classNames,
-    localization,
-    slug: slugProp,
+    localization: localizationProp,
+    organization,
     ...props
-}: OrganizationLogoCardProps) {
+}: OrganizationLogoCardProps & { organization: Organization }) {
     const {
         authClient,
-        hooks: {
-            useActiveOrganization,
-            useListOrganizations,
-            useHasPermission
-        },
+        hooks: { useListOrganizations, useHasPermission },
         localization: authLocalization,
         optimistic,
         organization: organizationOptions,
         toast
     } = useContext(AuthUIContext)
 
-    if (!organizationOptions?.logo) {
-        return null
-    }
+    const localization = useMemo(
+        () => ({ ...authLocalization, ...localizationProp }),
+        [authLocalization, localizationProp]
+    )
 
-    const { slugPaths, slug: contextSlug } = organizationOptions
-
-    const slug = slugProp || contextSlug
-    localization = { ...authLocalization, ...localization }
-
-    const { data: organizations, refetch: refetchOrganizations } =
-        useListOrganizations()
-
-    let activeOrganization: Organization | undefined | null
-
-    if (slugPaths) {
-        activeOrganization = organizations?.find(
-            (organization) => organization.slug === slug
-        )
-    } else {
-        const { data } = useActiveOrganization()
-        activeOrganization = data
-    }
+    const { refetch: refetchOrganizations } = useListOrganizations()
 
     const { data: hasPermission, isPending: permissionPending } =
         useHasPermission({
+            organizationId: organization.id,
             permissions: {
                 organization: ["update"]
-            },
-            organizationId: activeOrganization?.id
+            }
         })
 
-    const isPending = !activeOrganization || permissionPending
+    const isPending = permissionPending
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [loading, setLoading] = useState(false)
 
     const handleLogoChange = async (file: File) => {
-        if (
-            !activeOrganization ||
-            !organizationOptions?.logo ||
-            !hasPermission?.success
-        )
-            return
+        if (!organizationOptions?.logo || !hasPermission?.success) return
 
         setLoading(true)
         const resizedFile = await resizeAndCropImage(
@@ -209,7 +171,7 @@ function OrganizationLogoForm({
 
         try {
             await authClient.organization.update({
-                organizationId: activeOrganization.id,
+                organizationId: organization.id,
                 data: { logo: image },
                 fetchOptions: { throw: true }
             })
@@ -226,17 +188,17 @@ function OrganizationLogoForm({
     }
 
     const handleDeleteLogo = async () => {
-        if (!activeOrganization || !hasPermission?.success) return
+        if (!hasPermission?.success) return
 
         setLoading(true)
 
         try {
-            if (activeOrganization.logo && organizationOptions.logo?.delete) {
-                await organizationOptions?.logo.delete(activeOrganization.logo)
+            if (organization.logo) {
+                await organizationOptions?.logo?.delete?.(organization.logo)
             }
 
             await authClient.organization.update({
-                organizationId: activeOrganization.id,
+                organizationId: organization.id,
                 data: { logo: "" },
                 fetchOptions: { throw: true }
             })
@@ -301,10 +263,10 @@ function OrganizationLogoForm({
                         >
                             <OrganizationLogo
                                 isPending={isPending || loading}
-                                key={activeOrganization?.logo}
+                                key={organization.logo}
                                 className="size-20 text-2xl"
                                 classNames={classNames?.avatar}
-                                organization={activeOrganization}
+                                organization={organization}
                                 localization={localization}
                             />
                         </Button>
@@ -319,15 +281,18 @@ function OrganizationLogoForm({
                             disabled={loading || !hasPermission?.success}
                         >
                             <UploadCloudIcon />
+
                             {localization.UPLOAD_LOGO}
                         </DropdownMenuItem>
-                        {activeOrganization?.logo && (
+
+                        {organization.logo && (
                             <DropdownMenuItem
                                 onClick={handleDeleteLogo}
                                 disabled={loading || !hasPermission?.success}
                                 variant="destructive"
                             >
                                 <Trash2Icon />
+
                                 {localization.DELETE_LOGO}
                             </DropdownMenuItem>
                         )}
