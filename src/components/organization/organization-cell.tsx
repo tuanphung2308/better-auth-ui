@@ -34,7 +34,6 @@ export function OrganizationCell({
 }: OrganizationCellProps) {
     const {
         authClient,
-        hooks: { useActiveOrganization },
         localization: contextLocalization,
         organization: organizationOptions,
         navigate,
@@ -46,10 +45,20 @@ export function OrganizationCell({
         [contextLocalization, localizationProp]
     )
 
+    const { slugPaths } = organizationOptions || {}
+
     const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false)
     const [isManagingOrganization, setIsManagingOrganization] = useState(false)
 
     const handleManageOrganization = useCallback(async () => {
+        if (slugPaths) {
+            navigate(
+                `${organizationOptions?.basePath}/${organization.slug}/${organizationOptions?.viewPaths.SETTINGS}`
+            )
+
+            return
+        }
+
         setIsManagingOrganization(true)
 
         try {
@@ -76,6 +85,8 @@ export function OrganizationCell({
         organization.id,
         organizationOptions?.basePath,
         organizationOptions?.viewPaths?.SETTINGS,
+        organization.slug,
+        slugPaths,
         navigate,
         toast,
         localization
