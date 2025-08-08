@@ -17,7 +17,7 @@ import {
     CardTitle
 } from "../ui/card"
 import { Skeleton } from "../ui/skeleton"
-import { OrganizationView } from "./organization-view"
+import { OrganizationCellView } from "./organization-cell-view"
 
 export interface AcceptInvitationCardProps {
     className?: string
@@ -261,7 +261,7 @@ function AcceptInvitationContent({
                 )}
             >
                 <Card className={cn("flex-row items-center p-4")}>
-                    <OrganizationView
+                    <OrganizationCellView
                         organization={
                             invitation
                                 ? {
@@ -354,7 +354,10 @@ const AcceptInvitationSkeleton = ({
                 )}
             >
                 <Card className={cn("flex-row items-center p-4")}>
-                    <OrganizationView isPending localization={localization} />
+                    <OrganizationCellView
+                        isPending
+                        localization={localization}
+                    />
 
                     <Skeleton className="mt-0.5 ml-auto h-4 w-full max-w-14 shrink-2" />
                 </Card>

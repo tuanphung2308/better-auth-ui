@@ -11,7 +11,7 @@ import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
 import type { AuthLocalization } from "../../../localization/auth-localization"
 import type { Refetch } from "../../../types/refetch"
-import { OrganizationView } from "../../organization/organization-view"
+import { OrganizationCellView } from "../../organization/organization-cell-view"
 import { PersonalAccountView } from "../../organization/personal-account-view"
 import { Button } from "../../ui/button"
 import {
@@ -229,7 +229,7 @@ export function CreateAPIKeyDialog({
                                                         value={org.id}
                                                         className="p-2"
                                                     >
-                                                        <OrganizationView
+                                                        <OrganizationCellView
                                                             organization={org}
                                                             localization={
                                                                 localization

@@ -1,8 +1,4 @@
 export const authViewPaths = {
-    /** @default "accept-invitation" */
-    ACCEPT_INVITATION: "accept-invitation",
-    /** @default "api-keys" */
-    API_KEYS: "api-keys",
     /** @default "callback" */
     CALLBACK: "callback",
     /** @default "email-otp" */
@@ -11,22 +7,10 @@ export const authViewPaths = {
     FORGOT_PASSWORD: "forgot-password",
     /** @default "magic-link" */
     MAGIC_LINK: "magic-link",
-    /** @default "members" */
-    MEMBERS: "members",
-    /** @default "organization" */
-    ORGANIZATION: "organization",
-    /** @default "organization-api-keys" */
-    ORGANIZATION_API_KEYS: "organization-api-keys",
-    /** @default "organizations" */
-    ORGANIZATIONS: "organizations",
     /** @default "recover-account" */
     RECOVER_ACCOUNT: "recover-account",
     /** @default "reset-password" */
     RESET_PASSWORD: "reset-password",
-    /** @default "security" */
-    SECURITY: "security",
-    /** @default "settings" */
-    SETTINGS: "settings",
     /** @default "sign-in" */
     SIGN_IN: "sign-in",
     /** @default "sign-out" */
@@ -38,4 +22,32 @@ export const authViewPaths = {
 }
 
 export type AuthViewPaths = typeof authViewPaths
+
+// Account-scoped views (signed-in user)
+export const accountViewPaths = {
+    /** @default "settings" */
+    SETTINGS: "settings",
+    /** @default "security" */
+    SECURITY: "security",
+    /** @default "api-keys" */
+    API_KEYS: "api-keys",
+    /** @default "organizations" */
+    ORGANIZATIONS: "organizations",
+    /** @default "accept-invitation" */
+    ACCEPT_INVITATION: "accept-invitation"
+}
+
+export type AccountViewPaths = typeof accountViewPaths
+
+// Organization-scoped views
+export const organizationViewPaths = {
+    /** @default "settings" */
+    SETTINGS: "settings",
+    /** @default "members" */
+    MEMBERS: "members",
+    /** @default "api-keys" */
+    API_KEYS: "api-keys"
+}
+
+export type OrganizationViewPaths = typeof organizationViewPaths
 export type AuthView = keyof AuthViewPaths

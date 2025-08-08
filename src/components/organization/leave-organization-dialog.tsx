@@ -18,7 +18,7 @@ import {
     DialogHeader,
     DialogTitle
 } from "../ui/dialog"
-import { OrganizationView } from "./organization-view"
+import { OrganizationCellView } from "./organization-cell-view"
 
 export interface LeaveOrganizationDialogProps
     extends ComponentProps<typeof Dialog> {
@@ -114,7 +114,7 @@ export function LeaveOrganizationDialog({
                         classNames?.cell
                     )}
                 >
-                    <OrganizationView
+                    <OrganizationCellView
                         organization={organization}
                         localization={localization}
                     />

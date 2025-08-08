@@ -29,7 +29,7 @@ import {
     FormMessage
 } from "../ui/form"
 import { Input } from "../ui/input"
-import { OrganizationView } from "./organization-view"
+import { OrganizationCellView } from "./organization-cell-view"
 
 export interface DeleteOrganizationDialogProps
     extends ComponentProps<typeof Dialog> {
@@ -127,7 +127,7 @@ export function DeleteOrganizationDialog({
                 </DialogHeader>
 
                 <Card className={cn("my-2 flex-row p-4", classNames?.cell)}>
-                    <OrganizationView
+                    <OrganizationCellView
                         organization={activeOrganization}
                         localization={localization}
                     />
