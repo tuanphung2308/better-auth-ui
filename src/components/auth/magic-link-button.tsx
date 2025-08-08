@@ -2,17 +2,17 @@ import { LockIcon, MailIcon } from "lucide-react"
 import { useContext } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import type { AuthView } from "../../lib/auth-view-paths"
 import { cn } from "../../lib/utils"
+import type { AuthViewPath } from "../../lib/view-paths"
 import type { AuthLocalization } from "../../localization/auth-localization"
 import { Button } from "../ui/button"
-import type { AuthCardClassNames } from "./auth-card"
+import type { AuthViewClassNames } from "./auth-view"
 
 interface MagicLinkButtonProps {
-    classNames?: AuthCardClassNames
+    classNames?: AuthViewClassNames
     isSubmitting?: boolean
     localization: Partial<AuthLocalization>
-    view: AuthView
+    view: AuthViewPath
 }
 
 export function MagicLinkButton({

@@ -5,8 +5,7 @@ import {
     type ReactNode,
     useContext,
     useEffect,
-    useMemo,
-    useRef
+    useMemo
 } from "react"
 import { toast } from "sonner"
 import { RecaptchaV3 } from "../components/captcha/recaptcha-v3"
@@ -15,6 +14,7 @@ import {
     type AuthLocalization,
     authLocalization
 } from "../localization/auth-localization"
+import type { AccountOptions } from "../types/account-options"
 import type { AdditionalFields } from "../types/additional-fields"
 import type { AnyAuthClient } from "../types/any-auth-client"
 import type { AuthClient } from "../types/auth-client"
@@ -32,11 +32,14 @@ import type {
     OrganizationOptionsContext
 } from "../types/organization-options"
 import type { RenderToast } from "../types/render-toast"
-import type { SettingsOptions } from "../types/settings-options"
 import type { SignUpOptions } from "../types/sign-up-options"
 import type { SocialOptions } from "../types/social-options"
-import { type AuthViewPaths, authViewPaths } from "./auth-view-paths"
-import { getLocalizedError, getSearchParam } from "./utils"
+import type { AuthViewPaths } from "./view-paths"
+import {
+    accountViewPaths,
+    authViewPaths,
+    organizationViewPaths
+} from "./view-paths"
 
 const DefaultLink: Link = ({ href, className, children }) => (
     <a className={className} href={href}>
@@ -176,7 +179,10 @@ export type AuthUIContextType = {
      * @default false
      */
     persistClient?: boolean
-    settings?: SettingsOptions
+    /**
+     * Account configuration
+     */
+    account?: AccountOptions
     /**
      * Sign Up configuration
      */
@@ -196,7 +202,7 @@ export type AuthUIContextType = {
      * Navigate to a new URL
      * @default window.location.href
      */
-    navigate: typeof defaultNavigate
+    navigate: (href: string) => void
     /**
      * Called whenever the Session changes
      */
@@ -205,7 +211,7 @@ export type AuthUIContextType = {
      * Replace the current URL
      * @default navigate
      */
-    replace: typeof defaultReplace
+    replace: (href: string) => void
     /**
      * Custom Link component for navigation
      * @default <a>
@@ -222,6 +228,11 @@ export type AuthUIProviderProps = {
      */
     authClient: AnyAuthClient
     /**
+     * Enable account view & account configuration
+     * @default { fields: ["image", "name"] }
+     */
+    account?: boolean | Partial<AccountOptions>
+    /**
      * Avatar configuration
      * @default undefined
      */
@@ -235,11 +246,6 @@ export type AuthUIProviderProps = {
      * ADVANCED: Custom hooks for fetching auth data
      */
     hooks?: Partial<AuthHooks>
-    /**
-     * Settings configuration
-     * @default { fields: ["image", "name"] }
-     */
-    settings?: boolean | Partial<SettingsOptions>
     /**
      * Customize the paths for the auth views
      * @default authViewPaths
@@ -285,7 +291,7 @@ export type AuthUIProviderProps = {
         | "toast"
         | "hooks"
         | "avatar"
-        | "settings"
+        | "account"
         | "deleteUser"
         | "credentials"
         | "signUp"
@@ -300,8 +306,8 @@ export const AuthUIContext = createContext<AuthUIContextType>(
 export const AuthUIProvider = ({
     children,
     authClient: authClientProp,
+    account: accountProp,
     avatar: avatarProp,
-    settings: settingsProp,
     deleteUser: deleteUserProp,
     social: socialProp,
     genericOAuth: genericOAuthProp,
@@ -345,26 +351,28 @@ export const AuthUIProvider = ({
         }
     }, [avatarProp])
 
-    const settings = useMemo<SettingsOptions | undefined>(() => {
-        if (settingsProp === false) return
+    const account = useMemo<AccountOptions | undefined>(() => {
+        if (accountProp === false) return
 
-        if (settingsProp === true || settingsProp === undefined) {
+        if (accountProp === true || accountProp === undefined) {
             return {
-                fields: ["image", "name"]
+                basePath: "/account",
+                fields: ["image", "name"],
+                viewPaths: accountViewPaths
             }
         }
 
         // Remove trailing slash from basePath
-        const basePath = settingsProp.basePath?.endsWith("/")
-            ? settingsProp.basePath.slice(0, -1)
-            : settingsProp.basePath
+        const basePath = accountProp.basePath?.endsWith("/")
+            ? accountProp.basePath.slice(0, -1)
+            : accountProp.basePath
 
         return {
-            url: settingsProp.url,
-            basePath,
-            fields: settingsProp.fields || ["image", "name"]
+            basePath: basePath ?? "/account",
+            fields: accountProp.fields || ["image", "name"],
+            viewPaths: { ...accountViewPaths, ...accountProp.viewPaths }
         }
-    }, [settingsProp])
+    }, [accountProp])
 
     const deleteUser = useMemo<DeleteUserOptions | undefined>(() => {
         if (!deleteUserProp) return
@@ -425,6 +433,8 @@ export const AuthUIProvider = ({
 
         if (organizationProp === true) {
             return {
+                basePath: "/organization",
+                viewPaths: organizationViewPaths,
                 customRoles: []
             }
         }
@@ -451,7 +461,13 @@ export const AuthUIProvider = ({
         return {
             ...organizationProp,
             logo,
-            customRoles: organizationProp.customRoles || []
+            basePath: organizationProp.basePath ?? "/organization",
+            slugPaths: organizationProp.slugPaths,
+            customRoles: organizationProp.customRoles || [],
+            viewPaths: {
+                ...organizationViewPaths,
+                ...organizationProp.viewPaths
+            }
         }
     }, [organizationProp])
 
@@ -542,19 +558,19 @@ export const AuthUIProvider = ({
     }, [authClient])
 
     const viewPaths = useMemo(() => {
-        return { ...authViewPaths, ...viewPathsProp } as AuthViewPaths
+        return { ...authViewPaths, ...viewPathsProp }
     }, [viewPathsProp])
 
     const localization = useMemo(() => {
-        return { ...authLocalization, ...localizationProp } as AuthLocalization
+        return { ...authLocalization, ...localizationProp }
     }, [localizationProp])
 
     const hooks = useMemo(() => {
-        return { ...defaultHooks, ...hooksProp } as AuthHooks
+        return { ...defaultHooks, ...hooksProp }
     }, [defaultHooks, hooksProp])
 
     const mutators = useMemo(() => {
-        return { ...defaultMutators, ...mutatorsProp } as AuthMutators
+        return { ...defaultMutators, ...mutatorsProp }
     }, [defaultMutators, mutatorsProp])
 
     // Remove trailing slash from baseURL
@@ -564,21 +580,6 @@ export const AuthUIProvider = ({
     basePath = basePath.endsWith("/") ? basePath.slice(0, -1) : basePath
 
     const { data: sessionData } = hooks.useSession()
-
-    const errorShown = useRef(false)
-    useEffect(() => {
-        if (errorShown.current) return
-
-        const error = getSearchParam("error")
-        if (error) {
-            errorShown.current = true
-            console.log({ error })
-            toast({
-                variant: "error",
-                message: getLocalizedError({ error, localization })
-            })
-        }
-    }, [localization, toast])
 
     return (
         <AuthUIContext.Provider
@@ -599,7 +600,7 @@ export const AuthUIProvider = ({
                 localization,
                 nameRequired,
                 organization,
-                settings,
+                account,
                 signUp,
                 social,
                 toast,

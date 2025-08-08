@@ -1,20 +1,30 @@
 "use client"
+
 import { useContext } from "react"
+
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
+import type { AuthLocalization } from "../../localization/auth-localization"
 import { AccountsCard } from "./account/accounts-card"
 import { UpdateAvatarCard } from "./account/update-avatar-card"
 import { UpdateFieldCard } from "./account/update-field-card"
 import { UpdateNameCard } from "./account/update-name-card"
 import { UpdateUsernameCard } from "./account/update-username-card"
 import { ChangeEmailCard } from "./security/change-email-card"
-import type { SettingsCardsProps } from "./settings-cards"
+import type { SettingsCardClassNames } from "./shared/settings-card"
 
 export function AccountSettingsCards({
     className,
     classNames,
     localization
-}: Omit<SettingsCardsProps, "view">) {
+}: {
+    className?: string
+    classNames?: {
+        card?: SettingsCardClassNames
+        cards?: string
+    }
+    localization?: Partial<AuthLocalization>
+}) {
     const {
         additionalFields,
         avatar,
@@ -22,7 +32,7 @@ export function AccountSettingsCards({
         credentials,
         hooks: { useSession },
         multiSession,
-        settings
+        account: accountOptions
     } = useContext(AuthUIContext)
 
     const { data: sessionData } = useSession()
@@ -35,7 +45,7 @@ export function AccountSettingsCards({
                 classNames?.cards
             )}
         >
-            {settings?.fields?.includes("image") && avatar && (
+            {accountOptions?.fields?.includes("image") && avatar && (
                 <UpdateAvatarCard
                     classNames={classNames?.card}
                     localization={localization}
@@ -49,7 +59,7 @@ export function AccountSettingsCards({
                 />
             )}
 
-            {settings?.fields?.includes("name") && (
+            {accountOptions?.fields?.includes("name") && (
                 <UpdateNameCard
                     classNames={classNames?.card}
                     localization={localization}
@@ -63,7 +73,7 @@ export function AccountSettingsCards({
                 />
             )}
 
-            {settings?.fields?.map((field) => {
+            {accountOptions?.fields?.map((field) => {
                 if (field === "image") return null
                 if (field === "name") return null
                 const additionalField = additionalFields?.[field]

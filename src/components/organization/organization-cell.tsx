@@ -17,7 +17,7 @@ import {
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
 import { LeaveOrganizationDialog } from "./leave-organization-dialog"
-import { OrganizationView } from "./organization-view"
+import { OrganizationCellView } from "./organization-cell-view"
 
 export interface OrganizationCellProps {
     className?: string
@@ -34,11 +34,9 @@ export function OrganizationCell({
 }: OrganizationCellProps) {
     const {
         authClient,
-        basePath,
         hooks: { useActiveOrganization },
         localization: contextLocalization,
-        settings,
-        viewPaths,
+        organization: organizationOptions,
         navigate,
         toast
     } = useContext(AuthUIContext)
@@ -56,7 +54,7 @@ export function OrganizationCell({
     const handleManageOrganization = useCallback(async () => {
         if (activeOrganization?.id === organization.id) {
             navigate(
-                `${settings?.basePath || basePath}/${viewPaths.ORGANIZATION}`
+                `${organizationOptions?.basePath}/${organizationOptions?.viewPaths?.SETTINGS}`
             )
             return
         }
@@ -74,7 +72,7 @@ export function OrganizationCell({
             await refetchActiveOrganization?.()
 
             navigate(
-                `${settings?.basePath || basePath}/${viewPaths.ORGANIZATION}`
+                `${organizationOptions?.basePath}/${organizationOptions?.viewPaths?.SETTINGS}`
             )
         } catch (error) {
             toast({
@@ -88,9 +86,8 @@ export function OrganizationCell({
         activeOrganization,
         authClient,
         organization.id,
-        basePath,
-        settings?.basePath,
-        viewPaths,
+        organizationOptions?.basePath,
+        organizationOptions?.viewPaths?.SETTINGS,
         navigate,
         toast,
         localization,
@@ -100,7 +97,7 @@ export function OrganizationCell({
     return (
         <>
             <Card className={cn("flex-row p-4", className, classNames?.cell)}>
-                <OrganizationView
+                <OrganizationCellView
                     organization={organization}
                     localization={localization}
                 />

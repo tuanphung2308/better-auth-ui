@@ -20,9 +20,8 @@ export function OrganizationMembersCard({
         basePath,
         hooks: { useActiveOrganization },
         localization: contextLocalization,
-        settings,
-        replace,
-        viewPaths
+        account: accountOptions,
+        replace
     } = useContext(AuthUIContext)
 
     const localization = { ...contextLocalization, ...localizationProp }
@@ -36,15 +35,17 @@ export function OrganizationMembersCard({
     useEffect(() => {
         if (organizationPending || organizationFetching) return
         if (!activeOrganization)
-            replace(`${settings?.basePath || basePath}/${viewPaths.SETTINGS}`)
+            replace(
+                `${accountOptions?.basePath}/${accountOptions?.viewPaths?.ORGANIZATIONS}`
+            )
     }, [
         activeOrganization,
         organizationPending,
         organizationFetching,
-        basePath,
-        settings?.basePath,
+        accountOptions?.basePath,
+        accountOptions?.viewPaths?.ORGANIZATIONS,
         replace,
-        viewPaths
+        accountOptions?.viewPaths
     ])
 
     if (!activeOrganization) {

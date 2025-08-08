@@ -4,13 +4,22 @@ import { useContext, useEffect } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
-import type { SettingsCardsProps } from "../settings/settings-cards"
+import type { AuthLocalization } from "../../localization/auth-localization"
+import type { SettingsCardClassNames } from "../settings/shared/settings-card"
+
 import { DeleteOrganizationCard } from "./delete-organization-card"
 import { OrganizationLogoCard } from "./organization-logo-card"
 import { OrganizationNameCard } from "./organization-name-card"
 import { OrganizationSlugCard } from "./organization-slug-card"
 
-export type OrganizationSettingsCardsProps = Omit<SettingsCardsProps, "view">
+export type OrganizationSettingsCardsProps = {
+    className?: string
+    classNames?: {
+        card?: SettingsCardClassNames
+        cards?: string
+    }
+    localization?: Partial<AuthLocalization>
+}
 
 export function OrganizationSettingsCards({
     className,
@@ -18,12 +27,10 @@ export function OrganizationSettingsCards({
     localization
 }: OrganizationSettingsCardsProps) {
     const {
-        basePath,
         hooks: { useActiveOrganization },
         organization,
-        settings,
-        replace,
-        viewPaths
+        account: accountOptions,
+        replace
     } = useContext(AuthUIContext)
 
     const {
@@ -35,15 +42,16 @@ export function OrganizationSettingsCards({
     useEffect(() => {
         if (organizationPending || organizationFetching) return
         if (!activeOrganization)
-            replace(`${settings?.basePath || basePath}/${viewPaths.SETTINGS}`)
+            replace(
+                `${accountOptions?.basePath}/${accountOptions?.viewPaths?.ORGANIZATIONS}`
+            )
     }, [
         activeOrganization,
         organizationPending,
         organizationFetching,
-        basePath,
-        settings?.basePath,
-        replace,
-        viewPaths.SETTINGS
+        accountOptions?.basePath,
+        accountOptions?.viewPaths?.ORGANIZATIONS,
+        replace
     ])
 
     return (

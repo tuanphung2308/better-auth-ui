@@ -21,6 +21,8 @@ export type OrganizationLogoOptions = {
     extension: string
 }
 
+import type { OrganizationViewPaths } from "../lib/view-paths"
+
 export type OrganizationOptions = {
     /**
      * Logo configuration
@@ -37,6 +39,21 @@ export type OrganizationOptions = {
      * @default false
      */
     apiKey?: boolean
+    /**
+     * Base path for organization-scoped views (supports slugged or static base)
+     * When using slug paths, set this to the common prefix (e.g. "/organization")
+     */
+    basePath?: string
+    /**
+     * Use slug-based URLs where slug becomes the first path segment
+     * e.g. "/[slug]/members" (or `${basePath}/[slug]/members` if basePath provided)
+     * @default false
+     */
+    slugPaths?: boolean
+    /**
+     * Customize organization view paths
+     */
+    viewPaths?: Partial<OrganizationViewPaths>
 }
 
 export type OrganizationOptionsContext = {
@@ -55,4 +72,16 @@ export type OrganizationOptionsContext = {
      * @default false
      */
     apiKey?: boolean
+    /**
+     * Base path for organization-scoped views
+     */
+    basePath?: string
+    /**
+     * Use slug-based URLs
+     */
+    slugPaths?: boolean
+    /**
+     * Customize organization view paths
+     */
+    viewPaths?: Partial<OrganizationViewPaths>
 }

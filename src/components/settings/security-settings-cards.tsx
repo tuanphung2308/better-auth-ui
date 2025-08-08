@@ -3,19 +3,27 @@
 import { useContext } from "react"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
+import type { AuthLocalization } from "../../localization/auth-localization"
 import { DeleteAccountCard } from "./account/delete-account-card"
 import { PasskeysCard } from "./passkey/passkeys-card"
 import { ProvidersCard } from "./providers/providers-card"
 import { ChangePasswordCard } from "./security/change-password-card"
 import { SessionsCard } from "./security/sessions-card"
-import type { SettingsCardsProps } from "./settings-cards"
+import type { SettingsCardClassNames } from "./shared/settings-card"
 import { TwoFactorCard } from "./two-factor/two-factor-card"
 
 export function SecuritySettingsCards({
     className,
     classNames,
     localization
-}: Omit<SettingsCardsProps, "view">) {
+}: {
+    className?: string
+    classNames?: {
+        card?: SettingsCardClassNames
+        cards?: string
+    }
+    localization?: Partial<AuthLocalization>
+}) {
     const {
         credentials,
         deleteUser,

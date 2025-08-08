@@ -3,7 +3,6 @@ import { twMerge } from "tailwind-merge"
 import * as z from "zod"
 import type { AuthLocalization } from "../localization/auth-localization"
 import type { PasswordValidation } from "../types/password-validation"
-import type { AuthView, AuthViewPaths } from "./auth-view-paths"
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -63,10 +62,13 @@ export function getSearchParam(paramName: string) {
         : null
 }
 
-export function getAuthViewByPath(authViewPaths: AuthViewPaths, path?: string) {
-    for (const authViewPathsKey in authViewPaths) {
-        if (authViewPaths[authViewPathsKey as AuthView] === path) {
-            return authViewPathsKey as AuthView
+export function getViewByPath(
+    viewPaths: Record<string, string>,
+    path?: string
+) {
+    for (const key in viewPaths) {
+        if (viewPaths[key] === path) {
+            return key
         }
     }
 }

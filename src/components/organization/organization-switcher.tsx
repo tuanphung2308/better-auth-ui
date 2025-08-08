@@ -31,11 +31,11 @@ import {
 import { UserAvatar, type UserAvatarClassNames } from "../user-avatar"
 import type { UserViewClassNames } from "../user-view"
 import { CreateOrganizationDialog } from "./create-organization-dialog"
-import { OrganizationLogo } from "./organization-logo"
 import {
-    OrganizationView,
+    OrganizationCellView,
     type OrganizationViewClassNames
-} from "./organization-view"
+} from "./organization-cell-view"
+import { OrganizationLogo } from "./organization-logo"
 import { PersonalAccountView } from "./personal-account-view"
 
 export interface OrganizationSwitcherClassNames {
@@ -100,7 +100,8 @@ export function OrganizationSwitcher({
         basePath,
         hooks: { useActiveOrganization, useSession, useListOrganizations },
         localization: contextLocalization,
-        settings,
+        account: accountOptions,
+        organization: organizationOptions,
         toast,
         viewPaths,
         Link
@@ -264,7 +265,7 @@ export function OrganizationSwitcher({
                                 activeOrganization ||
                                 (user as User)?.isAnonymous ||
                                 hidePersonal ? (
-                                    <OrganizationView
+                                    <OrganizationCellView
                                         classNames={
                                             classNames?.trigger?.organization
                                         }
@@ -310,7 +311,7 @@ export function OrganizationSwitcher({
                                 {activeOrganizationPending ||
                                 activeOrganization ||
                                 hidePersonal ? (
-                                    <OrganizationView
+                                    <OrganizationCellView
                                         classNames={
                                             classNames?.content?.organization
                                         }
@@ -334,9 +335,8 @@ export function OrganizationSwitcher({
                                     <Link
                                         href={
                                             activeOrganization
-                                                ? `${settings?.basePath || basePath}/${viewPaths.ORGANIZATION}`
-                                                : settings?.url ||
-                                                  `${settings?.basePath || basePath}/${viewPaths.SETTINGS}`
+                                                ? `${organizationOptions?.basePath}/${organizationOptions?.viewPaths?.SETTINGS}`
+                                                : `${accountOptions?.basePath}/${accountOptions?.viewPaths?.SETTINGS}`
                                         }
                                     >
                                         <Button
@@ -385,7 +385,7 @@ export function OrganizationSwitcher({
                                         switchOrganization(organization.id)
                                     }
                                 >
-                                    <OrganizationView
+                                    <OrganizationCellView
                                         classNames={
                                             classNames?.content?.organization
                                         }

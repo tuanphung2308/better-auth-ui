@@ -50,4 +50,4 @@ export const organizationViewPaths = {
 }
 
 export type OrganizationViewPaths = typeof organizationViewPaths
-export type AuthView = keyof AuthViewPaths
+export type AuthViewPath = keyof AuthViewPaths
