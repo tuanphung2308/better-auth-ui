@@ -80,7 +80,6 @@ export function OrganizationNameCard({
             className={className}
             classNames={classNames}
             localization={localization}
-            slug={slug}
             organization={organization}
             {...props}
         />
@@ -91,7 +90,6 @@ function OrganizationNameForm({
     className,
     classNames,
     localization: localizationProp,
-    slug,
     organization,
     ...props
 }: OrganizationNameCardProps & { organization: Organization }) {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, useEffect } from "react"
+import { useContext } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
@@ -26,52 +26,9 @@ export function OrganizationSettingsCards({
     className,
     classNames,
     localization,
-    slug: slugProp
+    slug
 }: OrganizationSettingsCardsProps) {
-    const {
-        hooks: { useActiveOrganization },
-        organization,
-        account: accountOptions,
-        organization: organizationOptions,
-        replace
-    } = useContext(AuthUIContext)
-
-    const slug = slugProp || organizationOptions?.slug
-
-    if (organizationOptions?.slugPaths) {
-        useEffect(() => {
-            if (!slug)
-                replace(
-                    `${accountOptions?.basePath}/${accountOptions?.viewPaths?.ORGANIZATIONS}`
-                )
-        }, [
-            slug,
-            accountOptions?.basePath,
-            accountOptions?.viewPaths?.ORGANIZATIONS,
-            replace
-        ])
-    } else {
-        const {
-            data: activeOrganization,
-            isPending: organizationPending,
-            isRefetching: organizationFetching
-        } = useActiveOrganization()
-
-        useEffect(() => {
-            if (organizationPending || organizationFetching) return
-            if (!activeOrganization)
-                replace(
-                    `${accountOptions?.basePath}/${accountOptions?.viewPaths?.ORGANIZATIONS}`
-                )
-        }, [
-            activeOrganization,
-            organizationPending,
-            organizationFetching,
-            accountOptions?.basePath,
-            accountOptions?.viewPaths?.ORGANIZATIONS,
-            replace
-        ])
-    }
+    const { organization: organizationOptions } = useContext(AuthUIContext)
 
     return (
         <div
@@ -81,7 +38,7 @@ export function OrganizationSettingsCards({
                 classNames?.cards
             )}
         >
-            {organization?.logo && (
+            {organizationOptions?.logo && (
                 <OrganizationLogoCard
                     classNames={classNames?.card}
                     localization={localization}
@@ -92,16 +49,19 @@ export function OrganizationSettingsCards({
             <OrganizationNameCard
                 classNames={classNames?.card}
                 localization={localization}
+                slug={slug}
             />
 
             <OrganizationSlugCard
                 classNames={classNames?.card}
                 localization={localization}
+                slug={slug}
             />
 
             <DeleteOrganizationCard
                 classNames={classNames?.card}
                 localization={localization}
+                slug={slug}
             />
         </div>
     )

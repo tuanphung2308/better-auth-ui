@@ -1,7 +1,9 @@
 "use client"
 
-import { useContext, useState } from "react"
+import type { Organization } from "better-auth/plugins/organization"
+import { useContext, useMemo, useState } from "react"
 
+import { useCurrentOrganization } from "../../hooks/use-current-organization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import type { SettingsCardProps } from "../settings/shared/settings-card"
 import { SettingsCard } from "../settings/shared/settings-card"
@@ -10,29 +12,69 @@ import { DeleteOrganizationDialog } from "./delete-organization-dialog"
 export function DeleteOrganizationCard({
     className,
     classNames,
-    localization
-}: SettingsCardProps) {
+    localization: localizationProp,
+    slug,
+    ...props
+}: SettingsCardProps & { slug?: string }) {
+    const { localization: contextLocalization } = useContext(AuthUIContext)
+
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
+
+    const { data: organization } = useCurrentOrganization({ slug })
+
+    if (!organization)
+        return (
+            <SettingsCard
+                className={className}
+                classNames={classNames}
+                actionLabel={localization?.DELETE_ORGANIZATION}
+                description={localization?.DELETE_ORGANIZATION_DESCRIPTION}
+                isPending
+                title={localization?.DELETE_ORGANIZATION}
+                variant="destructive"
+            />
+        )
+
+    return (
+        <DeleteOrganizationForm
+            className={className}
+            classNames={classNames}
+            localization={localization}
+            organization={organization}
+            {...props}
+        />
+    )
+}
+
+function DeleteOrganizationForm({
+    className,
+    classNames,
+    localization: localizationProp,
+    organization
+}: SettingsCardProps & { organization: Organization; slug?: string }) {
     const {
-        hooks: { useActiveOrganization, useSession },
-        localization: contextLocalization
+        localization: contextLocalization,
+        hooks: { useHasPermission }
     } = useContext(AuthUIContext)
 
-    localization = { ...contextLocalization, ...localization }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
+
+    const { data: hasPermission, isPending } = useHasPermission({
+        organizationId: organization.id,
+        permissions: {
+            organization: ["delete"]
+        }
+    })
 
     const [showDialog, setShowDialog] = useState(false)
 
-    const { data: activeOrganization, isPending: organizationPending } =
-        useActiveOrganization()
-    const { data: sessionData, isPending: sessionPending } = useSession()
-
-    const isPending = organizationPending || sessionPending
-
-    const membership = activeOrganization?.members?.find(
-        (member) => member.userId === sessionData?.user.id
-    )
-    const isOwner = membership?.role === "owner"
-
-    if (!isPending && !isOwner) return null
+    if (!hasPermission?.success) return null
 
     return (
         <>
@@ -52,6 +94,7 @@ export function DeleteOrganizationCard({
                 localization={localization}
                 open={showDialog}
                 onOpenChange={setShowDialog}
+                organization={organization}
             />
         </>
     )
