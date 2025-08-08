@@ -54,8 +54,7 @@ export function DeleteOrganizationDialog({
 
     localization = { ...contextLocalization, ...localization }
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } =
-        useActiveOrganization()
+    const { data: activeOrganization } = useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
 
     const formSchema = z.object({
@@ -88,7 +87,6 @@ export function DeleteOrganizationDialog({
             })
 
             await refetchOrganizations?.()
-            await refetchActiveOrganization?.()
 
             toast({
                 variant: "success",

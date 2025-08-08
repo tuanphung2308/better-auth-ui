@@ -19,40 +19,59 @@ export type OrganizationSettingsCardsProps = {
         cards?: string
     }
     localization?: Partial<AuthLocalization>
+    slug?: string
 }
 
 export function OrganizationSettingsCards({
     className,
     classNames,
-    localization
+    localization,
+    slug: slugProp
 }: OrganizationSettingsCardsProps) {
     const {
         hooks: { useActiveOrganization },
         organization,
         account: accountOptions,
+        organization: organizationOptions,
         replace
     } = useContext(AuthUIContext)
 
-    const {
-        data: activeOrganization,
-        isPending: organizationPending,
-        isRefetching: organizationFetching
-    } = useActiveOrganization()
+    const slug = slugProp || organizationOptions?.slug
 
-    useEffect(() => {
-        if (organizationPending || organizationFetching) return
-        if (!activeOrganization)
-            replace(
-                `${accountOptions?.basePath}/${accountOptions?.viewPaths?.ORGANIZATIONS}`
-            )
-    }, [
-        activeOrganization,
-        organizationPending,
-        organizationFetching,
-        accountOptions?.basePath,
-        accountOptions?.viewPaths?.ORGANIZATIONS,
-        replace
-    ])
+    if (organizationOptions?.slugPaths) {
+        useEffect(() => {
+            if (!slug)
+                replace(
+                    `${accountOptions?.basePath}/${accountOptions?.viewPaths?.ORGANIZATIONS}`
+                )
+        }, [
+            slug,
+            accountOptions?.basePath,
+            accountOptions?.viewPaths?.ORGANIZATIONS,
+            replace
+        ])
+    } else {
+        const {
+            data: activeOrganization,
+            isPending: organizationPending,
+            isRefetching: organizationFetching
+        } = useActiveOrganization()
+
+        useEffect(() => {
+            if (organizationPending || organizationFetching) return
+            if (!activeOrganization)
+                replace(
+                    `${accountOptions?.basePath}/${accountOptions?.viewPaths?.ORGANIZATIONS}`
+                )
+        }, [
+            activeOrganization,
+            organizationPending,
+            organizationFetching,
+            accountOptions?.basePath,
+            accountOptions?.viewPaths?.ORGANIZATIONS,
+            replace
+        ])
+    }
 
     return (
         <div
@@ -66,6 +85,7 @@ export function OrganizationSettingsCards({
                 <OrganizationLogoCard
                     classNames={classNames?.card}
                     localization={localization}
+                    slug={slug}
                 />
             )}
 

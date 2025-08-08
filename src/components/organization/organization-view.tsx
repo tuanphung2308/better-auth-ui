@@ -21,6 +21,7 @@ import { OrganizationMembersCard } from "./organization-members-card"
 import { OrganizationSettingsCards } from "./organization-settings-cards"
 
 export type OrganizationViewPageProps = Omit<AccountViewProps, "view"> & {
+    slug?: string
     view?: OrganizationViewPath
 }
 
@@ -30,7 +31,8 @@ export function OrganizationView({
     localization: localizationProp,
     pathname,
     view: viewProp,
-    hideNav
+    hideNav,
+    slug
 }: OrganizationViewPageProps) {
     const {
         organization: organizationOptions,
@@ -170,6 +172,7 @@ export function OrganizationView({
                 <OrganizationSettingsCards
                     classNames={classNames}
                     localization={localization}
+                    slug={slug}
                 />
             )}
         </div>

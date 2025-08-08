@@ -1,12 +1,6 @@
 "use client"
 
-import {
-    createContext,
-    type ReactNode,
-    useContext,
-    useEffect,
-    useMemo
-} from "react"
+import { createContext, type ReactNode, useMemo } from "react"
 import { toast } from "sonner"
 import { RecaptchaV3 } from "../components/captcha/recaptcha-v3"
 import { useAuthData } from "../hooks/use-auth-data"
@@ -412,11 +406,8 @@ export const AuthUIProvider = ({
         }
 
         return {
-            confirmPassword: credentialsProp?.confirmPassword,
-            forgotPassword: credentialsProp?.forgotPassword ?? true,
-            passwordValidation: credentialsProp?.passwordValidation,
-            rememberMe: credentialsProp?.rememberMe,
-            username: credentialsProp?.username
+            ...credentialsProp,
+            forgotPassword: credentialsProp?.forgotPassword ?? true
         }
     }, [credentialsProp])
 
@@ -464,11 +455,15 @@ export const AuthUIProvider = ({
             }
         }
 
+        // Remove trailing slash from basePath
+        const basePath = organizationProp.basePath?.endsWith("/")
+            ? organizationProp.basePath.slice(0, -1)
+            : organizationProp.basePath
+
         return {
             ...organizationProp,
             logo,
-            basePath: organizationProp.basePath ?? "/organization",
-            slugPaths: organizationProp.slugPaths,
+            basePath: basePath ?? "/organization",
             customRoles: organizationProp.customRoles || [],
             viewPaths: {
                 ...organizationViewPaths,
@@ -585,8 +580,6 @@ export const AuthUIProvider = ({
     // Remove trailing slash from basePath
     basePath = basePath.endsWith("/") ? basePath.slice(0, -1) : basePath
 
-    const { data: sessionData } = hooks.useSession()
-
     return (
         <AuthUIContext.Provider
             value={{
@@ -617,14 +610,6 @@ export const AuthUIProvider = ({
                 ...props
             }}
         >
-            {sessionData &&
-                organization &&
-                (hooks.useActiveOrganization ===
-                    authClient.useActiveOrganization ||
-                    hooks.useListOrganizations ===
-                        authClient.useListOrganizations) && (
-                    <OrganizationRefetcher />
-                )}
             {captcha?.provider === "google-recaptcha-v3" ? (
                 <RecaptchaV3>{children}</RecaptchaV3>
             ) : (
@@ -632,26 +617,4 @@ export const AuthUIProvider = ({
             )}
         </AuthUIContext.Provider>
     )
-}
-
-const OrganizationRefetcher = () => {
-    const { hooks } = useContext(AuthUIContext)
-    const { data: sessionData } = hooks.useSession()
-    const { data: activeOrganization, refetch: refetchActiveOrganization } =
-        hooks.useActiveOrganization()
-    const { data: organizations, refetch: refetchListOrganizations } =
-        hooks.useListOrganizations()
-
-    // biome-ignore lint/correctness/useExhaustiveDependencies: Refetch fix
-    useEffect(() => {
-        if (!sessionData?.user.id) return
-        if (activeOrganization) refetchActiveOrganization?.()
-        if (organizations) refetchListOrganizations?.()
-    }, [
-        sessionData?.user.id,
-        refetchActiveOrganization,
-        refetchListOrganizations
-    ])
-
-    return null
 }

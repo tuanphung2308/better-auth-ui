@@ -53,9 +53,10 @@ export function CreateOrganizationDialog({
 }: CreateOrganizationDialogProps) {
     const {
         authClient,
-        hooks: { useActiveOrganization, useListOrganizations },
+        hooks: { useListOrganizations },
         localization: contextLocalization,
-        organization,
+        organization: organizationOptions,
+        navigate,
         toast
     } = useContext(AuthUIContext)
 
@@ -67,7 +68,6 @@ export function CreateOrganizationDialog({
     const fileInputRef = useRef<HTMLInputElement>(null)
     const openFileDialog = () => fileInputRef.current?.click()
 
-    const { refetch: refetchActiveOrganization } = useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
 
     const formSchema = z.object({
@@ -97,7 +97,7 @@ export function CreateOrganizationDialog({
     const isSubmitting = form.formState.isSubmitting
 
     const handleLogoChange = async (file: File) => {
-        if (!organization?.logo) return
+        if (!organizationOptions?.logo) return
 
         setLogoPending(true)
 
@@ -105,14 +105,14 @@ export function CreateOrganizationDialog({
             const resizedFile = await resizeAndCropImage(
                 file,
                 crypto.randomUUID(),
-                organization.logo.size,
-                organization.logo.extension
+                organizationOptions.logo.size,
+                organizationOptions.logo.extension
             )
 
             let image: string | undefined | null
 
-            if (organization?.logo.upload) {
-                image = await organization.logo.upload(resizedFile)
+            if (organizationOptions?.logo.upload) {
+                image = await organizationOptions.logo.upload(resizedFile)
             } else {
                 image = await fileToBase64(resizedFile)
             }
@@ -132,8 +132,8 @@ export function CreateOrganizationDialog({
     const deleteLogo = async () => {
         setLogoPending(true)
         const currentUrl = logo || undefined
-        if (currentUrl && organization?.logo?.delete) {
-            await organization.logo.delete(currentUrl)
+        if (currentUrl && organizationOptions?.logo?.delete) {
+            await organizationOptions.logo.delete(currentUrl)
         }
 
         setLogo(null)
@@ -150,12 +150,17 @@ export function CreateOrganizationDialog({
                 fetchOptions: { throw: true }
             })
 
+            await refetchOrganizations?.()
+
+            if (organizationOptions?.slugPaths) {
+                navigate(`${organizationOptions.basePath}/${organization.slug}`)
+                return
+            }
+
             await authClient.organization.setActive({
                 organizationId: organization.id
             })
 
-            await refetchActiveOrganization?.()
-            await refetchOrganizations?.()
             onOpenChange?.(false)
             form.reset()
             setLogo(null)
@@ -197,7 +202,7 @@ export function CreateOrganizationDialog({
                         onSubmit={form.handleSubmit(onSubmit)}
                         className="space-y-6"
                     >
-                        {organization?.logo && (
+                        {organizationOptions?.logo && (
                             <FormField
                                 control={form.control}
                                 name="logo"

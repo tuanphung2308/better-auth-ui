@@ -1,5 +1,6 @@
 "use client"
 
+import type { Organization } from "better-auth/plugins/organization"
 import {
     ChevronsUpDown,
     LogInIcon,
@@ -15,7 +16,6 @@ import {
     useMemo,
     useState
 } from "react"
-
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
@@ -64,6 +64,7 @@ export interface OrganizationSwitcherProps
     align?: "center" | "start" | "end"
     trigger?: ReactNode
     localization?: AuthLocalization
+    slug?: string
     onSetActive?: (organizationId: string | null) => void
     /**
      * Hide the personal organization option from the switcher.
@@ -90,6 +91,7 @@ export function OrganizationSwitcher({
     align,
     trigger,
     localization: localizationProp,
+    slug: slugProp,
     size,
     onSetActive,
     hidePersonal,
@@ -102,10 +104,20 @@ export function OrganizationSwitcher({
         localization: contextLocalization,
         account: accountOptions,
         organization: organizationOptions,
+        redirectTo,
+        navigate,
         toast,
         viewPaths,
         Link
     } = useContext(AuthUIContext)
+
+    if (!organizationOptions || !accountOptions) {
+        return null
+    }
+
+    const { slugPaths, slug: contextSlug, personalPath } = organizationOptions
+
+    const slug = slugProp || contextSlug
 
     const localization = useMemo(
         () => ({ ...contextLocalization, ...localizationProp }),
@@ -120,42 +132,67 @@ export function OrganizationSwitcher({
     const { data: sessionData, isPending: sessionPending } = useSession()
     const user = sessionData?.user
 
-    const { data: organizations } = useListOrganizations()
-    const {
-        data: activeOrganization,
-        isPending: organizationPending,
-        refetch: refetchActiveOrganization,
-        isRefetching
-    } = useActiveOrganization()
+    const { data: organizations, isPending: organizationsPending } =
+        useListOrganizations()
+
+    let activeOrganization: Organization | undefined | null
+    let organizationPending = false
+    let organizationRefetching = false
+
+    if (slugPaths) {
+        activeOrganization = organizations?.find(
+            (organization) => organization.slug === slug
+        )
+    } else {
+        const { data, isPending, isRefetching } = useActiveOrganization()
+
+        activeOrganization = data
+        organizationPending = !!isPending
+        organizationRefetching = !!isRefetching
+    }
 
     const isPending =
-        sessionPending || activeOrganizationPending || organizationPending
+        organizationsPending ||
+        sessionPending ||
+        activeOrganizationPending ||
+        organizationPending
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: ignore
     useEffect(() => {
-        if (isRefetching) return
+        if (organizationRefetching) return
 
         setActiveOrganizationPending(false)
-    }, [activeOrganization, isRefetching])
+    }, [activeOrganization, organizationRefetching])
 
     const switchOrganization = useCallback(
-        async (organizationId: string | null) => {
+        async (organization: Organization | null) => {
             // Prevent switching to personal account when hidePersonal is true
-            if (hidePersonal && organizationId === null) {
+            if (hidePersonal && organization === null) {
+                return
+            }
+
+            if (slugPaths) {
+                if (organization) {
+                    navigate(
+                        `${organizationOptions.basePath}/${organization.slug}`
+                    )
+                } else {
+                    navigate(personalPath || redirectTo)
+                }
+
                 return
             }
 
             setActiveOrganizationPending(true)
 
             try {
-                onSetActive?.(organizationId)
+                onSetActive?.(organization?.id || null)
                 await authClient.organization.setActive({
-                    organizationId: organizationId,
+                    organizationId: organization?.id || null,
                     fetchOptions: {
                         throw: true
                     }
                 })
-                await refetchActiveOrganization?.()
             } catch (error) {
                 toast({
                     variant: "error",
@@ -170,8 +207,12 @@ export function OrganizationSwitcher({
             toast,
             localization,
             onSetActive,
-            refetchActiveOrganization,
-            hidePersonal
+            hidePersonal,
+            slugPaths,
+            personalPath,
+            organizationOptions.basePath,
+            redirectTo,
+            navigate
         ]
     )
 
@@ -184,9 +225,10 @@ export function OrganizationSwitcher({
             organizations &&
             organizations.length > 0 &&
             !sessionPending &&
-            !organizationPending
+            !organizationPending &&
+            !slug
         ) {
-            switchOrganization(organizations[0].id)
+            switchOrganization(organizations[0])
         }
     }, [
         hidePersonal,
@@ -195,7 +237,8 @@ export function OrganizationSwitcher({
         organizations,
         sessionPending,
         organizationPending,
-        switchOrganization
+        switchOrganization,
+        slug
     ])
 
     return (
@@ -335,8 +378,8 @@ export function OrganizationSwitcher({
                                     <Link
                                         href={
                                             activeOrganization
-                                                ? `${organizationOptions?.basePath}/${organizationOptions?.viewPaths?.SETTINGS}`
-                                                : `${accountOptions?.basePath}/${accountOptions?.viewPaths?.SETTINGS}`
+                                                ? `${organizationOptions?.basePath}/${organizationOptions?.viewPaths.SETTINGS}`
+                                                : `${accountOptions?.basePath}/${accountOptions?.viewPaths.SETTINGS}`
                                         }
                                     >
                                         <Button
@@ -382,7 +425,7 @@ export function OrganizationSwitcher({
                                 <DropdownMenuItem
                                     key={organization.id}
                                     onClick={() =>
-                                        switchOrganization(organization.id)
+                                        switchOrganization(organization)
                                     }
                                 >
                                     <OrganizationCellView

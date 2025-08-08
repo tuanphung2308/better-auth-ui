@@ -1,5 +1,6 @@
 "use client"
 
+import type { Organization } from "better-auth/plugins/organization"
 import { Trash2Icon, UploadCloudIcon } from "lucide-react"
 import { type ComponentProps, useContext, useRef, useState } from "react"
 
@@ -24,22 +25,44 @@ export interface OrganizationLogoCardProps extends ComponentProps<typeof Card> {
     className?: string
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
+    slug?: string
 }
 
 export function OrganizationLogoCard({
     className,
     classNames,
     localization,
+    slug: slugProp,
     ...props
 }: OrganizationLogoCardProps) {
     const {
-        hooks: { useActiveOrganization },
-        localization: authLocalization
+        hooks: { useActiveOrganization, useListOrganizations },
+        localization: authLocalization,
+        organization: organizationOptions
     } = useContext(AuthUIContext)
+
+    if (!organizationOptions) {
+        return null
+    }
+
+    const { slugPaths, slug: contextSlug } = organizationOptions
 
     localization = { ...authLocalization, ...localization }
 
-    const { data: activeOrganization } = useActiveOrganization()
+    const slug = slugProp || contextSlug
+
+    let activeOrganization: Organization | undefined | null
+
+    if (slugPaths) {
+        const { data: organizations } = useListOrganizations()
+        activeOrganization = organizations?.find(
+            (organization) => organization.slug === slug
+        )
+    } else {
+        const { data } = useActiveOrganization()
+
+        activeOrganization = data
+    }
 
     if (!activeOrganization) {
         return (
@@ -101,6 +124,7 @@ function OrganizationLogoForm({
     className,
     classNames,
     localization,
+    slug: slugProp,
     ...props
 }: OrganizationLogoCardProps) {
     const {
@@ -112,20 +136,39 @@ function OrganizationLogoForm({
         },
         localization: authLocalization,
         optimistic,
-        organization,
+        organization: organizationOptions,
         toast
     } = useContext(AuthUIContext)
 
+    if (!organizationOptions?.logo) {
+        return null
+    }
+
+    const { slugPaths, slug: contextSlug } = organizationOptions
+
+    const slug = slugProp || contextSlug
     localization = { ...authLocalization, ...localization }
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } =
-        useActiveOrganization()
-    const { refetch: refetchOrganizations } = useListOrganizations()
+    const { data: organizations, refetch: refetchOrganizations } =
+        useListOrganizations()
+
+    let activeOrganization: Organization | undefined | null
+
+    if (slugPaths) {
+        activeOrganization = organizations?.find(
+            (organization) => organization.slug === slug
+        )
+    } else {
+        const { data } = useActiveOrganization()
+        activeOrganization = data
+    }
+
     const { data: hasPermission, isPending: permissionPending } =
         useHasPermission({
             permissions: {
                 organization: ["update"]
-            }
+            },
+            organizationId: activeOrganization?.id
         })
 
     const isPending = !activeOrganization || permissionPending
@@ -136,7 +179,7 @@ function OrganizationLogoForm({
     const handleLogoChange = async (file: File) => {
         if (
             !activeOrganization ||
-            !organization?.logo ||
+            !organizationOptions?.logo ||
             !hasPermission?.success
         )
             return
@@ -145,14 +188,14 @@ function OrganizationLogoForm({
         const resizedFile = await resizeAndCropImage(
             file,
             crypto.randomUUID(),
-            organization.logo.size,
-            organization.logo.extension
+            organizationOptions.logo.size,
+            organizationOptions.logo.extension
         )
 
         let image: string | undefined | null
 
-        if (organization.logo.upload) {
-            image = await organization.logo.upload(resizedFile)
+        if (organizationOptions.logo.upload) {
+            image = await organizationOptions.logo.upload(resizedFile)
         } else {
             image = await fileToBase64(resizedFile)
         }
@@ -162,7 +205,7 @@ function OrganizationLogoForm({
             return
         }
 
-        if (optimistic && !organization.logo.upload) setLoading(false)
+        if (optimistic && !organizationOptions.logo.upload) setLoading(false)
 
         try {
             await authClient.organization.update({
@@ -171,7 +214,6 @@ function OrganizationLogoForm({
                 fetchOptions: { throw: true }
             })
 
-            await refetchActiveOrganization?.()
             await refetchOrganizations?.()
         } catch (error) {
             toast({
@@ -189,8 +231,8 @@ function OrganizationLogoForm({
         setLoading(true)
 
         try {
-            if (activeOrganization.logo && organization?.logo?.delete) {
-                await organization.logo.delete(activeOrganization.logo)
+            if (activeOrganization.logo && organizationOptions.logo?.delete) {
+                await organizationOptions?.logo.delete(activeOrganization.logo)
             }
 
             await authClient.organization.update({
@@ -199,7 +241,6 @@ function OrganizationLogoForm({
                 fetchOptions: { throw: true }
             })
 
-            await refetchActiveOrganization?.()
             await refetchOrganizations?.()
         } catch (error) {
             toast({

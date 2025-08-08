@@ -25,6 +25,7 @@ import { MagicLinkButton } from "./magic-link-button"
 import { OneTap } from "./one-tap"
 import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
+import { SignOut } from "./sign-out"
 
 export type AuthViewClassNames = {
     base?: string
@@ -110,7 +111,7 @@ export function AuthView({
     }, [])
 
     if (view === "CALLBACK") return <AuthCallback redirectTo={redirectTo} />
-    if (view === "SIGN_OUT") return null
+    if (view === "SIGN_OUT") return <SignOut />
 
     const description =
         !credentials && !magicLink && !emailOTP
@@ -183,7 +184,7 @@ export function AuthView({
                                 <MagicLinkButton
                                     classNames={classNames}
                                     localization={localization}
-                                    view={view as any}
+                                    view={view}
                                     isSubmitting={isSubmitting}
                                 />
                             )}
@@ -204,7 +205,7 @@ export function AuthView({
                                 <EmailOTPButton
                                     classNames={classNames}
                                     localization={localization}
-                                    view={view as any}
+                                    view={view}
                                     isSubmitting={isSubmitting}
                                 />
                             )}

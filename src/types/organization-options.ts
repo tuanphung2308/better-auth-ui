@@ -51,6 +51,14 @@ export type OrganizationOptions = {
      */
     slugPaths?: boolean
     /**
+     * The current organization slug
+     */
+    slug?: string
+    /**
+     * The path to redirect to when Personal Account is selected
+     */
+    personalPath?: string
+    /**
      * Customize organization view paths
      */
     viewPaths?: Partial<OrganizationViewPaths>
@@ -80,6 +88,14 @@ export type OrganizationOptionsContext = {
      * Use slug-based URLs
      */
     slugPaths?: boolean
+    /**
+     * The current organization slug
+     */
+    slug?: string
+    /**
+     * The path to redirect to when Personal Account is selected
+     */
+    personalPath?: string
     /**
      * Customize organization view paths
      */
