@@ -2,7 +2,7 @@
 
 import type { Organization } from "better-auth/plugins/organization"
 import { Loader2 } from "lucide-react"
-import { type ComponentProps, useContext, useState } from "react"
+import { type ComponentProps, useContext, useMemo, useState } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
@@ -38,15 +38,16 @@ export function LeaveOrganizationDialog({
 }: LeaveOrganizationDialogProps) {
     const {
         authClient,
-        hooks: { useActiveOrganization, useListOrganizations },
+        hooks: { useListOrganizations },
         localization: contextLocalization,
         toast
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } =
-        useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
 
     const [isLeaving, setIsLeaving] = useState(false)
@@ -62,16 +63,12 @@ export function LeaveOrganizationDialog({
                 }
             })
 
+            await refetchOrganizations?.()
+
             toast({
                 variant: "success",
                 message: localization.LEAVE_ORGANIZATION_SUCCESS
             })
-
-            if (activeOrganization?.id === organization.id) {
-                refetchActiveOrganization?.()
-            }
-
-            await refetchOrganizations?.()
 
             onOpenChange?.(false)
         } catch (error) {
