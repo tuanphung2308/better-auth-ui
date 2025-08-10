@@ -40,7 +40,7 @@ import {
 } from "../../ui/select"
 import type { SettingsCardClassNames } from "../shared/settings-card"
 
-interface CreateAPIKeyDialogProps extends ComponentProps<typeof Dialog> {
+interface CreateApiKeyDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
     onSuccess: (key: string) => void
@@ -48,7 +48,7 @@ interface CreateAPIKeyDialogProps extends ComponentProps<typeof Dialog> {
     organizationId?: string
 }
 
-export function CreateAPIKeyDialog({
+export function CreateApiKeyDialog({
     classNames,
     localization,
     onSuccess,
@@ -56,7 +56,7 @@ export function CreateAPIKeyDialog({
     organizationId,
     onOpenChange,
     ...props
-}: CreateAPIKeyDialogProps) {
+}: CreateApiKeyDialogProps) {
     const {
         authClient,
         apiKey,

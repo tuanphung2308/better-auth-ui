@@ -6,21 +6,21 @@ import { cn } from "../../../lib/utils"
 import { CardContent } from "../../ui/card"
 import type { SettingsCardProps } from "../shared/settings-card"
 import { SettingsCard } from "../shared/settings-card"
-import { APIKeyCell } from "./api-key-cell"
-import { APIKeyDisplayDialog } from "./api-key-display-dialog"
-import { CreateAPIKeyDialog } from "./create-api-key-dialog"
+import { ApiKeyCell } from "./api-key-cell"
+import { ApiKeyDisplayDialog } from "./api-key-display-dialog"
+import { CreateApiKeyDialog } from "./create-api-key-dialog"
 
-export interface APIKeysCardProps extends SettingsCardProps {
+export interface ApiKeysCardProps extends SettingsCardProps {
     organizationId?: string
 }
 
-export function APIKeysCard({
+export function ApiKeysCard({
     className,
     classNames,
     localization,
     organizationId,
     ...props
-}: APIKeysCardProps) {
+}: ApiKeysCardProps) {
     const {
         hooks: { useListApiKeys },
         localization: contextLocalization
@@ -64,7 +64,7 @@ export function APIKeysCard({
                         className={cn("grid gap-4", classNames?.content)}
                     >
                         {filteredApiKeys?.map((apiKey) => (
-                            <APIKeyCell
+                            <ApiKeyCell
                                 key={apiKey.id}
                                 classNames={classNames}
                                 apiKey={apiKey}
@@ -76,7 +76,7 @@ export function APIKeysCard({
                 )}
             </SettingsCard>
 
-            <CreateAPIKeyDialog
+            <CreateApiKeyDialog
                 classNames={classNames}
                 localization={localization}
                 open={createDialogOpen}
@@ -86,7 +86,7 @@ export function APIKeysCard({
                 organizationId={organizationId}
             />
 
-            <APIKeyDisplayDialog
+            <ApiKeyDisplayDialog
                 classNames={classNames}
                 apiKey={createdApiKey}
                 localization={localization}

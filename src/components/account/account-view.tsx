@@ -9,7 +9,7 @@ import type { AuthLocalization } from "../../localization/auth-localization"
 import type { AccountViewPath } from "../../server"
 import { OrganizationsCard } from "../organization/organizations-card"
 import { AccountSettingsCards } from "../settings/account-settings-cards"
-import { APIKeysCard } from "../settings/api-key/api-keys-card"
+import { ApiKeysCard } from "../settings/api-key/api-keys-card"
 import { SecuritySettingsCards } from "../settings/security-settings-cards"
 import type { SettingsCardClassNames } from "../settings/shared/settings-card"
 import { Button } from "../ui/button"
@@ -188,7 +188,7 @@ export function AccountView({
             )}
 
             {view === "API_KEYS" && (
-                <APIKeysCard
+                <ApiKeysCard
                     classNames={classNames?.card}
                     localization={localization}
                 />

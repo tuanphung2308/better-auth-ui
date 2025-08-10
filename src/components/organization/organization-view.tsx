@@ -7,7 +7,7 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getViewByPath } from "../../lib/utils"
 import type { OrganizationViewPath } from "../../server"
 import type { AccountViewProps } from "../account/account-view"
-import { APIKeysCard } from "../settings/api-key/api-keys-card"
+import { ApiKeysCard } from "../settings/api-key/api-keys-card"
 import { Button } from "../ui/button"
 import {
     Drawer,
@@ -162,7 +162,7 @@ export function OrganizationView({
             )}
 
             {view === "API_KEYS" && (
-                <APIKeysCard
+                <ApiKeysCard
                     classNames={classNames?.card}
                     localization={localization}
                 />
