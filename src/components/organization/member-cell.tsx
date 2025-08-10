@@ -37,14 +37,13 @@ export function MemberCell({
     hideActions
 }: MemberCellProps) {
     const {
-        organization,
-        hooks: { useActiveOrganization, useSession },
+        organization: organizationOptions,
+        hooks: { useListMembers, useSession },
         localization: contextLocalization
     } = useContext(AuthUIContext)
     const localization = { ...contextLocalization, ...localizationProp }
 
     const { data: sessionData } = useSession()
-    const { data: activeOrganization } = useActiveOrganization()
     const [removeDialogOpen, setRemoveDialogOpen] = useState(false)
     const [updateRoleDialogOpen, setUpdateRoleDialogOpen] = useState(false)
 
@@ -54,12 +53,16 @@ export function MemberCell({
         { role: "member", label: localization.MEMBER }
     ]
 
-    // TODO: Load members from a new AuthHook
+    const { data } = useListMembers({
+        query: { organizationId: member.organizationId }
+    })
 
-    const myRole = activeOrganization?.members.find(
+    const members = data?.members
+
+    const myRole = members?.find(
         (m) => m.user.id === sessionData?.user.id
     )?.role
-    const roles = [...builtInRoles, ...(organization?.customRoles || [])]
+    const roles = [...builtInRoles, ...(organizationOptions?.customRoles || [])]
     const role = roles.find((r) => r.role === member.role)
 
     return (

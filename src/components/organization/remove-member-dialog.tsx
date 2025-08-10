@@ -35,7 +35,7 @@ export function RemoveMemberDialog({
 }: RemoveMemberDialogProps) {
     const {
         authClient,
-        hooks: { useActiveOrganization },
+        hooks: { useListMembers },
         localization: contextLocalization,
         toast
     } = useContext(AuthUIContext)
@@ -45,9 +45,9 @@ export function RemoveMemberDialog({
         [contextLocalization, localizationProp]
     )
 
-    // TODO: Refetch members from a new AuthHook
-
-    const { refetch } = useActiveOrganization()
+    const { refetch } = useListMembers({
+        query: { organizationId: member.organizationId }
+    })
 
     const [isRemoving, setIsRemoving] = useState(false)
 
@@ -58,9 +58,7 @@ export function RemoveMemberDialog({
             await authClient.organization.removeMember({
                 memberIdOrEmail: member.id,
                 organizationId: member.organizationId,
-                fetchOptions: {
-                    throw: true
-                }
+                fetchOptions: { throw: true }
             })
 
             toast({
@@ -69,6 +67,7 @@ export function RemoveMemberDialog({
             })
 
             await refetch?.()
+
             onOpenChange?.(false)
         } catch (error) {
             toast({

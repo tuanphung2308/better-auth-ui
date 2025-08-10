@@ -17,6 +17,7 @@ import {
     DrawerTrigger
 } from "../ui/drawer"
 import { Label } from "../ui/label"
+import { OrganizationInvitationsCard } from "./organization-invitations-card"
 import { OrganizationMembersCard } from "./organization-members-card"
 import { OrganizationSettingsCards } from "./organization-settings-cards"
 
@@ -158,10 +159,25 @@ export function OrganizationView({
             )}
 
             {view === "MEMBERS" && (
-                <OrganizationMembersCard
-                    classNames={classNames?.card}
-                    localization={localization}
-                />
+                <div
+                    className={cn(
+                        "flex w-full flex-col gap-4 md:gap-6",
+                        className,
+                        classNames?.cards
+                    )}
+                >
+                    <OrganizationMembersCard
+                        classNames={classNames?.card}
+                        localization={localization}
+                        slug={slug}
+                    />
+
+                    <OrganizationInvitationsCard
+                        classNames={classNames?.card}
+                        localization={localization}
+                        slug={slug}
+                    />
+                </div>
             )}
 
             {view === "API_KEYS" && (

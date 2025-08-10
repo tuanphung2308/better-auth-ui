@@ -1,6 +1,6 @@
 "use client"
 
-import type { Invitation } from "better-auth/plugins/organization"
+import type { Invitation, Organization } from "better-auth/plugins/organization"
 import { EllipsisIcon, Loader2, XIcon } from "lucide-react"
 import { useContext, useMemo, useState } from "react"
 
@@ -23,17 +23,20 @@ export interface InvitationCellProps {
     classNames?: SettingsCardClassNames
     invitation: Invitation
     localization?: AuthLocalization
+    organization: Organization
 }
 
 export function InvitationCell({
     className,
     classNames,
     invitation,
-    localization: localizationProp
+    localization: localizationProp,
+    organization
 }: InvitationCellProps) {
     const {
         authClient,
-        organization,
+        hooks: { useListInvitations },
+        organization: organizationOptions,
         localization: contextLocalization,
         toast
     } = useContext(AuthUIContext)
@@ -51,8 +54,12 @@ export function InvitationCell({
         { role: "member", label: localization.MEMBER }
     ]
 
-    const roles = [...builtInRoles, ...(organization?.customRoles || [])]
+    const roles = [...builtInRoles, ...(organizationOptions?.customRoles || [])]
     const role = roles.find((r) => r.role === invitation.role)
+
+    const { refetch } = useListInvitations({
+        query: { organizationId: organization?.id }
+    })
 
     const handleCancelInvitation = async () => {
         setIsLoading(true)
@@ -63,7 +70,7 @@ export function InvitationCell({
                 fetchOptions: { throw: true }
             })
 
-            // TODO: refetch invitations
+            await refetch?.()
 
             toast({
                 variant: "success",

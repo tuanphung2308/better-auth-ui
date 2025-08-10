@@ -4,7 +4,6 @@ import type { User } from "better-auth"
 import type { Member } from "better-auth/plugins/organization"
 import { Loader2 } from "lucide-react"
 import { type ComponentProps, useContext, useMemo, useState } from "react"
-
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
@@ -43,7 +42,7 @@ export function UpdateMemberRoleDialog({
 }: UpdateMemberRoleDialogProps) {
     const {
         authClient,
-        hooks: { useActiveOrganization, useSession },
+        hooks: { useSession, useListMembers },
         localization: contextLocalization,
         organization,
         toast
@@ -54,12 +53,13 @@ export function UpdateMemberRoleDialog({
         [contextLocalization, localizationProp]
     )
 
-    // TODO: Refetch members from a new AuthHook
+    const { data, refetch } = useListMembers({
+        query: { organizationId: member.organizationId }
+    })
 
-    const { refetch } = useActiveOrganization()
+    const members = data?.members
 
     const { data: sessionData } = useSession()
-    const { data: activeOrganization } = useActiveOrganization()
 
     const [isUpdating, setIsUpdating] = useState(false)
     const [selectedRole, setSelectedRole] = useState(member.role)
@@ -72,7 +72,7 @@ export function UpdateMemberRoleDialog({
 
     const roles = [...builtInRoles, ...(organization?.customRoles || [])]
 
-    const currentUserRole = activeOrganization?.members.find(
+    const currentUserRole = members?.find(
         (m) => m.user.id === sessionData?.user.id
     )?.role
 

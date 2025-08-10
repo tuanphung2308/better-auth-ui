@@ -1,11 +1,11 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import type { Organization } from "better-auth/plugins/organization"
 import { Loader2 } from "lucide-react"
 import { type ComponentProps, useContext, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
@@ -39,20 +39,22 @@ import {
 export interface InviteMemberDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
+    organization: Organization
 }
 
 export function InviteMemberDialog({
     classNames,
     localization: localizationProp,
     onOpenChange,
+    organization,
     ...props
 }: InviteMemberDialogProps) {
     const {
         authClient,
-        hooks: { useActiveOrganization, useSession },
+        hooks: { useListInvitations, useListMembers, useSession },
         localization: contextLocalization,
         toast,
-        organization
+        organization: organizationOptions
     } = useContext(AuthUIContext)
 
     const localization = useMemo(
@@ -60,14 +62,18 @@ export function InviteMemberDialog({
         [contextLocalization, localizationProp]
     )
 
-    // TODO: Load members from a new AuthHook
+    const { data } = useListMembers({
+        query: { organizationId: organization.id }
+    })
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } =
-        useActiveOrganization()
+    const { refetch } = useListInvitations({
+        query: { organizationId: organization.id }
+    })
+
+    const members = data?.members
+
     const { data: sessionData } = useSession()
-    const membership = activeOrganization?.members.find(
-        (m) => m.userId === sessionData?.user.id
-    )
+    const membership = members?.find((m) => m.userId === sessionData?.user.id)
 
     const builtInRoles = [
         { role: "owner", label: localization.OWNER },
@@ -75,7 +81,7 @@ export function InviteMemberDialog({
         { role: "member", label: localization.MEMBER }
     ] as const
 
-    const roles = [...builtInRoles, ...(organization?.customRoles || [])]
+    const roles = [...builtInRoles, ...(organizationOptions?.customRoles || [])]
     const availableRoles = roles.filter(
         (role) => membership?.role === "owner" || role.role !== "owner"
     )
@@ -107,11 +113,11 @@ export function InviteMemberDialog({
             await authClient.organization.inviteMember({
                 email,
                 role: role as (typeof builtInRoles)[number]["role"],
-                organizationId: activeOrganization?.id,
+                organizationId: organization.id,
                 fetchOptions: { throw: true }
             })
 
-            await refetchActiveOrganization?.()
+            await refetch?.()
 
             onOpenChange?.(false)
             form.reset()

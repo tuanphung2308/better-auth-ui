@@ -1,7 +1,9 @@
 "use client"
 
-import { useContext, useEffect, useMemo, useState } from "react"
+import type { Organization } from "better-auth/plugins/organization"
+import { useContext, useMemo, useState } from "react"
 
+import { useCurrentOrganization } from "../../hooks/use-current-organization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import type { SettingsCardProps } from "../settings/shared/settings-card"
@@ -14,13 +16,12 @@ export function OrganizationMembersCard({
     className,
     classNames,
     localization: localizationProp,
+    slug: slugProp,
     ...props
-}: SettingsCardProps) {
+}: SettingsCardProps & { slug?: string }) {
     const {
-        hooks: { useActiveOrganization },
         localization: contextLocalization,
-        account: accountOptions,
-        replace
+        organization: organizationOptions
     } = useContext(AuthUIContext)
 
     const localization = useMemo(
@@ -28,26 +29,11 @@ export function OrganizationMembersCard({
         [contextLocalization, localizationProp]
     )
 
-    const { data: activeOrganization, isPending: organizationPending } =
-        useActiveOrganization()
+    const slug = slugProp || organizationOptions?.slug
 
-    useEffect(() => {
-        if (organizationPending) return
+    const { data: organization } = useCurrentOrganization({ slug })
 
-        if (!activeOrganization)
-            replace(
-                `${accountOptions?.basePath}/${accountOptions?.viewPaths?.ORGANIZATIONS}`
-            )
-    }, [
-        activeOrganization,
-        organizationPending,
-        accountOptions?.basePath,
-        accountOptions?.viewPaths?.ORGANIZATIONS,
-        replace,
-        accountOptions?.viewPaths
-    ])
-
-    if (!activeOrganization) {
+    if (!organization) {
         return (
             <SettingsCard
                 className={className}
@@ -67,6 +53,7 @@ export function OrganizationMembersCard({
             className={className}
             classNames={classNames}
             localization={localization}
+            organization={organization}
             {...props}
         />
     )
@@ -76,10 +63,11 @@ function OrganizationMembersContent({
     className,
     classNames,
     localization: localizationProp,
+    organization,
     ...props
-}: SettingsCardProps) {
+}: SettingsCardProps & { organization: Organization }) {
     const {
-        hooks: { useActiveOrganization, useHasPermission },
+        hooks: { useHasPermission, useListMembers },
         localization: contextLocalization
     } = useContext(AuthUIContext)
 
@@ -88,9 +76,9 @@ function OrganizationMembersContent({
         [contextLocalization, localizationProp]
     )
 
-    const { data: activeOrganization } = useActiveOrganization()
     const { data: hasPermissionInvite, isPending: isPendingInvite } =
         useHasPermission({
+            organizationId: organization.id,
             permissions: {
                 invitation: ["create"]
             }
@@ -100,6 +88,7 @@ function OrganizationMembersContent({
         data: hasPermissionUpdateMember,
         isPending: isPendingUpdateMember
     } = useHasPermission({
+        organizationId: organization.id,
         permission: {
             member: ["update"]
         }
@@ -107,9 +96,11 @@ function OrganizationMembersContent({
 
     const isPending = isPendingInvite || isPendingUpdateMember
 
-    // TODO: Load members from a new AuthHook
+    const { data } = useListMembers({
+        query: { organizationId: organization.id }
+    })
 
-    const members = activeOrganization?.members
+    const members = data?.members
 
     const [inviteDialogOpen, setInviteDialogOpen] = useState(false)
 
@@ -157,6 +148,7 @@ function OrganizationMembersContent({
                 onOpenChange={setInviteDialogOpen}
                 classNames={classNames}
                 localization={localization}
+                organization={organization}
             />
         </>
     )
