@@ -1,7 +1,7 @@
 "use client"
 
 import type { User } from "better-auth"
-import type { Member } from "better-auth/plugins/organization"
+import type { Member, Organization } from "better-auth/plugins/organization"
 import { EllipsisIcon, UserCogIcon, UserXIcon } from "lucide-react"
 import { useContext, useState } from "react"
 
@@ -18,6 +18,7 @@ import {
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
 import { UserView } from "../user-view"
+import { LeaveOrganizationDialog } from "./leave-organization-dialog"
 import { RemoveMemberDialog } from "./remove-member-dialog"
 import { UpdateMemberRoleDialog } from "./update-member-role-dialog"
 
@@ -27,24 +28,27 @@ export interface MemberCellProps {
     member: Member & { user: Partial<User> }
     localization?: AuthLocalization
     hideActions?: boolean
+    organization: Organization
 }
 
 export function MemberCell({
     className,
     classNames,
     member,
+    organization,
     localization: localizationProp,
     hideActions
 }: MemberCellProps) {
     const {
         organization: organizationOptions,
-        hooks: { useListMembers, useSession },
+        hooks: { useListMembers, useSession, useHasPermission },
         localization: contextLocalization
     } = useContext(AuthUIContext)
     const localization = { ...contextLocalization, ...localizationProp }
 
     const { data: sessionData } = useSession()
     const [removeDialogOpen, setRemoveDialogOpen] = useState(false)
+    const [leaveDialogOpen, setLeaveDialogOpen] = useState(false)
     const [updateRoleDialogOpen, setUpdateRoleDialogOpen] = useState(false)
 
     const builtInRoles = [
@@ -65,6 +69,13 @@ export function MemberCell({
     const roles = [...builtInRoles, ...(organizationOptions?.customRoles || [])]
     const role = roles.find((r) => r.role === member.role)
 
+    const isSelf = sessionData?.user.id === member?.userId
+
+    const { data: hasPermissionToUpdateMember } = useHasPermission({
+        organizationId: member.organizationId,
+        permission: { member: ["update"] }
+    })
+
     return (
         <>
             <Card
@@ -79,31 +90,32 @@ export function MemberCell({
                     localization={localization}
                     className="flex-1"
                 />
+
                 <span className="text-sm opacity-70">{role?.label}</span>
 
-                {(member.role !== "owner" || myRole === "owner") &&
-                    !hideActions && (
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    className={cn(
-                                        "relative ms-auto",
-                                        classNames?.button,
-                                        classNames?.outlineButton
-                                    )}
-                                    size="icon"
-                                    type="button"
-                                    variant="outline"
-                                >
-                                    <EllipsisIcon
-                                        className={classNames?.icon}
-                                    />
-                                </Button>
-                            </DropdownMenuTrigger>
-
-                            <DropdownMenuContent
-                                onCloseAutoFocus={(e) => e.preventDefault()}
+                {(isSelf ||
+                    ((member.role !== "owner" || myRole === "owner") &&
+                        !hideActions)) && (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                className={cn(
+                                    "relative ms-auto",
+                                    classNames?.button,
+                                    classNames?.outlineButton
+                                )}
+                                size="icon"
+                                type="button"
+                                variant="outline"
                             >
+                                <EllipsisIcon className={classNames?.icon} />
+                            </Button>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent
+                            onCloseAutoFocus={(e) => e.preventDefault()}
+                        >
+                            {hasPermissionToUpdateMember?.success && (
                                 <DropdownMenuItem
                                     onClick={() =>
                                         setUpdateRoleDialogOpen(true)
@@ -112,17 +124,24 @@ export function MemberCell({
                                     <UserCogIcon className={classNames?.icon} />
                                     {localization?.UPDATE_ROLE}
                                 </DropdownMenuItem>
+                            )}
 
-                                <DropdownMenuItem
-                                    onClick={() => setRemoveDialogOpen(true)}
-                                    variant="destructive"
-                                >
-                                    <UserXIcon className={classNames?.icon} />
-                                    {localization?.REMOVE_MEMBER}
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    )}
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    isSelf
+                                        ? setLeaveDialogOpen(true)
+                                        : setRemoveDialogOpen(true)
+                                }
+                                variant="destructive"
+                            >
+                                <UserXIcon className={classNames?.icon} />
+                                {isSelf
+                                    ? localization?.LEAVE_ORGANIZATION
+                                    : localization?.REMOVE_MEMBER}
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                )}
             </Card>
 
             <RemoveMemberDialog
@@ -132,6 +151,16 @@ export function MemberCell({
                 classNames={classNames}
                 localization={localization}
             />
+
+            {organization && (
+                <LeaveOrganizationDialog
+                    open={leaveDialogOpen}
+                    onOpenChange={setLeaveDialogOpen}
+                    organization={organization}
+                    classNames={classNames}
+                    localization={localization}
+                />
+            )}
 
             <UpdateMemberRoleDialog
                 open={updateRoleDialogOpen}
