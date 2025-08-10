@@ -4,7 +4,7 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
 
-export interface RecaptchaV3BadgeProps {
+export interface RecaptchaBadgeProps {
     className?: string
     localization?: Partial<AuthLocalization>
 }
@@ -12,7 +12,7 @@ export interface RecaptchaV3BadgeProps {
 export function RecaptchaBadge({
     className,
     localization: propLocalization
-}: RecaptchaV3BadgeProps) {
+}: RecaptchaBadgeProps) {
     const isHydrated = useIsHydrated()
     const { captcha, localization: contextLocalization } =
         useContext(AuthUIContext)
