@@ -564,7 +564,7 @@ export const AuthUIProvider = ({
                 useAuthData({
                     queryFn: () =>
                         authClient.$fetch(
-                            `/organization/list-user-invitations?organizationId=${params?.query?.organizationId || ""}`
+                            `/organization/list-invitations?organizationId=${params?.query?.organizationId || ""}`
                         ),
                     cacheKey: `listInvitations:${JSON.stringify(params)}`
                 }),

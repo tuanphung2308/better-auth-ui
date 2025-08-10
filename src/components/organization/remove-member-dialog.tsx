@@ -23,7 +23,7 @@ import { MemberCell } from "./member-cell"
 export interface RemoveMemberDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
-    member: Member & { user: Partial<User> }
+    member: Member & { user?: Partial<User> | null }
 }
 
 export function RemoveMemberDialog({

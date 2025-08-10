@@ -2,6 +2,7 @@
 
 import { MenuIcon } from "lucide-react"
 import { useContext, useEffect, useMemo } from "react"
+
 import { useCurrentOrganization } from "../../hooks/use-current-organization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getViewByPath } from "../../lib/utils"
@@ -54,8 +55,11 @@ export function OrganizationView({
 
     const slug = slugProp || contextSlug
 
-    const { data: organization, isPending: organizationPending } =
-        useCurrentOrganization({ slug })
+    const {
+        data: organization,
+        isPending: organizationPending,
+        isRefetching: organizationRefetching
+    } = useCurrentOrganization({ slug })
 
     const navItems: {
         view: OrganizationViewPath
@@ -73,7 +77,8 @@ export function OrganizationView({
     }
 
     useEffect(() => {
-        if (organization || organizationPending) return
+        if (organization || organizationPending || organizationRefetching)
+            return
 
         replace(
             `${accountOptions?.basePath}/${accountOptions?.viewPaths?.ORGANIZATIONS}`
@@ -81,6 +86,7 @@ export function OrganizationView({
     }, [
         organization,
         organizationPending,
+        organizationRefetching,
         accountOptions?.basePath,
         accountOptions?.viewPaths?.ORGANIZATIONS,
         replace

@@ -21,9 +21,12 @@ export function useAuthData<T>({
     cacheKey?: string
     staleTime?: number
 }) {
-    const { authClient, toast, localization } = useContext(AuthUIContext)
-    const { data: sessionData, isPending: sessionPending } =
-        authClient.useSession()
+    const {
+        hooks: { useSession },
+        toast,
+        localization
+    } = useContext(AuthUIContext)
+    const { data: sessionData, isPending: sessionPending } = useSession()
 
     // Generate a stable cache key based on the queryFn if not provided
     const queryFnRef = useRef(queryFn)

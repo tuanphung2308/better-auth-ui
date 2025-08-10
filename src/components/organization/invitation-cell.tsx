@@ -1,12 +1,13 @@
 "use client"
 
-import type { Invitation, Organization } from "better-auth/plugins/organization"
+import type { Organization } from "better-auth/plugins/organization"
 import { EllipsisIcon, Loader2, XIcon } from "lucide-react"
 import { useContext, useMemo, useState } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
+import type { Invitation } from "../../types/invitation"
 import type { SettingsCardClassNames } from "../settings/shared/settings-card"
 import { Button } from "../ui/button"
 import { Card } from "../ui/card"

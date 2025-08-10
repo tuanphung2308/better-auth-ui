@@ -25,7 +25,7 @@ import { UpdateMemberRoleDialog } from "./update-member-role-dialog"
 export interface MemberCellProps {
     className?: string
     classNames?: SettingsCardClassNames
-    member: Member & { user: Partial<User> }
+    member: Member & { user?: Partial<User> | null }
     localization?: AuthLocalization
     hideActions?: boolean
 }
@@ -67,7 +67,7 @@ export function MemberCell({
     const members = data?.members
 
     const myRole = members?.find(
-        (m) => m.user.id === sessionData?.user.id
+        (m) => m.user?.id === sessionData?.user.id
     )?.role
     const roles = [...builtInRoles, ...(organizationOptions?.customRoles || [])]
     const role = roles.find((r) => r.role === member.role)

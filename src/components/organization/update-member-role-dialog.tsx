@@ -30,7 +30,7 @@ export interface UpdateMemberRoleDialogProps
     extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
-    member: Member & { user: Partial<User> }
+    member: Member & { user?: Partial<User> | null }
 }
 
 export function UpdateMemberRoleDialog({
@@ -73,7 +73,7 @@ export function UpdateMemberRoleDialog({
     const roles = [...builtInRoles, ...(organization?.customRoles || [])]
 
     const currentUserRole = members?.find(
-        (m) => m.user.id === sessionData?.user.id
+        (m) => m.user?.id === sessionData?.user.id
     )?.role
 
     const availableRoles = roles.filter((role) => {
