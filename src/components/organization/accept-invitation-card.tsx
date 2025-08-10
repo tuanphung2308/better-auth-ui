@@ -31,11 +31,10 @@ export function AcceptInvitationCard({
     localization: localizationProp
 }: AcceptInvitationCardProps) {
     const {
-        hooks: { useSession },
         localization: contextLocalization,
-        toast,
         redirectTo,
-        replace
+        replace,
+        toast
     } = useContext(AuthUIContext)
 
     const localization = useMemo(
@@ -43,7 +42,7 @@ export function AcceptInvitationCard({
         [contextLocalization, localizationProp]
     )
 
-    const { data: sessionData } = useSession()
+    const { data: sessionData } = useAuthenticate()
     const [invitationId, setInvitationId] = useState<string | null>(null)
 
     useEffect(() => {
@@ -61,9 +60,6 @@ export function AcceptInvitationCard({
 
         setInvitationId(invitationIdParam)
     }, [localization.INVITATION_NOT_FOUND, toast, replace, redirectTo])
-
-    // If session is not loaded yet, use authenticate hook to check
-    useAuthenticate()
 
     if (!sessionData || !invitationId) {
         return (
@@ -92,12 +88,12 @@ function AcceptInvitationContent({
 }: AcceptInvitationCardProps & { invitationId: string }) {
     const {
         authClient,
+        hooks: { useInvitation },
         localization: contextLocalization,
-        toast,
+        organization,
         redirectTo,
         replace,
-        organization,
-        hooks: { useInvitation }
+        toast
     } = useContext(AuthUIContext)
 
     const localization = useMemo(
@@ -158,8 +154,6 @@ function AcceptInvitationContent({
     ])
 
     const acceptInvitation = async () => {
-        if (!invitationId) return
-
         setIsAccepting(true)
 
         try {
@@ -180,13 +174,12 @@ function AcceptInvitationContent({
                 variant: "error",
                 message: getLocalizedError({ error, localization })
             })
+
             setIsAccepting(false)
         }
     }
 
     const rejectInvitation = async () => {
-        if (!invitationId) return
-
         setIsRejecting(true)
 
         try {
@@ -222,7 +215,7 @@ function AcceptInvitationContent({
         roles.find((r) => r.role === invitation?.role)?.label ||
         invitation?.role
 
-    if (isPending)
+    if (!invitation)
         return (
             <AcceptInvitationSkeleton
                 className={className}
@@ -262,17 +255,13 @@ function AcceptInvitationContent({
             >
                 <Card className={cn("flex-row items-center p-4")}>
                     <OrganizationCellView
-                        organization={
-                            invitation
-                                ? {
-                                      id: invitation.organizationId,
-                                      name: invitation.organizationName,
-                                      slug: invitation.organizationSlug,
-                                      logo: invitation.organizationLogo,
-                                      createdAt: new Date()
-                                  }
-                                : null
-                        }
+                        organization={{
+                            id: invitation.organizationId,
+                            name: invitation.organizationName,
+                            slug: invitation.organizationSlug,
+                            logo: invitation.organizationLogo,
+                            createdAt: new Date()
+                        }}
                         localization={localization}
                     />
 
