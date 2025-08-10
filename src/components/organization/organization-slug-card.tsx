@@ -87,7 +87,9 @@ function OrganizationSlugForm({
         localization: contextLocalization,
         hooks: { useListOrganizations, useHasPermission },
         optimistic,
-        toast
+        toast,
+        organization: organizationOptions,
+        replace
     } = useContext(AuthUIContext)
 
     const localization = useMemo(
@@ -147,6 +149,13 @@ function OrganizationSlugForm({
                 variant: "success",
                 message: `${localization.ORGANIZATION_SLUG} ${localization.UPDATED_SUCCESSFULLY}`
             })
+
+            // If using slug-based paths, redirect to the new slug's settings route
+            if (organizationOptions?.pathMode === "slug") {
+                const basePath = organizationOptions.basePath
+                const settingsPath = organizationOptions.viewPaths.SETTINGS
+                replace(`${basePath}/${slug}/${settingsPath}`)
+            }
         } catch (error) {
             toast({
                 variant: "error",
