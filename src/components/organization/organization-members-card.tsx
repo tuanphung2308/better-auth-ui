@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
@@ -23,16 +23,17 @@ export function OrganizationMembersCard({
         replace
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
-    const {
-        data: activeOrganization,
-        isPending: organizationPending,
-        isRefetching: organizationFetching
-    } = useActiveOrganization()
+    const { data: activeOrganization, isPending: organizationPending } =
+        useActiveOrganization()
 
     useEffect(() => {
-        if (organizationPending || organizationFetching) return
+        if (organizationPending) return
+
         if (!activeOrganization)
             replace(
                 `${accountOptions?.basePath}/${accountOptions?.viewPaths?.ORGANIZATIONS}`
@@ -40,7 +41,6 @@ export function OrganizationMembersCard({
     }, [
         activeOrganization,
         organizationPending,
-        organizationFetching,
         accountOptions?.basePath,
         accountOptions?.viewPaths?.ORGANIZATIONS,
         replace,
@@ -83,7 +83,10 @@ function OrganizationMembersContent({
         localization: contextLocalization
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
     const { data: activeOrganization } = useActiveOrganization()
     const { data: hasPermissionInvite, isPending: isPendingInvite } =
@@ -103,6 +106,8 @@ function OrganizationMembersContent({
     })
 
     const isPending = isPendingInvite || isPendingUpdateMember
+
+    // TODO: Load members from a new AuthHook
 
     const members = activeOrganization?.members
 

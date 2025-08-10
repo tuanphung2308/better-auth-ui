@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { type ComponentProps, useContext } from "react"
+import { type ComponentProps, useContext, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -55,7 +55,12 @@ export function InviteMemberDialog({
         organization
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
+
+    // TODO: Load members from a new AuthHook
 
     const { data: activeOrganization, refetch: refetchActiveOrganization } =
         useActiveOrganization()

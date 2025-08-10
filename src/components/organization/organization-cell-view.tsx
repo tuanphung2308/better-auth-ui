@@ -2,6 +2,7 @@
 
 import type { Organization } from "better-auth/plugins/organization"
 import { useContext } from "react"
+
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"

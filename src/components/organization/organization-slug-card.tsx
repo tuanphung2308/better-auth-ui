@@ -5,6 +5,7 @@ import type { Organization } from "better-auth/plugins/organization"
 import { useContext, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
+
 import { useCurrentOrganization } from "../../hooks/use-current-organization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
@@ -25,15 +26,20 @@ export function OrganizationSlugCard({
     className,
     classNames,
     localization: localizationProp,
-    slug,
+    slug: slugProp,
     ...props
 }: OrganizationSlugCardProps) {
-    const { localization: contextLocalization } = useContext(AuthUIContext)
+    const {
+        localization: contextLocalization,
+        organization: organizationOptions
+    } = useContext(AuthUIContext)
 
     const localization = useMemo(
         () => ({ ...contextLocalization, ...localizationProp }),
         [contextLocalization, localizationProp]
     )
+
+    const slug = slugProp || organizationOptions?.slug
 
     const { data: organization } = useCurrentOrganization({ slug })
 
@@ -47,7 +53,6 @@ export function OrganizationSlugCard({
                 isPending
                 title={localization.ORGANIZATION_SLUG}
                 actionLabel={localization.SAVE}
-                optimistic={props.optimistic}
                 {...props}
             >
                 <CardContent className={classNames?.content}>
@@ -64,7 +69,6 @@ export function OrganizationSlugCard({
             className={className}
             classNames={classNames}
             localization={localization}
-            slug={slug}
             organization={organization}
             {...props}
         />
@@ -86,7 +90,10 @@ function OrganizationSlugForm({
         toast
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
     const { refetch: refetchOrganizations } = useListOrganizations()
 
@@ -131,9 +138,7 @@ function OrganizationSlugForm({
             await authClient.organization.update({
                 organizationId: organization.id,
                 data: { slug },
-                fetchOptions: {
-                    throw: true
-                }
+                fetchOptions: { throw: true }
             })
 
             await refetchOrganizations?.()

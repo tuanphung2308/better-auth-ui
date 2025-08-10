@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
@@ -21,7 +21,12 @@ export function InviteMemberCard({
         localization: contextLocalization
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
+
+    // TODO: Load members from a new AuthHook
 
     const { data: activeOrganization } = useActiveOrganization()
     const members = activeOrganization?.members

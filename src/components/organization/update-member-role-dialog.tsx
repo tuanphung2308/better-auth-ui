@@ -3,7 +3,7 @@
 import type { User } from "better-auth"
 import type { Member } from "better-auth/plugins/organization"
 import { Loader2 } from "lucide-react"
-import { type ComponentProps, useContext, useState } from "react"
+import { type ComponentProps, useContext, useMemo, useState } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
@@ -49,9 +49,15 @@ export function UpdateMemberRoleDialog({
         toast
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
+
+    // TODO: Refetch members from a new AuthHook
 
     const { refetch } = useActiveOrganization()
+
     const { data: sessionData } = useSession()
     const { data: activeOrganization } = useActiveOrganization()
 
@@ -111,6 +117,7 @@ export function UpdateMemberRoleDialog({
             })
 
             await refetch?.()
+
             onOpenChange?.(false)
         } catch (error) {
             toast({

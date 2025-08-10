@@ -54,6 +54,8 @@ export function MemberCell({
         { role: "member", label: localization.MEMBER }
     ]
 
+    // TODO: Load members from a new AuthHook
+
     const myRole = activeOrganization?.members.find(
         (m) => m.user.id === sessionData?.user.id
     )?.role

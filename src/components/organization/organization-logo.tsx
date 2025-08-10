@@ -2,7 +2,7 @@
 
 import type { Organization } from "better-auth/plugins/organization"
 import { BuildingIcon } from "lucide-react"
-import { type ComponentProps, useContext } from "react"
+import { type ComponentProps, useContext, useMemo } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
@@ -49,7 +49,10 @@ export function OrganizationLogo({
     const { localization: contextLocalization, avatar } =
         useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...propLocalization }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...propLocalization }),
+        [contextLocalization, propLocalization]
+    )
 
     const name = organization?.name
     const src = organization?.logo

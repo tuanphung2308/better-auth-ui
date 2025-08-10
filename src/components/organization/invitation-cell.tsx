@@ -2,7 +2,7 @@
 
 import type { Invitation } from "better-auth/plugins/organization"
 import { EllipsisIcon, Loader2, XIcon } from "lucide-react"
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
@@ -34,15 +34,16 @@ export function InvitationCell({
     const {
         authClient,
         organization,
-        hooks: { useActiveOrganization },
         localization: contextLocalization,
         toast
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
-    const [isLoading, setIsLoading] = useState(false)
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
-    const { refetch } = useActiveOrganization()
+    const [isLoading, setIsLoading] = useState(false)
 
     const builtInRoles = [
         { role: "owner", label: localization.OWNER },
@@ -62,7 +63,7 @@ export function InvitationCell({
                 fetchOptions: { throw: true }
             })
 
-            await refetch?.()
+            // TODO: refetch invitations
 
             toast({
                 variant: "success",
@@ -89,7 +90,7 @@ export function InvitationCell({
             <div className="flex flex-1 items-center gap-2">
                 <UserAvatar
                     className="my-0.5"
-                    user={{ email: invitation.email }}
+                    user={invitation}
                     localization={localization}
                 />
 
@@ -137,6 +138,7 @@ export function InvitationCell({
                         variant="destructive"
                     >
                         <XIcon className={classNames?.icon} />
+
                         {localization.CANCEL_INVITATION}
                     </DropdownMenuItem>
                 </DropdownMenuContent>

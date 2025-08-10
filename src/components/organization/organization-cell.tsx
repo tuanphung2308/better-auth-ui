@@ -51,6 +51,8 @@ export function OrganizationCell({
     const [isManagingOrganization, setIsManagingOrganization] = useState(false)
 
     const handleManageOrganization = useCallback(async () => {
+        setIsManagingOrganization(true)
+
         if (slugPaths) {
             navigate(
                 `${organizationOptions?.basePath}/${organization.slug}/${organizationOptions?.viewPaths.SETTINGS}`
@@ -58,8 +60,6 @@ export function OrganizationCell({
 
             return
         }
-
-        setIsManagingOrganization(true)
 
         try {
             await authClient.organization.setActive({
@@ -77,7 +77,7 @@ export function OrganizationCell({
                 variant: "error",
                 message: getLocalizedError({ error, localization })
             })
-        } finally {
+
             setIsManagingOrganization(false)
         }
     }, [

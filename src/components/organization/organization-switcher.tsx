@@ -169,7 +169,7 @@ export function OrganizationSwitcher({
                         `${organizationOptions?.basePath}/${organization.slug}`
                     )
                 } else {
-                    navigate(personalPath || redirectTo)
+                    navigate(personalPath ?? redirectTo)
                 }
 
                 return

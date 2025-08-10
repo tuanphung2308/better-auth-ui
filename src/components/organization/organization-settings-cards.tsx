@@ -6,7 +6,6 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
 import type { SettingsCardClassNames } from "../settings/shared/settings-card"
-
 import { DeleteOrganizationCard } from "./delete-organization-card"
 import { OrganizationLogoCard } from "./organization-logo-card"
 import { OrganizationNameCard } from "./organization-name-card"

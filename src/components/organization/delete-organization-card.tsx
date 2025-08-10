@@ -54,7 +54,7 @@ function DeleteOrganizationForm({
     classNames,
     localization: localizationProp,
     organization
-}: SettingsCardProps & { organization: Organization; slug?: string }) {
+}: SettingsCardProps & { organization: Organization }) {
     const {
         localization: contextLocalization,
         hooks: { useHasPermission }

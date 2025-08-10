@@ -9,6 +9,7 @@ import {
     useRef,
     useState
 } from "react"
+
 import { useCurrentOrganization } from "../../hooks/use-current-organization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { fileToBase64, resizeAndCropImage } from "../../lib/image-utils"
@@ -65,7 +66,7 @@ export function OrganizationLogoCard({
                         className="grow self-start"
                         title={localization.LOGO}
                         description={localization.LOGO_DESCRIPTION}
-                        isPending={true}
+                        isPending
                         classNames={classNames}
                     />
 
@@ -77,7 +78,7 @@ export function OrganizationLogoCard({
                         disabled
                     >
                         <OrganizationLogo
-                            isPending={true}
+                            isPending
                             className="size-20 text-2xl"
                             classNames={classNames?.avatar}
                             localization={localization}
@@ -89,8 +90,7 @@ export function OrganizationLogoCard({
                     className="!py-5"
                     instructions={localization.LOGO_INSTRUCTIONS}
                     classNames={classNames}
-                    isPending={true}
-                    isSubmitting={false}
+                    isPending
                 />
             </Card>
         )
@@ -118,7 +118,6 @@ function OrganizationLogoForm({
         authClient,
         hooks: { useListOrganizations, useHasPermission },
         localization: authLocalization,
-        optimistic,
         organization: organizationOptions,
         toast
     } = useContext(AuthUIContext)
@@ -147,6 +146,7 @@ function OrganizationLogoForm({
         if (!organizationOptions?.logo || !hasPermission?.success) return
 
         setLoading(true)
+
         const resizedFile = await resizeAndCropImage(
             file,
             crypto.randomUUID(),
@@ -166,8 +166,6 @@ function OrganizationLogoForm({
             setLoading(false)
             return
         }
-
-        if (optimistic && !organizationOptions.logo.upload) setLoading(false)
 
         try {
             await authClient.organization.update({
@@ -215,9 +213,7 @@ function OrganizationLogoForm({
     }
 
     const openFileDialog = () => {
-        if (hasPermission?.success) {
-            fileInputRef.current?.click()
-        }
+        fileInputRef.current?.click()
     }
 
     return (

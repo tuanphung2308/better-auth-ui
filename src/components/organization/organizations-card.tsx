@@ -1,5 +1,5 @@
 "use client"
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
 
 import { useIsHydrated } from "../../hooks/use-hydrated"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
@@ -21,7 +21,10 @@ export function OrganizationsCard({
         localization: contextLocalization
     } = useContext(AuthUIContext)
 
-    localization = { ...contextLocalization, ...localization }
+    localization = useMemo(
+        () => ({ ...contextLocalization, ...localization }),
+        [contextLocalization, localization]
+    )
 
     const isHydrated = useIsHydrated()
     const { data: organizations, isPending: organizationsPending } =

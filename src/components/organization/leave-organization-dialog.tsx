@@ -58,9 +58,7 @@ export function LeaveOrganizationDialog({
         try {
             await authClient.organization.leave({
                 organizationId: organization.id,
-                fetchOptions: {
-                    throw: true
-                }
+                fetchOptions: { throw: true }
             })
 
             await refetchOrganizations?.()

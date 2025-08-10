@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { Organization } from "better-auth/plugins/organization"
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -35,7 +35,10 @@ export function OrganizationNameCard({
         replace
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
     const { data: organization, isPending: organizationPending } =
         useCurrentOrganization({ slug })
@@ -144,9 +147,7 @@ function OrganizationNameForm({
             await authClient.organization.update({
                 organizationId: organization.id,
                 data: { name },
-                fetchOptions: {
-                    throw: true
-                }
+                fetchOptions: { throw: true }
             })
 
             await refetchOrganizations?.()

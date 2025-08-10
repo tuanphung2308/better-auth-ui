@@ -1,8 +1,8 @@
 "use client"
 
 import { MenuIcon } from "lucide-react"
-import { useContext } from "react"
-
+import { useContext, useMemo } from "react"
+import { useCurrentOrganization } from "../../hooks/use-current-organization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getViewByPath } from "../../lib/utils"
 import type { OrganizationViewPath } from "../../server"
@@ -36,17 +36,23 @@ export function OrganizationView({
 }: OrganizationViewPageProps) {
     const {
         organization: organizationOptions,
-        Link,
-        localization: contextLocalization
+        localization: contextLocalization,
+        Link
     } = useContext(AuthUIContext)
 
     const { slug: contextSlug, viewPaths, apiKey } = organizationOptions || {}
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
     const view = viewProp || getViewByPath(viewPaths!, pathname) || "SETTINGS"
 
     const slug = slugProp || contextSlug
+
+    const { data: organization, isPending: organizationPending } =
+        useCurrentOrganization({ slug })
 
     const navItems: {
         view: OrganizationViewPath
@@ -162,6 +168,8 @@ export function OrganizationView({
                 <ApiKeysCard
                     classNames={classNames?.card}
                     localization={localization}
+                    isPending={organizationPending}
+                    organizationId={organization?.id}
                 />
             )}
 
