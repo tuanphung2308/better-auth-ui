@@ -12,13 +12,13 @@ export function useCurrentOrganization({
         hooks: { useActiveOrganization, useListOrganizations }
     } = useContext(AuthUIContext)
 
-    const { slugPaths, slug: contextSlug } = organizationOptions || {}
+    const { pathMode, slug: contextSlug } = organizationOptions || {}
 
     let data: Organization | null | undefined
     let isPending: boolean | undefined
     let isRefetching: boolean | undefined
 
-    if (slugPaths) {
+    if (pathMode === "slug") {
         const slug = slugProp || contextSlug
 
         const {

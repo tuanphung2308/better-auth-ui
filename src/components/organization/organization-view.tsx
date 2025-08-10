@@ -101,7 +101,7 @@ export function OrganizationView({
                                 {navItems.map((item) => (
                                     <Link
                                         key={item.view}
-                                        href={`${organizationOptions?.basePath}${organizationOptions?.slugPaths ? `/${slug}` : ""}/${organizationOptions?.viewPaths[item.view]}`}
+                                        href={`${organizationOptions?.basePath}${organizationOptions?.pathMode === "slug" ? `/${slug}` : ""}/${organizationOptions?.viewPaths[item.view]}`}
                                     >
                                         <Button
                                             size="lg"
@@ -135,7 +135,7 @@ export function OrganizationView({
                         {navItems.map((item) => (
                             <Link
                                 key={item.view}
-                                href={`${organizationOptions?.basePath}${organizationOptions?.slugPaths ? `/${slug}` : ""}/${organizationOptions?.viewPaths[item.view]}`}
+                                href={`${organizationOptions?.basePath}${organizationOptions?.pathMode === "slug" ? `/${slug}` : ""}/${organizationOptions?.viewPaths[item.view]}`}
                             >
                                 <Button
                                     size="lg"

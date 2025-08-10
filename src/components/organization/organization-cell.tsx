@@ -45,7 +45,7 @@ export function OrganizationCell({
         [contextLocalization, localizationProp]
     )
 
-    const { slugPaths } = organizationOptions || {}
+    const { pathMode } = organizationOptions || {}
 
     const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false)
     const [isManagingOrganization, setIsManagingOrganization] = useState(false)
@@ -53,7 +53,7 @@ export function OrganizationCell({
     const handleManageOrganization = useCallback(async () => {
         setIsManagingOrganization(true)
 
-        if (slugPaths) {
+        if (pathMode === "slug") {
             navigate(
                 `${organizationOptions?.basePath}/${organization.slug}/${organizationOptions?.viewPaths.SETTINGS}`
             )
@@ -86,7 +86,7 @@ export function OrganizationCell({
         organizationOptions?.basePath,
         organizationOptions?.viewPaths?.SETTINGS,
         organization.slug,
-        slugPaths,
+        pathMode,
         navigate,
         toast,
         localization

@@ -45,11 +45,13 @@ export type OrganizationOptions = {
      */
     basePath?: string
     /**
-     * Use slug-based URLs where slug becomes the first path segment
-     * e.g. "/[slug]/members" (or `${basePath}/[slug]/members` if basePath provided)
-     * @default false
+     * Organization path mode
+     * - "default": use active-organization based routes
+     * - "slug": use slug-based URLs where slug becomes the first path segment
+     *   e.g. "/[slug]/members" (or `${basePath}/[slug]/members` if basePath provided)
+     * @default "default"
      */
-    slugPaths?: boolean
+    pathMode?: "default" | "slug"
     /**
      * The current organization slug
      */
@@ -85,9 +87,10 @@ export type OrganizationOptionsContext = {
      */
     basePath: string
     /**
-     * Use slug-based URLs
+     * Organization path mode
+     * @default "default"
      */
-    slugPaths?: boolean
+    pathMode?: "default" | "slug"
     /**
      * The current organization slug
      */

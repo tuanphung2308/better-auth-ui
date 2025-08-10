@@ -36,7 +36,7 @@ This release introduces a new routing and view model that cleanly separates auth
 ## New Defaults
 
 - Account routes default to /account (customize via account.basePath)
-- Organization routes default to /organization (customize via organization.basePath and organization.slugPaths)
+- Organization routes default to /organization (customize via `organization.basePath` and `organization.pathMode`)
 
 ## Deprecations
 

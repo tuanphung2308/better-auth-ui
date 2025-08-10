@@ -11,7 +11,7 @@ export const OrganizationRefetcher = () => {
     } = useContext(AuthUIContext)
     const { data: sessionData } = hooks.useSession()
 
-    const { slug, slugPaths, personalPath } = organizationOptions || {}
+    const { slug, pathMode, personalPath } = organizationOptions || {}
 
     const { data: organization, isPending: organizationPending } =
         useCurrentOrganization()
@@ -31,7 +31,7 @@ export const OrganizationRefetcher = () => {
     useEffect(() => {
         if (organizationsRefetching || organizationPending) return
 
-        if (slug && slugPaths && !organization) {
+        if (slug && pathMode === "slug" && !organization) {
             navigate(personalPath || redirectTo)
         }
     }, [
@@ -39,7 +39,7 @@ export const OrganizationRefetcher = () => {
         organizationsRefetching,
         organizationPending,
         slug,
-        slugPaths,
+        pathMode,
         personalPath,
         navigate,
         redirectTo

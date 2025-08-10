@@ -162,7 +162,7 @@ export function CreateOrganizationDialog({
 
             await refetchOrganizations?.()
 
-            if (organizationOptions?.slugPaths) {
+            if (organizationOptions?.pathMode === "slug") {
                 navigate(`${organizationOptions.basePath}/${organization.slug}`)
                 return
             }

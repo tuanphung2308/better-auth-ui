@@ -31,7 +31,7 @@ This guide walks you through upgrading from v2 to v3.
   basePath="/auth"
   account={{ basePath: "/dashboard", fields: ["image", "name"] }}
   authViewPaths={{ SIGN_IN: "login" }}
-  organization={{ basePath: "/organization", slugPaths: false }}
+  organization={{ basePath: "/organization", pathMode: "default" }}
 />
 ```
 

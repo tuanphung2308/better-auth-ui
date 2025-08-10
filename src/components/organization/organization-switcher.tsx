@@ -114,7 +114,7 @@ export function OrganizationSwitcher({
     } = useContext(AuthUIContext)
 
     const {
-        slugPaths,
+        pathMode,
         slug: contextSlug,
         personalPath
     } = organizationOptions || {}
@@ -163,7 +163,7 @@ export function OrganizationSwitcher({
                 return
             }
 
-            if (slugPaths) {
+            if (pathMode === "slug") {
                 if (organization) {
                     navigate(
                         `${organizationOptions?.basePath}/${organization.slug}`
@@ -201,7 +201,7 @@ export function OrganizationSwitcher({
             localization,
             onSetActive,
             hidePersonal,
-            slugPaths,
+            pathMode,
             personalPath,
             organizationOptions?.basePath,
             redirectTo,
