@@ -2,7 +2,11 @@ import type { Organization } from "better-auth/plugins/organization"
 import { useContext, useMemo } from "react"
 import { AuthUIContext } from "../lib/auth-ui-provider"
 
-export function useCurrentOrganization({ slug: slugProp }: { slug?: string }) {
+export function useCurrentOrganization({
+    slug: slugProp
+}: {
+    slug?: string
+} = {}) {
     const {
         organization: organizationOptions,
         hooks: { useActiveOrganization, useListOrganizations }
