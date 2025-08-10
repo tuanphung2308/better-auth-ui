@@ -2,7 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2, Trash2Icon, UploadCloudIcon } from "lucide-react"
-import { type ComponentProps, useContext, useRef, useState } from "react"
+import {
+    type ComponentProps,
+    useContext,
+    useMemo,
+    useRef,
+    useState
+} from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -60,7 +66,10 @@ export function CreateOrganizationDialog({
         toast
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
     const [logo, setLogo] = useState<string | null>(null)
     const [logoPending, setLogoPending] = useState(false)
@@ -131,6 +140,7 @@ export function CreateOrganizationDialog({
 
     const deleteLogo = async () => {
         setLogoPending(true)
+
         const currentUrl = logo || undefined
         if (currentUrl && organizationOptions?.logo?.delete) {
             await organizationOptions.logo.delete(currentUrl)
@@ -243,16 +253,12 @@ export function CreateOrganizationDialog({
                                                             localization={
                                                                 localization
                                                             }
-                                                            organization={
+                                                            organization={{
+                                                                name: form.watch(
+                                                                    "name"
+                                                                ),
                                                                 logo
-                                                                    ? {
-                                                                          name: form.watch(
-                                                                              "name"
-                                                                          ),
-                                                                          logo
-                                                                      }
-                                                                    : null
-                                                            }
+                                                            }}
                                                         />
                                                     </Button>
                                                 </DropdownMenuTrigger>
@@ -268,6 +274,7 @@ export function CreateOrganizationDialog({
                                                         disabled={logoPending}
                                                     >
                                                         <UploadCloudIcon />
+
                                                         {
                                                             localization.UPLOAD_LOGO
                                                         }
@@ -282,6 +289,7 @@ export function CreateOrganizationDialog({
                                                             variant="destructive"
                                                         >
                                                             <Trash2Icon />
+
                                                             {
                                                                 localization.DELETE_LOGO
                                                             }
