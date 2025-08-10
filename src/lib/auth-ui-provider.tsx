@@ -32,6 +32,7 @@ import type {
 import type { RenderToast } from "../types/render-toast"
 import type { SignUpOptions } from "../types/sign-up-options"
 import type { SocialOptions } from "../types/social-options"
+import { authDataCache } from "./auth-data-cache"
 import { OrganizationRefetcher } from "./organization-refetcher"
 import type { AuthViewPaths } from "./view-paths"
 import {
@@ -312,6 +313,7 @@ export const AuthUIProvider = ({
     avatar: avatarProp,
     deleteUser: deleteUserProp,
     social: socialProp,
+    onSessionChange,
     genericOAuth: genericOAuthProp,
     basePath = "/auth",
     baseURL = "",
@@ -624,6 +626,10 @@ export const AuthUIProvider = ({
                 toast,
                 navigate: navigate || defaultNavigate,
                 replace: replace || navigate || defaultReplace,
+                onSessionChange: async () => {
+                    authDataCache.clear()
+                    await onSessionChange?.()
+                },
                 viewPaths,
                 Link,
                 ...props
