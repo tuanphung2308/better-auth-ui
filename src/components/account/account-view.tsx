@@ -8,6 +8,7 @@ import { cn, getViewByPath } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
 import type { AccountViewPath } from "../../server"
 import { OrganizationsCard } from "../organization/organizations-card"
+import { UserInvitationsCard } from "../organization/user-invitations-card"
 import { AccountSettingsCards } from "../settings/account-settings-cards"
 import { ApiKeysCard } from "../settings/api-key/api-keys-card"
 import { SecuritySettingsCards } from "../settings/security-settings-cards"
@@ -195,10 +196,16 @@ export function AccountView({
             )}
 
             {view === "ORGANIZATIONS" && organization && (
-                <OrganizationsCard
-                    classNames={classNames?.card}
-                    localization={localization}
-                />
+                <div className="grid w-full gap-4 md:gap-6">
+                    <OrganizationsCard
+                        classNames={classNames?.card}
+                        localization={localization}
+                    />
+                    <UserInvitationsCard
+                        classNames={classNames?.card}
+                        localization={localization}
+                    />
+                </div>
             )}
         </div>
     )

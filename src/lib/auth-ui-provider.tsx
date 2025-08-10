@@ -561,11 +561,11 @@ export const AuthUIProvider = ({
                         authClient.organization.listInvitations(params),
                     cacheKey: `listInvitations:${JSON.stringify(params)}`
                 }),
-            useListUserInvitations: (params) =>
+            useListUserInvitations: () =>
                 useAuthData({
                     queryFn: () =>
-                        authClient.organization.listUserInvitations(params),
-                    cacheKey: `listUserInvitations:${JSON.stringify(params)}`
+                        authClient.organization.listUserInvitations(),
+                    cacheKey: `listUserInvitations`
                 }),
             useListMembers: (params) =>
                 useAuthData({

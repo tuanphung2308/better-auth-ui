@@ -49,9 +49,7 @@ export type AuthHooks = {
     useListInvitations: (
         params: Parameters<AuthClient["organization"]["listInvitations"]>[0]
     ) => AuthHook<Invitation[]>
-    useListUserInvitations: (
-        params: Parameters<AuthClient["organization"]["listUserInvitations"]>[0]
-    ) => AuthHook<Invitation[]>
+    useListUserInvitations: () => AuthHook<Invitation[]>
     useListMembers: (
         params: Parameters<AuthClient["organization"]["listMembers"]>[0]
     ) => AuthHook<{
