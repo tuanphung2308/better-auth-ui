@@ -609,6 +609,8 @@ export const AuthUIProvider = ({
     // Remove trailing slash from basePath
     basePath = basePath.endsWith("/") ? basePath.slice(0, -1) : basePath
 
+    const { data: sessionData } = hooks.useSession()
+
     return (
         <AuthUIContext.Provider
             value={{
@@ -639,7 +641,7 @@ export const AuthUIProvider = ({
                 ...props
             }}
         >
-            {organization && <OrganizationRefetcher />}
+            {sessionData && organization && <OrganizationRefetcher />}
 
             {captcha?.provider === "google-recaptcha-v3" ? (
                 <RecaptchaV3>{children}</RecaptchaV3>
