@@ -1,7 +1,7 @@
 "use client"
 
 import type { User } from "better-auth"
-import type { Member, Organization } from "better-auth/plugins/organization"
+import type { Member } from "better-auth/plugins/organization"
 import { EllipsisIcon, UserCogIcon, UserXIcon } from "lucide-react"
 import { useContext, useState } from "react"
 
@@ -28,20 +28,23 @@ export interface MemberCellProps {
     member: Member & { user: Partial<User> }
     localization?: AuthLocalization
     hideActions?: boolean
-    organization: Organization
 }
 
 export function MemberCell({
     className,
     classNames,
     member,
-    organization,
     localization: localizationProp,
     hideActions
 }: MemberCellProps) {
     const {
         organization: organizationOptions,
-        hooks: { useListMembers, useSession, useHasPermission },
+        hooks: {
+            useListMembers,
+            useSession,
+            useListOrganizations,
+            useHasPermission
+        },
         localization: contextLocalization
     } = useContext(AuthUIContext)
     const localization = { ...contextLocalization, ...localizationProp }
@@ -71,6 +74,11 @@ export function MemberCell({
 
     const isSelf = sessionData?.user.id === member?.userId
 
+    const { data: organizations } = useListOrganizations()
+    const organization = organizations?.find(
+        (org) => org.id === member.organizationId
+    )
+
     const { data: hasPermissionToUpdateMember } = useHasPermission({
         organizationId: member.organizationId,
         permission: { member: ["update"] }
@@ -93,55 +101,60 @@ export function MemberCell({
 
                 <span className="text-sm opacity-70">{role?.label}</span>
 
-                {(isSelf ||
-                    ((member.role !== "owner" || myRole === "owner") &&
-                        !hideActions)) && (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                className={cn(
-                                    "relative ms-auto",
-                                    classNames?.button,
-                                    classNames?.outlineButton
-                                )}
-                                size="icon"
-                                type="button"
-                                variant="outline"
-                            >
-                                <EllipsisIcon className={classNames?.icon} />
-                            </Button>
-                        </DropdownMenuTrigger>
+                {!hideActions &&
+                    (isSelf ||
+                        member.role !== "owner" ||
+                        myRole === "owner") && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    className={cn(
+                                        "relative ms-auto",
+                                        classNames?.button,
+                                        classNames?.outlineButton
+                                    )}
+                                    size="icon"
+                                    type="button"
+                                    variant="outline"
+                                >
+                                    <EllipsisIcon
+                                        className={classNames?.icon}
+                                    />
+                                </Button>
+                            </DropdownMenuTrigger>
 
-                        <DropdownMenuContent
-                            onCloseAutoFocus={(e) => e.preventDefault()}
-                        >
-                            {hasPermissionToUpdateMember?.success && (
+                            <DropdownMenuContent
+                                onCloseAutoFocus={(e) => e.preventDefault()}
+                            >
+                                {hasPermissionToUpdateMember?.success && (
+                                    <DropdownMenuItem
+                                        onClick={() =>
+                                            setUpdateRoleDialogOpen(true)
+                                        }
+                                    >
+                                        <UserCogIcon
+                                            className={classNames?.icon}
+                                        />
+                                        {localization?.UPDATE_ROLE}
+                                    </DropdownMenuItem>
+                                )}
+
                                 <DropdownMenuItem
                                     onClick={() =>
-                                        setUpdateRoleDialogOpen(true)
+                                        isSelf
+                                            ? setLeaveDialogOpen(true)
+                                            : setRemoveDialogOpen(true)
                                     }
+                                    variant="destructive"
                                 >
-                                    <UserCogIcon className={classNames?.icon} />
-                                    {localization?.UPDATE_ROLE}
+                                    <UserXIcon className={classNames?.icon} />
+                                    {isSelf
+                                        ? localization?.LEAVE_ORGANIZATION
+                                        : localization?.REMOVE_MEMBER}
                                 </DropdownMenuItem>
-                            )}
-
-                            <DropdownMenuItem
-                                onClick={() =>
-                                    isSelf
-                                        ? setLeaveDialogOpen(true)
-                                        : setRemoveDialogOpen(true)
-                                }
-                                variant="destructive"
-                            >
-                                <UserXIcon className={classNames?.icon} />
-                                {isSelf
-                                    ? localization?.LEAVE_ORGANIZATION
-                                    : localization?.REMOVE_MEMBER}
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                )}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
             </Card>
 
             <RemoveMemberDialog

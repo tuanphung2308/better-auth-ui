@@ -137,7 +137,6 @@ function OrganizationMembersContent({
                                     hideActions={
                                         !hasPermissionUpdateMember?.success
                                     }
-                                    organization={organization}
                                 />
                             ))}
                     </CardContent>
