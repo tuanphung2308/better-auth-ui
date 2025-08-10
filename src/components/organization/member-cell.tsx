@@ -99,7 +99,7 @@ export function MemberCell({
                     className="flex-1"
                 />
 
-                <span className="text-sm opacity-70">{role?.label}</span>
+                <span className="text-xs opacity-70">{role?.label}</span>
 
                 {!hideActions &&
                     (isSelf ||

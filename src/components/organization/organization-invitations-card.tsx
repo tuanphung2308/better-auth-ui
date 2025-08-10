@@ -31,17 +31,7 @@ export function OrganizationInvitationsCard({
 
     const { data: organization } = useCurrentOrganization({ slug })
 
-    if (!organization)
-        return (
-            <SettingsCard
-                className={className}
-                classNames={classNames}
-                title={localization.PENDING_INVITATIONS}
-                description={localization.PENDING_INVITATIONS_DESCRIPTION}
-                isPending
-                {...props}
-            />
-        )
+    if (!organization) return null
 
     return (
         <OrganizationInvitationsContent
