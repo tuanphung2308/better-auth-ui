@@ -4,7 +4,7 @@
     "version": "2.1.11",
     "description": "Plug & play shadcn/ui components for better-auth",
     "scripts": {
-        "build": "tsup --clean --dts",
+        "build": "tsup --clean --dts && cp src/style.css dist/style.css",
         "dev": "tsc-watch",
         "prepublishOnly": "rm -rf dist && turbo build"
     },
@@ -12,6 +12,7 @@
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",
     "exports": {
+        "./css": "./dist/style.css",
         ".": {
             "import": {
                 "types": "./dist/index.d.ts",
