@@ -62,10 +62,7 @@ export function getSearchParam(paramName: string) {
         : null
 }
 
-export function getViewByPath(
-    viewPaths: Record<string, string>,
-    path?: string
-) {
+export function getViewByPath<T extends object>(viewPaths: T, path?: string) {
     for (const key in viewPaths) {
         if (viewPaths[key] === path) {
             return key
