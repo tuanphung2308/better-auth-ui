@@ -17,7 +17,6 @@ export function OrganizationMembersCard({
     ...props
 }: SettingsCardProps) {
     const {
-        basePath,
         hooks: { useActiveOrganization },
         localization: contextLocalization,
         account: accountOptions,

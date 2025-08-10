@@ -32,7 +32,7 @@ export function OrganizationView({
     pathname,
     view: viewProp,
     hideNav,
-    slug
+    slug: slugProp
 }: OrganizationViewPageProps) {
     const {
         organization: organizationOptions,
@@ -40,16 +40,13 @@ export function OrganizationView({
         localization: contextLocalization
     } = useContext(AuthUIContext)
 
-    if (!organizationOptions) {
-        return null
-    }
+    const { slug: contextSlug, viewPaths, apiKey } = organizationOptions || {}
 
     const localization = { ...contextLocalization, ...localizationProp }
 
-    const view =
-        viewProp ||
-        getViewByPath(organizationOptions.viewPaths, pathname) ||
-        "SETTINGS"
+    const view = viewProp || getViewByPath(viewPaths!, pathname) || "SETTINGS"
+
+    const slug = slugProp || contextSlug
 
     const navItems: {
         view: OrganizationViewPath
@@ -59,7 +56,7 @@ export function OrganizationView({
         { view: "MEMBERS", label: localization.MEMBERS }
     ]
 
-    if (organizationOptions.apiKey) {
+    if (apiKey) {
         navItems.push({
             view: "API_KEYS",
             label: localization.API_KEYS
@@ -97,7 +94,7 @@ export function OrganizationView({
                                 {navItems.map((item) => (
                                     <Link
                                         key={item.view}
-                                        href={`${organizationOptions.basePath}/${organizationOptions.viewPaths[item.view]}`}
+                                        href={`${organizationOptions?.basePath}${organizationOptions?.slugPaths ? `/${slug}` : ""}/${organizationOptions?.viewPaths[item.view]}`}
                                     >
                                         <Button
                                             size="lg"
@@ -131,7 +128,7 @@ export function OrganizationView({
                         {navItems.map((item) => (
                             <Link
                                 key={item.view}
-                                href={`${organizationOptions.basePath}/${organizationOptions.viewPaths[item.view]}`}
+                                href={`${organizationOptions?.basePath}${organizationOptions?.slugPaths ? `/${slug}` : ""}/${organizationOptions?.viewPaths[item.view]}`}
                             >
                                 <Button
                                     size="lg"
