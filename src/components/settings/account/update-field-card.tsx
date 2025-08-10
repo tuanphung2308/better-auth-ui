@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { type ReactNode, useContext } from "react"
+import { type ReactNode, useContext, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -48,7 +48,7 @@ export function UpdateFieldCard({
     classNames,
     description,
     instructions,
-    localization,
+    localization: localizationProp,
     name,
     placeholder,
     required,
@@ -66,9 +66,12 @@ export function UpdateFieldCard({
         toast
     } = useContext(AuthUIContext)
 
-    localization = { ...contextLocalization, ...localization }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
-    const { isPending, refetch } = useSession()
+    const { isPending } = useSession()
 
     let fieldSchema = z.unknown() as z.ZodType<unknown>
 
@@ -140,7 +143,6 @@ export function UpdateFieldCard({
         try {
             await updateUser({ [name]: newValue })
 
-            await refetch?.()
             toast({
                 variant: "success",
                 message: `${label} ${localization.UPDATED_SUCCESSFULLY}`

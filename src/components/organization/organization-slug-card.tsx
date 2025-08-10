@@ -85,7 +85,7 @@ function OrganizationSlugForm({
     const {
         authClient,
         localization: contextLocalization,
-        hooks: { useListOrganizations, useHasPermission },
+        hooks: { useHasPermission },
         optimistic,
         toast,
         organization: organizationOptions,
@@ -97,7 +97,9 @@ function OrganizationSlugForm({
         [contextLocalization, localizationProp]
     )
 
-    const { refetch: refetchOrganizations } = useListOrganizations()
+    const { refetch: refetchOrganization } = useCurrentOrganization({
+        slug: organization.slug
+    })
 
     const { data: hasPermission, isPending } = useHasPermission({
         organizationId: organization.id,
@@ -143,7 +145,7 @@ function OrganizationSlugForm({
                 fetchOptions: { throw: true }
             })
 
-            await refetchOrganizations?.()
+            await refetchOrganization?.()
 
             toast({
                 variant: "success",

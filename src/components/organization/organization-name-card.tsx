@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { Organization } from "better-auth/plugins/organization"
-import { useContext, useEffect, useMemo } from "react"
+import { useContext, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -29,33 +29,14 @@ export function OrganizationNameCard({
     slug,
     ...props
 }: OrganizationNameCardProps) {
-    const {
-        localization: contextLocalization,
-        account: accountOptions,
-        replace
-    } = useContext(AuthUIContext)
+    const { localization: contextLocalization } = useContext(AuthUIContext)
 
     const localization = useMemo(
         () => ({ ...contextLocalization, ...localizationProp }),
         [contextLocalization, localizationProp]
     )
 
-    const { data: organization, isPending: organizationPending } =
-        useCurrentOrganization({ slug })
-
-    useEffect(() => {
-        if (organization || organizationPending) return
-
-        replace(
-            `${accountOptions?.basePath}/${accountOptions?.viewPaths?.ORGANIZATIONS}`
-        )
-    }, [
-        organization,
-        organizationPending,
-        accountOptions?.basePath,
-        accountOptions?.viewPaths?.ORGANIZATIONS,
-        replace
-    ])
+    const { data: organization } = useCurrentOrganization({ slug })
 
     if (!organization) {
         return (
@@ -99,14 +80,12 @@ function OrganizationNameForm({
     const {
         authClient,
         localization: contextLocalization,
-        hooks: { useListOrganizations, useHasPermission },
+        hooks: { useHasPermission },
         optimistic,
         toast
     } = useContext(AuthUIContext)
 
     const localization = { ...contextLocalization, ...localizationProp }
-
-    const { refetch: refetchOrganizations } = useListOrganizations()
 
     const { data: hasPermission, isPending: permissionPending } =
         useHasPermission({
@@ -115,6 +94,10 @@ function OrganizationNameForm({
                 organization: ["update"]
             }
         })
+
+    const { refetch: refetchOrganization } = useCurrentOrganization({
+        slug: organization.slug
+    })
 
     const isPending = permissionPending
 
@@ -150,7 +133,7 @@ function OrganizationNameForm({
                 fetchOptions: { throw: true }
             })
 
-            await refetchOrganizations?.()
+            await refetchOrganization?.()
 
             toast({
                 variant: "success",

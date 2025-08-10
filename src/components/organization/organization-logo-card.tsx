@@ -116,7 +116,7 @@ function OrganizationLogoForm({
 }: OrganizationLogoCardProps & { organization: Organization }) {
     const {
         authClient,
-        hooks: { useListOrganizations, useHasPermission },
+        hooks: { useHasPermission },
         localization: authLocalization,
         organization: organizationOptions,
         toast
@@ -127,7 +127,9 @@ function OrganizationLogoForm({
         [authLocalization, localizationProp]
     )
 
-    const { refetch: refetchOrganizations } = useListOrganizations()
+    const { refetch: refetchOrganization } = useCurrentOrganization({
+        slug: organization.slug
+    })
 
     const { data: hasPermission, isPending: permissionPending } =
         useHasPermission({
@@ -174,7 +176,7 @@ function OrganizationLogoForm({
                 fetchOptions: { throw: true }
             })
 
-            await refetchOrganizations?.()
+            await refetchOrganization?.()
         } catch (error) {
             toast({
                 variant: "error",
@@ -201,7 +203,7 @@ function OrganizationLogoForm({
                 fetchOptions: { throw: true }
             })
 
-            await refetchOrganizations?.()
+            await refetchOrganization?.()
         } catch (error) {
             toast({
                 variant: "error",

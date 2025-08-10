@@ -32,7 +32,6 @@ import type {
 import type { RenderToast } from "../types/render-toast"
 import type { SignUpOptions } from "../types/sign-up-options"
 import type { SocialOptions } from "../types/social-options"
-import { authDataCache } from "./auth-data-cache"
 import { OrganizationRefetcher } from "./organization-refetcher"
 import type { AuthViewPaths } from "./view-paths"
 import {
@@ -313,7 +312,6 @@ export const AuthUIProvider = ({
     avatar: avatarProp,
     deleteUser: deleteUserProp,
     social: socialProp,
-    onSessionChange,
     genericOAuth: genericOAuthProp,
     basePath = "/auth",
     baseURL = "",
@@ -550,7 +548,10 @@ export const AuthUIProvider = ({
             useHasPermission: (params) =>
                 useAuthData({
                     queryFn: () =>
-                        authClient.organization.hasPermission(params),
+                        authClient.$fetch("/organization/has-permission", {
+                            method: "POST",
+                            body: params
+                        }),
                     cacheKey: `hasPermission:${JSON.stringify(params)}`
                 }),
             useInvitation: (params) =>
@@ -562,18 +563,25 @@ export const AuthUIProvider = ({
             useListInvitations: (params) =>
                 useAuthData({
                     queryFn: () =>
-                        authClient.organization.listInvitations(params),
+                        authClient.$fetch(
+                            `/organization/list-user-invitations?organizationId=${params?.query?.organizationId || ""}`
+                        ),
                     cacheKey: `listInvitations:${JSON.stringify(params)}`
                 }),
             useListUserInvitations: () =>
                 useAuthData({
                     queryFn: () =>
-                        authClient.organization.listUserInvitations(),
+                        authClient.$fetch(
+                            "/organization/list-user-invitations"
+                        ),
                     cacheKey: `listUserInvitations`
                 }),
             useListMembers: (params) =>
                 useAuthData({
-                    queryFn: () => authClient.organization.listMembers(params),
+                    queryFn: () =>
+                        authClient.$fetch(
+                            `/organization/list-members?organizationId=${params?.query?.organizationId || ""}`
+                        ),
                     cacheKey: `listMembers:${JSON.stringify(params)}`
                 })
         } as AuthHooks
@@ -626,10 +634,6 @@ export const AuthUIProvider = ({
                 toast,
                 navigate: navigate || defaultNavigate,
                 replace: replace || navigate || defaultReplace,
-                onSessionChange: async () => {
-                    authDataCache.clear()
-                    await onSessionChange?.()
-                },
                 viewPaths,
                 Link,
                 ...props

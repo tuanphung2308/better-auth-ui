@@ -4,39 +4,46 @@ import { AuthUIContext } from "./auth-ui-provider"
 
 export const OrganizationRefetcher = () => {
     const {
-        hooks,
+        hooks: { useListOrganizations, useSession },
         organization: organizationOptions,
         navigate,
         redirectTo
     } = useContext(AuthUIContext)
-    const { data: sessionData } = hooks.useSession()
 
     const { slug, pathMode, personalPath } = organizationOptions || {}
 
-    const { data: organization, isPending: organizationPending } =
-        useCurrentOrganization()
+    const { data: sessionData } = useSession()
 
     const {
-        data: organizations,
-        refetch: refetchListOrganizations,
-        isRefetching: organizationsRefetching
-    } = hooks.useListOrganizations()
+        data: organization,
+        isPending: organizationPending,
+        isRefetching: organizationRefetching,
+        refetch: refetchOrganization
+    } = useCurrentOrganization()
+
+    const { refetch: refetchListOrganizations } = useListOrganizations()
+
+    const { data: organizations } = useListOrganizations()
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: Refetch fix
     useEffect(() => {
         if (!sessionData?.user.id) return
-        if (organizations) refetchListOrganizations?.()
-    }, [sessionData?.user.id, refetchListOrganizations])
+
+        if (organization || organizations) {
+            refetchOrganization?.()
+            refetchListOrganizations?.()
+        }
+    }, [sessionData?.user.id])
 
     useEffect(() => {
-        if (organizationsRefetching || organizationPending) return
+        if (organizationRefetching || organizationPending) return
 
         if (slug && pathMode === "slug" && !organization) {
             navigate(personalPath || redirectTo)
         }
     }, [
         organization,
-        organizationsRefetching,
+        organizationRefetching,
         organizationPending,
         slug,
         pathMode,

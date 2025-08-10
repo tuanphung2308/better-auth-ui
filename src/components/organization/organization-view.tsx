@@ -1,7 +1,7 @@
 "use client"
 
 import { MenuIcon } from "lucide-react"
-import { useContext, useMemo } from "react"
+import { useContext, useEffect, useMemo } from "react"
 import { useCurrentOrganization } from "../../hooks/use-current-organization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getViewByPath } from "../../lib/utils"
@@ -38,7 +38,9 @@ export function OrganizationView({
     const {
         organization: organizationOptions,
         localization: contextLocalization,
-        Link
+        account: accountOptions,
+        Link,
+        replace
     } = useContext(AuthUIContext)
 
     const { slug: contextSlug, viewPaths, apiKey } = organizationOptions || {}
@@ -69,6 +71,20 @@ export function OrganizationView({
             label: localization.API_KEYS
         })
     }
+
+    useEffect(() => {
+        if (organization || organizationPending) return
+
+        replace(
+            `${accountOptions?.basePath}/${accountOptions?.viewPaths?.ORGANIZATIONS}`
+        )
+    }, [
+        organization,
+        organizationPending,
+        accountOptions?.basePath,
+        accountOptions?.viewPaths?.ORGANIZATIONS,
+        replace
+    ])
 
     return (
         <div

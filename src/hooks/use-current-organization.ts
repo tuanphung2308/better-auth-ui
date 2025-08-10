@@ -18,14 +18,16 @@ export function useCurrentOrganization({
     let isPending: boolean | undefined
     let isRefetching: boolean | undefined
 
+    let refetch: (() => void) | undefined
+
+    const {
+        data: organizations,
+        isPending: organizationsPending,
+        isRefetching: organizationsRefetching
+    } = useListOrganizations()
+
     if (pathMode === "slug") {
         const slug = slugProp || contextSlug
-
-        const {
-            data: organizations,
-            isPending: organizationsPending,
-            isRefetching: organizationsRefetching
-        } = useListOrganizations()
 
         data = organizations?.find((organization) => organization.slug === slug)
         isPending = organizationsPending
@@ -34,8 +36,11 @@ export function useCurrentOrganization({
         const {
             data: activeOrganization,
             isPending: organizationPending,
-            isRefetching: organizationRefetching
+            isRefetching: organizationRefetching,
+            refetch: refetchOrganization
         } = useActiveOrganization()
+
+        refetch = refetchOrganization
 
         data = activeOrganization
         isPending = organizationPending
@@ -46,8 +51,9 @@ export function useCurrentOrganization({
         () => ({
             data,
             isPending,
-            isRefetching
+            isRefetching,
+            refetch
         }),
-        [data, isPending, isRefetching]
+        [data, isPending, isRefetching, refetch]
     )
 }

@@ -204,6 +204,7 @@ export function AccountView({
                         classNames={classNames?.card}
                         localization={localization}
                     />
+
                     <UserInvitationsCard
                         classNames={classNames?.card}
                         localization={localization}

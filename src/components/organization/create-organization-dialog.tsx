@@ -59,7 +59,6 @@ export function CreateOrganizationDialog({
 }: CreateOrganizationDialogProps) {
     const {
         authClient,
-        hooks: { useListOrganizations },
         localization: contextLocalization,
         organization: organizationOptions,
         navigate,
@@ -76,8 +75,6 @@ export function CreateOrganizationDialog({
 
     const fileInputRef = useRef<HTMLInputElement>(null)
     const openFileDialog = () => fileInputRef.current?.click()
-
-    const { refetch: refetchOrganizations } = useListOrganizations()
 
     const formSchema = z.object({
         logo: z.string().optional(),
@@ -159,8 +156,6 @@ export function CreateOrganizationDialog({
                 logo,
                 fetchOptions: { throw: true }
             })
-
-            await refetchOrganizations?.()
 
             if (organizationOptions?.pathMode === "slug") {
                 navigate(`${organizationOptions.basePath}/${organization.slug}`)
