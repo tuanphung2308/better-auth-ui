@@ -31,6 +31,7 @@ import type {
 import type { RenderToast } from "../types/render-toast"
 import type { SignUpOptions } from "../types/sign-up-options"
 import type { SocialOptions } from "../types/social-options"
+import { OrganizationRefetcher } from "./organization-refetcher"
 import type { AuthViewPaths } from "./view-paths"
 import {
     accountViewPaths,
@@ -627,6 +628,8 @@ export const AuthUIProvider = ({
                 ...props
             }}
         >
+            {organization && <OrganizationRefetcher />}
+
             {captcha?.provider === "google-recaptcha-v3" ? (
                 <RecaptchaV3>{children}</RecaptchaV3>
             ) : (
