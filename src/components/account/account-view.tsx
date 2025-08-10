@@ -1,7 +1,7 @@
 "use client"
 
 import { MenuIcon } from "lucide-react"
-import { useContext } from "react"
+import { useContext, useMemo } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getViewByPath } from "../../lib/utils"
@@ -58,7 +58,10 @@ export function AccountView({
         return null
     }
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
     const view =
         viewProp ||
