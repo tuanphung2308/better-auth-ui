@@ -6,6 +6,7 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 import type { SettingsCardProps } from "../settings/shared/settings-card"
 import { SettingsCard } from "../settings/shared/settings-card"
+import { SettingsCellSkeleton } from "../settings/skeletons/settings-cell-skeleton"
 import { CardContent } from "../ui/card"
 import { CreateOrganizationDialog } from "./create-organization-dialog"
 import { OrganizationCell } from "./organization-cell"
@@ -47,20 +48,17 @@ export function OrganizationsCard({
                 isPending={isPending}
                 {...props}
             >
-                {organizations && organizations?.length > 0 && (
-                    <CardContent
-                        className={cn("grid gap-4", classNames?.content)}
-                    >
-                        {organizations?.map((organization) => (
-                            <OrganizationCell
-                                key={organization.id}
-                                classNames={classNames}
-                                organization={organization}
-                                localization={localization}
-                            />
-                        ))}
-                    </CardContent>
-                )}
+                <CardContent className={cn("grid gap-4", classNames?.content)}>
+                    {isPending && <SettingsCellSkeleton />}
+                    {organizations?.map((organization) => (
+                        <OrganizationCell
+                            key={organization.id}
+                            classNames={classNames}
+                            organization={organization}
+                            localization={localization}
+                        />
+                    ))}
+                </CardContent>
             </SettingsCard>
 
             <CreateOrganizationDialog
