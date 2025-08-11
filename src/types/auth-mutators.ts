@@ -8,6 +8,10 @@ export interface AuthMutators {
     revokeDeviceSession: MutateFn<{ sessionToken: string }>
     revokeSession: MutateFn<{ token: string }>
     setActiveSession: MutateFn<{ sessionToken: string }>
+    updateOrganization: MutateFn<{
+        organizationId: string
+        data: Record<string, unknown>
+    }>
     updateUser: MutateFn
     unlinkAccount: MutateFn<{ providerId: string; accountId?: string }>
 }

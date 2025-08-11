@@ -78,9 +78,9 @@ function OrganizationNameForm({
     ...props
 }: OrganizationNameCardProps & { organization: Organization }) {
     const {
-        authClient,
         localization: contextLocalization,
         hooks: { useHasPermission },
+        mutators: { updateOrganization },
         optimistic,
         toast
     } = useContext(AuthUIContext)
@@ -127,10 +127,9 @@ function OrganizationNameForm({
         }
 
         try {
-            await authClient.organization.update({
+            await updateOrganization({
                 organizationId: organization.id,
-                data: { name },
-                fetchOptions: { throw: true }
+                data: { name }
             })
 
             await refetchOrganization?.()

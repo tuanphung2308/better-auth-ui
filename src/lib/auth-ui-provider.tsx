@@ -501,6 +501,11 @@ export const AuthUIProvider = ({
                     ...params,
                     fetchOptions: { throw: true }
                 }),
+            updateOrganization: (params) =>
+                authClient.organization.update({
+                    ...params,
+                    fetchOptions: { throw: true }
+                }),
             updateUser: (params) =>
                 authClient.updateUser({
                     ...params,

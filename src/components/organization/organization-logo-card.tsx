@@ -115,10 +115,10 @@ function OrganizationLogoForm({
     ...props
 }: OrganizationLogoCardProps & { organization: Organization }) {
     const {
-        authClient,
         hooks: { useHasPermission },
         localization: authLocalization,
         organization: organizationOptions,
+        mutators: { updateOrganization },
         toast
     } = useContext(AuthUIContext)
 
@@ -170,10 +170,9 @@ function OrganizationLogoForm({
         }
 
         try {
-            await authClient.organization.update({
+            await updateOrganization({
                 organizationId: organization.id,
-                data: { logo: image },
-                fetchOptions: { throw: true }
+                data: { logo: image }
             })
 
             await refetchOrganization?.()
@@ -197,10 +196,9 @@ function OrganizationLogoForm({
                 await organizationOptions?.logo?.delete?.(organization.logo)
             }
 
-            await authClient.organization.update({
+            await updateOrganization({
                 organizationId: organization.id,
-                data: { logo: "" },
-                fetchOptions: { throw: true }
+                data: { logo: "" }
             })
 
             await refetchOrganization?.()

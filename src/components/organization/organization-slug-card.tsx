@@ -83,9 +83,9 @@ function OrganizationSlugForm({
     ...props
 }: OrganizationSlugCardProps & { organization: Organization }) {
     const {
-        authClient,
         localization: contextLocalization,
         hooks: { useHasPermission },
+        mutators: { updateOrganization },
         optimistic,
         toast,
         organization: organizationOptions,
@@ -139,10 +139,9 @@ function OrganizationSlugForm({
         }
 
         try {
-            await authClient.organization.update({
+            await updateOrganization({
                 organizationId: organization.id,
-                data: { slug },
-                fetchOptions: { throw: true }
+                data: { slug }
             })
 
             await refetchOrganization?.()
