@@ -22,7 +22,7 @@ export function AccountsCard({
 }: AccountsCardProps) {
     const {
         basePath,
-        hooks: { useListDeviceSessions },
+        hooks: { useListDeviceSessions, useSession },
         localization: contextLocalization,
         viewPaths,
         navigate
@@ -31,6 +31,11 @@ export function AccountsCard({
     localization = { ...contextLocalization, ...localization }
 
     const { data: deviceSessions, isPending, refetch } = useListDeviceSessions()
+    const { data: sessionData } = useSession()
+
+    const otherDeviceSessions = (deviceSessions || []).filter(
+        (ds) => ds.session.id !== sessionData?.session.id
+    )
 
     return (
         <SettingsCard
@@ -45,7 +50,16 @@ export function AccountsCard({
         >
             {deviceSessions?.length && (
                 <CardContent className={cn("grid gap-4", classNames?.content)}>
-                    {deviceSessions?.map((deviceSession) => (
+                    {sessionData && (
+                        <AccountCell
+                            classNames={classNames}
+                            deviceSession={sessionData}
+                            localization={localization}
+                            refetch={refetch}
+                        />
+                    )}
+
+                    {otherDeviceSessions.map((deviceSession) => (
                         <AccountCell
                             key={deviceSession.session.id}
                             classNames={classNames}

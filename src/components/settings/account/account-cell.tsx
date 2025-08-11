@@ -56,6 +56,7 @@ export function AccountCell({
             await revokeDeviceSession({
                 sessionToken: deviceSession.session.token
             })
+
             refetch?.()
         } catch (error) {
             setIsLoading(false)
@@ -74,15 +75,16 @@ export function AccountCell({
             await setActiveSession({
                 sessionToken: deviceSession.session.token
             })
+
             refetch?.()
         } catch (error) {
-            setIsLoading(false)
-
             toast({
                 variant: "error",
                 message: getLocalizedError({ error, localization })
             })
         }
+
+        setIsLoading(false)
     }
 
     const isCurrentSession =
