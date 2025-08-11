@@ -1,7 +1,13 @@
 "use client"
 
 import type { Session, User } from "better-auth"
-import { EllipsisIcon, Loader2, LogOutIcon, RepeatIcon } from "lucide-react"
+import {
+    EllipsisIcon,
+    Loader2,
+    LogOutIcon,
+    RepeatIcon,
+    UserX2Icon
+} from "lucide-react"
 import { useContext, useState } from "react"
 
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
@@ -133,8 +139,13 @@ export function AccountCell({
 
                             handleRevoke()
                         }}
+                        variant="destructive"
                     >
-                        <LogOutIcon className={classNames?.icon} />
+                        {isCurrentSession ? (
+                            <LogOutIcon className={classNames?.icon} />
+                        ) : (
+                            <UserX2Icon className={classNames?.icon} />
+                        )}
 
                         {isCurrentSession
                             ? localization.SIGN_OUT
