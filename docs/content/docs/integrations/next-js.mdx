@@ -84,8 +84,7 @@ The [`<AuthUIProvider />`](/components/auth-ui-provider) can be fully customized
 Create a dynamic route segment for authentication views in `app/auth/[authView]/page.tsx`.
 
 ```tsx title="app/auth/[authView]/page.tsx"
-import { authViewPaths } from "@daveyplate/better-auth-ui/server"
-import { AuthView } from "@daveyplate/better-auth-ui"
+import { AuthView, authViewPaths } from "@daveyplate/better-auth-ui"
 
 export const dynamicParams = false
 
@@ -120,10 +119,10 @@ Ensure that any links to the authentication process utilize these routes accordi
 ### Account Pages
 
 ```tsx title="app/account/[accountView]/page.tsx"
-import { accountViewPaths } from "@daveyplate/better-auth-ui/server"
-import { AccountView } from "@daveyplate/better-auth-ui"
+import { AccountView, accountViewPaths } from "@daveyplate/better-auth-ui"
 
 export const dynamicParams = false
+
 export function generateStaticParams() {
     return Object.values(accountViewPaths).map((accountView) => ({ accountView }))
 }
@@ -143,8 +142,7 @@ export default async function AccountPage({ params }: { params: Promise<{ accoun
 ### Organization Pages
 
 ```tsx title="app/organization/[organizationView]/page.tsx"
-import { organizationViewPaths } from "@daveyplate/better-auth-ui/server"
-import { OrganizationView } from "@daveyplate/better-auth-ui"
+import { OrganizationView, organizationViewPaths } from "@daveyplate/better-auth-ui"
 
 export const dynamicParams = false
 
@@ -166,7 +164,7 @@ export default async function OrganizationPage({ params }: { params: Promise<{ o
 If you prefer slug-based org URLs, set `organization={{ pathMode: "slug", basePath: "/organization", slug: currentSlug }}` in the `AuthUIProvider` and structure your routes accordingly:
 
 ```tsx title="app/organization/[slug]/[organizationView]/page.tsx"
-import { OrganizationView } from "@daveyplate/better-auth-ui"
+import { OrganizationView, organizationViewPaths } from "@daveyplate/better-auth-ui"
 
 export const dynamicParams = false
 
@@ -230,8 +228,7 @@ Now the authentication context is available across your entire application.
 Create a page with a dynamic segment in your Pages directory in `pages/auth/[authView].tsx`
 
 ```tsx title="pages/auth/[authView].tsx"
-import { AuthView } from "@daveyplate/better-auth-ui"
-import { authViewPaths } from "@daveyplate/better-auth-ui/server"
+import { AuthView, authViewPaths } from "@daveyplate/better-auth-ui"
 
 export default function AuthPage({ authView }: { authView: string }) {
     return (
@@ -259,8 +256,7 @@ These routes match the list shown in the App Router section above.
 ### Account Pages
 
 ```tsx title="pages/account/[accountView].tsx"
-import { AccountView } from "@daveyplate/better-auth-ui"
-import { accountViewPaths } from "@daveyplate/better-auth-ui/server"
+import { AccountView, accountViewPaths } from "@daveyplate/better-auth-ui"
 
 export default function AccountPage({ accountView }: { accountView: string }) {
     return (
@@ -286,8 +282,7 @@ export async function getStaticProps({ params }: { params: { accountView: string
 ### Organization Pages
 
 ```tsx title="pages/organization/[organizationView].tsx"
-import { OrganizationView } from "@daveyplate/better-auth-ui"
-import { organizationViewPaths } from "@daveyplate/better-auth-ui/server"
+import { OrganizationView, organizationViewPaths } from "@daveyplate/better-auth-ui"
 
 export default function OrganizationPage({ organizationView }: { organizationView: string }) {
     return (
