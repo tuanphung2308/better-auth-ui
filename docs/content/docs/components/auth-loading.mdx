@@ -1,12 +1,12 @@
 ---
-title: <AuthLoading>
+title: <AuthLoading />
 ---
 
-The `<AuthLoading>` component renders its children only during an authentication session loading. This provides an easy way for you to insert loading states or skeleton loaders into your UI, enhancing user experience during data fetching.
+The `<AuthLoading />` component renders its children only during an authentication session loading. This provides an easy way for you to insert loading states or skeleton loaders into your UI, enhancing user experience during data fetching.
 
 ## Usage
 
-Wrap loading placeholders or loader components with `<AuthLoading>` to conditionally render them whenever authentication session data is being fetched.
+Wrap loading placeholders or loader components with `<AuthLoading />` to conditionally render them whenever authentication session data is being fetched.
 
 ```tsx
 import { AuthLoading } from "@daveyplate/better-auth-ui"
@@ -22,7 +22,7 @@ export default function LoadingExample() {
 
 ## Example
 
-Here's a complete example of using `<AuthLoading>` with loading skeletons and managing unauthenticated user sessions using the [`<RedirectToSignIn />`](/components/redirect-to-sign-in) and [`<SignedIn>`](/components/signed-in) components.
+Here's a complete example of using `<AuthLoading />` with loading skeletons and managing unauthenticated user sessions using the [`<RedirectToSignIn />`](/components/redirect-to-sign-in) and [`<SignedIn />`](/components/signed-in) components.
 
 ```tsx title="ProtectedPage.tsx"
 import { AuthLoading, RedirectToSignIn, SignedIn } from "@daveyplate/better-auth-ui"
@@ -48,9 +48,9 @@ export default function ProtectedPage() {
 
 ### Explanation
 
-- `<AuthLoading>` will render the loading skeleton (`<YourCustomSkeleton />`) while authentication or session data is initializing or fetching.
-- `<RedirectToSignIn>` automatically pushes any unauthenticated users to the sign-in page, ensuring pages that require authentication are protected from unauthorized access.
-- `<SignedIn>` ensures the enclosed content (`<DashboardContent />`) only displays for authenticated users.
+- `<AuthLoading />` will render the loading skeleton (`<YourCustomSkeleton />`) while authentication or session data is initializing or fetching.
+- `<RedirectToSignIn />` automatically pushes any unauthenticated users to the sign-in page, ensuring pages that require authentication are protected from unauthorized access.
+- `<SignedIn />` ensures the enclosed content (`<DashboardContent />`) only displays for authenticated users.
 
 This combined approach offers seamless handling of loading states, authentication redirection, and conditional rendering based on user authentication state, greatly improving the overall user experience.
 

@@ -22,7 +22,7 @@ Follow these steps to set up `@daveyplate/better-auth-ui` in your [Next.js](http
 <Step>
 ### AuthUIProvider
 
-The first step is to set up the [`<AuthUIProvider>`](/components/auth-ui-provider) client component with your [`authClient`](https://www.better-auth.com/docs/installation#create-client-instance), wrapping your layout. This is required to provide the context & hooks to your authentication components across your application.
+The first step is to set up the [`<AuthUIProvider />`](/components/auth-ui-provider) client component with your [`authClient`](https://www.better-auth.com/docs/installation#create-client-instance), wrapping your layout. This is required to provide the context & hooks to your authentication components across your application.
 
 ```tsx title="app/providers.tsx"
 "use client"
@@ -75,7 +75,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 }
 ```
 
-The [`<AuthUIProvider>`](/components/auth-ui-provider) can be fully customized with plugins, styles, localization and more. For more information and all available props, see the [`<AuthUIProvider>`](/components/auth-ui-provider) component documentation.
+The [`<AuthUIProvider />`](/components/auth-ui-provider) can be fully customized with plugins, styles, localization and more. For more information and all available props, see the [`<AuthUIProvider />`](/components/auth-ui-provider) component documentation.
 </Step>
 
 <Step>
@@ -184,7 +184,7 @@ Follow these steps to set up `@daveyplate/better-auth-ui` in your [Next.js](http
 <Step>
 ### AuthUIProvider
 
-First set up the [`<AuthUIProvider>`](/components/auth-ui-provider) within your custom App component in `_app.tsx`.
+First set up the [`<AuthUIProvider />`](/components/auth-ui-provider) within your custom App component in `_app.tsx`.
 
 ```tsx title="pages/_app.tsx"
 import type { AppProps } from "next/app"

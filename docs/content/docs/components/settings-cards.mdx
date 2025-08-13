@@ -4,7 +4,7 @@ title: <SettingsCards />
 
 The `<SettingsCards />` component provides a convenient plug-and-play UI for managing user account settings. It includes a comprehensive suite of manageable account settings, such as changing passwords and email addresses, updating avatars, managing linked providers, handling active sessions, and more.
 
-This component automatically leverages all the features you have enabled via the [`<AuthUIProvider>`](/components/auth-ui-provider) and provides a seamless user settings UI out of the box.
+This component automatically leverages all the features you have enabled via the [`<AuthUIProvider />`](/components/auth-ui-provider) and provides a seamless user settings UI out of the box.
 
 <img alt="Settings Cards" src="/screenshots/settings-cards-dark.png" className="rounded-xl hidden dark:block w-lg mt-0 mb-0" />
 <img alt="Settings Cards" src="/screenshots/settings-cards-light.png" className="rounded-xl dark:hidden w-lg mt-0 mb-0" />
@@ -15,7 +15,7 @@ By default, the built-in [`<AuthView />`](/components/auth-view) component autom
 
 ## Overriding Built-in Settings URL 
 
-To use your own custom settings route and avoid using the default included settings card, you can specify the `settings.url` prop within your [`<AuthUIProvider>`](/components/auth-ui-provider) configuration:
+To use your own custom settings route and avoid using the default included settings card, you can specify the `settings.url` prop within your [`<AuthUIProvider />`](/components/auth-ui-provider) configuration:
 
 ```tsx title="app/providers.tsx"
 import { AuthUIProvider } from "@daveyplate/better-auth-ui"
@@ -106,7 +106,7 @@ Using Tailwind utility classes, you can fully customize all card states. Here's 
 
 #### Custom Additional Fields
 
-The `<SettingsCards />` also supports displaying any custom `additionalFields` you've provided via the `settings.fields` prop of the `<AuthUIProvider>`:
+The `<SettingsCards />` also supports displaying any custom `additionalFields` you've provided via the `settings.fields` prop of the `<AuthUIProvider />`:
 
 ```tsx title="app/providers.tsx"
 <AuthUIProvider
