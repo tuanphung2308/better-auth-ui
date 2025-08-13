@@ -12,12 +12,11 @@
         "additional-field",
         "additional-fields",
         "auth-localization",
-        "auth-card-class-names",
+        "auth-view-class-names",
         "auth-form-class-names",
         "user-avatar-class-names",
         "user-button-class-names",
         "settings-card-class-names",
-        "settings-cards-class-names",
         "email-template-class-names"
     ]
 }

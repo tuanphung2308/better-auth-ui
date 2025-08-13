@@ -1,7 +1,7 @@
 {
     "icon": "Box",
     "pages": [
-        "auth-card",
+        "auth-view",
         "auth-ui-provider",
         "--- User ---",
         "user-avatar",

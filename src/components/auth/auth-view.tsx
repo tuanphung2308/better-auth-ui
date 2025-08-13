@@ -40,6 +40,19 @@ export type AuthViewClassNames = {
     title?: string
 }
 
+export interface AuthViewProps {
+    className?: string
+    classNames?: AuthViewClassNames
+    callbackURL?: string
+    cardHeader?: ReactNode
+    localization?: AuthLocalization
+    pathname?: string
+    redirectTo?: string
+    socialLayout?: "auto" | "horizontal" | "grid" | "vertical"
+    view?: keyof AuthViewPaths
+    otpSeparators?: 0 | 1 | 2
+}
+
 export function AuthView({
     className,
     classNames,
@@ -51,18 +64,7 @@ export function AuthView({
     socialLayout: socialLayoutProp = "auto",
     view: viewProp,
     otpSeparators = 0
-}: {
-    className?: string
-    classNames?: AuthViewClassNames
-    callbackURL?: string
-    cardHeader?: ReactNode
-    localization?: AuthLocalization
-    pathname?: string
-    redirectTo?: string
-    socialLayout?: "auto" | "horizontal" | "grid" | "vertical"
-    view?: keyof AuthViewPaths
-    otpSeparators?: 0 | 1 | 2
-}) {
+}: AuthViewProps) {
     const isHydrated = useIsHydrated()
     const {
         basePath,
