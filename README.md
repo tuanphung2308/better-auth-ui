@@ -1,7 +1,3 @@
-## v3 Release Notes and Migration
-
-See `v3-release-notes.md` in the repo root and the docs page `docs/content/docs/getting-started/migrating-to-v3.mdx` for details on breaking changes and a step-by-step migration guide from v2 to v3.
-
 # @daveyplate/better-auth-ui
 
 <picture>
