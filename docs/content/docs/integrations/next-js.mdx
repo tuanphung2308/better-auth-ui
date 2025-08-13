@@ -87,12 +87,15 @@ Create a dynamic route segment for authentication views in `app/auth/[authView]/
 import { authViewPaths } from "@daveyplate/better-auth-ui/server"
 import { AuthView } from "@daveyplate/better-auth-ui"
 
+export const dynamicParams = false
+
 export function generateStaticParams() {
     return Object.values(authViewPaths).map((authView) => ({ authView }))
 }
 
 export default async function AuthPage({ params }: { params: Promise<{ authView: string }> }) {
     const { authView } = await params
+    
     return <AuthView pathname={authView} />
 }
 ```
@@ -120,12 +123,14 @@ Ensure that any links to the authentication process utilize these routes accordi
 import { accountViewPaths } from "@daveyplate/better-auth-ui/server"
 import { AccountView } from "@daveyplate/better-auth-ui"
 
+export const dynamicParams = false
 export function generateStaticParams() {
     return Object.values(accountViewPaths).map((accountView) => ({ accountView }))
 }
 
 export default async function AccountPage({ params }: { params: Promise<{ accountView: string }> }) {
     const { accountView } = await params
+
     return (
         <main className="container p-4 md:p-6">
             <AccountView pathname={accountView} />
@@ -141,12 +146,15 @@ export default async function AccountPage({ params }: { params: Promise<{ accoun
 import { organizationViewPaths } from "@daveyplate/better-auth-ui/server"
 import { OrganizationView } from "@daveyplate/better-auth-ui"
 
+export const dynamicParams = false
+
 export function generateStaticParams() {
     return Object.values(organizationViewPaths).map((organizationView) => ({ organizationView }))
 }
 
 export default async function OrganizationPage({ params }: { params: Promise<{ organizationView: string }> }) {
     const { organizationView } = await params
+
     return (
         <main className="container p-4 md:p-6">
             <OrganizationView pathname={organizationView} />
@@ -160,12 +168,15 @@ If you prefer slug-based org URLs, set `organization={{ pathMode: "slug", basePa
 ```tsx title="app/organization/[slug]/[organizationView]/page.tsx"
 import { OrganizationView } from "@daveyplate/better-auth-ui"
 
-// When using slug-based URLs, you typically do NOT pre-generate slugs here.
-// Either omit generateStaticParams entirely (fully dynamic), or return slugs
-// from your data source and cross-product with organizationViewPaths.
+export const dynamicParams = false
+
+export function generateStaticParams() {
+    return Object.values(organizationViewPaths).map((organizationView) => ({ organizationView }))
+}
 
 export default async function OrganizationPage({ params }: { params: Promise<{ slug: string; organizationView: string }> }) {
     const { organizationView } = await params
+
     return (
         <main className="container p-4 md:p-6">
             <OrganizationView pathname={organizationView} />
