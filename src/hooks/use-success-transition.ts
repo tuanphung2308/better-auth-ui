@@ -10,7 +10,9 @@ import { getSearchParam } from "../lib/utils"
 
 export function useOnSuccessTransition({
     redirectTo: redirectToProp
-}: { redirectTo?: string }) {
+}: {
+    redirectTo?: string
+}) {
     const { redirectTo: contextRedirectTo } = useContext(AuthUIContext)
 
     const getRedirectTo = useCallback(

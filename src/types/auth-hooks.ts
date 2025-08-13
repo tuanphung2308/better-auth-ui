@@ -1,9 +1,10 @@
 import type { BetterFetchError } from "@better-fetch/fetch"
 import type { User } from "better-auth"
-import type { Invitation } from "better-auth/plugins/organization"
+import type { Member } from "better-auth/plugins/organization"
 import type { AnyAuthClient } from "./any-auth-client"
 import type { ApiKey } from "./api-key"
 import type { AuthClient } from "./auth-client"
+import type { Invitation } from "./invitation"
 import type { Refetch } from "./refetch"
 
 type AnyAuthSession = AnyAuthClient["$Infer"]["Session"]
@@ -46,5 +47,15 @@ export type AuthHooks = {
             organizationLogo?: string
         }
     >
+    useListInvitations: (
+        params: Parameters<AuthClient["organization"]["listInvitations"]>[0]
+    ) => AuthHook<Invitation[]>
+    useListUserInvitations: () => AuthHook<Invitation[]>
+    useListMembers: (
+        params: Parameters<AuthClient["organization"]["listMembers"]>[0]
+    ) => AuthHook<{
+        members: (Member & { user?: Partial<User> | null })[]
+        total: number
+    }>
     useIsRestoring?: () => boolean
 }

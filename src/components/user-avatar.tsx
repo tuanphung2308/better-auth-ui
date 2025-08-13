@@ -57,12 +57,12 @@ export function UserAvatar({
     const localization = { ...contextLocalization, ...propLocalization }
 
     const name =
-        user?.displayUsername ||
-        user?.username ||
         user?.displayName ||
-        user?.firstName ||
         user?.name ||
         user?.fullName ||
+        user?.firstName ||
+        user?.displayUsername ||
+        user?.username ||
         user?.email
     const userImage = user?.image || user?.avatar || user?.avatarUrl
 

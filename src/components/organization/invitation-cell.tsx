@@ -1,12 +1,13 @@
 "use client"
 
-import type { Invitation } from "better-auth/plugins/organization"
+import type { Organization } from "better-auth/plugins/organization"
 import { EllipsisIcon, Loader2, XIcon } from "lucide-react"
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
+import type { Invitation } from "../../types/invitation"
 import type { SettingsCardClassNames } from "../settings/shared/settings-card"
 import { Button } from "../ui/button"
 import { Card } from "../ui/card"
@@ -23,26 +24,30 @@ export interface InvitationCellProps {
     classNames?: SettingsCardClassNames
     invitation: Invitation
     localization?: AuthLocalization
+    organization: Organization
 }
 
 export function InvitationCell({
     className,
     classNames,
     invitation,
-    localization: localizationProp
+    localization: localizationProp,
+    organization
 }: InvitationCellProps) {
     const {
         authClient,
-        organization,
-        hooks: { useActiveOrganization },
+        hooks: { useListInvitations },
+        organization: organizationOptions,
         localization: contextLocalization,
         toast
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
-    const [isLoading, setIsLoading] = useState(false)
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
-    const { refetch } = useActiveOrganization()
+    const [isLoading, setIsLoading] = useState(false)
 
     const builtInRoles = [
         { role: "owner", label: localization.OWNER },
@@ -50,8 +55,12 @@ export function InvitationCell({
         { role: "member", label: localization.MEMBER }
     ]
 
-    const roles = [...builtInRoles, ...(organization?.customRoles || [])]
+    const roles = [...builtInRoles, ...(organizationOptions?.customRoles || [])]
     const role = roles.find((r) => r.role === invitation.role)
+
+    const { refetch } = useListInvitations({
+        query: { organizationId: organization?.id }
+    })
 
     const handleCancelInvitation = async () => {
         setIsLoading(true)
@@ -89,7 +98,7 @@ export function InvitationCell({
             <div className="flex flex-1 items-center gap-2">
                 <UserAvatar
                     className="my-0.5"
-                    user={{ email: invitation.email }}
+                    user={invitation}
                     localization={localization}
                 />
 
@@ -137,6 +146,7 @@ export function InvitationCell({
                         variant="destructive"
                     >
                         <XIcon className={classNames?.icon} />
+
                         {localization.CANCEL_INVITATION}
                     </DropdownMenuItem>
                 </DropdownMenuContent>

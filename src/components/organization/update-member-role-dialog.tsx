@@ -3,8 +3,7 @@
 import type { User } from "better-auth"
 import type { Member } from "better-auth/plugins/organization"
 import { Loader2 } from "lucide-react"
-import { type ComponentProps, useContext, useState } from "react"
-
+import { type ComponentProps, useContext, useMemo, useState } from "react"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
@@ -31,7 +30,7 @@ export interface UpdateMemberRoleDialogProps
     extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
-    member: Member & { user: Partial<User> }
+    member: Member & { user?: Partial<User> | null }
 }
 
 export function UpdateMemberRoleDialog({
@@ -43,17 +42,24 @@ export function UpdateMemberRoleDialog({
 }: UpdateMemberRoleDialogProps) {
     const {
         authClient,
-        hooks: { useActiveOrganization, useSession },
+        hooks: { useSession, useListMembers },
         localization: contextLocalization,
         organization,
         toast
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
-    const { refetch } = useActiveOrganization()
+    const { data, refetch } = useListMembers({
+        query: { organizationId: member.organizationId }
+    })
+
+    const members = data?.members
+
     const { data: sessionData } = useSession()
-    const { data: activeOrganization } = useActiveOrganization()
 
     const [isUpdating, setIsUpdating] = useState(false)
     const [selectedRole, setSelectedRole] = useState(member.role)
@@ -66,8 +72,8 @@ export function UpdateMemberRoleDialog({
 
     const roles = [...builtInRoles, ...(organization?.customRoles || [])]
 
-    const currentUserRole = activeOrganization?.members.find(
-        (m) => m.user.id === sessionData?.user.id
+    const currentUserRole = members?.find(
+        (m) => m.user?.id === sessionData?.user.id
     )?.role
 
     const availableRoles = roles.filter((role) => {
@@ -111,6 +117,7 @@ export function UpdateMemberRoleDialog({
             })
 
             await refetch?.()
+
             onOpenChange?.(false)
         } catch (error) {
             toast({

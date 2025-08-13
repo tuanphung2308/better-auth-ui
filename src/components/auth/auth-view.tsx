@@ -1,21 +1,13 @@
 "use client"
 
-import { ArrowLeftIcon, Loader2 } from "lucide-react"
+import { ArrowLeftIcon } from "lucide-react"
 import { type ReactNode, useContext, useEffect, useState } from "react"
-
 import { useIsHydrated } from "../../hooks/use-hydrated"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import type { AuthView } from "../../lib/auth-view-paths"
 import { socialProviders } from "../../lib/social-providers"
-import { cn, getAuthViewByPath } from "../../lib/utils"
+import { cn, getViewByPath } from "../../lib/utils"
+import type { AuthViewPaths } from "../../lib/view-paths"
 import type { AuthLocalization } from "../../localization/auth-localization"
-import { AcceptInvitationCard } from "../organization/accept-invitation-card"
-import {
-    SettingsCards,
-    type SettingsCardsClassNames,
-    type SettingsView,
-    settingsViews
-} from "../settings/settings-cards"
 import { Button } from "../ui/button"
 import {
     Card,
@@ -35,7 +27,7 @@ import { PasskeyButton } from "./passkey-button"
 import { ProviderButton } from "./provider-button"
 import { SignOut } from "./sign-out"
 
-export interface AuthCardClassNames {
+export type AuthViewClassNames = {
     base?: string
     content?: string
     description?: string
@@ -45,37 +37,10 @@ export interface AuthCardClassNames {
     form?: AuthFormClassNames
     header?: string
     separator?: string
-    settings?: SettingsCardsClassNames
     title?: string
 }
 
-export interface AuthCardProps {
-    className?: string
-    classNames?: AuthCardClassNames
-    callbackURL?: string
-    cardHeader?: ReactNode
-    /**
-     * @default authLocalization
-     * @remarks `AuthLocalization`
-     */
-    localization?: AuthLocalization
-    pathname?: string
-    redirectTo?: string
-    /**
-     * @default "auto"
-     */
-    socialLayout?: "auto" | "horizontal" | "grid" | "vertical"
-    /**
-     * @remarks `AuthView`
-     */
-    view?: AuthView
-    /**
-     * @default 0
-     */
-    otpSeparators?: 0 | 1 | 2
-}
-
-export function AuthCard({
+export function AuthView({
     className,
     classNames,
     callbackURL,
@@ -83,12 +48,22 @@ export function AuthCard({
     localization,
     pathname,
     redirectTo,
-    socialLayout = "auto",
-    view,
+    socialLayout: socialLayoutProp = "auto",
+    view: viewProp,
     otpSeparators = 0
-}: AuthCardProps) {
+}: {
+    className?: string
+    classNames?: AuthViewClassNames
+    callbackURL?: string
+    cardHeader?: ReactNode
+    localization?: AuthLocalization
+    pathname?: string
+    redirectTo?: string
+    socialLayout?: "auto" | "horizontal" | "grid" | "vertical"
+    view?: keyof AuthViewPaths
+    otpSeparators?: 0 | 1 | 2
+}) {
     const isHydrated = useIsHydrated()
-
     const {
         basePath,
         credentials,
@@ -97,17 +72,16 @@ export function AuthCard({
         emailOTP,
         oneTap,
         passkey,
-        settings,
         signUp,
         social,
         genericOAuth,
         viewPaths,
-        replace,
         Link
     } = useContext(AuthUIContext)
 
     localization = { ...contextLocalization, ...localization }
 
+    let socialLayout = socialLayoutProp
     if (socialLayout === "auto") {
         socialLayout = !credentials
             ? "vertical"
@@ -117,62 +91,27 @@ export function AuthCard({
     }
 
     const path = pathname?.split("/").pop()
-    view = view || getAuthViewByPath(viewPaths, path) || "SIGN_IN"
+    const view =
+        viewProp ||
+        (getViewByPath(
+            viewPaths as unknown as Record<string, string>,
+            path
+        ) as typeof viewProp) ||
+        "SIGN_IN"
 
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     useEffect(() => {
-        const handlePageHide = () => {
-            setIsSubmitting(false)
-        }
-
+        const handlePageHide = () => setIsSubmitting(false)
         window.addEventListener("pagehide", handlePageHide)
-
         return () => {
             setIsSubmitting(false)
             window.removeEventListener("pagehide", handlePageHide)
         }
     }, [])
 
-    useEffect(() => {
-        if (view === "SETTINGS" && settings?.url) replace(settings.url)
-        if (view === "SETTINGS" && !settings) replace(redirectTo || "/")
-
-        // Handle basePath redirects for settings views
-        if (
-            settings?.basePath &&
-            settingsViews.includes(view as SettingsView)
-        ) {
-            const viewPath = viewPaths[view as keyof typeof viewPaths]
-            const redirectPath = `${settings.basePath}/${viewPath}`
-
-            replace(redirectPath)
-        }
-    }, [replace, settings, view, redirectTo, viewPaths])
-
     if (view === "CALLBACK") return <AuthCallback redirectTo={redirectTo} />
     if (view === "SIGN_OUT") return <SignOut />
-
-    if (view === "ACCEPT_INVITATION")
-        return (
-            <AcceptInvitationCard
-                className={className}
-                classNames={classNames}
-                localization={localization}
-            />
-        )
-
-    if (settingsViews.includes(view as SettingsView))
-        return !settings || settings.url ? (
-            <Loader2 className="animate-spin" />
-        ) : (
-            <SettingsCards
-                className={cn(className)}
-                classNames={classNames?.settings}
-                localization={localization}
-                view={view as SettingsView}
-            />
-        )
 
     const description =
         !credentials && !magicLink && !emailOTP
@@ -194,7 +133,6 @@ export function AuthCard({
                         >
                             {localization[view as keyof typeof localization]}
                         </CardTitle>
-
                         {description && (
                             <CardDescription
                                 className={cn(
@@ -212,7 +150,7 @@ export function AuthCard({
             <CardContent className={cn("grid gap-6", classNames?.content)}>
                 {oneTap &&
                     ["SIGN_IN", "SIGN_UP", "MAGIC_LINK", "EMAIL_OTP"].includes(
-                        view
+                        view as string
                     ) && (
                         <OneTap
                             localization={localization}
@@ -241,7 +179,7 @@ export function AuthCard({
                                     "SIGN_IN",
                                     "MAGIC_LINK",
                                     "EMAIL_OTP"
-                                ].includes(view)) ||
+                                ].includes(view as string)) ||
                                 (emailOTP && view === "EMAIL_OTP")) && (
                                 <MagicLinkButton
                                     classNames={classNames}
@@ -259,10 +197,10 @@ export function AuthCard({
                                     "SIGN_IN",
                                     "MAGIC_LINK",
                                     "EMAIL_OTP"
-                                ].includes(view)) ||
+                                ].includes(view as string)) ||
                                 (magicLink &&
                                     ["SIGN_IN", "MAGIC_LINK"].includes(
-                                        view
+                                        view as string
                                     ))) && (
                                 <EmailOTPButton
                                     classNames={classNames}
@@ -292,11 +230,9 @@ export function AuthCard({
                                             classNames?.separator
                                         )}
                                     />
-
                                     <span className="flex-shrink-0 text-muted-foreground text-sm">
                                         {localization.OR_CONTINUE_WITH}
                                     </span>
-
                                     <Separator
                                         className={cn(
                                             "!w-auto grow",
@@ -328,7 +264,6 @@ export function AuthCard({
                                                         provider
                                                 )
                                             if (!socialProvider) return null
-
                                             return (
                                                 <ProviderButton
                                                     key={provider}
@@ -345,7 +280,6 @@ export function AuthCard({
                                                 />
                                             )
                                         })}
-
                                         {genericOAuth?.providers?.map(
                                             (provider) => (
                                                 <ProviderButton
@@ -375,7 +309,7 @@ export function AuthCard({
                                         "RECOVER_ACCOUNT",
                                         "TWO_FACTOR",
                                         "FORGOT_PASSWORD"
-                                    ].includes(view) && (
+                                    ].includes(view as string) && (
                                         <PasskeyButton
                                             classNames={classNames}
                                             isSubmitting={isSubmitting}
@@ -415,7 +349,9 @@ export function AuthCard({
                                 "text-foreground underline",
                                 classNames?.footerLink
                             )}
-                            href={`${basePath}/${viewPaths[view === "SIGN_IN" || view === "MAGIC_LINK" || view === "EMAIL_OTP" ? "SIGN_UP" : "SIGN_IN"]}${isHydrated ? window.location.search : ""}`}
+                            href={`${basePath}/${viewPaths[(view === "SIGN_IN" || view === "MAGIC_LINK" || view === "EMAIL_OTP") ? "SIGN_UP" : "SIGN_IN"]}${
+                                isHydrated ? window.location.search : ""
+                            }`}
                         >
                             <Button
                                 variant="link"

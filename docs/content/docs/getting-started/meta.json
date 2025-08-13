@@ -1,5 +1,9 @@
 {
     "icon": "Play",
     "defaultOpen": true,
-    "pages": ["requirements", "installation"]
+    "pages": [
+        "requirements",
+        "installation",
+        "migrating-to-v3"
+    ]
 }

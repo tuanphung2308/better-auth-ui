@@ -2,11 +2,10 @@
 
 import type { Organization } from "better-auth/plugins/organization"
 import { Loader2 } from "lucide-react"
-import { type ComponentProps, useContext, useState } from "react"
+import { type ComponentProps, useContext, useMemo, useState } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { getLocalizedError } from "../../lib/utils"
-import { cn } from "../../lib/utils"
+import { cn, getLocalizedError } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
 import type { SettingsCardClassNames } from "../settings/shared/settings-card"
 import { Button } from "../ui/button"
@@ -19,7 +18,7 @@ import {
     DialogHeader,
     DialogTitle
 } from "../ui/dialog"
-import { OrganizationView } from "./organization-view"
+import { OrganizationCellView } from "./organization-cell-view"
 
 export interface LeaveOrganizationDialogProps
     extends ComponentProps<typeof Dialog> {
@@ -39,15 +38,16 @@ export function LeaveOrganizationDialog({
 }: LeaveOrganizationDialogProps) {
     const {
         authClient,
-        hooks: { useActiveOrganization, useListOrganizations },
+        hooks: { useListOrganizations },
         localization: contextLocalization,
         toast
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } =
-        useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
 
     const [isLeaving, setIsLeaving] = useState(false)
@@ -58,21 +58,15 @@ export function LeaveOrganizationDialog({
         try {
             await authClient.organization.leave({
                 organizationId: organization.id,
-                fetchOptions: {
-                    throw: true
-                }
+                fetchOptions: { throw: true }
             })
+
+            await refetchOrganizations?.()
 
             toast({
                 variant: "success",
                 message: localization.LEAVE_ORGANIZATION_SUCCESS
             })
-
-            if (activeOrganization?.id === organization.id) {
-                refetchActiveOrganization?.()
-            }
-
-            await refetchOrganizations?.()
 
             onOpenChange?.(false)
         } catch (error) {
@@ -115,7 +109,7 @@ export function LeaveOrganizationDialog({
                         classNames?.cell
                     )}
                 >
-                    <OrganizationView
+                    <OrganizationCellView
                         organization={organization}
                         localization={localization}
                     />

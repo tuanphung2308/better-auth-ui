@@ -1,18 +1,17 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import type { Organization } from "better-auth/plugins/organization"
 import { Loader2 } from "lucide-react"
 import { type ComponentProps, useContext } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-
-import type { Organization } from "better-auth/plugins/organization"
 import { useLang } from "../../../hooks/use-lang"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
 import type { AuthLocalization } from "../../../localization/auth-localization"
 import type { Refetch } from "../../../types/refetch"
-import { OrganizationView } from "../../organization/organization-view"
+import { OrganizationCellView } from "../../organization/organization-cell-view"
 import { PersonalAccountView } from "../../organization/personal-account-view"
 import { Button } from "../../ui/button"
 import {
@@ -41,7 +40,7 @@ import {
 } from "../../ui/select"
 import type { SettingsCardClassNames } from "../shared/settings-card"
 
-interface CreateAPIKeyDialogProps extends ComponentProps<typeof Dialog> {
+interface CreateApiKeyDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
     onSuccess: (key: string) => void
@@ -49,7 +48,7 @@ interface CreateAPIKeyDialogProps extends ComponentProps<typeof Dialog> {
     organizationId?: string
 }
 
-export function CreateAPIKeyDialog({
+export function CreateApiKeyDialog({
     classNames,
     localization,
     onSuccess,
@@ -57,7 +56,7 @@ export function CreateAPIKeyDialog({
     organizationId,
     onOpenChange,
     ...props
-}: CreateAPIKeyDialogProps) {
+}: CreateApiKeyDialogProps) {
     const {
         authClient,
         apiKey,
@@ -198,7 +197,7 @@ export function CreateAPIKeyDialog({
                                             <FormControl>
                                                 <SelectTrigger
                                                     className={cn(
-                                                        "w-full",
+                                                        "w-full p-2",
                                                         classNames?.input
                                                     )}
                                                 >
@@ -214,9 +213,6 @@ export function CreateAPIKeyDialog({
                                                 <SelectItem
                                                     value="personal"
                                                     className="p-2"
-                                                    textValue={
-                                                        localization.PERSONAL_ACCOUNT
-                                                    }
                                                 >
                                                     <PersonalAccountView
                                                         user={user}
@@ -232,9 +228,8 @@ export function CreateAPIKeyDialog({
                                                         key={org.id}
                                                         value={org.id}
                                                         className="p-2"
-                                                        textValue={org.name}
                                                     >
-                                                        <OrganizationView
+                                                        <OrganizationCellView
                                                             organization={org}
                                                             localization={
                                                                 localization

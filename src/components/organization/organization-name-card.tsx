@@ -1,10 +1,12 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useContext } from "react"
+import type { Organization } from "better-auth/plugins/organization"
+import { useContext, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { useCurrentOrganization } from "../../hooks/use-current-organization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import {
@@ -16,31 +18,36 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
 import { Input } from "../ui/input"
 import { Skeleton } from "../ui/skeleton"
 
+export interface OrganizationNameCardProps extends SettingsCardProps {
+    slug?: string
+}
+
 export function OrganizationNameCard({
     className,
     classNames,
     localization: localizationProp,
+    slug,
     ...props
-}: SettingsCardProps) {
-    const {
-        hooks: { useActiveOrganization },
-        localization: contextLocalization
-    } = useContext(AuthUIContext)
+}: OrganizationNameCardProps) {
+    const { localization: contextLocalization } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
-    const { data: activeOrganization } = useActiveOrganization()
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
-    if (!activeOrganization) {
+    const { data: organization } = useCurrentOrganization({ slug })
+
+    if (!organization) {
         return (
             <SettingsCard
                 className={className}
                 classNames={classNames}
+                actionLabel={localization.SAVE}
                 description={localization.ORGANIZATION_NAME_DESCRIPTION}
                 instructions={localization.ORGANIZATION_NAME_INSTRUCTIONS}
                 isPending
                 title={localization.ORGANIZATION_NAME}
-                actionLabel={localization.SAVE}
-                optimistic={props.optimistic}
                 {...props}
             >
                 <CardContent className={classNames?.content}>
@@ -57,6 +64,7 @@ export function OrganizationNameCard({
             className={className}
             classNames={classNames}
             localization={localization}
+            organization={organization}
             {...props}
         />
     )
@@ -66,30 +74,32 @@ function OrganizationNameForm({
     className,
     classNames,
     localization: localizationProp,
+    organization,
     ...props
-}: SettingsCardProps) {
+}: OrganizationNameCardProps & { organization: Organization }) {
     const {
-        authClient,
         localization: contextLocalization,
-        hooks: {
-            useActiveOrganization,
-            useListOrganizations,
-            useHasPermission
-        },
+        hooks: { useHasPermission },
+        mutators: { updateOrganization },
         optimistic,
         toast
     } = useContext(AuthUIContext)
 
     const localization = { ...contextLocalization, ...localizationProp }
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } =
-        useActiveOrganization()
-    const { refetch: refetchOrganizations } = useListOrganizations()
-    const { data: hasPermission, isPending } = useHasPermission({
-        permissions: {
-            organization: ["update"]
-        }
+    const { data: hasPermission, isPending: permissionPending } =
+        useHasPermission({
+            organizationId: organization.id,
+            permissions: {
+                organization: ["update"]
+            }
+        })
+
+    const { refetch: refetchOrganization } = useCurrentOrganization({
+        slug: organization.slug
     })
+
+    const isPending = permissionPending
 
     const formSchema = z.object({
         name: z.string().min(1, {
@@ -99,7 +109,7 @@ function OrganizationNameForm({
 
     const form = useForm({
         resolver: zodResolver(formSchema),
-        values: { name: activeOrganization?.name || "" }
+        values: { name: organization.name || "" }
     })
 
     const { isSubmitting } = form.formState
@@ -107,9 +117,7 @@ function OrganizationNameForm({
     const updateOrganizationName = async ({
         name
     }: z.infer<typeof formSchema>) => {
-        if (!activeOrganization) return
-
-        if (activeOrganization.name === name) {
+        if (organization.name === name) {
             toast({
                 variant: "error",
                 message: `${localization.ORGANIZATION_NAME} ${localization.IS_THE_SAME}`
@@ -119,16 +127,12 @@ function OrganizationNameForm({
         }
 
         try {
-            await authClient.organization.update({
-                organizationId: activeOrganization.id,
-                data: { name },
-                fetchOptions: {
-                    throw: true
-                }
+            await updateOrganization({
+                organizationId: organization.id,
+                data: { name }
             })
 
-            await refetchActiveOrganization?.()
-            await refetchOrganizations?.()
+            await refetchOrganization?.()
 
             toast({
                 variant: "success",

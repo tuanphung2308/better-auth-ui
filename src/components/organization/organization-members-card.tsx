@@ -1,11 +1,13 @@
 "use client"
 
-import { useContext, useEffect, useState } from "react"
+import type { Organization } from "better-auth/plugins/organization"
+import { useContext, useMemo, useState } from "react"
 
+import { useCurrentOrganization } from "../../hooks/use-current-organization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
-import { SettingsCard } from "../settings/shared/settings-card"
 import type { SettingsCardProps } from "../settings/shared/settings-card"
+import { SettingsCard } from "../settings/shared/settings-card"
 import { CardContent } from "../ui/card"
 import { InviteMemberDialog } from "./invite-member-dialog"
 import { MemberCell } from "./member-cell"
@@ -14,40 +16,24 @@ export function OrganizationMembersCard({
     className,
     classNames,
     localization: localizationProp,
+    slug: slugProp,
     ...props
-}: SettingsCardProps) {
+}: SettingsCardProps & { slug?: string }) {
     const {
-        basePath,
-        hooks: { useActiveOrganization },
         localization: contextLocalization,
-        settings,
-        replace,
-        viewPaths
+        organization: organizationOptions
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
-    const {
-        data: activeOrganization,
-        isPending: organizationPending,
-        isRefetching: organizationFetching
-    } = useActiveOrganization()
+    const slug = slugProp || organizationOptions?.slug
 
-    useEffect(() => {
-        if (organizationPending || organizationFetching) return
-        if (!activeOrganization)
-            replace(`${settings?.basePath || basePath}/${viewPaths.SETTINGS}`)
-    }, [
-        activeOrganization,
-        organizationPending,
-        organizationFetching,
-        basePath,
-        settings?.basePath,
-        replace,
-        viewPaths
-    ])
+    const { data: organization } = useCurrentOrganization({ slug })
 
-    if (!activeOrganization) {
+    if (!organization) {
         return (
             <SettingsCard
                 className={className}
@@ -67,6 +53,7 @@ export function OrganizationMembersCard({
             className={className}
             classNames={classNames}
             localization={localization}
+            organization={organization}
             {...props}
         />
     )
@@ -76,18 +63,22 @@ function OrganizationMembersContent({
     className,
     classNames,
     localization: localizationProp,
+    organization,
     ...props
-}: SettingsCardProps) {
+}: SettingsCardProps & { organization: Organization }) {
     const {
-        hooks: { useActiveOrganization, useHasPermission },
+        hooks: { useHasPermission, useListMembers },
         localization: contextLocalization
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
-    const { data: activeOrganization } = useActiveOrganization()
     const { data: hasPermissionInvite, isPending: isPendingInvite } =
         useHasPermission({
+            organizationId: organization.id,
             permissions: {
                 invitation: ["create"]
             }
@@ -97,6 +88,7 @@ function OrganizationMembersContent({
         data: hasPermissionUpdateMember,
         isPending: isPendingUpdateMember
     } = useHasPermission({
+        organizationId: organization.id,
         permission: {
             member: ["update"]
         }
@@ -104,7 +96,11 @@ function OrganizationMembersContent({
 
     const isPending = isPendingInvite || isPendingUpdateMember
 
-    const members = activeOrganization?.members
+    const { data } = useListMembers({
+        query: { organizationId: organization.id }
+    })
+
+    const members = data?.members
 
     const [inviteDialogOpen, setInviteDialogOpen] = useState(false)
 
@@ -152,6 +148,7 @@ function OrganizationMembersContent({
                 onOpenChange={setInviteDialogOpen}
                 classNames={classNames}
                 localization={localization}
+                organization={organization}
             />
         </>
     )

@@ -1,8 +1,9 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import type { Organization } from "better-auth/plugins/organization"
 import { Loader2 } from "lucide-react"
-import { type ComponentProps, useContext } from "react"
+import { type ComponentProps, useContext, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -29,40 +30,43 @@ import {
     FormMessage
 } from "../ui/form"
 import { Input } from "../ui/input"
-import { OrganizationView } from "./organization-view"
+import { OrganizationCellView } from "./organization-cell-view"
 
 export interface DeleteOrganizationDialogProps
     extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
+    organization: Organization
 }
 
 export function DeleteOrganizationDialog({
     classNames,
-    localization,
+    localization: localizationProp,
     onOpenChange,
+    organization,
     ...props
 }: DeleteOrganizationDialogProps) {
     const {
         authClient,
-        hooks: { useActiveOrganization, useListOrganizations },
+        account: accountOptions,
+        hooks: { useListOrganizations },
         localization: contextLocalization,
-        redirectTo,
         navigate,
         toast
     } = useContext(AuthUIContext)
 
-    localization = { ...contextLocalization, ...localization }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } =
-        useActiveOrganization()
     const { refetch: refetchOrganizations } = useListOrganizations()
 
     const formSchema = z.object({
         slug: z
             .string()
             .min(1, { message: localization.SLUG_REQUIRED! })
-            .refine((val) => val === activeOrganization?.slug, {
+            .refine((val) => val === organization.slug, {
                 message: localization.SLUG_DOES_NOT_MATCH!
             })
     })
@@ -77,24 +81,23 @@ export function DeleteOrganizationDialog({
     const { isSubmitting } = form.formState
 
     const deleteOrganization = async () => {
-        if (!activeOrganization) return
-
         try {
             await authClient.organization.delete({
-                organizationId: activeOrganization.id,
-                fetchOptions: {
-                    throw: true
-                }
+                organizationId: organization.id,
+                fetchOptions: { throw: true }
             })
 
             await refetchOrganizations?.()
-            await refetchActiveOrganization?.()
 
             toast({
                 variant: "success",
                 message: localization.DELETE_ORGANIZATION_SUCCESS!
             })
-            navigate(redirectTo)
+
+            navigate(
+                `${accountOptions?.basePath}/${accountOptions?.viewPaths.ORGANIZATIONS}`
+            )
+
             onOpenChange?.(false)
         } catch (error) {
             toast({
@@ -127,8 +130,8 @@ export function DeleteOrganizationDialog({
                 </DialogHeader>
 
                 <Card className={cn("my-2 flex-row p-4", classNames?.cell)}>
-                    <OrganizationView
-                        organization={activeOrganization}
+                    <OrganizationCellView
+                        organization={organization}
                         localization={localization}
                     />
                 </Card>
@@ -149,15 +152,13 @@ export function DeleteOrganizationDialog({
                                         }
 
                                         <span className="font-bold">
-                                            {activeOrganization?.slug}
+                                            {organization.slug}
                                         </span>
                                     </FormLabel>
 
                                     <FormControl>
                                         <Input
-                                            placeholder={
-                                                activeOrganization?.slug
-                                            }
+                                            placeholder={organization.slug}
                                             className={classNames?.input}
                                             autoComplete="off"
                                             {...field}

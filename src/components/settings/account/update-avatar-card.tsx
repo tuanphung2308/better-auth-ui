@@ -92,6 +92,11 @@ export function UpdateAvatarCard({
         setLoading(true)
 
         try {
+            // If a custom storage remover is provided, attempt to clean up the old asset first
+            if (sessionData.user.image && avatar?.delete) {
+                await avatar.delete(sessionData.user.image)
+            }
+
             await updateUser({ image: null })
             await refetch?.()
         } catch (error) {

@@ -77,6 +77,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
               return data.url
             },
+            delete: async (url) => {
+              await fetch("/api/deleteAvatar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url })
+              })
+            },
             // Custom Image component for rendering avatar images
             // Useful for CDN optimization (Cloudinary, Imgix, ImgProxy, etc.)
             Image: Image // Use Next.js Image component for avatars

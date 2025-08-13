@@ -1,10 +1,12 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useContext } from "react"
+import type { Organization } from "better-auth/plugins/organization"
+import { useContext, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { useCurrentOrganization } from "../../hooks/use-current-organization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import {
@@ -16,21 +18,32 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
 import { Input } from "../ui/input"
 import { Skeleton } from "../ui/skeleton"
 
+export interface OrganizationSlugCardProps extends SettingsCardProps {
+    slug?: string
+}
+
 export function OrganizationSlugCard({
     className,
     classNames,
     localization: localizationProp,
+    slug: slugProp,
     ...props
-}: SettingsCardProps) {
+}: OrganizationSlugCardProps) {
     const {
-        hooks: { useActiveOrganization },
-        localization: contextLocalization
+        localization: contextLocalization,
+        organization: organizationOptions
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
-    const { data: activeOrganization } = useActiveOrganization()
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
-    if (!activeOrganization) {
+    const slug = slugProp || organizationOptions?.slug
+
+    const { data: organization } = useCurrentOrganization({ slug })
+
+    if (!organization) {
         return (
             <SettingsCard
                 className={className}
@@ -40,7 +53,6 @@ export function OrganizationSlugCard({
                 isPending
                 title={localization.ORGANIZATION_SLUG}
                 actionLabel={localization.SAVE}
-                optimistic={props.optimistic}
                 {...props}
             >
                 <CardContent className={classNames?.content}>
@@ -57,6 +69,7 @@ export function OrganizationSlugCard({
             className={className}
             classNames={classNames}
             localization={localization}
+            organization={organization}
             {...props}
         />
     )
@@ -66,26 +79,30 @@ function OrganizationSlugForm({
     className,
     classNames,
     localization: localizationProp,
+    organization,
     ...props
-}: SettingsCardProps) {
+}: OrganizationSlugCardProps & { organization: Organization }) {
     const {
-        authClient,
         localization: contextLocalization,
-        hooks: {
-            useActiveOrganization,
-            useListOrganizations,
-            useHasPermission
-        },
+        hooks: { useHasPermission },
+        mutators: { updateOrganization },
         optimistic,
-        toast
+        toast,
+        organization: organizationOptions,
+        replace
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } =
-        useActiveOrganization()
-    const { refetch: refetchOrganizations } = useListOrganizations()
+    const { refetch: refetchOrganization } = useCurrentOrganization({
+        slug: organization.slug
+    })
+
     const { data: hasPermission, isPending } = useHasPermission({
+        organizationId: organization.id,
         permissions: {
             organization: ["update"]
         }
@@ -104,7 +121,7 @@ function OrganizationSlugForm({
 
     const form = useForm({
         resolver: zodResolver(formSchema),
-        values: { slug: activeOrganization?.slug || "" }
+        values: { slug: organization.slug || "" }
     })
 
     const { isSubmitting } = form.formState
@@ -112,9 +129,7 @@ function OrganizationSlugForm({
     const updateOrganizationSlug = async ({
         slug
     }: z.infer<typeof formSchema>) => {
-        if (!activeOrganization) return
-
-        if (activeOrganization.slug === slug) {
+        if (organization.slug === slug) {
             toast({
                 variant: "error",
                 message: `${localization.ORGANIZATION_SLUG} ${localization.IS_THE_SAME}`
@@ -124,21 +139,24 @@ function OrganizationSlugForm({
         }
 
         try {
-            await authClient.organization.update({
-                organizationId: activeOrganization.id,
-                data: { slug },
-                fetchOptions: {
-                    throw: true
-                }
+            await updateOrganization({
+                organizationId: organization.id,
+                data: { slug }
             })
 
-            await refetchActiveOrganization?.()
-            await refetchOrganizations?.()
+            await refetchOrganization?.()
 
             toast({
                 variant: "success",
                 message: `${localization.ORGANIZATION_SLUG} ${localization.UPDATED_SUCCESSFULLY}`
             })
+
+            // If using slug-based paths, redirect to the new slug's settings route
+            if (organizationOptions?.pathMode === "slug") {
+                const basePath = organizationOptions.basePath
+                const settingsPath = organizationOptions.viewPaths.SETTINGS
+                replace(`${basePath}/${slug}/${settingsPath}`)
+            }
         } catch (error) {
             toast({
                 variant: "error",

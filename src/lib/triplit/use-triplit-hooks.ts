@@ -17,7 +17,7 @@ type ModelNames = {
 }
 
 export interface UseTriplitOptionsProps {
-    // biome-ignore lint/suspicious/noExplicitAny:
+    // biome-ignore lint/suspicious/noExplicitAny: ignore
     triplit: TriplitClient<any>
     modelNames?: Partial<ModelNames>
     usePlural?: boolean

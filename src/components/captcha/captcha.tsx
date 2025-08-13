@@ -16,7 +16,7 @@ const DEFAULT_CAPTCHA_ENDPOINTS = [
 ]
 
 interface CaptchaProps {
-    // biome-ignore lint/suspicious/noExplicitAny:
+    // biome-ignore lint/suspicious/noExplicitAny: ignore
     ref: RefObject<any>
     localization: Partial<AuthLocalization>
     action?: string // Optional action to check if it's in the endpoints list

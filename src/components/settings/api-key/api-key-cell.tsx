@@ -14,7 +14,7 @@ import { Card } from "../../ui/card"
 import type { SettingsCardClassNames } from "../shared/settings-card"
 import { ApiKeyDeleteDialog } from "./api-key-delete-dialog"
 
-export interface APIKeyCellProps {
+export interface ApiKeyCellProps {
     className?: string
     classNames?: SettingsCardClassNames
     apiKey: ApiKey
@@ -22,13 +22,13 @@ export interface APIKeyCellProps {
     refetch?: Refetch
 }
 
-export function APIKeyCell({
+export function ApiKeyCell({
     className,
     classNames,
     apiKey,
     localization,
     refetch
-}: APIKeyCellProps) {
+}: ApiKeyCellProps) {
     const { localization: contextLocalization } = useContext(AuthUIContext)
     localization = { ...contextLocalization, ...localization }
 

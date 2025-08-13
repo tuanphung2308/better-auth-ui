@@ -45,7 +45,9 @@ export function MagicLinkForm({
     setIsSubmitting
 }: MagicLinkFormProps) {
     const isHydrated = useIsHydrated()
-    const { captchaRef, getCaptchaHeaders } = useCaptcha({ localization })
+    const { captchaRef, getCaptchaHeaders, resetCaptcha } = useCaptcha({
+        localization
+    })
 
     const {
         authClient,
@@ -132,6 +134,7 @@ export function MagicLinkForm({
                 variant: "error",
                 message: getLocalizedError({ error, localization })
             })
+            resetCaptcha()
         }
     }
 

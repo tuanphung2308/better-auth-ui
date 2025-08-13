@@ -9,8 +9,8 @@ import type { AuthLocalization } from "../../../localization/auth-localization"
 import { CardContent } from "../../ui/card"
 import { Form } from "../../ui/form"
 import { SessionFreshnessDialog } from "../shared/session-freshness-dialog"
-import { SettingsCard } from "../shared/settings-card"
 import type { SettingsCardClassNames } from "../shared/settings-card"
+import { SettingsCard } from "../shared/settings-card"
 import { PasskeyCell } from "./passkey-cell"
 
 export interface PasskeysCardProps {

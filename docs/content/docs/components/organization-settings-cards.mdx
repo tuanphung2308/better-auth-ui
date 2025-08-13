@@ -98,6 +98,10 @@ The organization plugin must be enabled with proper configuration:
         // Your upload logic
         return uploadedUrl
       },
+      delete: async (url) => {
+        // Optional: clean up your storage/CDN on delete
+        await myCdn.delete(url)
+      },
       size: 256,
       extension: "png"
     }

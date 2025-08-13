@@ -6,10 +6,10 @@ import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
 import { Button } from "../ui/button"
-import type { AuthCardClassNames } from "./auth-card"
+import type { AuthViewClassNames } from "./auth-view"
 
 interface PasskeyButtonProps {
-    classNames?: AuthCardClassNames
+    classNames?: AuthViewClassNames
     isSubmitting?: boolean
     localization: Partial<AuthLocalization>
     redirectTo?: string

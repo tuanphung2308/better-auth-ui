@@ -662,6 +662,10 @@ export const authLocalization = {
     PENDING_INVITATIONS_DESCRIPTION:
         "Manage pending invitations to your organization.",
 
+    /** @default "Invitations you've received from organizations." */
+    PENDING_USER_INVITATIONS_DESCRIPTION:
+        "Invitations you've received from organizations.",
+
     /** @default "Cancel Invitation" */
     CANCEL_INVITATION: "Cancel Invitation",
 

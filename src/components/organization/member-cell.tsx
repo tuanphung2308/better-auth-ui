@@ -18,13 +18,14 @@ import {
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
 import { UserView } from "../user-view"
+import { LeaveOrganizationDialog } from "./leave-organization-dialog"
 import { RemoveMemberDialog } from "./remove-member-dialog"
 import { UpdateMemberRoleDialog } from "./update-member-role-dialog"
 
 export interface MemberCellProps {
     className?: string
     classNames?: SettingsCardClassNames
-    member: Member & { user: Partial<User> }
+    member: Member & { user?: Partial<User> | null }
     localization?: AuthLocalization
     hideActions?: boolean
 }
@@ -37,15 +38,20 @@ export function MemberCell({
     hideActions
 }: MemberCellProps) {
     const {
-        organization,
-        hooks: { useActiveOrganization, useSession },
+        organization: organizationOptions,
+        hooks: {
+            useListMembers,
+            useSession,
+            useListOrganizations,
+            useHasPermission
+        },
         localization: contextLocalization
     } = useContext(AuthUIContext)
     const localization = { ...contextLocalization, ...localizationProp }
 
     const { data: sessionData } = useSession()
-    const { data: activeOrganization } = useActiveOrganization()
     const [removeDialogOpen, setRemoveDialogOpen] = useState(false)
+    const [leaveDialogOpen, setLeaveDialogOpen] = useState(false)
     const [updateRoleDialogOpen, setUpdateRoleDialogOpen] = useState(false)
 
     const builtInRoles = [
@@ -54,11 +60,29 @@ export function MemberCell({
         { role: "member", label: localization.MEMBER }
     ]
 
-    const myRole = activeOrganization?.members.find(
-        (m) => m.user.id === sessionData?.user.id
+    const { data } = useListMembers({
+        query: { organizationId: member.organizationId }
+    })
+
+    const members = data?.members
+
+    const myRole = members?.find(
+        (m) => m.user?.id === sessionData?.user.id
     )?.role
-    const roles = [...builtInRoles, ...(organization?.customRoles || [])]
+    const roles = [...builtInRoles, ...(organizationOptions?.customRoles || [])]
     const role = roles.find((r) => r.role === member.role)
+
+    const isSelf = sessionData?.user.id === member?.userId
+
+    const { data: organizations } = useListOrganizations()
+    const organization = organizations?.find(
+        (org) => org.id === member.organizationId
+    )
+
+    const { data: hasPermissionToUpdateMember } = useHasPermission({
+        organizationId: member.organizationId,
+        permission: { member: ["update"] }
+    })
 
     return (
         <>
@@ -74,10 +98,13 @@ export function MemberCell({
                     localization={localization}
                     className="flex-1"
                 />
-                <span className="text-sm opacity-70">{role?.label}</span>
 
-                {(member.role !== "owner" || myRole === "owner") &&
-                    !hideActions && (
+                <span className="text-xs opacity-70">{role?.label}</span>
+
+                {!hideActions &&
+                    (isSelf ||
+                        member.role !== "owner" ||
+                        myRole === "owner") && (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button
@@ -99,21 +126,31 @@ export function MemberCell({
                             <DropdownMenuContent
                                 onCloseAutoFocus={(e) => e.preventDefault()}
                             >
-                                <DropdownMenuItem
-                                    onClick={() =>
-                                        setUpdateRoleDialogOpen(true)
-                                    }
-                                >
-                                    <UserCogIcon className={classNames?.icon} />
-                                    {localization?.UPDATE_ROLE}
-                                </DropdownMenuItem>
+                                {hasPermissionToUpdateMember?.success && (
+                                    <DropdownMenuItem
+                                        onClick={() =>
+                                            setUpdateRoleDialogOpen(true)
+                                        }
+                                    >
+                                        <UserCogIcon
+                                            className={classNames?.icon}
+                                        />
+                                        {localization?.UPDATE_ROLE}
+                                    </DropdownMenuItem>
+                                )}
 
                                 <DropdownMenuItem
-                                    onClick={() => setRemoveDialogOpen(true)}
+                                    onClick={() =>
+                                        isSelf
+                                            ? setLeaveDialogOpen(true)
+                                            : setRemoveDialogOpen(true)
+                                    }
                                     variant="destructive"
                                 >
                                     <UserXIcon className={classNames?.icon} />
-                                    {localization?.REMOVE_MEMBER}
+                                    {isSelf
+                                        ? localization?.LEAVE_ORGANIZATION
+                                        : localization?.REMOVE_MEMBER}
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -127,6 +164,16 @@ export function MemberCell({
                 classNames={classNames}
                 localization={localization}
             />
+
+            {organization && (
+                <LeaveOrganizationDialog
+                    open={leaveDialogOpen}
+                    onOpenChange={setLeaveDialogOpen}
+                    organization={organization}
+                    classNames={classNames}
+                    localization={localization}
+                />
+            )}
 
             <UpdateMemberRoleDialog
                 open={updateRoleDialogOpen}

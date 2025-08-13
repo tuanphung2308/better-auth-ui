@@ -1,5 +1,6 @@
 "use client"
 
+import type { Organization } from "better-auth/plugins/organization"
 import {
     ChevronsUpDown,
     LogInIcon,
@@ -16,9 +17,9 @@ import {
     useState
 } from "react"
 
+import { useCurrentOrganization } from "../../hooks/use-current-organization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
-import { getLocalizedError } from "../../lib/utils"
-import { cn } from "../../lib/utils"
+import { cn, getLocalizedError } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
 import type { User } from "../../types/auth-client"
 import { Button } from "../ui/button"
@@ -32,11 +33,11 @@ import {
 import { UserAvatar, type UserAvatarClassNames } from "../user-avatar"
 import type { UserViewClassNames } from "../user-view"
 import { CreateOrganizationDialog } from "./create-organization-dialog"
-import { OrganizationLogo } from "./organization-logo"
 import {
-    OrganizationView,
+    OrganizationCellView,
     type OrganizationViewClassNames
-} from "./organization-view"
+} from "./organization-cell-view"
+import { OrganizationLogo } from "./organization-logo"
 import { PersonalAccountView } from "./personal-account-view"
 
 export interface OrganizationSwitcherClassNames {
@@ -65,7 +66,8 @@ export interface OrganizationSwitcherProps
     align?: "center" | "start" | "end"
     trigger?: ReactNode
     localization?: AuthLocalization
-    onSetActive?: (organizationId: string | null) => void
+    slug?: string
+    onSetActive?: (organization: Organization | null) => void
     /**
      * Hide the personal organization option from the switcher.
      * When true, users can only switch between organizations and cannot access their personal account.
@@ -91,6 +93,7 @@ export function OrganizationSwitcher({
     align,
     trigger,
     localization: localizationProp,
+    slug: slugProp,
     size,
     onSetActive,
     hidePersonal,
@@ -99,13 +102,24 @@ export function OrganizationSwitcher({
     const {
         authClient,
         basePath,
-        hooks: { useActiveOrganization, useSession, useListOrganizations },
+        hooks: { useSession, useListOrganizations },
         localization: contextLocalization,
-        settings,
+        account: accountOptions,
+        organization: organizationOptions,
+        redirectTo,
+        navigate,
         toast,
         viewPaths,
         Link
     } = useContext(AuthUIContext)
+
+    const {
+        pathMode,
+        slug: contextSlug,
+        personalPath
+    } = organizationOptions || {}
+
+    const slug = slugProp || contextSlug
 
     const localization = useMemo(
         () => ({ ...contextLocalization, ...localizationProp }),
@@ -120,42 +134,58 @@ export function OrganizationSwitcher({
     const { data: sessionData, isPending: sessionPending } = useSession()
     const user = sessionData?.user
 
-    const { data: organizations } = useListOrganizations()
+    const { data: organizations, isPending: organizationsPending } =
+        useListOrganizations()
+
     const {
         data: activeOrganization,
         isPending: organizationPending,
-        refetch: refetchActiveOrganization,
-        isRefetching
-    } = useActiveOrganization()
+        isRefetching: organizationRefetching
+    } = useCurrentOrganization({ slug })
 
     const isPending =
-        sessionPending || activeOrganizationPending || organizationPending
+        organizationsPending ||
+        sessionPending ||
+        activeOrganizationPending ||
+        organizationPending
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies:
+    // biome-ignore lint/correctness/useExhaustiveDependencies: ignore
     useEffect(() => {
-        if (isRefetching) return
+        if (organizationRefetching) return
 
         setActiveOrganizationPending(false)
-    }, [activeOrganization, isRefetching])
+    }, [activeOrganization, organizationRefetching])
 
     const switchOrganization = useCallback(
-        async (organizationId: string | null) => {
+        async (organization: Organization | null) => {
             // Prevent switching to personal account when hidePersonal is true
-            if (hidePersonal && organizationId === null) {
+            if (hidePersonal && organization === null) {
+                return
+            }
+
+            if (pathMode === "slug") {
+                if (organization) {
+                    navigate(
+                        `${organizationOptions?.basePath}/${organization.slug}`
+                    )
+                } else {
+                    navigate(personalPath ?? redirectTo)
+                }
+
                 return
             }
 
             setActiveOrganizationPending(true)
 
             try {
-                onSetActive?.(organizationId)
+                onSetActive?.(organization)
+
                 await authClient.organization.setActive({
-                    organizationId: organizationId,
+                    organizationId: organization?.id || null,
                     fetchOptions: {
                         throw: true
                     }
                 })
-                await refetchActiveOrganization?.()
             } catch (error) {
                 toast({
                     variant: "error",
@@ -170,14 +200,14 @@ export function OrganizationSwitcher({
             toast,
             localization,
             onSetActive,
-            refetchActiveOrganization,
-            hidePersonal
+            hidePersonal,
+            pathMode,
+            personalPath,
+            organizationOptions?.basePath,
+            redirectTo,
+            navigate
         ]
     )
-
-    // Determine whether to show personal view based on hidePersonal prop
-    const shouldShowPersonal =
-        !hidePersonal && !activeOrganization && !activeOrganizationPending
 
     // Auto-select first organization when hidePersonal is true
     useEffect(() => {
@@ -188,9 +218,10 @@ export function OrganizationSwitcher({
             organizations &&
             organizations.length > 0 &&
             !sessionPending &&
-            !organizationPending
+            !organizationPending &&
+            !slug
         ) {
-            switchOrganization(organizations[0].id)
+            switchOrganization(organizations[0])
         }
     }, [
         hidePersonal,
@@ -199,7 +230,8 @@ export function OrganizationSwitcher({
         organizations,
         sessionPending,
         organizationPending,
-        switchOrganization
+        switchOrganization,
+        slug
     ])
 
     return (
@@ -219,9 +251,9 @@ export function OrganizationSwitcher({
                                 type="button"
                                 {...props}
                             >
-                                {(!sessionData && !isPending) ||
-                                activeOrganizationPending ||
+                                {isPending ||
                                 activeOrganization ||
+                                !sessionData ||
                                 (user as User)?.isAnonymous ||
                                 hidePersonal ? (
                                     <OrganizationLogo
@@ -231,10 +263,7 @@ export function OrganizationSwitcher({
                                             classNames?.base
                                         )}
                                         classNames={classNames?.trigger?.avatar}
-                                        isPending={
-                                            isPending ||
-                                            activeOrganizationPending
-                                        }
+                                        isPending={isPending}
                                         organization={activeOrganization}
                                         aria-label={localization.ORGANIZATION}
                                         localization={localization}
@@ -247,7 +276,6 @@ export function OrganizationSwitcher({
                                             classNames?.base
                                         )}
                                         classNames={classNames?.trigger?.avatar}
-                                        isPending={isPending}
                                         user={user}
                                         aria-label={localization.ACCOUNT}
                                         localization={localization}
@@ -257,26 +285,23 @@ export function OrganizationSwitcher({
                         ) : (
                             <Button
                                 className={cn(
-                                    "!p-2",
+                                    "!p-2 h-fit",
                                     className,
                                     classNames?.trigger?.base
                                 )}
                                 size={size}
                                 {...props}
                             >
-                                {(!sessionData && !isPending) ||
-                                activeOrganizationPending ||
+                                {isPending ||
                                 activeOrganization ||
+                                !sessionData ||
                                 (user as User)?.isAnonymous ||
                                 hidePersonal ? (
-                                    <OrganizationView
+                                    <OrganizationCellView
                                         classNames={
                                             classNames?.trigger?.organization
                                         }
-                                        isPending={
-                                            isPending ||
-                                            activeOrganizationPending
-                                        }
+                                        isPending={isPending}
                                         localization={localization}
                                         organization={activeOrganization}
                                         size={size}
@@ -284,7 +309,6 @@ export function OrganizationSwitcher({
                                 ) : (
                                     <PersonalAccountView
                                         classNames={classNames?.trigger?.user}
-                                        isPending={isPending}
                                         localization={localization}
                                         size={size}
                                         user={user}
@@ -315,7 +339,7 @@ export function OrganizationSwitcher({
                                 {activeOrganizationPending ||
                                 activeOrganization ||
                                 hidePersonal ? (
-                                    <OrganizationView
+                                    <OrganizationCellView
                                         classNames={
                                             classNames?.content?.organization
                                         }
@@ -339,9 +363,10 @@ export function OrganizationSwitcher({
                                     <Link
                                         href={
                                             activeOrganization
-                                                ? `${settings?.basePath || basePath}/${viewPaths.ORGANIZATION}`
-                                                : settings?.url ||
-                                                  `${settings?.basePath || basePath}/${viewPaths.SETTINGS}`
+                                                ? pathMode === "slug"
+                                                    ? `${organizationOptions?.basePath}/${activeOrganization.slug}/${organizationOptions?.viewPaths.SETTINGS}`
+                                                    : `${organizationOptions?.basePath}/${organizationOptions?.viewPaths.SETTINGS}`
+                                                : `${accountOptions?.basePath}/${accountOptions?.viewPaths.SETTINGS}`
                                         }
                                     >
                                         <Button
@@ -387,10 +412,10 @@ export function OrganizationSwitcher({
                                 <DropdownMenuItem
                                     key={organization.id}
                                     onClick={() =>
-                                        switchOrganization(organization.id)
+                                        switchOrganization(organization)
                                     }
                                 >
-                                    <OrganizationView
+                                    <OrganizationCellView
                                         classNames={
                                             classNames?.content?.organization
                                         }

@@ -21,9 +21,12 @@ export function useAuthData<T>({
     cacheKey?: string
     staleTime?: number
 }) {
-    const { authClient, toast, localization } = useContext(AuthUIContext)
-    const { data: sessionData, isPending: sessionPending } =
-        authClient.useSession()
+    const {
+        hooks: { useSession },
+        toast,
+        localization
+    } = useContext(AuthUIContext)
+    const { data: sessionData, isPending: sessionPending } = useSession()
 
     // Generate a stable cache key based on the queryFn if not provided
     const queryFnRef = useRef(queryFn)
@@ -168,7 +171,8 @@ export function useAuthData<T>({
     // We're only pending if:
     // 1. Session is still loading, OR
     // 2. We have no cached data and no error
-    const isPending = sessionPending || (!cacheEntry?.data && !error)
+    const isPending =
+        sessionPending || (cacheEntry?.data === undefined && !error)
 
     return {
         data: cacheEntry?.data ?? null,

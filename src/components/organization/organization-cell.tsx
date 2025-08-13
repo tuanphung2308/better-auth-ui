@@ -17,7 +17,7 @@ import {
     DropdownMenuTrigger
 } from "../ui/dropdown-menu"
 import { LeaveOrganizationDialog } from "./leave-organization-dialog"
-import { OrganizationView } from "./organization-view"
+import { OrganizationCellView } from "./organization-cell-view"
 
 export interface OrganizationCellProps {
     className?: string
@@ -34,11 +34,8 @@ export function OrganizationCell({
 }: OrganizationCellProps) {
     const {
         authClient,
-        basePath,
-        hooks: { useActiveOrganization },
         localization: contextLocalization,
-        settings,
-        viewPaths,
+        organization: organizationOptions,
         navigate,
         toast
     } = useContext(AuthUIContext)
@@ -48,20 +45,21 @@ export function OrganizationCell({
         [contextLocalization, localizationProp]
     )
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } =
-        useActiveOrganization()
+    const { pathMode } = organizationOptions || {}
+
     const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false)
     const [isManagingOrganization, setIsManagingOrganization] = useState(false)
 
     const handleManageOrganization = useCallback(async () => {
-        if (activeOrganization?.id === organization.id) {
+        setIsManagingOrganization(true)
+
+        if (pathMode === "slug") {
             navigate(
-                `${settings?.basePath || basePath}/${viewPaths.ORGANIZATION}`
+                `${organizationOptions?.basePath}/${organization.slug}/${organizationOptions?.viewPaths.SETTINGS}`
             )
+
             return
         }
-
-        setIsManagingOrganization(true)
 
         try {
             await authClient.organization.setActive({
@@ -71,36 +69,33 @@ export function OrganizationCell({
                 }
             })
 
-            await refetchActiveOrganization?.()
-
             navigate(
-                `${settings?.basePath || basePath}/${viewPaths.ORGANIZATION}`
+                `${organizationOptions?.basePath}/${organizationOptions?.viewPaths?.SETTINGS}`
             )
         } catch (error) {
             toast({
                 variant: "error",
                 message: getLocalizedError({ error, localization })
             })
-        } finally {
+
             setIsManagingOrganization(false)
         }
     }, [
-        activeOrganization,
         authClient,
         organization.id,
-        basePath,
-        settings?.basePath,
-        viewPaths,
+        organizationOptions?.basePath,
+        organizationOptions?.viewPaths?.SETTINGS,
+        organization.slug,
+        pathMode,
         navigate,
         toast,
-        localization,
-        refetchActiveOrganization
+        localization
     ])
 
     return (
         <>
             <Card className={cn("flex-row p-4", className, classNames?.cell)}>
-                <OrganizationView
+                <OrganizationCellView
                     organization={organization}
                     localization={localization}
                 />

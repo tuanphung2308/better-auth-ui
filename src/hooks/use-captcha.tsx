@@ -41,7 +41,7 @@ export function useCaptcha({
 
     localization = { ...contextLocalization, ...localization }
 
-    // biome-ignore lint/suspicious/noExplicitAny:
+    // biome-ignore lint/suspicious/noExplicitAny: ignore
     const captchaRef = useRef<any>(null)
     const { executeRecaptcha } = useGoogleReCaptcha()
 
@@ -100,8 +100,39 @@ export function useCaptcha({
         return undefined
     }
 
+    const resetCaptcha = () => {
+        if (!captcha) return
+
+        switch (captcha.provider) {
+            case "google-recaptcha-v3": {
+                // No widget to reset; token is generated per execute call
+                break
+            }
+            case "google-recaptcha-v2-checkbox":
+            case "google-recaptcha-v2-invisible": {
+                const recaptchaRef = captchaRef as RefObject<ReCAPTCHA>
+                recaptchaRef.current?.reset?.()
+                break
+            }
+            case "cloudflare-turnstile": {
+                const turnstileRef = captchaRef as RefObject<TurnstileInstance>
+                // Some versions expose reset on the instance
+                // biome-ignore lint/suspicious/noExplicitAny: defensive
+                ;(turnstileRef.current as any)?.reset?.()
+                break
+            }
+            case "hcaptcha": {
+                const hcaptchaRef = captchaRef as RefObject<HCaptcha>
+                // HCaptcha uses resetCaptcha()
+                hcaptchaRef.current?.resetCaptcha?.()
+                break
+            }
+        }
+    }
+
     return {
         captchaRef,
-        getCaptchaHeaders
+        getCaptchaHeaders,
+        resetCaptcha
     }
 }

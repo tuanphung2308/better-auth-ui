@@ -5,17 +5,13 @@ import { useTheme } from "../../hooks/use-theme"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn } from "../../lib/utils"
 
-export function RecaptchaV2({
-    ref
-}: {
-    ref: RefObject<ReCAPTCHA | null>
-}) {
+export function RecaptchaV2({ ref }: { ref: RefObject<ReCAPTCHA | null> }) {
     const { captcha } = useContext(AuthUIContext)
     const { theme } = useTheme()
     const { lang } = useLang()
 
     useEffect(() => {
-        // biome-ignore lint/suspicious/noExplicitAny:
+        // biome-ignore lint/suspicious/noExplicitAny: ignore
         ;(window as any).recaptchaOptions = {
             useRecaptchaNet: captcha?.recaptchaNet,
             enterprise: captcha?.enterprise

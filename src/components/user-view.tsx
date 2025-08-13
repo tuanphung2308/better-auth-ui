@@ -107,12 +107,12 @@ export function UserView({
                                 classNames?.title
                             )}
                         >
-                            {user?.displayUsername ||
-                                user?.username ||
-                                user?.displayName ||
-                                user?.firstName ||
+                            {user?.displayName ||
                                 user?.name ||
                                 user?.fullName ||
+                                user?.firstName ||
+                                user?.displayUsername ||
+                                user?.username ||
                                 user?.email ||
                                 localization?.USER}
                         </span>

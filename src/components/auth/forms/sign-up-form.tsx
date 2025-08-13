@@ -2,8 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { BetterFetchOption } from "better-auth/react"
-import { Loader2 } from "lucide-react"
-import { Trash2Icon, UploadCloudIcon } from "lucide-react"
+import { Loader2, Trash2Icon, UploadCloudIcon } from "lucide-react"
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -40,6 +39,7 @@ import {
     FormMessage
 } from "../../ui/form"
 import { Input } from "../../ui/input"
+import { Textarea } from "../../ui/textarea"
 import { UserAvatar } from "../../user-avatar"
 import type { AuthFormClassNames } from "../auth-form"
 
@@ -65,7 +65,9 @@ export function SignUpForm({
     passwordValidation
 }: SignUpFormProps) {
     const isHydrated = useIsHydrated()
-    const { captchaRef, getCaptchaHeaders } = useCaptcha({ localization })
+    const { captchaRef, getCaptchaHeaders, resetCaptcha } = useCaptcha({
+        localization
+    })
 
     const {
         additionalFields,
@@ -73,7 +75,6 @@ export function SignUpForm({
         basePath,
         baseURL,
         credentials,
-        emailVerification,
         localization: contextLocalization,
         nameRequired,
         persistClient,
@@ -381,6 +382,7 @@ export function SignUpForm({
 
             form.resetField("password")
             form.resetField("confirmPassword")
+            resetCaptcha()
         }
     }
 
@@ -691,24 +693,55 @@ export function SignUpForm({
                                         </FormLabel>
 
                                         <FormControl>
-                                            <Input
-                                                className={classNames?.input}
-                                                type={
-                                                    additionalField.type ===
-                                                    "number"
-                                                        ? "number"
-                                                        : "text"
-                                                }
-                                                placeholder={
-                                                    additionalField.placeholder ||
-                                                    (typeof additionalField.label ===
-                                                    "string"
-                                                        ? additionalField.label
-                                                        : "")
-                                                }
-                                                disabled={isSubmitting}
-                                                {...formField}
-                                            />
+                                            {additionalField.type ===
+                                            "number" ? (
+                                                <Input
+                                                    className={
+                                                        classNames?.input
+                                                    }
+                                                    type="number"
+                                                    placeholder={
+                                                        additionalField.placeholder ||
+                                                        (typeof additionalField.label ===
+                                                        "string"
+                                                            ? additionalField.label
+                                                            : "")
+                                                    }
+                                                    disabled={isSubmitting}
+                                                    {...formField}
+                                                />
+                                            ) : additionalField.multiline ? (
+                                                <Textarea
+                                                    className={
+                                                        classNames?.input
+                                                    }
+                                                    placeholder={
+                                                        additionalField.placeholder ||
+                                                        (typeof additionalField.label ===
+                                                        "string"
+                                                            ? additionalField.label
+                                                            : "")
+                                                    }
+                                                    disabled={isSubmitting}
+                                                    {...formField}
+                                                />
+                                            ) : (
+                                                <Input
+                                                    className={
+                                                        classNames?.input
+                                                    }
+                                                    type="text"
+                                                    placeholder={
+                                                        additionalField.placeholder ||
+                                                        (typeof additionalField.label ===
+                                                        "string"
+                                                            ? additionalField.label
+                                                            : "")
+                                                    }
+                                                    disabled={isSubmitting}
+                                                    {...formField}
+                                                />
+                                            )}
                                         </FormControl>
 
                                         <FormMessage

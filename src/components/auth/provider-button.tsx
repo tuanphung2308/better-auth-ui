@@ -6,11 +6,11 @@ import type { Provider } from "../../lib/social-providers"
 import { cn, getLocalizedError, getSearchParam } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
 import { Button } from "../ui/button"
-import type { AuthCardClassNames } from "./auth-card"
+import type { AuthViewClassNames } from "./auth-view"
 
 interface ProviderButtonProps {
     className?: string
-    classNames?: AuthCardClassNames
+    classNames?: AuthViewClassNames
     callbackURL?: string
     isSubmitting: boolean
     localization: Partial<AuthLocalization>

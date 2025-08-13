@@ -1,8 +1,16 @@
 "use client"
 
+import type { Organization } from "better-auth/plugins/organization"
 import { Trash2Icon, UploadCloudIcon } from "lucide-react"
-import { type ComponentProps, useContext, useRef, useState } from "react"
+import {
+    type ComponentProps,
+    useContext,
+    useMemo,
+    useRef,
+    useState
+} from "react"
 
+import { useCurrentOrganization } from "../../hooks/use-current-organization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { fileToBase64, resizeAndCropImage } from "../../lib/image-utils"
 import { cn, getLocalizedError } from "../../lib/utils"
@@ -24,24 +32,26 @@ export interface OrganizationLogoCardProps extends ComponentProps<typeof Card> {
     className?: string
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
+    slug?: string
 }
 
 export function OrganizationLogoCard({
     className,
     classNames,
-    localization,
+    localization: localizationProp,
+    slug,
     ...props
 }: OrganizationLogoCardProps) {
-    const {
-        hooks: { useActiveOrganization },
-        localization: authLocalization
-    } = useContext(AuthUIContext)
+    const { localization: contextLocalization } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
-    const { data: activeOrganization } = useActiveOrganization()
+    const { data: organization } = useCurrentOrganization({ slug })
 
-    if (!activeOrganization) {
+    if (!organization) {
         return (
             <Card
                 className={cn(
@@ -56,7 +66,7 @@ export function OrganizationLogoCard({
                         className="grow self-start"
                         title={localization.LOGO}
                         description={localization.LOGO_DESCRIPTION}
-                        isPending={true}
+                        isPending
                         classNames={classNames}
                     />
 
@@ -68,7 +78,7 @@ export function OrganizationLogoCard({
                         disabled
                     >
                         <OrganizationLogo
-                            isPending={true}
+                            isPending
                             className="size-20 text-2xl"
                             classNames={classNames?.avatar}
                             localization={localization}
@@ -80,8 +90,7 @@ export function OrganizationLogoCard({
                     className="!py-5"
                     instructions={localization.LOGO_INSTRUCTIONS}
                     classNames={classNames}
-                    isPending={true}
-                    isSubmitting={false}
+                    isPending
                 />
             </Card>
         )
@@ -92,6 +101,7 @@ export function OrganizationLogoCard({
             className={className}
             classNames={classNames}
             localization={localization}
+            organization={organization}
             {...props}
         />
     )
@@ -100,59 +110,56 @@ export function OrganizationLogoCard({
 function OrganizationLogoForm({
     className,
     classNames,
-    localization,
+    localization: localizationProp,
+    organization,
     ...props
-}: OrganizationLogoCardProps) {
+}: OrganizationLogoCardProps & { organization: Organization }) {
     const {
-        authClient,
-        hooks: {
-            useActiveOrganization,
-            useListOrganizations,
-            useHasPermission
-        },
+        hooks: { useHasPermission },
         localization: authLocalization,
-        optimistic,
-        organization,
+        organization: organizationOptions,
+        mutators: { updateOrganization },
         toast
     } = useContext(AuthUIContext)
 
-    localization = { ...authLocalization, ...localization }
+    const localization = useMemo(
+        () => ({ ...authLocalization, ...localizationProp }),
+        [authLocalization, localizationProp]
+    )
 
-    const { data: activeOrganization, refetch: refetchActiveOrganization } =
-        useActiveOrganization()
-    const { refetch: refetchOrganizations } = useListOrganizations()
+    const { refetch: refetchOrganization } = useCurrentOrganization({
+        slug: organization.slug
+    })
+
     const { data: hasPermission, isPending: permissionPending } =
         useHasPermission({
+            organizationId: organization.id,
             permissions: {
                 organization: ["update"]
             }
         })
 
-    const isPending = !activeOrganization || permissionPending
+    const isPending = permissionPending
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [loading, setLoading] = useState(false)
 
     const handleLogoChange = async (file: File) => {
-        if (
-            !activeOrganization ||
-            !organization?.logo ||
-            !hasPermission?.success
-        )
-            return
+        if (!organizationOptions?.logo || !hasPermission?.success) return
 
         setLoading(true)
+
         const resizedFile = await resizeAndCropImage(
             file,
             crypto.randomUUID(),
-            organization.logo.size,
-            organization.logo.extension
+            organizationOptions.logo.size,
+            organizationOptions.logo.extension
         )
 
         let image: string | undefined | null
 
-        if (organization.logo.upload) {
-            image = await organization.logo.upload(resizedFile)
+        if (organizationOptions.logo.upload) {
+            image = await organizationOptions.logo.upload(resizedFile)
         } else {
             image = await fileToBase64(resizedFile)
         }
@@ -162,17 +169,13 @@ function OrganizationLogoForm({
             return
         }
 
-        if (optimistic && !organization.logo.upload) setLoading(false)
-
         try {
-            await authClient.organization.update({
-                organizationId: activeOrganization.id,
-                data: { logo: image },
-                fetchOptions: { throw: true }
+            await updateOrganization({
+                organizationId: organization.id,
+                data: { logo: image }
             })
 
-            await refetchActiveOrganization?.()
-            await refetchOrganizations?.()
+            await refetchOrganization?.()
         } catch (error) {
             toast({
                 variant: "error",
@@ -184,19 +187,21 @@ function OrganizationLogoForm({
     }
 
     const handleDeleteLogo = async () => {
-        if (!activeOrganization || !hasPermission?.success) return
+        if (!hasPermission?.success) return
 
         setLoading(true)
 
         try {
-            await authClient.organization.update({
-                organizationId: activeOrganization.id,
-                data: { logo: "" },
-                fetchOptions: { throw: true }
+            if (organization.logo) {
+                await organizationOptions?.logo?.delete?.(organization.logo)
+            }
+
+            await updateOrganization({
+                organizationId: organization.id,
+                data: { logo: "" }
             })
 
-            await refetchActiveOrganization?.()
-            await refetchOrganizations?.()
+            await refetchOrganization?.()
         } catch (error) {
             toast({
                 variant: "error",
@@ -208,9 +213,7 @@ function OrganizationLogoForm({
     }
 
     const openFileDialog = () => {
-        if (hasPermission?.success) {
-            fileInputRef.current?.click()
-        }
+        fileInputRef.current?.click()
     }
 
     return (
@@ -256,10 +259,10 @@ function OrganizationLogoForm({
                         >
                             <OrganizationLogo
                                 isPending={isPending || loading}
-                                key={activeOrganization?.logo}
+                                key={organization.logo}
                                 className="size-20 text-2xl"
                                 classNames={classNames?.avatar}
-                                organization={activeOrganization}
+                                organization={organization}
                                 localization={localization}
                             />
                         </Button>
@@ -274,15 +277,18 @@ function OrganizationLogoForm({
                             disabled={loading || !hasPermission?.success}
                         >
                             <UploadCloudIcon />
+
                             {localization.UPLOAD_LOGO}
                         </DropdownMenuItem>
-                        {activeOrganization?.logo && (
+
+                        {organization.logo && (
                             <DropdownMenuItem
                                 onClick={handleDeleteLogo}
                                 disabled={loading || !hasPermission?.success}
                                 variant="destructive"
                             >
                                 <Trash2Icon />
+
                                 {localization.DELETE_LOGO}
                             </DropdownMenuItem>
                         )}

@@ -1,12 +1,17 @@
 "use client"
 
 import type { Session, User } from "better-auth"
-import { EllipsisIcon, Loader2, LogOutIcon, RepeatIcon } from "lucide-react"
+import {
+    EllipsisIcon,
+    Loader2,
+    LogOutIcon,
+    RepeatIcon,
+    UserX2Icon
+} from "lucide-react"
 import { useContext, useState } from "react"
 
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
-import { getLocalizedError } from "../../../lib/utils"
-import { cn } from "../../../lib/utils"
+import { cn, getLocalizedError } from "../../../lib/utils"
 import type { AuthLocalization } from "../../../localization/auth-localization"
 import type { Refetch } from "../../../types/refetch"
 import { Button } from "../../ui/button"
@@ -57,6 +62,7 @@ export function AccountCell({
             await revokeDeviceSession({
                 sessionToken: deviceSession.session.token
             })
+
             refetch?.()
         } catch (error) {
             setIsLoading(false)
@@ -75,15 +81,16 @@ export function AccountCell({
             await setActiveSession({
                 sessionToken: deviceSession.session.token
             })
+
             refetch?.()
         } catch (error) {
-            setIsLoading(false)
-
             toast({
                 variant: "error",
                 message: getLocalizedError({ error, localization })
             })
         }
+
+        setIsLoading(false)
     }
 
     const isCurrentSession =
@@ -132,8 +139,13 @@ export function AccountCell({
 
                             handleRevoke()
                         }}
+                        variant="destructive"
                     >
-                        <LogOutIcon className={classNames?.icon} />
+                        {isCurrentSession ? (
+                            <LogOutIcon className={classNames?.icon} />
+                        ) : (
+                            <UserX2Icon className={classNames?.icon} />
+                        )}
 
                         {isCurrentSession
                             ? localization.SIGN_OUT

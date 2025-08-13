@@ -1,8 +1,3 @@
----
-title: Next.js
-icon: NextJs
----
-import { Step, Steps } from "fumadocs-ui/components/steps";
 
 This guide covers integrating `@daveyplate/better-auth-ui` into your Next.js project.
 
@@ -20,7 +15,7 @@ Follow these steps to set up `@daveyplate/better-auth-ui` in your [Next.js](http
 
 <Steps>
 <Step>
-### Setting up AuthUIProvider
+### AuthUIProvider
 
 The first step is to set up the [`<AuthUIProvider>`](/components/auth-ui-provider) client component with your [`authClient`](https://www.better-auth.com/docs/installation#create-client-instance), wrapping your layout. This is required to provide the context & hooks to your authentication components across your application.
 
@@ -79,38 +74,25 @@ The [`<AuthUIProvider>`](/components/auth-ui-provider) can be fully customized w
 </Step>
 
 <Step>
-### Creating Auth Pages
+### Auth Pages
 
-Create a dynamic route segment for authentication views in `app/auth/[pathname]/page.tsx`.
+Create a dynamic route segment for authentication views in `app/auth/[authView]/page.tsx`.
 
-```tsx title="app/auth/[pathname]/page.tsx"
+```tsx title="app/auth/[authView]/page.tsx"
 import { authViewPaths } from "@daveyplate/better-auth-ui/server"
-import { AuthView } from "./view"
+import { AuthView } from "@daveyplate/better-auth-ui"
 
 export function generateStaticParams() {
-    return Object.values(authViewPaths).map((pathname) => ({ pathname }))
+    return Object.values(authViewPaths).map((authView) => ({ authView }))
 }
 
-export default async function AuthPage({ params }: { params: Promise<{ pathname: string }> }) {
-    const { pathname } = await params
-
-    return <AuthView pathname={pathname} />
-}
-```
-
-```tsx title="app/auth/[pathname]/view.tsx"
-"use client"
-
-import { AuthCard } from "@daveyplate/better-auth-ui"
-
-export function AuthView({ pathname }: { pathname: string }) {
-    return (
-        <main className="container flex grow flex-col items-center justify-center gap-3 self-center p-4 md:p-6">
-            <AuthCard pathname={pathname} />
-        </main>
-    )
+export default async function AuthPage({ params }: { params: Promise<{ authView: string }> }) {
+    const { authView } = await params
+    return <AuthView pathname={authView} />
 }
 ```
+
+
 
 The newly created dynamic route covers the following paths by default:
 
@@ -122,10 +104,70 @@ The newly created dynamic route covers the following paths by default:
 - `/auth/recover-account` – Recover account via backup code
 - `/auth/reset-password` – Set new password after receiving reset link
 - `/auth/sign-out` – Log the user out of the application
-- `/auth/settings` – User account management page (requires authentication)
 - `/auth/callback` – Internal route to handle Auth callbacks
 
-Ensure that any links to the authentication process utilize these routes accordingly. All routes will render the `<AuthCard />` component and automatically handle navigation and authentication flow.
+Ensure that any links to the authentication process utilize these routes accordingly. All routes will render the `<AuthView />` component and automatically handle navigation and authentication flow.
+</Step>
+<Step>
+### Account Pages
+
+```tsx title="app/account/[accountView]/page.tsx"
+import { accountViewPaths } from "@daveyplate/better-auth-ui/server"
+import { AccountView } from "@daveyplate/better-auth-ui"
+
+export function generateStaticParams() {
+    return Object.values(accountViewPaths).map((accountView) => ({ accountView }))
+}
+
+export default async function AccountPage({ params }: { params: Promise<{ accountView: string }> }) {
+    const { accountView } = await params
+    return (
+        <main className="container p-4 md:p-6">
+            <AccountView pathname={accountView} />
+        </main>
+    )
+}
+```
+</Step>
+<Step>
+### Organization Pages
+
+```tsx title="app/organization/[organizationView]/page.tsx"
+import { organizationViewPaths } from "@daveyplate/better-auth-ui/server"
+import { OrganizationView } from "@daveyplate/better-auth-ui"
+
+export function generateStaticParams() {
+    return Object.values(organizationViewPaths).map((organizationView) => ({ organizationView }))
+}
+
+export default async function OrganizationPage({ params }: { params: Promise<{ organizationView: string }> }) {
+    const { organizationView } = await params
+    return (
+        <main className="container p-4 md:p-6">
+            <OrganizationView pathname={organizationView} />
+        </main>
+    )
+}
+```
+
+If you prefer slug-based org URLs, set `organization={{ pathMode: "slug", basePath: "/organization", slug: currentSlug }}` in the `AuthUIProvider` and structure your routes accordingly:
+
+```tsx title="app/organization/[slug]/[organizationView]/page.tsx"
+import { OrganizationView } from "@daveyplate/better-auth-ui"
+
+// When using slug-based URLs, you typically do NOT pre-generate slugs here.
+// Either omit generateStaticParams entirely (fully dynamic), or return slugs
+// from your data source and cross-product with organizationViewPaths.
+
+export default async function OrganizationPage({ params }: { params: Promise<{ slug: string; organizationView: string }> }) {
+    const { organizationView } = await params
+    return (
+        <main className="container p-4 md:p-6">
+            <OrganizationView pathname={organizationView} />
+        </main>
+    )
+}
+```
 </Step>
 </Steps>
 
@@ -135,7 +177,7 @@ Follow these steps to set up `@daveyplate/better-auth-ui` in your [Next.js](http
 
 <Steps>
 <Step>
-### Setting up AuthUIProvider
+### AuthUIProvider
 
 First set up the [`<AuthUIProvider>`](/components/auth-ui-provider) within your custom App component in `_app.tsx`.
 
@@ -167,42 +209,88 @@ Now the authentication context is available across your entire application.
 </Step>
 
 <Step>
-### Creating Auth Pages
+### Auth Pages
 
-Create a page with a dynamic segment in your Pages directory in `pages/auth/[pathname].tsx`
+Create a page with a dynamic segment in your Pages directory in `pages/auth/[authView].tsx`
 
-```tsx title="pages/auth/[pathname].tsx"
-import { AuthCard } from "@daveyplate/better-auth-ui"
+```tsx title="pages/auth/[authView].tsx"
+import { AuthView } from "@daveyplate/better-auth-ui"
 import { authViewPaths } from "@daveyplate/better-auth-ui/server"
 
-export default function AuthPage({ pathname }: { pathname: string }) {
+export default function AuthPage({ authView }: { authView: string }) {
     return (
         <main className="container flex grow flex-col items-center justify-center gap-3 self-center p-4 md:p-6">
-            <AuthCard pathname={pathname} />
+            <AuthView pathname={authView} />
         </main>
     )
 }
 
 export async function getStaticPaths() {
     return {
-        paths: Object.values(authViewPaths).map((pathname) => ({ params: { pathname } })),
+        paths: Object.values(authViewPaths).map((authView) => ({ params: { authView } })),
         fallback: false
     }
 }
 
-export async function getStaticProps({ params }: { params: { pathname: string } }) {
-    return { props: { pathname: params.pathname } }
+export async function getStaticProps({ params }: { params: { authView: string } }) {
+    return { props: { authView: params.authView } }
 }
 ```
 
-With this setup, the following routes will automatically handle their associated views:
+These routes match the list shown in the App Router section above.
+</Step>
+<Step>
+### Account Pages
 
-- `/auth/sign-in` – Sign in via email/password and social providers
-- `/auth/sign-up` – New user registration
-- `/auth/magic-link` – Magic link email login
-- `/auth/forgot-password` – Initiate forgotten password reset
-- `/auth/reset-password` – Reset password after receiving email
-- `/auth/sign-out` – Log user out of account
-- `/auth/callback` – Internal route to handle OAuth callbacks (do not navigate to this route directly)
+```tsx title="pages/account/[accountView].tsx"
+import { AccountView } from "@daveyplate/better-auth-ui"
+import { accountViewPaths } from "@daveyplate/better-auth-ui/server"
+
+export default function AccountPage({ accountView }: { accountView: string }) {
+    return (
+        <main className="container p-4 md:p-6">
+            <AccountView pathname={accountView} />
+        </main>
+    )
+}
+
+export async function getStaticPaths() {
+    return {
+        paths: Object.values(accountViewPaths).map((accountView) => ({ params: { accountView } })),
+        fallback: false
+    }
+}
+
+export async function getStaticProps({ params }: { params: { accountView: string } }) {
+    return { props: { accountView: params.accountView } }
+}
+```
+</Step>
+<Step>
+### Organization Pages
+
+```tsx title="pages/organization/[organizationView].tsx"
+import { OrganizationView } from "@daveyplate/better-auth-ui"
+import { organizationViewPaths } from "@daveyplate/better-auth-ui/server"
+
+export default function OrganizationPage({ organizationView }: { organizationView: string }) {
+    return (
+        <main className="container p-4 md:p-6">
+            <OrganizationView pathname={organizationView} />
+        </main>
+    )
+}
+
+export async function getStaticPaths() {
+    return {
+        paths: Object.values(organizationViewPaths).map((organizationView) => ({ params: { organizationView } })),
+        fallback: false
+    }
+}
+
+export async function getStaticProps({ params }: { params: { organizationView: string } }) {
+    return { props: { organizationView: params.organizationView } }
+}
+```
 </Step>
 </Steps>

@@ -1,10 +1,10 @@
 "use client"
 
 import type { User } from "better-auth"
-import { Loader2 } from "lucide-react"
-import { type ComponentProps, useContext, useState } from "react"
-
 import type { Member } from "better-auth/plugins/organization"
+import { Loader2 } from "lucide-react"
+import { type ComponentProps, useContext, useMemo, useState } from "react"
+
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
@@ -23,7 +23,7 @@ import { MemberCell } from "./member-cell"
 export interface RemoveMemberDialogProps extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
     localization?: AuthLocalization
-    member: Member & { user: Partial<User> }
+    member: Member & { user?: Partial<User> | null }
 }
 
 export function RemoveMemberDialog({
@@ -35,24 +35,19 @@ export function RemoveMemberDialog({
 }: RemoveMemberDialogProps) {
     const {
         authClient,
-        hooks: { useActiveOrganization },
+        hooks: { useListMembers },
         localization: contextLocalization,
-        toast,
-        organization
+        toast
     } = useContext(AuthUIContext)
 
-    const localization = { ...contextLocalization, ...localizationProp }
+    const localization = useMemo(
+        () => ({ ...contextLocalization, ...localizationProp }),
+        [contextLocalization, localizationProp]
+    )
 
-    const { refetch } = useActiveOrganization()
-
-    const builtInRoles = [
-        { role: "owner", label: localization.OWNER },
-        { role: "admin", label: localization.ADMIN },
-        { role: "member", label: localization.MEMBER }
-    ]
-
-    const roles = [...builtInRoles, ...(organization?.customRoles || [])]
-    const role = roles.find((r) => r.role === member.role)
+    const { refetch } = useListMembers({
+        query: { organizationId: member.organizationId }
+    })
 
     const [isRemoving, setIsRemoving] = useState(false)
 
@@ -63,9 +58,7 @@ export function RemoveMemberDialog({
             await authClient.organization.removeMember({
                 memberIdOrEmail: member.id,
                 organizationId: member.organizationId,
-                fetchOptions: {
-                    throw: true
-                }
+                fetchOptions: { throw: true }
             })
 
             toast({
@@ -74,6 +67,7 @@ export function RemoveMemberDialog({
             })
 
             await refetch?.()
+
             onOpenChange?.(false)
         } catch (error) {
             toast({
@@ -140,6 +134,7 @@ export function RemoveMemberDialog({
                         disabled={isRemoving}
                     >
                         {isRemoving && <Loader2 className="animate-spin" />}
+
                         {localization.REMOVE_MEMBER}
                     </Button>
                 </DialogFooter>

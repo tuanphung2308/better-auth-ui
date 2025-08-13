@@ -19,7 +19,7 @@ type ModelNames = {
 }
 
 export interface UseInstantOptionsProps {
-    // biome-ignore lint/suspicious/noExplicitAny:
+    // biome-ignore lint/suspicious/noExplicitAny: ignore
     db: InstantReactWebDatabase<any>
     modelNames?: Partial<ModelNames>
     usePlural?: boolean

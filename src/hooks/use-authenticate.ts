@@ -1,11 +1,11 @@
 import { useContext, useEffect } from "react"
 import { AuthUIContext } from "../lib/auth-ui-provider"
-import type { AuthView } from "../server"
+import type { AuthViewPath } from "../server"
 import type { AnyAuthClient } from "../types/any-auth-client"
 
 interface AuthenticateOptions<TAuthClient extends AnyAuthClient> {
     authClient?: TAuthClient
-    authView?: AuthView
+    authView?: AuthViewPath
     enabled?: boolean
 }
 

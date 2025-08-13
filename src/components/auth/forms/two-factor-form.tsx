@@ -105,7 +105,7 @@ export function TwoFactorForm({
         setIsSubmitting?.(form.formState.isSubmitting || transitionPending)
     }, [form.formState.isSubmitting, transitionPending, setIsSubmitting])
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies:
+    // biome-ignore lint/correctness/useExhaustiveDependencies: ignore
     useEffect(() => {
         if (
             method === "otp" &&
