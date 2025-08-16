@@ -96,7 +96,11 @@ export function generateStaticParams() {
 export default async function AuthPage({ params }: { params: Promise<{ authView: string }> }) {
     const { authView } = await params
     
-    return <AuthView pathname={authView} />
+    return (
+        <main className="container flex grow flex-col items-center justify-center self-center p-4 md:p-6">
+            <AuthView pathname={authView} />
+        </main>
+    )
 }
 ```
 
@@ -113,6 +117,7 @@ The newly created dynamic route covers the following paths by default:
 - `/auth/reset-password` – Set new password after receiving reset link
 - `/auth/sign-out` – Log the user out of the application
 - `/auth/callback` – Internal route to handle Auth callbacks
+- `/auth/accept-invitation` – Accept an invitation to an organization
 
 Ensure that any links to the authentication process utilize these routes accordingly. All routes will render the `<AuthView />` component and automatically handle navigation and authentication flow.
 </Step>

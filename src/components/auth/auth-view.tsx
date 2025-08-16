@@ -8,6 +8,7 @@ import { socialProviders } from "../../lib/social-providers"
 import { cn, getViewByPath } from "../../lib/utils"
 import type { AuthViewPaths } from "../../lib/view-paths"
 import type { AuthLocalization } from "../../localization/auth-localization"
+import { AcceptInvitationCard } from "../organization/accept-invitation-card"
 import { Button } from "../ui/button"
 import {
     Card,
@@ -114,6 +115,7 @@ export function AuthView({
 
     if (view === "CALLBACK") return <AuthCallback redirectTo={redirectTo} />
     if (view === "SIGN_OUT") return <SignOut />
+    if (view === "ACCEPT_INVITATION") return <AcceptInvitationCard />
 
     const description =
         !credentials && !magicLink && !emailOTP
