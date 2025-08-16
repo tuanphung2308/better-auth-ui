@@ -40,9 +40,8 @@ export function ChangeEmailCard({
 
     const formSchema = z.object({
         email: z
-            .string()
-            .min(1, { message: localization.EMAIL_REQUIRED })
             .email({ message: localization.INVALID_EMAIL })
+            .min(1, { message: localization.EMAIL_REQUIRED })
     })
 
     const form = useForm({

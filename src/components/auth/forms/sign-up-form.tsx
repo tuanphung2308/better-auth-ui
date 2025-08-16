@@ -127,48 +127,38 @@ export function SignUpForm({
     })
 
     // Create the base schema for standard fields
-    const schemaFields: Record<string, z.ZodTypeAny> = {
+    const defaultFields = {
         email: z
-            .string()
-            .min(1, {
-                message: `${localization.EMAIL} ${localization.IS_REQUIRED}`
-            })
             .email({
                 message: `${localization.EMAIL} ${localization.IS_INVALID}`
+            })
+            .min(1, {
+                message: `${localization.EMAIL} ${localization.IS_REQUIRED}`
             }),
-        password: getPasswordSchema(passwordValidation, localization)
-    }
-
-    // Add confirmPassword field if enabled
-    if (confirmPasswordEnabled) {
-        schemaFields.confirmPassword = getPasswordSchema(passwordValidation, {
-            PASSWORD_REQUIRED: localization.CONFIRM_PASSWORD_REQUIRED,
-            PASSWORD_TOO_SHORT: localization.PASSWORD_TOO_SHORT,
-            PASSWORD_TOO_LONG: localization.PASSWORD_TOO_LONG,
-            INVALID_PASSWORD: localization.INVALID_PASSWORD
-        })
-    }
-
-    // Add name field if required or included in signUpFields
-    if (signUpFields?.includes("name")) {
-        schemaFields.name = nameRequired
+        password: getPasswordSchema(passwordValidation, localization),
+        name:
+            signUpFields?.includes("name") && nameRequired
+                ? z.string().min(1, {
+                      message: `${localization.NAME} ${localization.IS_REQUIRED}`
+                  })
+                : z.string().optional(),
+        image: z.string().optional(),
+        username: usernameEnabled
             ? z.string().min(1, {
-                  message: `${localization.NAME} ${localization.IS_REQUIRED}`
+                  message: `${localization.USERNAME} ${localization.IS_REQUIRED}`
+              })
+            : z.string().optional(),
+        confirmPassword: confirmPasswordEnabled
+            ? getPasswordSchema(passwordValidation, {
+                  PASSWORD_REQUIRED: localization.CONFIRM_PASSWORD_REQUIRED,
+                  PASSWORD_TOO_SHORT: localization.PASSWORD_TOO_SHORT,
+                  PASSWORD_TOO_LONG: localization.PASSWORD_TOO_LONG,
+                  INVALID_PASSWORD: localization.INVALID_PASSWORD
               })
             : z.string().optional()
     }
 
-    // Add username field if enabled
-    if (usernameEnabled) {
-        schemaFields.username = z.string().min(1, {
-            message: `${localization.USERNAME} ${localization.IS_REQUIRED}`
-        })
-    }
-
-    // Add image field if included in signUpFields
-    if (signUpFields?.includes("image") && avatar) {
-        schemaFields.image = z.string().optional()
-    }
+    const schemaFields: Record<string, z.ZodTypeAny> = {}
 
     // Add additional fields from signUpFields
     if (signUpFields) {
@@ -187,28 +177,26 @@ export function SignUpForm({
                     ? z.preprocess(
                           (val) => (!val ? undefined : Number(val)),
                           z.number({
-                              required_error: `${additionalField.label} ${localization.IS_REQUIRED}`,
-                              invalid_type_error: `${additionalField.label} ${localization.IS_INVALID}`
+                              error: `${additionalField.label} ${localization.IS_INVALID}`
                           })
                       )
                     : z.coerce
                           .number({
-                              invalid_type_error: `${additionalField.label} ${localization.IS_INVALID}`
+                              error: `${additionalField.label} ${localization.IS_INVALID}`
                           })
                           .optional()
             } else if (additionalField.type === "boolean") {
                 fieldSchema = additionalField.required
                     ? z.coerce
                           .boolean({
-                              required_error: `${additionalField.label} ${localization.IS_REQUIRED}`,
-                              invalid_type_error: `${additionalField.label} ${localization.IS_INVALID}`
+                              error: `${additionalField.label} ${localization.IS_INVALID}`
                           })
                           .refine((val) => val === true, {
                               message: `${additionalField.label} ${localization.IS_REQUIRED}`
                           })
                     : z.coerce
                           .boolean({
-                              invalid_type_error: `${additionalField.label} ${localization.IS_INVALID}`
+                              error: `${additionalField.label} ${localization.IS_INVALID}`
                           })
                           .optional()
             } else {
@@ -226,17 +214,23 @@ export function SignUpForm({
         }
     }
 
-    const formSchema = z.object(schemaFields).refine(
-        (data) => {
-            // Skip validation if confirmPassword is not enabled
-            if (!confirmPasswordEnabled) return true
-            return data.password === data.confirmPassword
-        },
-        {
-            message: localization.PASSWORDS_DO_NOT_MATCH!,
-            path: ["confirmPassword"]
-        }
-    )
+    const formSchema = z
+        .object({
+            ...defaultFields,
+            ...schemaFields
+        })
+        .loose()
+        .refine(
+            (data) => {
+                // Skip validation if confirmPassword is not enabled
+                if (!confirmPasswordEnabled) return true
+                return data.password === data.confirmPassword
+            },
+            {
+                message: localization.PASSWORDS_DO_NOT_MATCH!,
+                path: ["confirmPassword"]
+            }
+        )
 
     // Create default values for the form
     const defaultValues: Record<string, unknown> = {
@@ -261,7 +255,7 @@ export function SignUpForm({
         }
     }
 
-    const form = useForm({
+    const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues
     })
@@ -352,12 +346,21 @@ export function SignUpForm({
                 headers: await getCaptchaHeaders("/sign-up/email")
             }
 
+            const additionalParams: Record<string, unknown> = {}
+
+            if (username !== undefined) {
+                additionalParams.username = username
+            }
+
+            if (image !== undefined) {
+                additionalParams.image = image
+            }
+
             const data = await authClient.signUp.email({
                 email,
                 password,
                 name: name || "",
-                ...(username !== undefined && { username }),
-                ...(image !== undefined && { image }),
+                ...additionalParams,
                 ...additionalFieldValues,
                 callbackURL: getCallbackURL(),
                 fetchOptions
@@ -709,6 +712,9 @@ export function SignUpForm({
                                                     }
                                                     disabled={isSubmitting}
                                                     {...formField}
+                                                    value={
+                                                        formField.value as number
+                                                    }
                                                 />
                                             ) : additionalField.multiline ? (
                                                 <Textarea
@@ -724,6 +730,9 @@ export function SignUpForm({
                                                     }
                                                     disabled={isSubmitting}
                                                     {...formField}
+                                                    value={
+                                                        formField.value as string
+                                                    }
                                                 />
                                             ) : (
                                                 <Input
@@ -740,6 +749,9 @@ export function SignUpForm({
                                                     }
                                                     disabled={isSubmitting}
                                                     {...formField}
+                                                    value={
+                                                        formField.value as string
+                                                    }
                                                 />
                                             )}
                                         </FormControl>
