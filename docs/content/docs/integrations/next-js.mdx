@@ -83,22 +83,22 @@ The [`<AuthUIProvider />`](/components/auth-ui-provider) can be fully customized
 
 Create a dynamic route segment for authentication views in `app/auth/[authView]/page.tsx`.
 
-```tsx title="app/auth/[authView]/page.tsx"
+```tsx title="app/auth/[path]/page.tsx"
 import { AuthView } from "@daveyplate/better-auth-ui"
 import { authViewPaths } from "@daveyplate/better-auth-ui/server"
 
 export const dynamicParams = false
 
 export function generateStaticParams() {
-    return Object.values(authViewPaths).map((authView) => ({ authView }))
+    return Object.values(authViewPaths).map((path) => ({ path }))
 }
 
-export default async function AuthPage({ params }: { params: Promise<{ authView: string }> }) {
-    const { authView } = await params
+export default async function AuthPage({ params }: { params: Promise<{ path: string }> }) {
+    const { path } = await params
     
     return (
         <main className="container flex grow flex-col items-center justify-center self-center p-4 md:p-6">
-            <AuthView pathname={authView} />
+            <AuthView path={path} />
         </main>
     )
 }
@@ -124,22 +124,22 @@ Ensure that any links to the authentication process utilize these routes accordi
 <Step>
 ### Account Pages
 
-```tsx title="app/account/[accountView]/page.tsx"
+```tsx title="app/account/[path]/page.tsx"
 import { AccountView } from "@daveyplate/better-auth-ui"
 import { accountViewPaths } from "@daveyplate/better-auth-ui/server"
 
 export const dynamicParams = false
 
 export function generateStaticParams() {
-    return Object.values(accountViewPaths).map((accountView) => ({ accountView }))
+    return Object.values(accountViewPaths).map((path) => ({ path }))
 }
 
-export default async function AccountPage({ params }: { params: Promise<{ accountView: string }> }) {
-    const { accountView } = await params
+export default async function AccountPage({ params }: { params: Promise<{ path: string }> }) {
+    const { path } = await params
 
     return (
         <main className="container p-4 md:p-6">
-            <AccountView pathname={accountView} />
+            <AccountView path={path} />
         </main>
     )
 }
@@ -148,22 +148,22 @@ export default async function AccountPage({ params }: { params: Promise<{ accoun
 <Step>
 ### Organization Pages
 
-```tsx title="app/organization/[organizationView]/page.tsx"
+```tsx title="app/organization/[path]/page.tsx"
 import { OrganizationView } from "@daveyplate/better-auth-ui"
 import { organizationViewPaths } from "@daveyplate/better-auth-ui/server"
 
 export const dynamicParams = false
 
 export function generateStaticParams() {
-    return Object.values(organizationViewPaths).map((organizationView) => ({ organizationView }))
+    return Object.values(organizationViewPaths).map((path) => ({ path }))
 }
 
-export default async function OrganizationPage({ params }: { params: Promise<{ organizationView: string }> }) {
-    const { organizationView } = await params
+export default async function OrganizationPage({ params }: { params: Promise<{ path: string }> }) {
+    const { path } = await params
 
     return (
         <main className="container p-4 md:p-6">
-            <OrganizationView pathname={organizationView} />
+            <OrganizationView path={path} />
         </main>
     )
 }
@@ -171,22 +171,16 @@ export default async function OrganizationPage({ params }: { params: Promise<{ o
 
 If you prefer slug-based org URLs, set `organization={{ pathMode: "slug", basePath: "/organization", slug: currentSlug }}` in the `AuthUIProvider` and structure your routes accordingly:
 
-```tsx title="app/organization/[slug]/[organizationView]/page.tsx"
+```tsx title="app/organization/[slug]/[path]/page.tsx"
 import { OrganizationView } from "@daveyplate/better-auth-ui"
 import { organizationViewPaths } from "@daveyplate/better-auth-ui/server"
 
-export const dynamicParams = false
-
-export function generateStaticParams() {
-    return Object.values(organizationViewPaths).map((organizationView) => ({ organizationView }))
-}
-
-export default async function OrganizationPage({ params }: { params: Promise<{ slug: string; organizationView: string }> }) {
-    const { organizationView } = await params
+export default async function OrganizationPage({ params }: { params: Promise<{ path: string }> }) {
+    const { path } = await params
 
     return (
         <main className="container p-4 md:p-6">
-            <OrganizationView pathname={organizationView} />
+            <OrganizationView path={path} />
         </main>
     )
 }
@@ -236,27 +230,27 @@ Now the authentication context is available across your entire application.
 
 Create a page with a dynamic segment in your Pages directory in `pages/auth/[authView].tsx`
 
-```tsx title="pages/auth/[authView].tsx"
+```tsx title="pages/auth/[path].tsx"
 import { AuthView } from "@daveyplate/better-auth-ui"
 import { authViewPaths } from "@daveyplate/better-auth-ui/server"
 
-export default function AuthPage({ authView }: { authView: string }) {
+export default function AuthPage({ path }: { path: string }) {
     return (
         <main className="container flex grow flex-col items-center justify-center gap-3 self-center p-4 md:p-6">
-            <AuthView pathname={authView} />
+            <AuthView path={path} />
         </main>
     )
 }
 
 export async function getStaticPaths() {
     return {
-        paths: Object.values(authViewPaths).map((authView) => ({ params: { authView } })),
+        paths: Object.values(authViewPaths).map((path) => ({ params: { path } })),
         fallback: false
     }
 }
 
-export async function getStaticProps({ params }: { params: { authView: string } }) {
-    return { props: { authView: params.authView } }
+export async function getStaticProps({ params }: { params: { path: string } }) {
+    return { props: { path: params.path } }
 }
 ```
 
@@ -265,54 +259,54 @@ These routes match the list shown in the App Router section above.
 <Step>
 ### Account Pages
 
-```tsx title="pages/account/[accountView].tsx"
+```tsx title="pages/account/[path].tsx"
 import { AccountView } from "@daveyplate/better-auth-ui"
 import { accountViewPaths } from "@daveyplate/better-auth-ui/server"
 
-export default function AccountPage({ accountView }: { accountView: string }) {
+export default function AccountPage({ path }: { path: string }) {
     return (
         <main className="container p-4 md:p-6">
-            <AccountView pathname={accountView} />
+            <AccountView path={path} />
         </main>
     )
 }
 
 export async function getStaticPaths() {
     return {
-        paths: Object.values(accountViewPaths).map((accountView) => ({ params: { accountView } })),
+        paths: Object.values(accountViewPaths).map((path) => ({ params: { path } })),
         fallback: false
     }
 }
 
-export async function getStaticProps({ params }: { params: { accountView: string } }) {
-    return { props: { accountView: params.accountView } }
+export async function getStaticProps({ params }: { params: { path: string } }) {
+    return { props: { path: params.path } }
 }
 ```
 </Step>
 <Step>
 ### Organization Pages
 
-```tsx title="pages/organization/[organizationView].tsx"
+```tsx title="pages/organization/[path].tsx"
 import { OrganizationView } from "@daveyplate/better-auth-ui"
 import { organizationViewPaths } from "@daveyplate/better-auth-ui/server"
 
-export default function OrganizationPage({ organizationView }: { organizationView: string }) {
+export default function OrganizationPage({ path }: { path: string }) {
     return (
         <main className="container p-4 md:p-6">
-            <OrganizationView pathname={organizationView} />
+            <OrganizationView path={path} />
         </main>
     )
 }
 
 export async function getStaticPaths() {
     return {
-        paths: Object.values(organizationViewPaths).map((organizationView) => ({ params: { organizationView } })),
+        paths: Object.values(organizationViewPaths).map((path) => ({ params: { path } })),
         fallback: false
     }
 }
 
-export async function getStaticProps({ params }: { params: { organizationView: string } }) {
-    return { props: { organizationView: params.organizationView } }
+export async function getStaticProps({ params }: { params: { path: string } }) {
+    return { props: { organizationView: params.path } }
 }
 ```
 </Step>
