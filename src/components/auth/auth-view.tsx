@@ -47,6 +47,7 @@ export interface AuthViewProps {
     callbackURL?: string
     cardHeader?: ReactNode
     localization?: AuthLocalization
+    path?: string
     pathname?: string
     redirectTo?: string
     socialLayout?: "auto" | "horizontal" | "grid" | "vertical"
@@ -60,6 +61,7 @@ export function AuthView({
     callbackURL,
     cardHeader,
     localization,
+    path: pathProp,
     pathname,
     redirectTo,
     socialLayout: socialLayoutProp = "auto",
@@ -93,14 +95,9 @@ export function AuthView({
               : "vertical"
     }
 
-    const path = pathname?.split("/").pop()
-    const view =
-        viewProp ||
-        (getViewByPath(
-            viewPaths as unknown as Record<string, string>,
-            path
-        ) as typeof viewProp) ||
-        "SIGN_IN"
+    const path = pathProp ?? pathname?.split("/").pop()
+
+    const view = viewProp || getViewByPath(viewPaths!, path) || "SIGN_IN"
 
     const [isSubmitting, setIsSubmitting] = useState(false)
 

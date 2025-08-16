@@ -33,6 +33,7 @@ export interface AccountViewProps {
         card?: SettingsCardClassNames
     }
     localization?: AuthLocalization
+    path?: string
     pathname?: string
     view?: AccountViewPath
     hideNav?: boolean
@@ -42,6 +43,7 @@ export function AccountView({
     className,
     classNames,
     localization: localizationProp,
+    path: pathProp,
     pathname,
     view: viewProp,
     hideNav
@@ -63,10 +65,10 @@ export function AccountView({
         [contextLocalization, localizationProp]
     )
 
+    const path = pathProp ?? pathname?.split("/").pop()
+
     const view =
-        viewProp ||
-        getViewByPath(accountOptions.viewPaths, pathname) ||
-        "SETTINGS"
+        viewProp || getViewByPath(accountOptions.viewPaths, path!) || "SETTINGS"
 
     const navItems: {
         view: AccountViewPath

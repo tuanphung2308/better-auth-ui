@@ -31,6 +31,7 @@ export function OrganizationView({
     className,
     classNames,
     localization: localizationProp,
+    path: pathProp,
     pathname,
     view: viewProp,
     hideNav,
@@ -51,7 +52,9 @@ export function OrganizationView({
         [contextLocalization, localizationProp]
     )
 
-    const view = viewProp || getViewByPath(viewPaths!, pathname) || "SETTINGS"
+    const path = pathProp ?? pathname?.split("/").pop()
+
+    const view = viewProp || getViewByPath(viewPaths!, path) || "SETTINGS"
 
     const slug = slugProp || contextSlug
 
