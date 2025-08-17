@@ -167,7 +167,7 @@ export function AuthView({
                             isSubmitting={isSubmitting}
                             localization={localization}
                             otpSeparators={otpSeparators}
-                            pathname={pathname}
+                            view={view}
                             redirectTo={redirectTo}
                             setIsSubmitting={setIsSubmitting}
                         />
