@@ -39,9 +39,7 @@ export function ChangeEmailCard({
     const [resendDisabled, setResendDisabled] = useState(false)
 
     const formSchema = z.object({
-        email: z
-            .email({ message: localization.INVALID_EMAIL })
-            .min(1, { message: localization.EMAIL_REQUIRED })
+        email: z.string().email({ message: localization.INVALID_EMAIL })
     })
 
     const form = useForm({

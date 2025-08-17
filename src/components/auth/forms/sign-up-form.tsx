@@ -128,13 +128,9 @@ export function SignUpForm({
 
     // Create the base schema for standard fields
     const defaultFields = {
-        email: z
-            .email({
-                message: `${localization.EMAIL} ${localization.IS_INVALID}`
-            })
-            .min(1, {
-                message: `${localization.EMAIL} ${localization.IS_REQUIRED}`
-            }),
+        email: z.string().email({
+            message: `${localization.EMAIL} ${localization.IS_INVALID}`
+        }),
         password: getPasswordSchema(passwordValidation, localization),
         name:
             signUpFields?.includes("name") && nameRequired
@@ -177,26 +173,26 @@ export function SignUpForm({
                     ? z.preprocess(
                           (val) => (!val ? undefined : Number(val)),
                           z.number({
-                              error: `${additionalField.label} ${localization.IS_INVALID}`
+                              message: `${additionalField.label} ${localization.IS_INVALID}`
                           })
                       )
                     : z.coerce
                           .number({
-                              error: `${additionalField.label} ${localization.IS_INVALID}`
+                              message: `${additionalField.label} ${localization.IS_INVALID}`
                           })
                           .optional()
             } else if (additionalField.type === "boolean") {
                 fieldSchema = additionalField.required
                     ? z.coerce
                           .boolean({
-                              error: `${additionalField.label} ${localization.IS_INVALID}`
+                              message: `${additionalField.label} ${localization.IS_INVALID}`
                           })
                           .refine((val) => val === true, {
                               message: `${additionalField.label} ${localization.IS_REQUIRED}`
                           })
                     : z.coerce
                           .boolean({
-                              error: `${additionalField.label} ${localization.IS_INVALID}`
+                              message: `${additionalField.label} ${localization.IS_INVALID}`
                           })
                           .optional()
             } else {
@@ -215,11 +211,8 @@ export function SignUpForm({
     }
 
     const formSchema = z
-        .object({
-            ...defaultFields,
-            ...schemaFields
-        })
-        .loose()
+        .object(defaultFields)
+        .extend(schemaFields)
         .refine(
             (data) => {
                 // Skip validation if confirmPassword is not enabled
@@ -357,9 +350,9 @@ export function SignUpForm({
             }
 
             const data = await authClient.signUp.email({
-                email,
-                password,
-                name: name || "",
+                email: email as string,
+                password: password as string,
+                name: (name as string) || "",
                 ...additionalParams,
                 ...additionalFieldValues,
                 callbackURL: getCallbackURL(),
@@ -435,14 +428,12 @@ export function SignUpForm({
                                                         user={
                                                             avatarImage
                                                                 ? {
-                                                                      name:
-                                                                          form.watch(
-                                                                              "name"
-                                                                          ) ||
-                                                                          "",
+                                                                      name: form.watch(
+                                                                          "name"
+                                                                      ) as string,
                                                                       email: form.watch(
                                                                           "email"
-                                                                      ),
+                                                                      ) as string,
                                                                       image: avatarImage
                                                                   }
                                                                 : null
@@ -526,6 +517,7 @@ export function SignUpForm({
                                         }
                                         disabled={isSubmitting}
                                         {...field}
+                                        value={field.value as string}
                                     />
                                 </FormControl>
 
@@ -553,6 +545,7 @@ export function SignUpForm({
                                         }
                                         disabled={isSubmitting}
                                         {...field}
+                                        value={field.value as string}
                                     />
                                 </FormControl>
 
@@ -578,6 +571,7 @@ export function SignUpForm({
                                     placeholder={localization.EMAIL_PLACEHOLDER}
                                     disabled={isSubmitting}
                                     {...field}
+                                    value={field.value as string}
                                 />
                             </FormControl>
 
@@ -605,6 +599,7 @@ export function SignUpForm({
                                     disabled={isSubmitting}
                                     enableToggle
                                     {...field}
+                                    value={field.value as string}
                                 />
                             </FormControl>
 
@@ -633,6 +628,7 @@ export function SignUpForm({
                                         disabled={isSubmitting}
                                         enableToggle
                                         {...field}
+                                        value={field.value as string}
                                     />
                                 </FormControl>
 

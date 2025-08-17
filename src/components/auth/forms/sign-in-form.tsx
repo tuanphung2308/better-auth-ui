@@ -85,13 +85,9 @@ export function SignInForm({
             ? z.string().min(1, {
                   message: `${localization.USERNAME} ${localization.IS_REQUIRED}`
               })
-            : z
-                  .email({
-                      message: `${localization.EMAIL} ${localization.IS_INVALID}`
-                  })
-                  .min(1, {
-                      message: `${localization.EMAIL} ${localization.IS_REQUIRED}`
-                  }),
+            : z.string().email({
+                  message: `${localization.EMAIL} ${localization.IS_INVALID}`
+              }),
         password: getPasswordSchema(passwordValidation, localization),
         rememberMe: z.boolean().optional()
     })

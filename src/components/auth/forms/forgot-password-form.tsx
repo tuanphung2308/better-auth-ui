@@ -58,6 +58,7 @@ export function ForgotPasswordForm({
 
     const formSchema = z.object({
         email: z
+            .string()
             .email({
                 message: `${localization.EMAIL} ${localization.IS_INVALID}`
             })

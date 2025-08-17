@@ -67,13 +67,9 @@ function EmailForm({
     localization = { ...contextLocalization, ...localization }
 
     const formSchema = z.object({
-        email: z
-            .email({
-                message: `${localization.EMAIL} ${localization.IS_INVALID}`
-            })
-            .min(1, {
-                message: `${localization.EMAIL} ${localization.IS_REQUIRED}`
-            })
+        email: z.string().email({
+            message: `${localization.EMAIL} ${localization.IS_INVALID}`
+        })
     })
 
     const form = useForm({
