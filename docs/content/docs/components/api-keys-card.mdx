@@ -1,17 +1,17 @@
 ---
-title: <APIKeysCard />
+title: <ApiKeysCard />
 ---
 
-The `<APIKeysCard />` component provides a complete interface for managing API keys, including creating, viewing, and deleting API keys for programmatic access to your application.
+The `<ApiKeysCard />` component provides a complete interface for managing API keys, including creating, viewing, and deleting API keys for programmatic access to your application.
 
 ## Usage
 
 ```tsx
-import { APIKeysCard } from '@daveyplate/better-auth-ui'
+import { ApiKeysCard } from '@daveyplate/better-auth-ui'
 
-export function APIKeysSettingsPage() {
+export function ApiKeysSettingsPage() {
   return (
-    <APIKeysCard />
+    <ApiKeysCard />
   )
 }
 ```
@@ -33,13 +33,13 @@ export function APIKeysSettingsPage() {
 ### Basic Usage
 
 ```tsx
-<APIKeysCard />
+<ApiKeysCard />
 ```
 
 ### With Custom Class Names
 
 ```tsx
-<APIKeysCard 
+<ApiKeysCard 
   classNames={{
     base: "shadow-md",
     button: "rounded-full",
@@ -51,7 +51,7 @@ export function APIKeysSettingsPage() {
 ### With Custom Localization
 
 ```tsx
-<APIKeysCard 
+<ApiKeysCard 
   localization={{
     API_KEYS: "Developer Keys",
     CREATE_API_KEY: "Generate New Key",
