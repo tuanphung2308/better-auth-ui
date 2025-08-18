@@ -149,7 +149,7 @@ export function AccountView({
                 <div className="hidden md:block">
                     <div
                         className={cn(
-                            "flex w-60 flex-col gap-1",
+                            "flex w-48 flex-col gap-1 lg:w-60",
                             classNames?.sidebar?.base
                         )}
                     >
