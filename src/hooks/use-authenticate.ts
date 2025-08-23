@@ -36,8 +36,16 @@ export function useAuthenticate<TAuthClient extends AnyAuthClient>(
     useEffect(() => {
         if (!enabled || isPending || sessionData) return
 
+        const currentPath = window.location.href.replace(window.location.origin, "")
+        const currentUrl = new URL(window.location.href)
+        
+        const isOnAuthPage = currentPath.startsWith(basePath)
+        const redirectTo = isOnAuthPage 
+            ? (currentUrl.searchParams.get("redirectTo") || "/")
+            : currentPath
+
         replace(
-            `${basePath}/${viewPaths[authView]}?redirectTo=${window.location.href.replace(window.location.origin, "")}`
+            `${basePath}/${viewPaths[authView]}?redirectTo=${redirectTo}`
         )
     }, [
         isPending,
