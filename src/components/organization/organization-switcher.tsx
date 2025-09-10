@@ -64,6 +64,9 @@ export interface OrganizationSwitcherProps
     extends Omit<ComponentProps<typeof Button>, "trigger"> {
     classNames?: OrganizationSwitcherClassNames
     align?: "center" | "start" | "end"
+    alignOffset?: number
+    side?: "top" | "right" | "bottom" | "left"
+    sideOffset?: number
     trigger?: ReactNode
     localization?: AuthLocalization
     slug?: string
@@ -91,6 +94,9 @@ export function OrganizationSwitcher({
     className,
     classNames,
     align,
+    alignOffset,
+    side,
+    sideOffset,
     trigger,
     localization: localizationProp,
     slug: slugProp,
@@ -326,6 +332,9 @@ export function OrganizationSwitcher({
                         classNames?.content?.base
                     )}
                     align={align}
+                    alignOffset={alignOffset}
+                    side={side}
+                    sideOffset={sideOffset}
                     onCloseAutoFocus={(e) => e.preventDefault()}
                 >
                     <div
