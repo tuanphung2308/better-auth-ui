@@ -402,22 +402,53 @@ export function OrganizationSwitcher({
                         className={classNames?.content?.separator}
                     />
 
-                    {activeOrganization && !hidePersonal && (
-                        <DropdownMenuItem
-                            onClick={() => switchOrganization(null)}
-                        >
-                            <PersonalAccountView
-                                classNames={classNames?.content?.user}
-                                isPending={isPending}
-                                localization={localization}
-                                user={user}
-                            />
-                        </DropdownMenuItem>
-                    )}
+                    {activeOrganization &&
+                        !hidePersonal &&
+                        (pathMode === "slug" ? (
+                            <Link href={personalPath ?? redirectTo}>
+                                <DropdownMenuItem>
+                                    <PersonalAccountView
+                                        classNames={classNames?.content?.user}
+                                        isPending={isPending}
+                                        localization={localization}
+                                        user={user}
+                                    />
+                                </DropdownMenuItem>
+                            </Link>
+                        ) : (
+                            <DropdownMenuItem
+                                onClick={() => switchOrganization(null)}
+                            >
+                                <PersonalAccountView
+                                    classNames={classNames?.content?.user}
+                                    isPending={isPending}
+                                    localization={localization}
+                                    user={user}
+                                />
+                            </DropdownMenuItem>
+                        ))}
 
                     {organizations?.map(
                         (organization) =>
-                            organization.id !== activeOrganization?.id && (
+                            organization.id !== activeOrganization?.id &&
+                            (pathMode === "slug" ? (
+                                <Link
+                                    key={organization.id}
+                                    href={`${organizationOptions?.basePath}/${organization.slug}`}
+                                >
+                                    <DropdownMenuItem>
+                                        <OrganizationCellView
+                                            classNames={
+                                                classNames?.content
+                                                    ?.organization
+                                            }
+                                            isPending={isPending}
+                                            localization={localization}
+                                            organization={organization}
+                                        />
+                                    </DropdownMenuItem>
+                                </Link>
+                            ) : (
                                 <DropdownMenuItem
                                     key={organization.id}
                                     onClick={() =>
@@ -433,7 +464,7 @@ export function OrganizationSwitcher({
                                         organization={organization}
                                     />
                                 </DropdownMenuItem>
-                            )
+                            ))
                     )}
 
                     {organizations &&
