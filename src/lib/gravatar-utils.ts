@@ -1,5 +1,5 @@
-import { sha256 } from "@noble/hashes/sha2"
-import { bytesToHex } from "@noble/hashes/utils"
+import { sha256 } from "@noble/hashes/sha2.js"
+import { bytesToHex } from "@noble/hashes/utils.js"
 import type { GravatarOptions } from "../types/gravatar-options"
 
 /**
@@ -17,7 +17,10 @@ export function getGravatarUrl(
     try {
         // Normalize email: trim and lowercase
         const normalizedEmail = email.trim().toLowerCase()
-        const hash = bytesToHex(sha256(normalizedEmail))
+        // sha256 expects Uint8Array, so encode string to Uint8Array
+        const encoder = new TextEncoder()
+        const emailBytes = encoder.encode(normalizedEmail)
+        const hash = bytesToHex(sha256(emailBytes))
         const extension = options?.jpg ? ".jpg" : ""
         let url = `https://gravatar.com/avatar/${hash}${extension}`
 
