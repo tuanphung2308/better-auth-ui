@@ -146,7 +146,8 @@ export function OrganizationSwitcher({
     const {
         data: activeOrganization,
         isPending: organizationPending,
-        isRefetching: organizationRefetching
+        isRefetching: organizationRefetching,
+        refetch: organizationRefetch
     } = useCurrentOrganization({ slug })
 
     const isPending =
@@ -192,6 +193,9 @@ export function OrganizationSwitcher({
                         throw: true
                     }
                 })
+
+                organizationRefetch?.();
+
             } catch (error) {
                 toast({
                     variant: "error",
