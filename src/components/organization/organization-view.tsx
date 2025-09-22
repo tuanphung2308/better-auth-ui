@@ -2,7 +2,7 @@
 
 import { MenuIcon } from "lucide-react"
 import { useContext, useEffect, useMemo } from "react"
-
+import { useAuthenticate } from "../../hooks/use-authenticate"
 import { useCurrentOrganization } from "../../hooks/use-current-organization"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getViewByPath } from "../../lib/utils"
@@ -46,6 +46,8 @@ export function OrganizationView({
     } = useContext(AuthUIContext)
 
     const { slug: contextSlug, viewPaths, apiKey } = organizationOptions || {}
+
+    useAuthenticate()
 
     const localization = useMemo(
         () => ({ ...contextLocalization, ...localizationProp }),

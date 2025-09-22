@@ -2,7 +2,7 @@
 
 import { MenuIcon } from "lucide-react"
 import { useContext, useMemo } from "react"
-
+import { useAuthenticate } from "../../hooks/use-authenticate"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { cn, getViewByPath } from "../../lib/utils"
 import type { AuthLocalization } from "../../localization/auth-localization"
@@ -59,6 +59,8 @@ export function AccountView({
     if (!accountOptions) {
         return null
     }
+
+    useAuthenticate()
 
     const localization = useMemo(
         () => ({ ...contextLocalization, ...localizationProp }),
