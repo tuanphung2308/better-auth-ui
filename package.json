@@ -129,7 +129,7 @@
         "@tanstack/react-query": ">=5.66.0",
         "@triplit/client": ">=1.0.0",
         "@triplit/react": ">=1.0.0",
-        "better-auth": "^1.3.4",
+        "better-auth": "^1.3.13",
         "class-variance-authority": ">=0.7.0",
         "clsx": ">=2.1.0",
         "input-otp": ">=1.4.0",
