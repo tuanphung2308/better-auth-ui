@@ -1,4 +1,5 @@
 import type { BetterFetchError } from "@better-fetch/fetch"
+import type { Account } from "better-auth"
 import { useMemo } from "react"
 import type { AuthHooks } from "../../types/auth-hooks"
 import { getModelName } from "./model-names"
@@ -24,14 +25,10 @@ export function useListAccounts({
             : null
     )
 
-    const accounts = useMemo(() => {
-        if (data?.[modelName]) {
-            return data[modelName].map((account) => ({
-                accountId: account.accountId as string,
-                providerId: account.providerId as string
-            }))
-        }
-    }, [data, modelName])
+    const accounts = useMemo(
+        () => data?.[modelName] as Account[],
+        [data, modelName]
+    )
 
     return {
         data: accounts,
