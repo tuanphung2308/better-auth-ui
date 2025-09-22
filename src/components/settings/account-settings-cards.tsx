@@ -90,7 +90,7 @@ export function AccountSettingsCards({
                     validate
                 } = additionalField
 
-                // @ts-ignore Custom fields are not typed
+                // @ts-expect-error Custom fields are not typed
                 const defaultValue = sessionData?.user[field] as unknown
 
                 return (

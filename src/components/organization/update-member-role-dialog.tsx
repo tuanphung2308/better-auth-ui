@@ -103,7 +103,6 @@ export function UpdateMemberRoleDialog({
         try {
             await authClient.organization.updateMemberRole({
                 memberId: member.id,
-                // @ts-ignore - role is a string but the type expects specific values
                 role: selectedRole,
                 organizationId: member.organizationId,
                 fetchOptions: {

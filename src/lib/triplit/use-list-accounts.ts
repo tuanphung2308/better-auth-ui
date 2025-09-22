@@ -1,5 +1,3 @@
-import { useMemo } from "react"
-
 import type { AuthHooks } from "../../types/auth-hooks"
 import { getModelName } from "./model-names"
 import { useConditionalQuery } from "./use-conditional-query"
@@ -25,15 +23,8 @@ export function useListAccounts({
         payload?.sub && triplit.query(modelName)
     )
 
-    const accounts = useMemo(() => {
-        return results?.map((account) => ({
-            accountId: account.accountId as string,
-            provider: account.providerId as string
-        }))
-    }, [results])
-
     return {
-        data: accounts,
+        data: results,
         isPending: isPending || fetching,
         error
     }

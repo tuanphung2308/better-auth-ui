@@ -1,9 +1,9 @@
 "use client"
 
+import type { Account } from "better-auth"
 import type { SocialProvider } from "better-auth/social-providers"
 import { Loader2 } from "lucide-react"
 import { useContext, useState } from "react"
-
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import type { Provider } from "../../../lib/social-providers"
 import { cn, getLocalizedError } from "../../../lib/utils"
@@ -17,10 +17,7 @@ import type { SettingsCardClassNames } from "../shared/settings-card"
 export interface ProviderCellProps {
     className?: string
     classNames?: SettingsCardClassNames
-    account?: {
-        accountId: string
-        provider: string
-    } | null
+    account?: Account | null
     isPending?: boolean
     localization?: Partial<AuthLocalization>
     other?: boolean

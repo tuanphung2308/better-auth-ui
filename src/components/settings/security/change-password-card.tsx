@@ -28,7 +28,7 @@ import { InputFieldSkeleton } from "../skeletons/input-field-skeleton"
 export interface ChangePasswordCardProps {
     className?: string
     classNames?: SettingsCardClassNames
-    accounts?: { provider: string }[] | null
+    accounts?: { providerId: string }[] | null
     isPending?: boolean
     localization?: AuthLocalization
     skipHook?: boolean
@@ -163,7 +163,7 @@ export function ChangePasswordCard({
     }
 
     const credentialsLinked = accounts?.some(
-        (acc) => acc.provider === "credential"
+        (acc) => acc.providerId === "credential"
     )
 
     if (!isPending && !credentialsLinked) {

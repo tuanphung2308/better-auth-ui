@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
+import type { Account } from "better-auth"
 import { Loader2 } from "lucide-react"
 import { type ComponentProps, useContext } from "react"
 import { useForm } from "react-hook-form"
@@ -31,7 +32,7 @@ import type { SettingsCardClassNames } from "../shared/settings-card"
 export interface DeleteAccountDialogProps
     extends ComponentProps<typeof Dialog> {
     classNames?: SettingsCardClassNames
-    accounts?: { provider: string }[] | null
+    accounts?: Account[] | null
     localization?: AuthLocalization
 }
 
@@ -65,7 +66,7 @@ export function DeleteAccountDialog({
         ? Date.now() - new Date(session?.createdAt).getTime() < freshAge * 1000
         : false
     const credentialsLinked = accounts?.some(
-        (acc) => acc.provider === "credential"
+        (acc) => acc.providerId === "credential"
     )
 
     const formSchema = z.object({

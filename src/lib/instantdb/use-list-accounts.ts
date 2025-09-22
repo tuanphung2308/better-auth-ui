@@ -28,7 +28,7 @@ export function useListAccounts({
         if (data?.[modelName]) {
             return data[modelName].map((account) => ({
                 accountId: account.accountId as string,
-                provider: account.providerId as string
+                providerId: account.providerId as string
             }))
         }
     }, [data, modelName])

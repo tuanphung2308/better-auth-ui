@@ -1,6 +1,5 @@
 import { createGenerator } from "fumadocs-typescript"
 import { AutoTypeTable } from "fumadocs-typescript/ui"
-
 import { Tab, Tabs } from "fumadocs-ui/components/tabs"
 import defaultMdxComponents from "fumadocs-ui/mdx"
 import {
@@ -10,10 +9,15 @@ import {
     DocsTitle
 } from "fumadocs-ui/page"
 import { notFound } from "next/navigation"
+import type { ComponentProps } from "react"
 
 import { source } from "@/lib/source"
 
 const generator = createGenerator()
+
+const AutoTypeTableWithGenerator = (
+    props: ComponentProps<typeof AutoTypeTable>
+) => <AutoTypeTable {...props} generator={generator} />
 
 export default async function Page(props: {
     params: Promise<{ slug?: string[] }>
@@ -34,9 +38,7 @@ export default async function Page(props: {
             <DocsBody>
                 <MDX
                     components={{
-                        AutoTypeTable: (props) => (
-                            <AutoTypeTable {...props} generator={generator} />
-                        ),
+                        AutoTypeTable: AutoTypeTableWithGenerator,
                         Tab,
                         Tabs,
                         ...defaultMdxComponents

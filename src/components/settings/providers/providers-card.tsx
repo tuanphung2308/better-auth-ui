@@ -1,7 +1,7 @@
 "use client"
 
+import type { Account } from "better-auth"
 import { useContext } from "react"
-
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { socialProviders } from "../../../lib/social-providers"
 import { cn } from "../../../lib/utils"
@@ -16,7 +16,7 @@ import { ProviderCell } from "./provider-cell"
 export interface ProvidersCardProps {
     className?: string
     classNames?: SettingsCardClassNames
-    accounts?: { accountId: string; provider: string }[] | null
+    accounts?: Account[] | null
     isPending?: boolean
     localization?: Partial<AuthLocalization>
     skipHook?: boolean
@@ -79,7 +79,7 @@ export function ProvidersCard({
                                     key={provider}
                                     classNames={classNames}
                                     account={accounts?.find(
-                                        (acc) => acc.provider === provider
+                                        (acc) => acc.providerId === provider
                                     )}
                                     provider={socialProvider}
                                     refetch={refetch}
@@ -92,7 +92,8 @@ export function ProvidersCard({
                                 key={provider.provider}
                                 classNames={classNames}
                                 account={accounts?.find(
-                                    (acc) => acc.provider === provider.provider
+                                    (acc) =>
+                                        acc.providerId === provider.provider
                                 )}
                                 provider={provider}
                                 refetch={refetch}

@@ -194,8 +194,7 @@ export function OrganizationSwitcher({
                     }
                 })
 
-                organizationRefetch?.();
-
+                organizationRefetch?.()
             } catch (error) {
                 toast({
                     variant: "error",
@@ -215,7 +214,8 @@ export function OrganizationSwitcher({
             personalPath,
             organizationOptions?.basePath,
             redirectTo,
-            navigate
+            navigate,
+            organizationRefetch
         ]
     )
 

@@ -37,11 +37,11 @@ export function useAuthenticate<TAuthClient extends AnyAuthClient>(
         if (!enabled || isPending || sessionData) return
 
         const currentUrl = new URL(window.location.href)
-        const redirectTo = currentUrl.searchParams.get("redirectTo") || window.location.href.replace(window.location.origin, "")
+        const redirectTo =
+            currentUrl.searchParams.get("redirectTo") ||
+            window.location.href.replace(window.location.origin, "")
 
-        replace(
-            `${basePath}/${viewPaths[authView]}?redirectTo=${redirectTo}`
-        )
+        replace(`${basePath}/${viewPaths[authView]}?redirectTo=${redirectTo}`)
     }, [
         isPending,
         sessionData,

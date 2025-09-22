@@ -46,7 +46,7 @@ export function SecuritySettingsCards({
     } = useListAccounts()
 
     const credentialsLinked = accounts?.some(
-        (acc) => acc.provider === "credential"
+        (acc) => acc.providerId === "credential"
     )
 
     return (

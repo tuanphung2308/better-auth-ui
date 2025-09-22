@@ -1,7 +1,7 @@
 "use client"
 
+import type { Account } from "better-auth"
 import { useContext, useState } from "react"
-
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import type { AuthLocalization } from "../../../localization/auth-localization"
 import type { SettingsCardClassNames } from "../shared/settings-card"
@@ -11,7 +11,7 @@ import { DeleteAccountDialog } from "./delete-account-dialog"
 export interface DeleteAccountCardProps {
     className?: string
     classNames?: SettingsCardClassNames
-    accounts?: { provider: string }[] | null
+    accounts?: Account[] | null
     isPending?: boolean
     localization?: AuthLocalization
     skipHook?: boolean

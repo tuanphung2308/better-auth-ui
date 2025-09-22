@@ -293,7 +293,6 @@ export const TikTokIcon: ProviderIcon = ({ className }) => (
 export const TwitchIcon: ProviderIcon = ({ className }) => (
     <svg
         className={className}
-        id="Layer_1"
         version="1.1"
         viewBox="0 0 2400 2800"
         x="0px"
@@ -318,7 +317,7 @@ export const TwitchIcon: ProviderIcon = ({ className }) => (
             />
 
             <g>
-                <g id="Layer_1-2">
+                <g>
                     <path
                         className="st1"
                         d="M500,0L0,500v1800h600v500l500-500h400l900-900V0H500z M2200,1300l-400,400h-400l-350,350v-350H600V200h1600V1300z"
