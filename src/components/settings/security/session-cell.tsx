@@ -91,7 +91,7 @@ export function SessionCell({
 
                 <span className="text-muted-foreground text-xs">
                     {session.userAgent?.includes("tauri-plugin-http")
-                        ? "Tauri"
+                        ? localization.APP
                         : parser.os.name && parser.browser.name
                           ? `${parser.os.name}, ${parser.browser.name}`
                           : parser.os.name ||

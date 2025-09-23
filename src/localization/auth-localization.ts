@@ -15,6 +15,9 @@ import { TWO_FACTOR_ERROR_CODES } from "./two-factor-error-codes"
 import { USERNAME_ERROR_CODES } from "./username-error-codes"
 
 export const authLocalization = {
+    /** @default "App" */
+    APP: "App",
+
     /** @default "Account" */
     ACCOUNT: "Account",
 
