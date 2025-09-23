@@ -90,12 +90,14 @@ export function SessionCell({
                 </span>
 
                 <span className="text-muted-foreground text-xs">
-                    {parser.os.name && parser.browser.name
-                        ? `${parser.os.name}, ${parser.browser.name}`
-                        : parser.os.name ||
-                          parser.browser.name ||
-                          session.userAgent ||
-                          localization.UNKNOWN}
+                    {session.userAgent?.includes("tauri-plugin-http")
+                        ? "Tauri"
+                        : parser.os.name && parser.browser.name
+                          ? `${parser.os.name}, ${parser.browser.name}`
+                          : parser.os.name ||
+                            parser.browser.name ||
+                            session.userAgent ||
+                            localization.UNKNOWN}
                 </span>
             </div>
 
