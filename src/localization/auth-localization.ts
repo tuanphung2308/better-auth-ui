@@ -713,6 +713,10 @@ export const authLocalization = {
 
     /** @default "The slug does not match" */
     SLUG_DOES_NOT_MATCH: "The slug does not match",
+
+    /** @default "Unknown" */
+    UNKNOWN: "Unknown",
+
     ...BASE_ERROR_CODES,
     ...ADMIN_ERROR_CODES,
     ...ANONYMOUS_ERROR_CODES,

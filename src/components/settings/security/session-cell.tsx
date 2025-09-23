@@ -90,7 +90,12 @@ export function SessionCell({
                 </span>
 
                 <span className="text-muted-foreground text-xs">
-                    {parser.os.name}, {parser.browser.name}
+                    {parser.os.name && parser.browser.name
+                        ? `${parser.os.name}, ${parser.browser.name}`
+                        : parser.os.name ||
+                          parser.browser.name ||
+                          session.userAgent ||
+                          localization.UNKNOWN}
                 </span>
             </div>
 
