@@ -24,8 +24,6 @@
   "license": "MIT",
   "devDependencies": {
     "@workspace/typescript-config": "workspace:*",
-    "typescript": "^5.9.2",
-    "@types/react": "^19",
     "@types/react-google-recaptcha": "^2.1.9"
   },
   "dependencies": {
@@ -47,7 +45,7 @@
     "tailwind-merge": "^3.3.1",
     "ua-parser-js": "^2.0.5",
     "vaul": "^1.1.2",
-    "zod": "^4.1.11"
+    "zod": "4.1.8"
   },
   "peerDependencies": {
     "@hookform/resolvers": ">=5.2.0",
