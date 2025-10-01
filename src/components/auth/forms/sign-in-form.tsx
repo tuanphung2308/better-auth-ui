@@ -204,20 +204,6 @@ export function SignInForm({
                 <FormLabel className={classNames?.label}>
                   {localization.PASSWORD}
                 </FormLabel>
-
-                {credentials?.forgotPassword && (
-                  <Link
-                    className={cn(
-                      'text-sm hover:underline',
-                      classNames?.forgotPasswordLink
-                    )}
-                    href={`${basePath}/${viewPaths.FORGOT_PASSWORD}${
-                      isHydrated ? window.location.search : ''
-                    }`}
-                  >
-                    {localization.FORGOT_PASSWORD_LINK}
-                  </Link>
-                )}
               </div>
 
               <FormControl>
@@ -231,6 +217,20 @@ export function SignInForm({
               </FormControl>
 
               <FormMessage className={classNames?.error} />
+
+              {credentials?.forgotPassword && (
+                <Link
+                  className={cn(
+                    'text-sm hover:underline',
+                    classNames?.forgotPasswordLink
+                  )}
+                  href={`${basePath}/${viewPaths.FORGOT_PASSWORD}${
+                    isHydrated ? window.location.search : ''
+                  }`}
+                >
+                  {localization.FORGOT_PASSWORD_LINK}
+                </Link>
+              )}
             </FormItem>
           )}
         />
