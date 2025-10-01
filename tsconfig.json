@@ -1,23 +1,13 @@
 {
-    "compilerOptions": {
-        "jsx": "react-jsx",
-        "declaration": true,
-        "outDir": "dist",
-        "strict": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "resolveJsonModule": true,
-        "allowJs": true,
-        "incremental": false,
-        "lib": [
-            "dom",
-            "dom.iterable",
-            "esnext"
-        ],
-        "module": "esnext",
-        "moduleResolution": "bundler"
-    },
-    "include": [
-        "src"
-    ]
+  "extends": "@workspace/typescript-config/react-library.json",
+  "compilerOptions": {
+    "moduleResolution": "Bundler",
+    "module": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "@workspace/ui/*": ["./src/*"]
+    }
+  },
+  "include": ["."],
+  "exclude": ["node_modules", "dist"]
 }
